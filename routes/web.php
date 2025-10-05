@@ -1,0 +1,109 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TeamsController;
+use App\Http\Controllers\PlayersController;
+use App\Http\Controllers\TournamentController;
+use App\Http\Controllers\BracketController;
+use App\Http\Controllers\GameController;
+use App\Http\Controllers\LandingController;
+use App\Http\Controllers\ReportsController;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::middleware(['auth'])->group(function () {
+    // ... your other routes ...
+    
+    Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
+});
+Route::get('/games', [GameController::class, 'index'])->name('games.index');
+Route::post('/games/{game}/complete', [GameController::class, 'completeGame'])->name('games.complete');
+
+Route::get('/games/{game}/basketball-scoresheet', [GameController::class, 'basketballScoresheet'])->name('games.basketball-scoresheet');
+
+Route::get('/games/{game}/box-score', [GameController::class, 'boxScore'])->name('games.box-score');
+Route::post('/games/{game}/select-mvp', [GameController::class, 'selectMVP'])->name('games.select-mvp');
+
+// Tournament Routes
+Route::get('/tournaments', [TournamentController::class, 'index'])->name('tournaments.index');
+Route::post('/tournaments', [TournamentController::class, 'store'])->name('tournaments.store');
+Route::get('/tournaments/{id}', [BracketController::class, 'showTournament'])->name('tournaments.show');
+
+// Bracket Routes
+Route::post('/tournaments/{tournament}/brackets', [BracketController::class, 'store'])->name('brackets.store');
+Route::post('/brackets/{bracket}/generate', [BracketController::class, 'generate'])->name('brackets.generate');
+
+// Team Assignment Routes
+Route::post('/tournaments/{tournament}/teams', [BracketController::class, 'assignTeam'])->name('tournaments.assign-team');
+Route::delete('/tournaments/{tournament}/teams/{team}', [BracketController::class, 'removeTeam'])->name('tournaments.remove-team');
+
+// Game Routes
+Route::post('/games', [GameController::class, 'store'])->name('games.store');
+Route::patch('/games/{game}', [BracketController::class, 'updateGame'])->name('games.update');
+Route::get('/games/{game}/prepare', [GameController::class, 'prepare'])->name('games.prepare');
+Route::post('/games/{game}/officials', [GameController::class, 'updateOfficials'])->name('games.update-officials');
+Route::post('/games/{game}/start-live', [GameController::class, 'startLive'])->name('games.start-live');
+Route::get('/prepare', [GameController::class, 'index'])->name('games.prepare.index');
+// Add this line with your other game routes
+Route::get('/games/{game}/live', [GameController::class, 'live'])->name('games.live');
+Route::get('/games/{game}/tallysheet', [GameController::class, 'tallysheet'])->name('games.tallysheet');
+
+// Dashboard
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+// Player Routes
+Route::get('/players', [PlayersController::class, 'index'])->name('players.index');
+Route::post('/players', [PlayersController::class, 'store'])->name('players.store');
+Route::resource('/players', PlayersController::class);
+
+// Landing page route (should be first)
+Route::get('/', [LandingController::class, 'index'])->name('landing');
+
+// API route for live scores
+Route::get('/api/live-scores', [LandingController::class, 'getLiveScores'])->name('api.live-scores');
+
+// Guest tournament view
+Route::get('/tournament/{id}/guest', [BracketController::class, 'guestView'])->name('tournament.guest');
+
+// Team Routes
+Route::get('/teams', [TeamsController::class, 'index'])->name('teams.index');
+Route::post('/teams', [TeamsController::class, 'store'])->name('teams.store');
+Route::get('/teams/{id}', [TeamsController::class, 'show'])->name('teams.show');
+
+// Other Routes
+
+Route::get('/teams-stats', function() { return 'Teams & Player Stats'; })->name('teams.stats');
+
+// Authentication Routes
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
+
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect('/');
+})->name('logout');
+
+use App\Http\Controllers\ActivityLogController;
+Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+
+Route::post('/brackets/{bracket}/save-custom', [BracketController::class, 'saveCustomBracket'])->name('brackets.save-custom');
+
+// Add this route to your web.php or routes file
+Route::post('/tournaments/{tournament}/assign-teams', [TournamentController::class, 'assignTeams'])->name('tournaments.assign-teams');
