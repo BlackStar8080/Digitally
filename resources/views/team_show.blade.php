@@ -6,7 +6,7 @@
     <style>
         /* --- Scope everything to the team page to avoid affecting the navbar/layout --- */
         .team-page { 
-            background-color: #f3e8ff; 
+            background-color: #fffff; 
             min-height: 100vh;
             padding-top: 100px; /* ✅ enough space under the fixed navbar */
             padding-bottom: 40px;

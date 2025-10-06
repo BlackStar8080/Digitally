@@ -59,7 +59,10 @@ class BracketController extends Controller
     {
         switch ($bracket->type) {
             case 'single-elimination':
-                return $this->generateSingleElimination($bracket);
+                $result = $this->generateSingleElimination($bracket);
+                // Set up bye team in Round 2 if needed
+                $this->setupByeTeamInRound2($bracket);
+                return $result;
             case 'round-robin':
                 return $this->generateRoundRobin($bracket);
             case 'round-robin-playoff':
@@ -72,7 +75,7 @@ class BracketController extends Controller
     }
 
     /**
-     * Generate single elimination bracket with bye support
+     * Generate single elimination bracket with bye support (ONLY for odd number of teams)
      */
     public function generateSingleElimination(Bracket $bracket)
     {
@@ -85,9 +88,12 @@ class BracketController extends Controller
         // Clear existing games
         $bracket->games()->delete();
 
-        // Calculate rounds
         $teamCount = $teams->count();
-        $totalRounds = ceil(log($teamCount, 2));
+        $isOddTeams = $teamCount % 2 === 1;
+        
+        // Calculate total rounds needed
+        $effectiveTeamCount = $isOddTeams ? $teamCount + 1 : $teamCount;
+        $totalRounds = ceil(log($effectiveTeamCount, 2));
 
         // Attach teams to bracket with seeding
         $bracket->teams()->detach();
@@ -95,122 +101,142 @@ class BracketController extends Controller
             $bracket->teams()->attach($team->id, ['seed' => $index + 1]);
         });
 
-        // Generate first round with bye support
-        $this->generateFirstRoundWithByes($bracket, $teams, $totalRounds);
+        // Generate first round with bye if odd teams
+        $this->generateFirstRoundWithOddTeamBye($bracket, $teams, $totalRounds);
 
-        // Generate placeholder games for subsequent rounds
-        $this->generateSubsequentRounds($bracket, $totalRounds);
+        // Generate subsequent rounds (no byes in these rounds!)
+        $this->generateSubsequentRoundsNoBye($bracket, $totalRounds, $teamCount);
 
         // Update bracket status
         $bracket->update(['status' => 'active']);
 
-        return back()->with('success', 'Single elimination bracket generated with bye support!');
+        $byeMessage = $isOddTeams ? ' (1 bye in first round for odd team count)' : '';
+        return back()->with('success', "Single elimination bracket generated{$byeMessage}!");
     }
 
     /**
-     * Generate first round games with bye support
+     * Generate first round games with bye support ONLY for odd number of teams
      */
-    private function generateFirstRoundWithByes($bracket, $teams, $totalRounds)
+    private function generateFirstRoundWithOddTeamBye($bracket, $teams, $totalRounds)
     {
         $teamArray = $teams->toArray();
         $teamCount = count($teamArray);
-
-        // Calculate byes needed
-        $nextPowerOf2 = pow(2, $totalRounds);
-        $byesNeeded = $nextPowerOf2 - $teamCount;
-
-        // Top seeds get byes (skip Round 1, go directly to Round 2)
-        $teamsWithByes = array_slice($teamArray, 0, $byesNeeded);
-        $teamsInFirstRound = array_slice($teamArray, $byesNeeded);
-
+        
         $matchNumber = 1;
+        $byeTeam = null;
 
-        // Create Round 1 games (only teams without byes)
-        for ($i = 0; $i < count($teamsInFirstRound); $i += 2) {
-            if (isset($teamsInFirstRound[$i + 1])) {
+        // Check if we have odd number of teams
+        if ($teamCount % 2 === 1) {
+            // ODD number of teams: Give ONE bye to the top seed
+            $byeTeam = array_shift($teamArray); // Remove first team (top seed)
+            
+            // Store bye team info in bracket settings
+            $bracket->update([
+                'settings' => [
+                    'bye_team' => $byeTeam['id'],
+                    'has_bye' => true
+                ]
+            ]);
+
+            // Create a special bye game in Round 1
+            Game::create([
+                'bracket_id' => $bracket->id,
+                'round' => 1,
+                'match_number' => $matchNumber,
+                'team1_id' => $byeTeam['id'],
+                'team2_id' => null, // No opponent
+                'status' => 'completed', // Bye games are auto-completed
+                'winner_id' => $byeTeam['id'], // Bye team auto-wins
+                'is_bye' => true,
+                'team1_score' => 0,
+                'team2_score' => 0,
+            ]);
+            $matchNumber++;
+        }
+
+        // Create Round 1 games for remaining teams (now even number)
+        for ($i = 0; $i < count($teamArray); $i += 2) {
+            if (isset($teamArray[$i + 1])) {
                 Game::create([
                     'bracket_id' => $bracket->id,
                     'round' => 1,
                     'match_number' => $matchNumber,
-                    'team1_id' => $teamsInFirstRound[$i]['id'],
-                    'team2_id' => $teamsInFirstRound[$i + 1]['id'],
+                    'team1_id' => $teamArray[$i]['id'],
+                    'team2_id' => $teamArray[$i + 1]['id'],
                     'status' => 'pending',
                     'is_bye' => false,
                 ]);
                 $matchNumber++;
             }
         }
-
-        // Store bye teams for Round 2 placement
-        $bracket->update([
-            'settings' => [
-                'bye_teams' => array_column($teamsWithByes, 'id')
-            ]
-        ]);
     }
 
     /**
-     * Generate subsequent round games with bye team placement
+     * Generate subsequent rounds WITHOUT any bye logic
      */
-    private function generateSubsequentRounds($bracket, $totalRounds)
+    private function generateSubsequentRoundsNoBye($bracket, $totalRounds, $originalTeamCount)
     {
-        $round1Games = $bracket->gamesByRound(1)->count();
-        $byeTeams = $bracket->settings['bye_teams'] ?? [];
-
+        $settings = $bracket->settings ?? [];
+        $hasBye = $settings['has_bye'] ?? false;
+        
+        // Get the number of games from Round 1 (including bye game if exists)
+        $round1Games = $bracket->gamesByRound(1)->where('is_bye', false)->count();
+        
+        // If there's a bye, Round 2 will have (round1Games + 1) / 2 games
+        // because the bye winner joins in Round 2
+        if ($hasBye) {
+            $round1Winners = $round1Games; // Winners from actual games
+            $totalRound2Teams = $round1Winners + 1; // Plus the bye team
+            $previousRoundGames = ceil($totalRound2Teams / 2);
+        } else {
+            $previousRoundGames = ceil($round1Games / 2);
+        }
+        
+        // Generate all subsequent rounds
         for ($round = 2; $round <= $totalRounds; $round++) {
+            $currentRoundGames = max(1, ceil($previousRoundGames / 2));
             
-            if ($round == 2 && count($byeTeams) > 0) {
-                // Round 2 (Semifinals): Include bye teams
-                $totalTeamsInRound = $round1Games + count($byeTeams);
-                $currentRoundGames = max(1, ceil($totalTeamsInRound / 2));
-                
-                for ($game = 1; $game <= $currentRoundGames; $game++) {
-                    $gameData = [
-                        'bracket_id' => $bracket->id,
-                        'round' => $round,
-                        'match_number' => $game,
-                        'team1_id' => null,
-                        'team2_id' => null,
-                        'status' => 'pending',
-                        'is_bye' => false,
-                    ];
+            for ($game = 1; $game <= $currentRoundGames; $game++) {
+                Game::create([
+                    'bracket_id' => $bracket->id,
+                    'round' => $round,
+                    'match_number' => $game,
+                    'team1_id' => null,
+                    'team2_id' => null,
+                    'status' => 'pending',
+                    'is_bye' => false, // NO BYES in rounds after Round 1!
+                ]);
+            }
+            
+            $previousRoundGames = $currentRoundGames;
+        }
+    }
 
-                    // Place bye teams in Round 2
-                    // Each bye team waits for a specific Round 1 winner
-                    $byeIndex = $game - 1;
-                    if (isset($byeTeams[$byeIndex])) {
-                        $gameData['team1_id'] = $byeTeams[$byeIndex];
-                        // team2_id will be filled by the corresponding Round 1 winner
-                    }
-
-                    Game::create($gameData);
-                }
+    /**
+     * Special method to handle bye team advancement to Round 2
+     * This should be called once when bracket is generated
+     */
+    private function setupByeTeamInRound2($bracket)
+    {
+        $settings = $bracket->settings ?? [];
+        $byeTeamId = $settings['bye_team'] ?? null;
+        
+        if ($byeTeamId) {
+            // Place bye team in Round 2, Game 1, waiting for opponent
+            $round2Game1 = $bracket->games()
+                ->where('round', 2)
+                ->where('match_number', 1)
+                ->first();
                 
-                $previousRoundGames = $currentRoundGames;
-                
-            } else {
-                // Subsequent rounds (Round 3+): Standard playoff structure
-                $currentRoundGames = max(1, ceil($previousRoundGames / 2));
-                
-                for ($game = 1; $game <= $currentRoundGames; $game++) {
-                    Game::create([
-                        'bracket_id' => $bracket->id,
-                        'round' => $round,
-                        'match_number' => $game,
-                        'team1_id' => null,
-                        'team2_id' => null,
-                        'status' => 'pending',
-                        'is_bye' => false,
-                    ]);
-                }
-                
-                $previousRoundGames = $currentRoundGames;
+            if ($round2Game1) {
+                $round2Game1->team1_id = $byeTeamId;
+                $round2Game1->save();
             }
         }
     }
 
     /**
-     * Advance winner to next round (updated for bye logic)
+     * Advance winner to next round (updated for proper bye handling)
      */
     private function advanceWinner(Game $completedGame)
     {
@@ -228,35 +254,76 @@ class BracketController extends Controller
         }
 
         // Single elimination advancement
+        $settings = $bracket->settings ?? [];
+        $hasBye = $settings['has_bye'] ?? false;
+        $byeTeamId = $settings['bye_team'] ?? null;
+        
+        // Skip advancement for bye games (they're already marked as complete)
+        if ($completedGame->is_bye) {
+            return;
+        }
+        
         $nextRound = $completedGame->round + 1;
         
-        // Calculate which game in the next round this winner advances to
-        $nextGameNumber = ceil($completedGame->match_number / 2);
-
-        // Find the next game
-        $nextGame = $bracket->games()
-            ->where('round', $nextRound)
-            ->where('match_number', $nextGameNumber)
-            ->first();
-
-        if ($nextGame) {
-            // Check if this game already has a bye team waiting
-            if ($nextGame->team1_id && !$nextGame->team2_id) {
-                // Bye team is in team1, winner goes to team2
-                $nextGame->team2_id = $completedGame->winner_id;
-            } 
-            elseif (!$nextGame->team1_id && $nextGame->team2_id) {
-                // Bye team is in team2, winner goes to team1
-                $nextGame->team1_id = $completedGame->winner_id;
-            }
-            // Standard advancement (no bye team)
-            elseif ($completedGame->match_number % 2 === 1) {
-                $nextGame->team1_id = $completedGame->winner_id;
+        // Special handling for Round 1 games when there's a bye team
+        if ($completedGame->round === 1 && $hasBye && $byeTeamId) {
+            // For Round 1 with bye:
+            // - Bye team (from game 1) waits in Round 2, Game 1, position 1
+            // - Winner of actual Game 1 (match_number 2) goes to Round 2, Game 1, position 2
+            // - Other games advance normally to subsequent Round 2 games
+            
+            $actualGameNumber = $completedGame->match_number - 1; // Subtract 1 because bye game is #1
+            
+            if ($actualGameNumber === 1) {
+                // First actual game winner faces the bye team
+                $nextGame = $bracket->games()
+                    ->where('round', 2)
+                    ->where('match_number', 1)
+                    ->first();
+                    
+                if ($nextGame) {
+                    // Bye team should already be in position 1, winner goes to position 2
+                    if (!$nextGame->team1_id) {
+                        $nextGame->team1_id = $byeTeamId; // Place bye team
+                    }
+                    $nextGame->team2_id = $completedGame->winner_id; // Place game winner
+                    $nextGame->save();
+                }
             } else {
-                $nextGame->team2_id = $completedGame->winner_id;
+                // Other Round 1 games advance to their respective Round 2 games
+                $targetGameNumber = ceil(($actualGameNumber) / 2) + 1;
+                
+                $nextGame = $bracket->games()
+                    ->where('round', 2)
+                    ->where('match_number', $targetGameNumber)
+                    ->first();
+                    
+                if ($nextGame) {
+                    if ($actualGameNumber % 2 === 0) {
+                        $nextGame->team1_id = $completedGame->winner_id;
+                    } else {
+                        $nextGame->team2_id = $completedGame->winner_id;
+                    }
+                    $nextGame->save();
+                }
             }
-
-            $nextGame->save();
+        } else {
+            // Standard advancement for all other rounds
+            $nextGameNumber = ceil($completedGame->match_number / 2);
+            
+            $nextGame = $bracket->games()
+                ->where('round', $nextRound)
+                ->where('match_number', $nextGameNumber)
+                ->first();
+                
+            if ($nextGame) {
+                if ($completedGame->match_number % 2 === 1) {
+                    $nextGame->team1_id = $completedGame->winner_id;
+                } else {
+                    $nextGame->team2_id = $completedGame->winner_id;
+                }
+                $nextGame->save();
+            }
         }
     }
 
@@ -588,6 +655,9 @@ class BracketController extends Controller
         return back()->with('success', "Team '{$team->team_name}' has been removed from the tournament!");
     }
 
+    /**
+     * Save custom bracket configuration
+     */
     public function saveCustomBracket(Request $request, Bracket $bracket)
     {
         if ($bracket->type !== 'single-elimination') {
@@ -637,7 +707,8 @@ class BracketController extends Controller
             $teamCount = $bracket->tournament->teams->count();
             $totalRounds = ceil(log($teamCount, 2));
 
-            $this->generateSubsequentRounds($bracket, $totalRounds);
+            // Use the same method for subsequent rounds (no special bye logic for custom brackets)
+            $this->generateSubsequentRoundsStandard($bracket, $totalRounds);
 
             $bracket->update(['status' => 'active']);
 
@@ -645,6 +716,32 @@ class BracketController extends Controller
 
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to generate bracket: ' . $e->getMessage()], 500);
+        }
+    }
+    
+    /**
+     * Generate standard subsequent rounds without bye logic (for custom brackets)
+     */
+    private function generateSubsequentRoundsStandard($bracket, $totalRounds)
+    {
+        $previousRoundGames = $bracket->gamesByRound(1)->count();
+        
+        for ($round = 2; $round <= $totalRounds; $round++) {
+            $currentRoundGames = max(1, ceil($previousRoundGames / 2));
+            
+            for ($game = 1; $game <= $currentRoundGames; $game++) {
+                Game::create([
+                    'bracket_id' => $bracket->id,
+                    'round' => $round,
+                    'match_number' => $game,
+                    'team1_id' => null,
+                    'team2_id' => null,
+                    'status' => 'pending',
+                    'is_bye' => false,
+                ]);
+            }
+            
+            $previousRoundGames = $currentRoundGames;
         }
     }
 }

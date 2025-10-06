@@ -743,27 +743,151 @@
 
         /* Tournament Tabs */
         .tournament-tabs {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 350px);
-    gap: 1rem;
-    justify-content: center;
-    margin-bottom: 1.5rem; /* Reduced from 2rem */
-    padding-bottom: 0;
-}
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 1rem;
+            align-items: center;
+            justify-content: center; /* center the row within its container */
+            margin: 0 auto 1.5rem auto; /* center block and spacing below */
+            padding-bottom: 0;
+            overflow-x: auto; /* allow horizontal scroll */
+            -webkit-overflow-scrolling: touch;
+            width: calc(100% - 2rem);
+            max-width: 980px; /* limit width so tabs appear centered on large screens */
+            padding: 0.5rem 1rem;
+            scroll-snap-type: x mandatory; /* enable snap to center */
+        }
 
-.tournament-tab {
-    background: white;
-    border: 2px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1rem 1.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 350px;
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        /* Games container that wraps the tournament tabs and games carousels */
+        .games-container {
+            max-width: 1200px; /* match other sections */
+            margin: 2rem auto; /* same vertical spacing as other sections */
+            padding: 0 2rem; /* same horizontal padding as header/sections */
+            width: 100%;
+        }
+
+        /* Card-like styling for the games container */
+        .card-like {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem; /* match other section padding */
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .card-like .section-header {
+            padding-bottom: 0.75rem;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* Carousel for tournament tabs */
+        .tournament-tabs-carousel .carousel-inner {
+            padding: 0.5rem 0;
+        }
+
+        .tournament-tabs-carousel .carousel-item .tournament-tab {
+            flex: 0 0 30%;
+            max-width: 30%;
+            min-width: 220px;
+        }
+
+        /* Custom arrow buttons for tournament tabs */
+        .custom-arrow-btn {
+            background: transparent;
+            border: none;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-blue);
+            font-size: 30px;
+            font-weight: 800;
+            text-shadow: none;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 30;
+            cursor: pointer;
+        }
+
+        .custom-arrow-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(125,44,191,0.12);
+            border-radius: 50%;
+        }
+
+        .custom-arrow-btn .custom-arrow {
+            display: inline-block;
+            line-height: 1;
+        }
+
+        /* Position arrows outside the tab area on desktop to avoid overlap */
+        .carousel-control-prev.custom-arrow-btn { left: -60px; }
+        .carousel-control-next.custom-arrow-btn { right: -60px; }
+
+        /* Hover/focus effect */
+        .custom-arrow-btn:hover .custom-arrow,
+        .custom-arrow-btn:focus .custom-arrow {
+            color: var(--secondary-blue);
+            transform: scale(1.05);
+        }
+
+        /* Medium screens: bring arrows slightly closer but still outside */
+        @media (max-width: 992px) {
+            .carousel-control-prev.custom-arrow-btn { left: -40px; }
+            .carousel-control-next.custom-arrow-btn { right: -40px; }
+        }
+
+        /* Small screens: place arrows inside but offset from tabs and give white circular background */
+        @media (max-width: 576px) {
+            .carousel-control-prev.custom-arrow-btn { left: 8px; }
+            .carousel-control-next.custom-arrow-btn { right: 8px; }
+            .custom-arrow-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 22px;
+                background: white;
+                border-radius: 50%;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+                color: var(--primary-blue);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .tournament-tabs-carousel .carousel-item .tournament-tab {
+                flex: 0 0 45%;
+                max-width: 45%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .tournament-tabs-carousel .carousel-item .tournament-tab {
+                flex: 0 0 90%;
+                max-width: 90%;
+                margin: 0 auto;
+            }
+        }
+
+        .tournament-tab {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 260px; /* slightly smaller for better fit */
+            max-width: 340px;
+            width: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center; /* center content inside each tab */
+            align-items: center;
+            text-align: center;
+            flex: 0 0 auto; /* prevent shrinking/growing */
+            scroll-snap-align: center; /* snap this tab to center */
+        }
 
         .tournament-tab:hover {
             border-color: var(--secondary-blue);
@@ -780,7 +904,7 @@
         .tab-info {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center; /* center tab text */
         }
 
         .tab-name {
@@ -844,12 +968,18 @@
         /* Mobile responsive for tournament tabs */
         @media (max-width: 768px) {
             .tournament-tabs {
-                flex-direction: column;
+                /* keep horizontal scrolling on mobile for quick swipe between tournaments */
+                flex-direction: row;
+                gap: 0.75rem;
+                padding: 0.5rem 0.25rem;
+                width: 100%;
+                max-width: 100%;
             }
 
             .tournament-tab {
-                min-width: auto;
-                width: 100%;
+                min-width: 220px;
+                max-width: 300px;
+                width: auto;
             }
         }
     </style>
@@ -972,36 +1102,56 @@
     <!-- Live Games -->
     <section class="live-games" id="games">
         <!-- Tournament Tabs always at the top of games section -->
-        <div class="section-header">
-            <h2 class="section-title" style="width: 100%; text-align: center;">
-                @if (
-                    $tournamentGames->sum(function ($t) {
-                        return $t->games->where('status', 'in-progress')->count();
-                    }) > 0)
-                    <span class="live-indicator">LIVE</span>
-                @endif
-                Tournament Games
-            </h2>
-        </div>
+        @php
+            $liveCount = $tournamentGames->sum(function ($t) {
+                return $t->games->where('status', 'in-progress')->count();
+            });
+        @endphp
 
-        @if ($tournamentGames->count() > 0)
-            <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 2rem;">
-                <div class="tournament-tabs">
-                    @foreach ($tournamentGames as $index => $tournament)
-                        <button class="tournament-tab {{ $index === 0 ? 'active' : '' }}"
-                            onclick="switchTournament('{{ $tournament->id }}', this)"
-                            data-tournament-id="{{ $tournament->id }}">
-                            <div class="tab-info">
-                                <span class="tab-name">{{ $tournament->name }}</span>
-                                <span class="tab-meta">{{ $tournament->sport }} • {{ $tournament->games->count() }}
-                                    Games</span>
+        <div class="games-container card-like">
+            <div class="section-header">
+                <h2 class="section-title" style="width: 100%; text-align: left;">
+                    @if ($liveCount > 0)
+                        <span class="live-indicator">LIVE</span>
+                    @endif
+                    Tournament Games
+                </h2>
+            </div>
+
+            @if ($tournamentGames->count() > 0)
+                <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 2rem;">
+                    <div id="tournamentTabsCarousel" class="carousel slide tournament-tabs-carousel" data-bs-interval="false">
+                            <div class="carousel-inner">
+                                @foreach ($tournamentGames->chunk(3) as $chunkIndex => $tournamentsChunk)
+                                    <div class="carousel-item {{ $chunkIndex === 0 ? 'active' : '' }}">
+                                        <div class="d-flex justify-content-center gap-3">
+                                            @foreach ($tournamentsChunk as $index => $tournament)
+                                                <button class="tournament-tab {{ $chunkIndex === 0 && $index === 0 ? 'active' : '' }}"
+                                                    onclick="switchTournament('{{ $tournament->id }}', this)"
+                                                    data-tournament-id="{{ $tournament->id }}">
+                                                    <div class="tab-info">
+                                                        <span class="tab-name">{{ $tournament->name }}</span>
+                                                        <span class="tab-meta">{{ $tournament->sport }} • {{ $tournament->games->count() }} Games</span>
+                                                    </div>
+                                                    @if ($tournament->games->where('status', 'in-progress')->count() > 0)
+                                                        <span class="live-dot"></span>
+                                                    @endif
+                                                </button>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
-                            @if ($tournament->games->where('status', 'in-progress')->count() > 0)
-                                <span class="live-dot"></span>
-                            @endif
-                        </button>
-                    @endforeach
-                </div>
+
+                            <button class="carousel-control-prev custom-arrow-btn" type="button" data-bs-target="#tournamentTabsCarousel" data-bs-slide="prev" aria-label="Previous tournaments">
+                                <span class="custom-arrow">&lt;</span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next custom-arrow-btn" type="button" data-bs-target="#tournamentTabsCarousel" data-bs-slide="next" aria-label="Next tournaments">
+                                <span class="custom-arrow">&gt;</span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
             </div>
             <hr style="margin-bottom:2rem;">
             <!-- Tournament Games Content -->
@@ -1009,63 +1159,71 @@
                 <div class="tournament-games-content {{ $index === 0 ? 'active' : '' }}"
                     data-tournament-id="{{ $tournament->id }}">
                     @if ($tournament->games->count() > 0)
-                        <div class="games-grid" id="tournamentGamesContainer-{{ $tournament->id }}">
-                            @foreach ($tournament->games->take(3) as $game)
-                                <div class="game-card" data-game-id="{{ $game->id }}">
-                                    <div class="game-info">
-                                        <span class="sport-tag">{{ $tournament->sport }}</span>
-                                        <span class="game-status">
-                                            @if ($game->status === 'completed')
-                                                Final
-                                            @elseif($game->status === 'in-progress')
-                                                <span class="live-indicator">LIVE</span>
-                                                @if ($tournament->sport === 'Basketball')
-                                                    Q{{ $game->current_quarter ?? 1 }} -
-                                                    {{ $game->time_remaining ?? '12:00' }}
-                                                @else
-                                                    Set {{ $game->current_set ?? 1 }}
-                                                @endif
-                                            @elseif($game->scheduled_at)
-                                                {{ \Carbon\Carbon::parse($game->scheduled_at)->format('M j, g:i A') }}
-                                            @else
-                                                Round {{ $game->round }}
-                                            @endif
-                                        </span>
-                                    </div>
-                                    <div class="teams-matchup">
-                                        <div class="team">
-                                            <div class="team-name">{{ $game->team1->team_name ?? 'TBD' }}</div>
-                                            <div class="team-score">{{ $game->team1_score ?? '--' }}</div>
+                        <div id="tournamentGamesCarousel-{{ $tournament->id }}" class="carousel slide games-carousel" data-bs-interval="false">
+                            <div class="carousel-inner">
+                                @foreach ($tournament->games->chunk(3) as $chunkIndex => $gamesChunk)
+                                    <div class="carousel-item {{ $chunkIndex === 0 ? 'active' : '' }}">
+                                        <div class="d-flex justify-content-center gap-3 align-items-stretch">
+                                            @foreach ($gamesChunk as $game)
+                                                <div class="game-card" data-game-id="{{ $game->id }}">
+                                                    <div class="game-info">
+                                                        <span class="sport-tag">{{ $tournament->sport }}</span>
+                                                        <span class="game-status">
+                                                            @if ($game->status === 'completed')
+                                                                Final
+                                                            @elseif($game->status === 'in-progress')
+                                                                <span class="live-indicator">LIVE</span>
+                                                                @if ($tournament->sport === 'Basketball')
+                                                                    Q{{ $game->current_quarter ?? 1 }} -
+                                                                    {{ $game->time_remaining ?? '12:00' }}
+                                                                @else
+                                                                    Set {{ $game->current_set ?? 1 }}
+                                                                @endif
+                                                            @elseif($game->scheduled_at)
+                                                                {{ \Carbon\Carbon::parse($game->scheduled_at)->format('M j, g:i A') }}
+                                                            @else
+                                                                Round {{ $game->round }}
+                                                            @endif
+                                                        </span>
+                                                    </div>
+                                                    <div class="teams-matchup">
+                                                        <div class="team">
+                                                            <div class="team-name">{{ $game->team1->team_name ?? 'TBD' }}</div>
+                                                            <div class="team-score">{{ $game->team1_score ?? '--' }}</div>
+                                                        </div>
+                                                        <div class="vs-divider">VS</div>
+                                                        <div class="team">
+                                                            <div class="team-name">{{ $game->team2->team_name ?? 'TBD' }}</div>
+                                                            <div class="team-score">{{ $game->team2_score ?? '--' }}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="game-details">
+                                                        <span>Round {{ $game->round }} • Match
+                                                            {{ $game->match_number ?? 'TBD' }}</span>
+                                                        @if ($game->completed_at)
+                                                            <span>{{ \Carbon\Carbon::parse($game->completed_at)->format('M j, g:i A') }}</span>
+                                                        @elseif($game->scheduled_at)
+                                                            <span>{{ \Carbon\Carbon::parse($game->scheduled_at)->format('M j, g:i A') }}</span>
+                                                        @else
+                                                            <span>Time: TBD</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         </div>
-                                        <div class="vs-divider">VS</div>
-                                        <div class="team">
-                                            <div class="team-name">{{ $game->team2->team_name ?? 'TBD' }}</div>
-                                            <div class="team-score">{{ $game->team2_score ?? '--' }}</div>
-                                        </div>
                                     </div>
-                                    <div class="game-details">
-                                        <span>Round {{ $game->round }} • Match
-                                            {{ $game->match_number ?? 'TBD' }}</span>
-                                        @if ($game->completed_at)
-                                            <span>{{ \Carbon\Carbon::parse($game->completed_at)->format('M j, g:i A') }}</span>
-                                        @elseif($game->scheduled_at)
-                                            <span>{{ \Carbon\Carbon::parse($game->scheduled_at)->format('M j, g:i A') }}</span>
-                                        @else
-                                            <span>Time: TBD</span>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                        @if ($tournament->games->count() > 3)
-                            <div class="show-more-container">
-                                <a href="{{ route('games.index') }}?tournament={{ $tournament->id }}"
-                                    class="show-more-btn">
-                                    View {{ $tournament->games->count() - 3 }} More Games
-                                    <i class="bi bi-arrow-right"></i>
-                                </a>
+                                @endforeach
                             </div>
-                        @endif
+
+                            <button class="carousel-control-prev" type="button" data-bs-target="#tournamentGamesCarousel-{{ $tournament->id }}" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#tournamentGamesCarousel-{{ $tournament->id }}" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
                     @else
                         <div class="empty-state">
                             <div class="empty-icon">
@@ -1077,15 +1235,17 @@
                     @endif
                 </div>
             @endforeach
-        @else
-            <div class="empty-state">
-                <div class="empty-icon">
-                    <i class="bi bi-calendar-x"></i>
                 </div>
-                <p><strong>No tournaments with games</strong></p>
-                <p>Check back later for upcoming matches.</p>
-            </div>
-        @endif
+            @else
+                <div class="empty-state" style="padding:2rem;">
+                    <div class="empty-icon">
+                        <i class="bi bi-calendar-x"></i>
+                    </div>
+                    <p><strong>No tournaments with games</strong></p>
+                    <p>Check back later for upcoming matches.</p>
+                </div>
+            @endif
+        </div> {{-- end .games-container --}}
     </section>
 
     <!-- Active Tournaments -->

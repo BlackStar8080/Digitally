@@ -224,7 +224,7 @@
             align-items: center;
             justify-content: center;
             font-size: 3rem;
-            color: #fff;
+            color: #ffffff;
             font-weight: 700;
             box-shadow: 0 2px 8px rgba(157, 78, 221, 0.10);
         }
@@ -488,6 +488,8 @@
             width: 24px;
             border-radius: 4px;
         }
+
+  
     </style>
 @endpush
 
@@ -585,29 +587,28 @@
                                             <div class="mvp-name">{{ $mvpPlayer->name }}</div>
                                             <div class="mvp-team">{{ $mvpPlayer->team->team_name ?? 'N/A' }}</div>
                                             <div class="mvp-game-info">
-                                                Game vs
-                                                {{ $mvpStat->game->team1_id === $mvpPlayer->team_id
-                                                    ? $mvpStat->game->team2->team_name
-                                                    : $mvpStat->game->team1->team_name }}
+                                                {{ $mvpStat->game->team1->team_name ?? 'TBD' }} vs
+                                                {{ $mvpStat->game->team2->team_name ?? 'TBD' }}
                                             </div>
+
                                             <div class="mvp-stats">
-    <div class="mvp-stat">
-        <div class="stat-value">{{ $mvpStat->points }}</div>
-        <div class="stat-label">Points</div>
-    </div>
-    <div class="mvp-stat">
-        <div class="stat-value">{{ $mvpStat->rebounds }}</div>
-        <div class="stat-label">Rebounds</div>
-    </div>
-    <div class="mvp-stat">
-        <div class="stat-value">{{ $mvpStat->assists }}</div>
-        <div class="stat-label">Assists</div>
-    </div>
-    <div class="mvp-stat">
-        <div class="stat-value">{{ $mvpStat->steals }}</div>
-        <div class="stat-label">Steals</div>
-    </div>
-</div>
+                                                <div class="mvp-stat">
+                                                    <div class="stat-value">{{ $mvpStat->points }}</div>
+                                                    <div class="stat-label">Points</div>
+                                                </div>
+                                                <div class="mvp-stat">
+                                                    <div class="stat-value">{{ $mvpStat->rebounds }}</div>
+                                                    <div class="stat-label">Rebounds</div>
+                                                </div>
+                                                <div class="mvp-stat">
+                                                    <div class="stat-value">{{ $mvpStat->assists }}</div>
+                                                    <div class="stat-label">Assists</div>
+                                                </div>
+                                                <div class="mvp-stat">
+                                                    <div class="stat-value">{{ $mvpStat->steals }}</div>
+                                                    <div class="stat-label">Steals</div>
+                                                </div>
+                                            </div>
                                         </div>
                                     @endforeach
                                 </div>

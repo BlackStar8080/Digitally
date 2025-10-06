@@ -120,13 +120,13 @@
         .tournament-page .modal-content {
             border: none;
             border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 20px 60px rgba(253, 253, 253, 0.25);
             overflow: hidden;
         }
 
         .tournament-page .modal-header {
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
-            color: white;
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: rgb(255, 255, 255);
             border: none;
             padding: 1.5rem 2rem;
             position: relative;
@@ -710,7 +710,7 @@
         }
 
         .search-container .input-group-text {
-            background: var(--primary-blue);
+            background: #9d4edd;
             color: white;
             border: none;
             padding: 1rem;
@@ -1092,7 +1092,7 @@
         }
 
         .game-header {
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            background: linear-gradient(135deg, #4E56C0, #696FC7);
             color: white;
             padding: 1rem;
             text-align: center;
@@ -1738,7 +1738,7 @@
         }
 
         .final-results-banner {
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            background: linear-gradient(135deg, #4E56C0, #696FC7);
             color: white;
             padding: 2rem;
             border-radius: 12px;
@@ -2524,68 +2524,83 @@
                                                 <div class="bracket-games"
                                                     style="display:flex; flex-direction:column; gap:18px; align-items:flex-start; position:relative;">
                                                     @foreach ($bracket->gamesByRound($round) as $game)
-    @if($game->is_bye || $game->team2_id === null)
-        {{-- BYE GAME --}}
-        <div class="bracket-game bye"
-            style="background:linear-gradient(135deg, #e3f2fd, #bbdefb); border-radius:10px; border:2px dashed #2196F3; min-width:160px; min-height:70px; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:8px;">
-            <div class="game-title" style="font-weight:600; margin-bottom:6px; font-size:0.75rem; color:#1976D2;">
-                Game {{ $game->match_number }}
-            </div>
-            <div class="text-center">
-                <div class="bye-badge" style="background:#2196F3; color:white; padding:0.25rem 0.5rem; border-radius:12px; font-size:0.65rem; font-weight:600; display:inline-block; margin-bottom:4px;">
-                    <i class="bi bi-fast-forward"></i> BYE
-                </div>
-                <div style="font-weight:600; font-size:0.8rem; color:#1976D2;">
-                    {{ $game->team1 ? $game->team1->team_name : 'Winner TBD' }}
-                </div>
-                <small class="text-muted" style="font-size:0.65rem;">Auto-Advance</small>
-            </div>
-            <div class="bracket-connector"
-                style="position:absolute; right:-40px; top:50%; width:40px; height:2px; background:#2196F3; z-index:1; display:@if ($round < $bracket->getTotalRounds()) block @else none @endif;">
-            </div>
-        </div>
-    @else
-        {{-- REGULAR GAME --}}
-        <div class="bracket-game {{ $game->status === 'in_progress' ? 'in-progress' : ($game->isCompleted() ? 'completed' : 'upcoming') }}"
-            style="background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(44,124,249,0.07); border:2px solid #dee2e6; min-width:160px; min-height:70px; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-            <div class="game-title" style="font-weight:600; margin-bottom:6px;">Game {{ $game->match_number }}</div>
+                                                        @if ($game->is_bye || $game->team2_id === null)
+                                                            {{-- BYE GAME --}}
+                                                            <div class="bracket-game bye"
+                                                                style="background:linear-gradient(135deg, #e3f2fd, #bbdefb); border-radius:10px; border:2px dashed #2196F3; min-width:160px; min-height:70px; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:8px;">
+                                                                <div class="game-title"
+                                                                    style="font-weight:600; margin-bottom:6px; font-size:0.75rem; color:#1976D2;">
+                                                                    Game {{ $game->match_number }}
+                                                                </div>
+                                                                <div class="text-center">
+                                                                    <div class="bye-badge"
+                                                                        style="background:#2196F3; color:white; padding:0.25rem 0.5rem; border-radius:12px; font-size:0.65rem; font-weight:600; display:inline-block; margin-bottom:4px;">
+                                                                        <i class="bi bi-fast-forward"></i> BYE
+                                                                    </div>
+                                                                    <div
+                                                                        style="font-weight:600; font-size:0.8rem; color:#1976D2;">
+                                                                        {{ $game->team1 ? $game->team1->team_name : 'Winner TBD' }}
+                                                                    </div>
+                                                                    <small class="text-muted"
+                                                                        style="font-size:0.65rem;">Auto-Advance</small>
+                                                                </div>
+                                                                <div class="bracket-connector"
+                                                                    style="position:absolute; right:-40px; top:50%; width:40px; height:2px; background:#2196F3; z-index:1; display:@if ($round < $bracket->getTotalRounds()) block @else none @endif;">
+                                                                </div>
+                                                            </div>
+                                                        @else
+                                                            {{-- REGULAR GAME --}}
+                                                            <div class="bracket-game {{ $game->status === 'in_progress' ? 'in-progress' : ($game->isCompleted() ? 'completed' : 'upcoming') }}"
+                                                                style="background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(44,124,249,0.07); border:2px solid #dee2e6; min-width:160px; min-height:70px; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                                                                <div class="game-title"
+                                                                    style="font-weight:600; margin-bottom:6px;">Game
+                                                                    {{ $game->match_number }}</div>
 
-            @if ($game->isReady())
-                <div class="team-slot {{ $game->winner_id === $game->team1_id ? 'winner' : '' }}"
-                    style="display:flex; justify-content:space-between; align-items:center; width:100%; padding:2px 10px;">
-                    <span class="team-name" style="font-weight:500;">{{ $game->team1->team_name }}</span>
-                    <span class="team-score" style="font-weight:700; color:#4285f4;">{{ $game->team1_score ?? '-' }}</span>
-                </div>
-                <div class="team-slot {{ $game->winner_id === $game->team2_id ? 'winner' : '' }}"
-                    style="display:flex; justify-content:space-between; align-items:center; width:100%; padding:2px 10px;">
-                    <span class="team-name" style="font-weight:500;">{{ $game->team2->team_name }}</span>
-                    <span class="team-score" style="font-weight:700; color:#4285f4;">{{ $game->team2_score ?? '-' }}</span>
-                </div>
+                                                                @if ($game->isReady())
+                                                                    <div class="team-slot {{ $game->winner_id === $game->team1_id ? 'winner' : '' }}"
+                                                                        style="display:flex; justify-content:space-between; align-items:center; width:100%; padding:2px 10px;">
+                                                                        <span class="team-name"
+                                                                            style="font-weight:500;">{{ $game->team1->team_name }}</span>
+                                                                        <span class="team-score"
+                                                                            style="font-weight:700; color:#4285f4;">{{ $game->team1_score ?? '-' }}</span>
+                                                                    </div>
+                                                                    <div class="team-slot {{ $game->winner_id === $game->team2_id ? 'winner' : '' }}"
+                                                                        style="display:flex; justify-content:space-between; align-items:center; width:100%; padding:2px 10px;">
+                                                                        <span class="team-name"
+                                                                            style="font-weight:500;">{{ $game->team2->team_name }}</span>
+                                                                        <span class="team-score"
+                                                                            style="font-weight:700; color:#4285f4;">{{ $game->team2_score ?? '-' }}</span>
+                                                                    </div>
 
-                @if (!$game->isCompleted() && $game->status !== 'in_progress')
-                    <form action="{{ route('games.update', $game) }}" method="POST" class="score-form">
-                        @csrf
-                        @method('PATCH')
-                        <!-- form content -->
-                    </form>
-                @endif
-            @else
-                <div class="team-slot" style="display:flex; justify-content:space-between; align-items:center; width:100%; padding:2px 10px;">
-                    <span class="team-name text-muted">{{ $game->team1 ? $game->team1->team_name : 'TBD' }}</span>
-                    <span class="team-score">-</span>
-                </div>
-                <div class="team-slot" style="display:flex; justify-content:space-between; align-items:center; width:100%; padding:2px 10px;">
-                    <span class="team-name text-muted">{{ $game->team2 ? $game->team2->team_name : 'TBD' }}</span>
-                    <span class="team-score">-</span>
-                </div>
-            @endif
+                                                                    @if (!$game->isCompleted() && $game->status !== 'in_progress')
+                                                                        <form action="{{ route('games.update', $game) }}"
+                                                                            method="POST" class="score-form">
+                                                                            @csrf
+                                                                            @method('PATCH')
+                                                                            <!-- form content -->
+                                                                        </form>
+                                                                    @endif
+                                                                @else
+                                                                    <div class="team-slot"
+                                                                        style="display:flex; justify-content:space-between; align-items:center; width:100%; padding:2px 10px;">
+                                                                        <span
+                                                                            class="team-name text-muted">{{ $game->team1 ? $game->team1->team_name : 'TBD' }}</span>
+                                                                        <span class="team-score">-</span>
+                                                                    </div>
+                                                                    <div class="team-slot"
+                                                                        style="display:flex; justify-content:space-between; align-items:center; width:100%; padding:2px 10px;">
+                                                                        <span
+                                                                            class="team-name text-muted">{{ $game->team2 ? $game->team2->team_name : 'TBD' }}</span>
+                                                                        <span class="team-score">-</span>
+                                                                    </div>
+                                                                @endif
 
-            <div class="bracket-connector"
-                style="position:absolute; right:-40px; top:50%; width:40px; height:2px; background:#dee2e6; z-index:1; display:@if ($round < $bracket->getTotalRounds()) block @else none @endif;">
-            </div>
-        </div>
-    @endif
-@endforeach
+                                                                <div class="bracket-connector"
+                                                                    style="position:absolute; right:-40px; top:50%; width:40px; height:2px; background:#dee2e6; z-index:1; display:@if ($round < $bracket->getTotalRounds()) block @else none @endif;">
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
                                                 </div>
                                             </div>
                                         @endfor
@@ -2634,54 +2649,63 @@
                                     <div class="games-grid" id="gamesGrid">
                                         @foreach ($bracket->games->sortBy(['round', 'match_number']) as $game)
                                             @if ($game->is_bye || $game->team2_id === null)
-    {{-- BYE GAME CARD --}}
-    <div class="game-card bye" data-status="completed" data-round="{{ $game->round }}">
-        <div class="game-header" style="background: linear-gradient(135deg, #2196F3, #1976D2);">
-            <div class="game-league">{{ $tournament->name }}</div>
-            <div class="game-date">
-                {{ $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('M j, Y') : 'Date TBD' }}
-            </div>
-            <h6 class="game-round">
-                @if ($game->round == $bracket->getTotalRounds())
-                    🏆 Finals
-                @elseif($game->round == $bracket->getTotalRounds() - 1)
-                    🥇 Semifinals
-                @elseif($game->round == $bracket->getTotalRounds() - 2)
-                    🏅 Quarterfinals
-                @else
-                    Round {{ $game->round }}
-                @endif
-                - Game {{ $game->match_number }}
-            </h6>
-            <div class="game-status-badge">
-                <i class="bi bi-fast-forward"></i> BYE
-            </div>
-        </div>
+                                                {{-- BYE GAME CARD --}}
+                                                <div class="game-card bye" data-status="completed"
+                                                    data-round="{{ $game->round }}">
+                                                    <div class="game-header"
+                                                        style="background: linear-gradient(135deg, #2196F3, #1976D2);">
+                                                        <div class="game-league">{{ $tournament->name }}</div>
+                                                        <div class="game-date">
+                                                            {{ $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('M j, Y') : 'Date TBD' }}
+                                                        </div>
+                                                        <h6 class="game-round">
+                                                            @if ($game->round == $bracket->getTotalRounds())
+                                                                🏆 Finals
+                                                            @elseif($game->round == $bracket->getTotalRounds() - 1)
+                                                                🥇 Semifinals
+                                                            @elseif($game->round == $bracket->getTotalRounds() - 2)
+                                                                🏅 Quarterfinals
+                                                            @else
+                                                                Round {{ $game->round }}
+                                                            @endif
+                                                            - Game {{ $game->match_number }}
+                                                        </h6>
+                                                        <div class="game-status-badge">
+                                                            <i class="bi bi-fast-forward"></i> BYE
+                                                        </div>
+                                                    </div>
 
-        <div class="teams-container">
-            @if($game->team1)
-                <div class="text-center py-4">
-                    <div class="bye-badge mb-3" style="background:#2196F3; color:white; padding:0.5rem 1rem; border-radius:20px; display:inline-block; font-weight:600;">
-                        <i class="bi bi-fast-forward"></i> BYE GAME
-                    </div>
-                    <div class="team-info" style="display:flex; flex-direction:column; align-items:center;">
-                        <div class="team-logo" style="width:48px; height:48px; background:#e3f2fd; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1.1rem; color:#1976D2; margin-bottom:0.5rem;">
-                            {{ strtoupper(substr($game->team1->team_name, 0, 2)) }}
-                        </div>
-                        <h5 class="mb-1"><strong>{{ $game->team1->team_name }}</strong></h5>
-                        <p class="text-muted mb-0">Advances Automatically to Round {{ $game->round + 1 }}</p>
-                    </div>
-                </div>
-            @else
-                <div class="text-center py-4">
-                    <div class="bye-badge mb-3" style="background:#2196F3; color:white; padding:0.5rem 1rem; border-radius:20px; display:inline-block; font-weight:600;">
-                        <i class="bi bi-fast-forward"></i> BYE PLACEHOLDER
-                    </div>
-                    <p class="text-muted">Waiting for previous round winner</p>
-                </div>
-            @endif
-        </div>
-    </div>
+                                                    <div class="teams-container">
+                                                        @if ($game->team1)
+                                                            <div class="text-center py-4">
+                                                                <div class="bye-badge mb-3"
+                                                                    style="background:#2196F3; color:white; padding:0.5rem 1rem; border-radius:20px; display:inline-block; font-weight:600;">
+                                                                    <i class="bi bi-fast-forward"></i> BYE GAME
+                                                                </div>
+                                                                <div class="team-info"
+                                                                    style="display:flex; flex-direction:column; align-items:center;">
+                                                                    <div class="team-logo"
+                                                                        style="width:48px; height:48px; background:#e3f2fd; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1.1rem; color:#1976D2; margin-bottom:0.5rem;">
+                                                                        {{ strtoupper(substr($game->team1->team_name, 0, 2)) }}
+                                                                    </div>
+                                                                    <h5 class="mb-1">
+                                                                        <strong>{{ $game->team1->team_name }}</strong>
+                                                                    </h5>
+                                                                    <p class="text-muted mb-0">Advances Automatically to
+                                                                        Round {{ $game->round + 1 }}</p>
+                                                                </div>
+                                                            </div>
+                                                        @else
+                                                            <div class="text-center py-4">
+                                                                <div class="bye-badge mb-3"
+                                                                    style="background:#2196F3; color:white; padding:0.5rem 1rem; border-radius:20px; display:inline-block; font-weight:600;">
+                                                                    <i class="bi bi-fast-forward"></i> BYE PLACEHOLDER
+                                                                </div>
+                                                                <p class="text-muted">Waiting for previous round winner</p>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
                                             @else
                                                 {{-- REGULAR GAME CARD --}}
                                                 <div class="game-card {{ $game->status }}"
