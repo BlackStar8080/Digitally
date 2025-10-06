@@ -710,7 +710,7 @@
         }
 
         .search-container .input-group-text {
-            background: #9d4edd;
+            background: var(--primary-blue);
             color: white;
             border: none;
             padding: 1rem;
@@ -2524,7 +2524,7 @@
                                                 <div class="bracket-games"
                                                     style="display:flex; flex-direction:column; gap:18px; align-items:flex-start; position:relative;">
                                                     @foreach ($bracket->gamesByRound($round) as $game)
-                                                        @if ($game->is_bye || $game->team2_id === null)
+                                                        @if ($game->is_bye)
                                                             {{-- BYE GAME --}}
                                                             <div class="bracket-game bye"
                                                                 style="background:linear-gradient(135deg, #e3f2fd, #bbdefb); border-radius:10px; border:2px dashed #2196F3; min-width:160px; min-height:70px; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:8px;">
