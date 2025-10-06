@@ -965,7 +965,7 @@
     <section class="hero-section">
         <div class="hero-header">
             <h1 class="hero-title">DigiTally</h1>
-            <p class="hero-subtitle">Digital Score And Stats For Local Leagues</p>
+            <p class="hero-subtitle">Digital Score And Stats For Local Leagues yeah</p>
         </div>
     </section>
 
