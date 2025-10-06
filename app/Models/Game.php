@@ -267,4 +267,10 @@ public function getByeTeam()
     }
     return null;
 }
+
+public function tallysheet()
+{
+    return $this->hasOne(Tallysheet::class);
+}
+
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Game;
 use App\Models\Team;
+use App\Models\Tallysheet;
 use App\Models\PlayerGameStat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -66,20 +67,31 @@ class GameController extends Controller
     $liveData = null;
     if ($request->has('live_data')) {
         $liveData = json_decode(urldecode($request->get('live_data')), true);
+    } else {
+        // ✅ Load saved tallysheet if game is completed
+        if ($game->status === 'completed' && $game->tallysheet) {
+            $tallysheet = $game->tallysheet;
+            $liveData = [
+                'team1_score' => $tallysheet->team1_score,
+                'team2_score' => $tallysheet->team2_score,
+                'team1_fouls' => $tallysheet->team1_fouls,
+                'team2_fouls' => $tallysheet->team2_fouls,
+                'team1_timeouts' => $tallysheet->team1_timeouts,
+                'team2_timeouts' => $tallysheet->team2_timeouts,
+                'period_scores' => $tallysheet->period_scores,
+                'events' => $tallysheet->game_events,
+            ];
+        }
     }
 
-    // Get stored player data
     $team1Data = json_decode($game->team1_selected_players, true) ?? [];
     $team2Data = json_decode($game->team2_selected_players, true) ?? [];
 
-    // Load the actual player data
     $game->load(['team1.players', 'team2.players', 'bracket.tournament']);
     
-    // Extract roster IDs
     $team1RosterIds = $team1Data['roster'] ?? [];
     $team2RosterIds = $team2Data['roster'] ?? [];
 
-    // Filter players based on roster selection
     $team1Players = $game->team1->players->filter(function($player) use ($team1RosterIds) {
         return in_array($player->id, $team1RosterIds);
     });
@@ -258,6 +270,103 @@ class GameController extends Controller
         ));
     }
 
+    /**
+ * Save tallysheet data when completing a game
+ */
+private function saveTallysheet(Game $game, array $gameData)
+{
+    try {
+        // Process running scores from game events
+        $runningScores = $this->processRunningScores($gameData['game_events'] ?? []);
+        
+        // Process player fouls from game events
+        $playerFouls = $this->processPlayerFouls($gameData['game_events'] ?? []);
+        
+        // Create or update tallysheet
+        Tallysheet::updateOrCreate(
+            ['game_id' => $game->id],
+            [
+                'team1_score' => $gameData['team1_score'],
+                'team2_score' => $gameData['team2_score'],
+                'team1_fouls' => $gameData['team1_fouls'] ?? 0,
+                'team2_fouls' => $gameData['team2_fouls'] ?? 0,
+                'team1_timeouts' => $gameData['team1_timeouts'] ?? 0,
+                'team2_timeouts' => $gameData['team2_timeouts'] ?? 0,
+                'period_scores' => $gameData['period_scores'] ?? null,
+                'running_scores' => $runningScores,
+                'game_events' => $gameData['game_events'] ?? [],
+                'player_fouls' => $playerFouls,
+            ]
+        );
+
+        \Log::info("Tallysheet saved for game {$game->id}");
+        
+    } catch (\Exception $e) {
+        \Log::error("Failed to save tallysheet for game {$game->id}", [
+            'error' => $e->getMessage()
+        ]);
+        throw $e;
+    }
+}
+
+/**
+ * Process running scores from game events
+ */
+private function processRunningScores(array $events)
+{
+    $runningScores = [];
+    $scoreA = 0;
+    $scoreB = 0;
+    
+    // Process events in reverse order (they're stored newest first)
+    $sortedEvents = array_reverse($events);
+    
+    foreach ($sortedEvents as $event) {
+        if (isset($event['points']) && $event['points'] > 0) {
+            if ($event['team'] === 'A') {
+                $scoreA += $event['points'];
+                if ($scoreA <= 160) { // Max score on tallysheet
+                    $runningScores[] = [
+                        'team' => 'A',
+                        'score' => $scoreA,
+                        'sequence' => count($runningScores) + 1
+                    ];
+                }
+            } else {
+                $scoreB += $event['points'];
+                if ($scoreB <= 160) { // Max score on tallysheet
+                    $runningScores[] = [
+                        'team' => 'B',
+                        'score' => $scoreB,
+                        'sequence' => count($runningScores) + 1
+                    ];
+                }
+            }
+        }
+    }
+    
+    return $runningScores;
+}
+
+/**
+ * Process player fouls from game events
+ */
+private function processPlayerFouls(array $events)
+{
+    $playerFouls = [];
+    
+    foreach ($events as $event) {
+        if (isset($event['action']) && str_contains($event['action'], 'Foul')) {
+            if (isset($event['player']) && $event['player'] !== 'TEAM' && $event['player'] !== 'SYSTEM') {
+                $playerKey = $event['team'] . '_' . $event['player'];
+                $playerFouls[$playerKey] = ($playerFouls[$playerKey] ?? 0) + 1;
+            }
+        }
+    }
+    
+    return $playerFouls;
+}
+
     private function processLiveGameData($liveData)
     {
         $stats = [
@@ -346,13 +455,11 @@ class GameController extends Controller
     /**
      * Complete a game and save final results from live scoresheet
      */
-    public function completeGame(Request $request, Game $game)
+   public function completeGame(Request $request, Game $game)
 {
-    // Load relationships needed for redirect
     $game->load(['bracket.tournament', 'team1.players', 'team2.players']);
    
     try {
-        // Validate the incoming data
         $validated = $request->validate([
             'team1_score' => 'required|integer|min:0',
             'team2_score' => 'required|integer|min:0',
@@ -366,12 +473,12 @@ class GameController extends Controller
             'winner_id' => 'nullable|integer|in:1,2',
             'status' => 'string|in:completed',
             'completed_at' => 'string',
-            'player_stats' => 'array', // NEW: Accept player stats
+            'player_stats' => 'array',
         ]);
 
         DB::beginTransaction();
 
-        // Determine winner based on scores
+        // Determine winner
         $winnerId = null;
         if ($validated['team1_score'] > $validated['team2_score']) {
             $winnerId = $game->team1_id;
@@ -379,7 +486,7 @@ class GameController extends Controller
             $winnerId = $game->team2_id;
         }
 
-        // Update the game with final results
+        // Update game
         $game->update([
             'team1_score' => $validated['team1_score'],
             'team2_score' => $validated['team2_score'],
@@ -398,17 +505,19 @@ class GameController extends Controller
             ]
         ]);
 
-        // NEW: Save player statistics
+        // Save player statistics
         if (isset($validated['player_stats']) && is_array($validated['player_stats'])) {
             $this->savePlayerStats($game, $validated['player_stats']);
         }
 
-        // If this is a tournament game, advance the bracket
+        // ✅ NEW: Save tallysheet
+        $this->saveTallysheet($game, $validated);
+
+        // Advance bracket if needed
         if ($game->bracket_id && $winnerId) {
             $this->advanceBracket($game, $winnerId);
         }
 
-        // Update bracket status if all games in this round are complete
         if ($game->bracket_id) {
             $this->updateBracketStatus($game->bracket_id);
         }
@@ -417,10 +526,10 @@ class GameController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Game completed successfully',
+            'message' => 'Game completed and tallysheet saved successfully',
             'game_id' => $game->id,
             'winner_id' => $winnerId,
-            'redirect_url' => route('games.box-score', $game->id) // Changed to redirect to box score
+            'redirect_url' => route('games.box-score', $game->id)
         ]);
 
     } catch (\Exception $e) {
