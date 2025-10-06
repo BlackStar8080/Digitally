@@ -81,13 +81,20 @@ body {
   gap: 5px;
   margin-bottom: 4px;
   flex: 1;
+  align-items: stretch; /* 👈 important */
 }
+
 
 .teams-section {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  height: 100%;
 }
+.teams-section .box {
+  flex: 1;
+}
+
 
 .box {
   border: 2px solid #000;
@@ -125,9 +132,16 @@ td, th {
   font-size: 7px;
 }
 
-.timeout-grid, .foul-grid {
+.timeout-grid {
   display: inline-grid;
-  grid-template-columns: repeat(2, 12px);
+  grid-template-columns: repeat(3, 12px);
+  gap: 1px;
+  vertical-align: middle;
+}
+
+.foul-grid {
+  display: inline-grid;
+  grid-template-columns: repeat(4, 12px);
   gap: 1px;
   vertical-align: middle;
 }
@@ -144,12 +158,35 @@ td, th {
 
 .running-score-table {
   font-size: 6px;
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
 }
 
-.running-score-table td {
-  padding: 0px;
+.running-score-table td,
+.running-score-table th {
+  padding: 0;
   height: 11px;
+  vertical-align: middle; /* 👈 centers A and B vertically */
 }
+
+.running-score-table th {
+  font-size: 8px;          /* 👈 slightly bigger for headers (A/B) */
+  font-weight: bold;
+  padding: 15px 0;         /* 👈 add vertical space to center A/B nicely */
+}
+
+.running-score-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.running-score-container table {
+  flex: 1;
+}
+
+
 
 .period-labels {
   display: flex;
@@ -263,24 +300,50 @@ td, th {
         <div class="box-header">Team A: {{ strtoupper($game->team1->team_name) }}</div>
         <div class="period-labels">
           <span><strong>Time-outs</strong></span>
-          <div class="timeout-grid">
+          <div class="timeout-grid" style="grid-template-columns: repeat(3, 12px);">
             @for($i = 0; $i < 2; $i++)
             <div class="timeout-box">{{ isset($liveData['team1_timeouts']) && $liveData['team1_timeouts'] > $i ? '✓' : '' }}</div>
             @endfor
-          </div>
-          <span style="margin-left: 6px;"><strong>Team fouls</strong></span>
-          <span style="font-size: 5px;">Period ①</span>
-          <div class="foul-grid">
-            @for($i = 0; $i < 4; $i++)
-            <div class="foul-box"></div>
+            <div style="grid-column: 3;"></div>
+            @for($i = 2; $i < 5; $i++)
+            <div class="timeout-box">{{ isset($liveData['team1_timeouts']) && $liveData['team1_timeouts'] > $i ? '✓' : '' }}</div>
+            @endfor
+            @for($i = 5; $i < 8; $i++)
+            <div class="timeout-box">{{ isset($liveData['team1_timeouts']) && $liveData['team1_timeouts'] > $i ? '✓' : '' }}</div>
             @endfor
           </div>
-          <span style="font-size: 5px;">③</span>
-          <div class="foul-grid">
-            @for($i = 0; $i < 4; $i++)
-            <div class="foul-box"></div>
-            @endfor
+        </div>
+        <div style="font-size: 6px; margin-top: 3px;">
+          <div><strong>Team fouls</strong></div>
+          <div style="display: flex; gap: 3px; align-items: center; margin-top: 2px;">
+            <span style="font-size: 5px;">Period 1</span>
+            <div class="foul-grid">
+              @for($i = 0; $i < 4; $i++)
+              <div class="foul-box"></div>
+              @endfor
+            </div>
+            <span style="font-size: 5px; margin-left: 4px;">①</span>
+            <div class="foul-grid">
+              @for($i = 0; $i < 4; $i++)
+              <div class="foul-box"></div>
+              @endfor
+            </div>
           </div>
+          <div style="display: flex; gap: 3px; align-items: center; margin-top: 1px;">
+            <span style="font-size: 5px;">Period 2</span>
+            <div class="foul-grid">
+              @for($i = 0; $i < 4; $i++)
+              <div class="foul-box"></div>
+              @endfor
+            </div>
+            <span style="font-size: 5px; margin-left: 4px;">③</span>
+            <div class="foul-grid">
+              @for($i = 0; $i < 4; $i++)
+              <div class="foul-box"></div>
+              @endfor
+            </div>
+          </div>
+          <div style="margin-top: 2px; font-size: 5px;">Extra periods</div>
         </div>
 
         <table class="players-table">
@@ -338,24 +401,55 @@ td, th {
         <div class="box-header">Team B: {{ strtoupper($game->team2->team_name) }}</div>
         <div class="period-labels">
           <span><strong>Time-outs</strong></span>
-          <div class="timeout-grid">
+          <div class="timeout-grid" style="grid-template-columns: repeat(3, 12px);">
             @for($i = 0; $i < 2; $i++)
             <div class="timeout-box">{{ isset($liveData['team2_timeouts']) && $liveData['team2_timeouts'] > $i ? '✓' : '' }}</div>
             @endfor
+            <div style="grid-column: 3;"></div>
+            @for($i = 2; $i < 5; $i++)
+            <div class="timeout-box">{{ isset($liveData['team2_timeouts']) && $liveData['team2_timeouts'] > $i ? '✓' : '' }}</div>
+            @endfor
+            @for($i = 5; $i < 8; $i++)
+            <div class="timeout-box">{{ isset($liveData['team2_timeouts']) && $liveData['team2_timeouts'] > $i ? '✓' : '' }}</div>
+            @endfor
           </div>
-          <span style="margin-left: 6px;"><strong>Team fouls</strong></span>
+        </div>
+        <div style="font-size: 6px; margin-top: 3px; display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 3px; align-items: center;">
+          <strong>Team fouls</strong>
+          <div></div>
+          <div></div>
+          <div></div>
+          
           <span style="font-size: 5px;">Period ①</span>
           <div class="foul-grid">
             @for($i = 0; $i < 4; $i++)
             <div class="foul-box"></div>
             @endfor
           </div>
-          <span style="font-size: 5px;">③</span>
+          <span style="font-size: 5px;">②</span>
           <div class="foul-grid">
             @for($i = 0; $i < 4; $i++)
             <div class="foul-box"></div>
             @endfor
           </div>
+          
+          <span style="font-size: 5px;">Period ③</span>
+          <div class="foul-grid">
+            @for($i = 0; $i < 4; $i++)
+            <div class="foul-box"></div>
+            @endfor
+          </div>
+          <span style="font-size: 5px;">④</span>
+          <div class="foul-grid">
+            @for($i = 0; $i < 4; $i++)
+            <div class="foul-box"></div>
+            @endfor
+          </div>
+          
+          <span style="font-size: 5px;">Extra periods</span>
+          <div></div>
+          <div></div>
+          <div></div>
         </div>
 
         <table class="players-table">
@@ -410,9 +504,9 @@ td, th {
     </div>
 
     <!-- Right: Running Score -->
-    <div class="box" style="height: 100%;">
-      <div class="box-header" style="text-align: center;">RUNNING SCORE</div>
-      <table class="running-score-table">
+    <div class="box running-score-container">
+  <div class="box-header" style="text-align: center;">RUNNING SCORE</div>
+  <table class="running-score-table">
         <tr style="background: #f0f0f0; font-weight: bold; font-size: 5px;">
           @for($col = 0; $col < 4; $col++)
           <th style="width:10px;"></th>

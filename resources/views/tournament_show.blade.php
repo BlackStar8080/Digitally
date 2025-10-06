@@ -2648,8 +2648,7 @@
                                     <!-- Keep all your existing games grid HTML exactly as is -->
                                     <div class="games-grid" id="gamesGrid">
                                         @foreach ($bracket->games->sortBy(['round', 'match_number']) as $game)
-                                            @if ($game->is_bye || $game->team2_id === null)
-                                                {{-- BYE GAME CARD --}}
+@if ($game->is_bye)                                                {{-- BYE GAME CARD --}}
                                                 <div class="game-card bye" data-status="completed"
                                                     data-round="{{ $game->round }}">
                                                     <div class="game-header"

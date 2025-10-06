@@ -171,46 +171,44 @@ class BracketController extends Controller
         }
     }
 
-    /**
-     * Generate subsequent rounds WITHOUT any bye logic
-     */
-    private function generateSubsequentRoundsNoBye($bracket, $totalRounds, $originalTeamCount)
-    {
-        $settings = $bracket->settings ?? [];
-        $hasBye = $settings['has_bye'] ?? false;
-        
-        // Get the number of games from Round 1 (including bye game if exists)
-        $round1Games = $bracket->gamesByRound(1)->where('is_bye', false)->count();
-        
-        // If there's a bye, Round 2 will have (round1Games + 1) / 2 games
-        // because the bye winner joins in Round 2
-        if ($hasBye) {
-            $round1Winners = $round1Games; // Winners from actual games
-            $totalRound2Teams = $round1Winners + 1; // Plus the bye team
-            $previousRoundGames = ceil($totalRound2Teams / 2);
-        } else {
-            $previousRoundGames = ceil($round1Games / 2);
-        }
-        
-        // Generate all subsequent rounds
-        for ($round = 2; $round <= $totalRounds; $round++) {
-            $currentRoundGames = max(1, ceil($previousRoundGames / 2));
-            
-            for ($game = 1; $game <= $currentRoundGames; $game++) {
-                Game::create([
-                    'bracket_id' => $bracket->id,
-                    'round' => $round,
-                    'match_number' => $game,
-                    'team1_id' => null,
-                    'team2_id' => null,
-                    'status' => 'pending',
-                    'is_bye' => false, // NO BYES in rounds after Round 1!
-                ]);
-            }
-            
-            $previousRoundGames = $currentRoundGames;
-        }
+
+   private function generateSubsequentRoundsNoBye($bracket, $totalRounds, $originalTeamCount)
+{
+    $settings = $bracket->settings ?? [];
+    $hasBye = $settings['has_bye'] ?? false;
+    
+    // Count actual games (not bye games) from Round 1
+    $round1Games = $bracket->gamesByRound(1)->where('is_bye', false)->count();
+    
+    // Start with Round 1 game count
+    $previousRoundGames = $round1Games;
+    
+    // If there's a bye, add 1 to account for bye team joining Round 2
+    if ($hasBye) {
+        $previousRoundGames = $round1Games + 1;
     }
+    
+    // Generate all subsequent rounds
+    for ($round = 2; $round <= $totalRounds; $round++) {
+        // Calculate games for THIS round based on PREVIOUS round
+        $currentRoundGames = max(1, ceil($previousRoundGames / 2));
+        
+        for ($game = 1; $game <= $currentRoundGames; $game++) {
+            Game::create([
+                'bracket_id' => $bracket->id,
+                'round' => $round,
+                'match_number' => $game,
+                'team1_id' => null,
+                'team2_id' => null,
+                'status' => 'pending',
+                'is_bye' => false,
+            ]);
+        }
+        
+        // Update for next iteration
+        $previousRoundGames = $currentRoundGames;
+    }
+}
 
     /**
      * Special method to handle bye team advancement to Round 2
