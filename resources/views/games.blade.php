@@ -662,5 +662,22 @@
                 setInterval(refreshLiveScores, 30000);
             @endif
         });
+
+        function openTallySheet(gameId) {
+    // Open the basketball scoresheet in a new window
+    const url = `/games/${gameId}/basketball-scoresheet`;
+    
+    const tallysheeetWindow = window.open(
+        url,
+        'scoresheet',
+        'width=1200,height=900,scrollbars=yes,resizable=yes'
+    );
+
+    if (tallysheeetWindow) {
+        tallysheeetWindow.focus();
+    } else {
+        alert('Please allow popups for this site to view the tallysheet.');
+    }
+}
     </script>
 @endsection

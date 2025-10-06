@@ -3461,18 +3461,22 @@
 
     });
 
-    // Placeholder functions for tally sheet and box score
     function openTallySheet(gameId) {
-        // You can implement this to open a modal or navigate to a tally sheet page
-        alert('Opening tally sheet for game ' + gameId);
-        // Example: window.open(`/games/${gameId}/tally-sheet`, '_blank');
-    }
+    // Open the basketball scoresheet in a new window
+    const url = `/games/${gameId}/basketball-scoresheet`;
+    
+    const tallysheeetWindow = window.open(
+        url,
+        'scoresheet',
+        'width=1200,height=900,scrollbars=yes,resizable=yes'
+    );
 
-    function openBoxScore(gameId) {
-        // You can implement this to open a modal or navigate to a box score page
-        alert('Opening box score for game ' + gameId);
-        // Example: window.open(`/games/${gameId}/box-score`, '_blank');
+    if (tallysheeetWindow) {
+        tallysheeetWindow.focus();
+    } else {
+        alert('Please allow popups for this site to view the tallysheet.');
     }
+}
 
     // Drag and Drop Bracket Customizer Functions
     let draggedTeamData = null;
