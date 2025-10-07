@@ -4,7 +4,109 @@
 
 @push('styles')
 <style>
-/* Root Variables - matching players blade */
+/* Toast Notification Styles */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.toast-notification {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 320px;
+    max-width: 400px;
+    opacity: 0;
+    transform: translateX(400px);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    border-left: 4px solid #28a745;
+}
+
+.toast-notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast-notification.hide {
+    opacity: 0;
+    transform: translateX(400px);
+}
+
+.toast-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #28a745, #20c997);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-title {
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 0.25rem;
+    font-size: 14px;
+}
+
+.toast-message {
+    color: #6c757d;
+    font-size: 13px;
+    margin: 0;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: #6c757d;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.toast-close:hover {
+    background: #f0f0f0;
+    color: #212529;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-card {
+    animation: fadeIn 0.4s ease-in;
+}
+
+/* Root Variables */
 :root {
     --primary-purple: #9d4edd;
     --secondary-purple: #7c3aed;
@@ -21,27 +123,24 @@ body {
     background-color: #ffffff !important;
 }
 
-/* Page Structure - matching players blade */
 .teams-page {
     min-height: 100vh;
     background-color: var(--light-purple);
     padding: 2rem 0;
 }
 
-/* Change Add Team button color in modal footer */
 .modal-footer .btn.btn-primary {
-  background: var(--primary-purple);
-  border: none;
-  color: #fff;
-  transition: 0.3s ease;
+    background: var(--primary-purple);
+    border: none;
+    color: #fff;
+    transition: 0.3s ease;
 }
 
 .modal-footer .btn.btn-primary:hover {
-  background: var(--secondary-purple);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(157, 78, 221, 0.3);
+    background: var(--secondary-purple);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(157, 78, 221, 0.3);
 }
-
 
 .container {
     max-width: 1200px;
@@ -56,7 +155,6 @@ body {
     overflow: hidden;
 }
 
-/* Header Styling - matching players blade */
 .page-header {
     background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple), var(--accent-purple));
     color: white;
@@ -71,12 +169,10 @@ body {
     letter-spacing: 0.02em;
 }
 
-/* Content Section */
 .page-content {
     padding: 2rem;
 }
 
-/* Controls Section - matching players blade */
 .controls-section {
     display: flex;
     align-items: center;
@@ -115,7 +211,6 @@ body {
     display: flex;
     align-items: center;
     gap: 1rem;
-    
 }
 
 .search-container {
@@ -199,15 +294,64 @@ body {
     border-radius: 12px;
     padding: 20px;
     transition: all 0.3s ease;
-    cursor: pointer;
     text-decoration: none;
     color: inherit;
+    position: relative;
+    display: block;
 }
 
 .team-card:hover {
     border-color: var(--primary-purple);
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(157, 78, 221, 0.15);
+}
+
+.team-card:hover .team-actions {
+    opacity: 1;
+}
+
+.team-actions {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+}
+
+.btn-card-action {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.btn-card-edit {
+    background: var(--primary-purple);
+    color: white;
+}
+
+.btn-card-edit:hover {
+    background: var(--secondary-purple);
+    transform: scale(1.1);
+}
+
+.btn-card-delete {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-card-delete:hover {
+    background: #c82333;
+    transform: scale(1.1);
 }
 
 .team-header {
@@ -338,6 +482,20 @@ body {
         width: 100%;
         max-width: 300px;
     }
+
+    .team-actions {
+        opacity: 1;
+    }
+
+    .toast-container {
+        left: 10px;
+        right: 10px;
+    }
+
+    .toast-notification {
+        min-width: auto;
+        max-width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -355,10 +513,26 @@ body {
 @endpush
 
 @section('content')
+<!-- Toast Notification -->
+<div class="toast-container">
+    <div class="toast-notification" id="successToast">
+        <div class="toast-icon">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <div class="toast-content">
+            <div class="toast-title">Success!</div>
+            <p class="toast-message" id="toastMessage">Team has been successfully added.</p>
+        </div>
+        <button class="toast-close" onclick="hideToast()">
+            <i class="bi bi-x"></i>
+        </button>
+    </div>
+</div>
+
 <div class="teams-page">
     <div class="container">
         <div class="page-card">
-            <!-- Page Header with Purple Gradient -->
+            <!-- Page Header -->
             <div class="page-header">
                 <h1 class="page-title">Teams Management</h1>
             </div>
@@ -480,11 +654,93 @@ body {
         </div>
     </div>
 </div>
+
+<!-- Edit Team Modal -->
+<div class="modal fade" id="editTeamModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-pencil-square me-2"></i>Edit Team
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editTeamForm" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="mb-3">
+                        <label for="edit_team_name" class="form-label">Team Name</label>
+                        <input type="text" class="form-control" id="edit_team_name" name="team_name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit_coach_name" class="form-label">Coach Name</label>
+                        <input type="text" class="form-control" id="edit_coach_name" name="coach_name">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit_contact" class="form-label">Contact</label>
+                        <input type="number" class="form-control" id="edit_contact" name="contact">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit_address" class="form-label">Address / Location</label>
+                        <input type="text" class="form-control" id="edit_address" name="address">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit_sport" class="form-label">Sport</label>
+                        <select class="form-control" id="edit_sport" name="sport" required>
+                            <option value="">Select Sport</option>
+                            <option value="basketball">Basketball</option>
+                            <option value="volleyball">Volleyball</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary" form="editTeamForm">
+                    <i class="bi bi-check-lg me-2"></i>Update Team
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
 <script>
+// Toast Notification Functions
+function showToast(message) {
+    const toast = document.getElementById('successToast');
+    const toastMessage = document.getElementById('toastMessage');
+    
+    toastMessage.textContent = message;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        hideToast();
+    }, 4000);
+}
+
+function hideToast() {
+    const toast = document.getElementById('successToast');
+    toast.classList.remove('show');
+    toast.classList.add('hide');
+    
+    setTimeout(() => {
+        toast.classList.remove('hide');
+    }, 400);
+}
+
 (function () {
+    // Check for Laravel success message
+    @if(session('success'))
+        showToast("{{ session('success') }}");
+    @endif
+
     function escapeHtml(str = '') {
         return String(str)
             .replace(/&/g, '&amp;')
@@ -511,7 +767,7 @@ body {
             return;
         }
 
-        teamsGrid.innerHTML = list.map(team => {
+        teamsGrid.innerHTML = list.map((team, index) => {
             const name = escapeHtml(team.team_name ?? '');
             const address = escapeHtml(team.address ?? team.location ?? '');
             const playersCount = Number(team.players_count ?? 0);
@@ -519,31 +775,41 @@ body {
             const losses = Number(team.losses ?? 0);
 
             return `
-                <a class="team-card" href="/teams/${team.id}">
-                    <div class="team-header">
-                        <div class="team-logo">
-                            ${escapeHtml(String((team.team_name || '').charAt(0) || '').toUpperCase())}
-                        </div>
-                        <div class="team-info">
-                            <h3>${name}</h3>
-                            <p class="team-location">${address}</p>
-                        </div>
+                <div class="team-card fade-in-card" style="animation-delay: ${index * 0.05}s">
+                    <div class="team-actions">
+                        <button class="btn-card-action btn-card-edit" onclick="openEditModal(${team.id}, event)" title="Edit Team">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button class="btn-card-action btn-card-delete" onclick="deleteTeam(${team.id}, '${escapeHtml(name)}', event)" title="Delete Team">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
                     </div>
-                    <div class="team-stats">
-                        <div class="stat-item">
-                            <span class="stat-number">${playersCount}</span>
-                            <div class="stat-label">Players</div>
+                    <a href="/teams/${team.id}" style="text-decoration: none; color: inherit; display: block;">
+                        <div class="team-header">
+                            <div class="team-logo">
+                                ${escapeHtml(String((team.team_name || '').charAt(0) || '').toUpperCase())}
+                            </div>
+                            <div class="team-info">
+                                <h3>${name}</h3>
+                                <p class="team-location">${address}</p>
+                            </div>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-number">${wins}</span>
-                            <div class="stat-label">Wins</div>
+                        <div class="team-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">${playersCount}</span>
+                                <div class="stat-label">Players</div>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">${wins}</span>
+                                <div class="stat-label">Wins</div>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">${losses}</span>
+                                <div class="stat-label">Losses</div>
+                            </div>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-number">${losses}</span>
-                            <div class="stat-label">Losses</div>
-                        </div>
-                    </div>
-                </a>
+                    </a>
+                </div>
             `;
         }).join('');
     }
@@ -566,6 +832,55 @@ body {
 
         renderTeams(filtered);
     }
+
+    // Edit Team Function
+    window.openEditModal = function(teamId, event) {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        const team = teams.find(t => t.id === teamId);
+        if (!team) return;
+
+        const form = document.getElementById('editTeamForm');
+        form.action = `/teams/${teamId}`;
+        
+        document.getElementById('edit_team_name').value = team.team_name || '';
+        document.getElementById('edit_coach_name').value = team.coach_name || '';
+        document.getElementById('edit_contact').value = team.contact || '';
+        document.getElementById('edit_address').value = team.address || '';
+        document.getElementById('edit_sport').value = team.sport || '';
+
+        const modal = new bootstrap.Modal(document.getElementById('editTeamModal'));
+        modal.show();
+    };
+
+    // Delete Team Function
+    window.deleteTeam = function(teamId, teamName, event) {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        if (confirm(`Are you sure you want to delete ${teamName}? This action cannot be undone.`)) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/teams/${teamId}`;
+            
+            // Get CSRF token from meta tag or fallback to Laravel's csrf_token
+            let csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            
+            // Fallback: use Laravel's injected token
+            if (!csrfToken) {
+                csrfToken = '{{ csrf_token() }}';
+            }
+            
+            form.innerHTML = `
+                <input type="hidden" name="_token" value="${csrfToken}">
+                <input type="hidden" name="_method" value="DELETE">
+            `;
+            
+            document.body.appendChild(form);
+            form.submit();
+        }
+    };
 
     searchInput.addEventListener('input', filterTeams);
     sportFilter.addEventListener('change', filterTeams);

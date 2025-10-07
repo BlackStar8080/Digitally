@@ -77,7 +77,9 @@ class PlayersController extends Controller
 
         Player::create($validated);
 
-        return redirect()->route('players.index')->with('success', 'Player added successfully!');
+        // ✨ Enhanced success message with emoji
+        return redirect()->route('players.index')
+            ->with('success', '🎉 Player has been successfully added!');
     }
 
     public function edit(Player $player)
@@ -114,59 +116,61 @@ class PlayersController extends Controller
 
         $player->update($validated);
 
-        return redirect()->route('players.index')->with('success', 'Player updated successfully!');
+        // ✨ Enhanced success message with emoji
+        return redirect()->route('players.index')
+            ->with('success', '✅ Player has been successfully updated!');
     }
 
     public function destroy(Player $player)
     {
+        $playerName = $player->name; // Store name before deletion
         $player->delete();
-        return redirect()->route('players.index')->with('success', 'Player deleted successfully!');
+        
+        // ✨ Enhanced success message with emoji
+        return redirect()->route('players.index')
+            ->with('success', '🗑️ ' . $playerName . ' has been successfully deleted!');
     }
 
-    // Add this method to your PlayersController.php
+    public function stats(Request $request)
+    {
+        // Base query with player stats averages
+        $query = Player::with(['team', 'gameStats'])
+            ->leftJoin('player_game_stats', 'players.id', '=', 'player_game_stats.player_id')
+            ->selectRaw('players.id, players.name, players.team_id, players.sport, players.number, players.position, players.created_at, players.updated_at')
+            ->selectRaw('ROUND(AVG(player_game_stats.points), 1) as avg_points')
+            ->selectRaw('ROUND(AVG(player_game_stats.assists), 1) as avg_assists')
+            ->selectRaw('ROUND(AVG(player_game_stats.rebounds), 1) as avg_rebounds')
+            ->selectRaw('ROUND(AVG(player_game_stats.steals), 1) as avg_blocks')
+            ->selectRaw('ROUND(AVG(player_game_stats.fouls), 1) as avg_fouls')
+            ->selectRaw('COUNT(player_game_stats.id) as games_played')
+            ->groupBy('players.id', 'players.name', 'players.team_id', 'players.sport', 'players.number', 'players.position', 'players.created_at', 'players.updated_at')
+            ->having('games_played', '>', 0); // Only players with game stats
 
-// Add this method to your PlayersController.php
+        // Apply filters
+        if ($request->filled('team_id') && $request->team_id !== 'all') {
+            $query->where('players.team_id', $request->team_id);
+        }
 
-public function stats(Request $request)
-{
-    // Base query with player stats averages
-    $query = Player::with(['team', 'gameStats'])
-        ->leftJoin('player_game_stats', 'players.id', '=', 'player_game_stats.player_id')
-        ->selectRaw('players.id, players.name, players.team_id, players.sport, players.number, players.position, players.created_at, players.updated_at')
-        ->selectRaw('ROUND(AVG(player_game_stats.points), 1) as avg_points')
-        ->selectRaw('ROUND(AVG(player_game_stats.assists), 1) as avg_assists')
-        ->selectRaw('ROUND(AVG(player_game_stats.rebounds), 1) as avg_rebounds')
-        ->selectRaw('ROUND(AVG(player_game_stats.steals), 1) as avg_blocks')
-        ->selectRaw('ROUND(AVG(player_game_stats.fouls), 1) as avg_fouls')
-        ->selectRaw('COUNT(player_game_stats.id) as games_played')
-        ->groupBy('players.id', 'players.name', 'players.team_id', 'players.sport', 'players.number', 'players.position', 'players.created_at', 'players.updated_at')
-        ->having('games_played', '>', 0); // Only players with game stats
+        if ($request->filled('sport') && $request->sport !== 'all') {
+            $query->where('players.sport', $request->sport);
+        }
 
-    // Apply filters
-    if ($request->filled('team_id') && $request->team_id !== 'all') {
-        $query->where('players.team_id', $request->team_id);
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('players.name', 'like', "%{$search}%")
+                  ->orWhere('players.position', 'like', "%{$search}%");
+            });
+        }
+
+        // Order by average points descending
+        $playerStats = $query->orderByDesc('avg_points')->paginate(15)->withQueryString();
+
+        // Get filter options
+        $teams = Team::all();
+        $sports = Player::select('sport')->whereNotNull('sport')->distinct()->pluck('sport');
+
+        return view('stats', compact('playerStats', 'teams', 'sports'));
     }
-
-    if ($request->filled('sport') && $request->sport !== 'all') {
-        $query->where('players.sport', $request->sport);
-    }
-
-    // Search functionality
-    if ($request->filled('search')) {
-        $search = $request->search;
-        $query->where(function($q) use ($search) {
-            $q->where('players.name', 'like', "%{$search}%")
-              ->orWhere('players.position', 'like', "%{$search}%");
-        });
-    }
-
-    // Order by average points descending
-    $playerStats = $query->orderByDesc('avg_points')->paginate(15)->withQueryString();
-
-    // Get filter options
-    $teams = Team::all();
-    $sports = Player::select('sport')->whereNotNull('sport')->distinct()->pluck('sport');
-
-    return view('stats', compact('playerStats', 'teams', 'sports'));
-}
 }

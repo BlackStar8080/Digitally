@@ -1983,10 +1983,7 @@
                             <i class="bi bi-people"></i>
                             <p>No teams assigned yet.</p>
                             @if (isset($availableTeams) && $availableTeams->count() > 0)
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignTeamModal">
-                                    <i class="bi bi-plus-circle"></i>
-                                    Add First Team
-                                </button>
+                                
                             @else
                                 <p class="text-muted small">
                                     <a href="{{ route('teams.index') }}" class="text-decoration-none">

@@ -44,7 +44,9 @@ class TeamsController extends Controller
 
         Team::create($validated);
 
-        return redirect()->route('teams.index')->with('success', 'Team added successfully!');
+        // ✨ Enhanced success message with emoji
+        return redirect()->route('teams.index')
+            ->with('success', '🎉 Team has been successfully added!');
     }
 
     // Show single team
@@ -69,6 +71,19 @@ class TeamsController extends Controller
 
         $team->update($validated);
 
-        return redirect()->route('teams.index')->with('success', 'Team updated successfully!');
+        // ✨ Enhanced success message with emoji
+        return redirect()->route('teams.index')
+            ->with('success', '✅ Team has been successfully updated!');
+    }
+
+    // Delete team
+    public function destroy(Team $team)
+    {
+        $teamName = $team->team_name; // Store name before deletion
+        $team->delete();
+        
+        // ✨ Enhanced success message with emoji
+        return redirect()->route('teams.index')
+            ->with('success', '🗑️ ' . $teamName . ' has been successfully deleted!');
     }
 }

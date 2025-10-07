@@ -4,6 +4,121 @@
 
 @push('styles')
 <style>
+    /* Toast Notification Styles */
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+    }
+
+    .toast-notification {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        min-width: 320px;
+        max-width: 400px;
+        opacity: 0;
+        transform: translateX(400px);
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        border-left: 4px solid #28a745;
+    }
+
+    .toast-notification.show {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .toast-notification.hide {
+        opacity: 0;
+        transform: translateX(400px);
+    }
+
+    .toast-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #28a745, #20c997);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .toast-content {
+        flex: 1;
+    }
+
+    .toast-title {
+        font-weight: 700;
+        color: #212529;
+        margin-bottom: 0.25rem;
+        font-size: 14px;
+    }
+
+    .toast-message {
+        color: #6c757d;
+        font-size: 13px;
+        margin: 0;
+    }
+
+    .toast-close {
+        background: none;
+        border: none;
+        color: #6c757d;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+    }
+
+    .toast-close:hover {
+        background: #f0f0f0;
+        color: #212529;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .fade-in-up {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.4s ease-in;
+    }
+
     .box-score-page {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background: #f5f5f5;
@@ -20,13 +135,31 @@
     .game-title-header {
         text-align: center;
         margin-bottom: 2rem;
-        color: #333;
+        background: linear-gradient(135deg, #9d4edd, #7c3aed, #5f2da8);
+        color: white;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(157, 78, 221, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .game-title-header::before {
+        content: '🏀';
+        position: absolute;
+        right: 2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 4rem;
+        opacity: 0.2;
     }
 
     .game-title-header h1 {
         font-size: 2rem;
         font-weight: 700;
         margin: 0;
+        position: relative;
+        z-index: 1;
     }
 
     .main-content {
@@ -47,7 +180,8 @@
         background: white;
         border-radius: 16px;
         padding: 2rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        animation: fadeInUp 0.6s ease-out;
     }
 
     .team-section {
@@ -60,7 +194,15 @@
         color: #333;
         margin-bottom: 1rem;
         padding-bottom: 0.5rem;
-        border-bottom: 3px solid #667eea;
+        border-bottom: 3px solid #9d4edd;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .team-header::before {
+        content: '👥';
+        font-size: 1.5rem;
     }
 
     .team-stats-table {
@@ -69,7 +211,7 @@
     }
 
     .team-stats-table thead {
-        background: #f8f9fa;
+        background: linear-gradient(135deg, rgba(157, 78, 221, 0.1), rgba(124, 58, 237, 0.1));
     }
 
     .team-stats-table th {
@@ -77,10 +219,10 @@
         text-align: left;
         font-size: 0.8rem;
         font-weight: 700;
-        color: #666;
+        color: #5f2da8;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        border-bottom: 2px solid #e0e0e0;
+        border-bottom: 2px solid #9d4edd;
     }
 
     .team-stats-table th.stat-col {
@@ -99,8 +241,13 @@
         color: #333;
     }
 
+    .team-stats-table tbody tr {
+        transition: all 0.2s ease;
+    }
+
     .team-stats-table tbody tr:hover {
-        background: #f8f9fa;
+        background: rgba(157, 78, 221, 0.05);
+        transform: translateX(4px);
     }
 
     .player-name-col {
@@ -110,7 +257,7 @@
     }
 
     .player-number {
-        background: #667eea;
+        background: linear-gradient(135deg, #9d4edd, #7c3aed);
         color: white;
         min-width: 32px;
         height: 32px;
@@ -121,11 +268,12 @@
         font-weight: 700;
         font-size: 0.9rem;
         padding: 0 0.5rem;
+        box-shadow: 0 2px 8px rgba(157, 78, 221, 0.3);
     }
 
     .position-badge {
-        background: #e0e0e0;
-        color: #666;
+        background: rgba(157, 78, 221, 0.1);
+        color: #7c3aed;
         padding: 0.2rem 0.5rem;
         border-radius: 4px;
         font-size: 0.75rem;
@@ -143,7 +291,8 @@
         background: white;
         border-radius: 16px;
         padding: 2rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        animation: fadeInUp 0.6s ease-out 0.1s backwards;
     }
 
     .league-badge {
@@ -152,6 +301,15 @@
         color: #666;
         margin-bottom: 1rem;
         font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .league-badge::before {
+        content: '🏆';
+        font-size: 1.2rem;
     }
 
     .score-display {
@@ -163,18 +321,24 @@
 
     .team-score {
         text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .team-score:hover {
+        transform: scale(1.05);
     }
 
     .team-logo {
         width: 60px;
         height: 60px;
         margin: 0 auto 0.5rem;
-        background: #f0f0f0;
+        background: linear-gradient(135deg, rgba(157, 78, 221, 0.1), rgba(124, 58, 237, 0.1));
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 1.5rem;
+        box-shadow: 0 4px 12px rgba(157, 78, 221, 0.2);
     }
 
     .team-name {
@@ -187,7 +351,10 @@
     .score-number {
         font-size: 2.5rem;
         font-weight: 700;
-        color: #667eea;
+        background: linear-gradient(135deg, #9d4edd, #7c3aed);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
     .vs-text {
@@ -198,24 +365,26 @@
 
     .final-badge {
         text-align: center;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #28a745, #20c997);
         color: white;
-        padding: 0.5rem;
+        padding: 0.75rem;
         border-radius: 8px;
         font-weight: 700;
         text-transform: uppercase;
         font-size: 0.9rem;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
     }
 
     /* MVP CARD */
     .mvp-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #9d4edd 0%, #7c3aed 50%, #5f2da8 100%);
         border-radius: 16px;
         padding: 2rem;
-        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        box-shadow: 0 8px 32px rgba(157, 78, 221, 0.4);
         color: white;
         position: relative;
         overflow: hidden;
+        animation: fadeInUp 0.6s ease-out 0.2s backwards;
     }
 
     .mvp-card::before {
@@ -225,7 +394,13 @@
         right: -50%;
         width: 200%;
         height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+        animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
     }
 
     .mvp-header {
@@ -241,6 +416,16 @@
         letter-spacing: 2px;
         opacity: 0.9;
         margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .mvp-title::before,
+    .mvp-title::after {
+        content: '⭐';
+        font-size: 1rem;
     }
 
     .mvp-player-photo {
@@ -249,12 +434,14 @@
         margin: 0 auto 1rem;
         border-radius: 50%;
         border: 4px solid rgba(255,255,255,0.3);
-        background: rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.15);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 3rem;
         font-weight: 700;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(10px);
     }
 
     .mvp-player-name {
@@ -283,6 +470,12 @@
         padding: 1rem;
         border-radius: 12px;
         backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+
+    .mvp-stat-item:hover {
+        background: rgba(255,255,255,0.25);
+        transform: translateY(-4px);
     }
 
     .mvp-stat-value {
@@ -303,8 +496,9 @@
         background: white;
         border-radius: 16px;
         padding: 2rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
         margin-bottom: 2rem;
+        animation: fadeInUp 0.6s ease-out 0.3s backwards;
     }
 
     .mvp-selection-header {
@@ -317,6 +511,10 @@
         font-weight: 700;
         color: #333;
         margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
     }
 
     .mvp-selection-subtitle {
@@ -338,18 +536,41 @@
         padding: 1.5rem;
         cursor: pointer;
         transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .mvp-candidate-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #9d4edd, #7c3aed);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .mvp-candidate-card:hover::before {
+        transform: scaleX(1);
     }
 
     .mvp-candidate-card:hover {
-        border-color: #667eea;
+        border-color: #9d4edd;
         transform: translateY(-4px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
+        box-shadow: 0 8px 24px rgba(157, 78, 221, 0.2);
     }
 
     .mvp-candidate-card.selected {
         border-color: #ffd700;
         background: #fff9e6;
-        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+        box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3);
+    }
+
+    .mvp-candidate-card.selected::before {
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+        transform: scaleX(1);
     }
 
     .candidate-header {
@@ -360,7 +581,7 @@
     }
 
     .candidate-number {
-        background: #667eea;
+        background: linear-gradient(135deg, #9d4edd, #7c3aed);
         color: white;
         width: 48px;
         height: 48px;
@@ -370,6 +591,7 @@
         justify-content: center;
         font-weight: 700;
         font-size: 1.2rem;
+        box-shadow: 0 4px 12px rgba(157, 78, 221, 0.3);
     }
 
     .candidate-info {
@@ -399,12 +621,16 @@
         padding: 0.5rem;
         background: white;
         border-radius: 8px;
+        border: 1px solid #e0e0e0;
     }
 
     .candidate-stat-value {
         font-size: 1.5rem;
         font-weight: 700;
-        color: #667eea;
+        background: linear-gradient(135deg, #9d4edd, #7c3aed);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
     .candidate-stat-label {
@@ -429,11 +655,12 @@
         margin: 0 auto;
         text-transform: uppercase;
         letter-spacing: 1px;
+        box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
     }
 
     .select-mvp-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        box-shadow: 0 8px 24px rgba(255, 215, 0, 0.5);
     }
 
     .select-mvp-btn:disabled {
@@ -450,7 +677,8 @@
         padding: 2rem;
         background: white;
         border-radius: 16px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        animation: fadeInUp 0.6s ease-out 0.4s backwards;
     }
 
     .action-btn {
@@ -465,14 +693,16 @@
     }
 
     .btn-primary {
-        background: #667eea;
+        background: linear-gradient(135deg, #9d4edd, #7c3aed);
         color: white;
         border: none;
+        box-shadow: 0 2px 8px rgba(157, 78, 221, 0.3);
     }
 
     .btn-primary:hover {
-        background: #5568d3;
+        background: linear-gradient(135deg, #7c3aed, #5f2da8);
         transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(157, 78, 221, 0.4);
         color: white;
     }
 
@@ -493,10 +723,61 @@
         padding: 3rem;
         color: #666;
     }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .game-title-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .score-mvp-column {
+            animation-delay: 0s;
+        }
+
+        .mvp-selection-section {
+            animation-delay: 0s;
+        }
+
+        .back-actions {
+            animation-delay: 0s;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .toast-container {
+            left: 10px;
+            right: 10px;
+        }
+
+        .toast-notification {
+            min-width: auto;
+            max-width: 100%;
+        }
+    }
 </style>
 @endpush
 
 @section('content')
+<!-- Toast Notification -->
+<div class="toast-container">
+    <div class="toast-notification" id="successToast">
+        <div class="toast-icon">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <div class="toast-content">
+            <div class="toast-title">Success!</div>
+            <p class="toast-message" id="toastMessage">MVP has been selected successfully!</p>
+        </div>
+        <button class="toast-close" onclick="hideToast()">
+            <i class="bi bi-x"></i>
+        </button>
+    </div>
+</div>
+
 <div class="box-score-page">
     <div class="box-score-container">
         <!-- Game Title -->
@@ -526,9 +807,7 @@
                                         <th class="stat-col">POINTS</th>
                                         <th class="stat-col">ASSIST</th>
                                         <th class="stat-col">STEAL</th>
-                                      
                                         <th class="stat-col">REBOUND</th>
-                                        
                                         <th class="stat-col">FOUL</th>
                                     </tr>
                                 </thead>
@@ -547,9 +826,7 @@
                                             <td class="stat-col">{{ $stat->points }}</td>
                                             <td class="stat-col">{{ $stat->assists }}</td>
                                             <td class="stat-col">{{ $stat->steals }}</td>
-                                  
                                             <td class="stat-col">{{ $stat->rebounds }}</td>
-                                      
                                             <td class="stat-col">{{ $stat->fouls }}</td>
                                         </tr>
                                     @endforeach
@@ -572,9 +849,7 @@
                                         <th class="stat-col">POINTS</th>
                                         <th class="stat-col">ASSIST</th>
                                         <th class="stat-col">STEAL</th>
-                                  
                                         <th class="stat-col">REBOUND</th>
-                                
                                         <th class="stat-col">FOUL</th>
                                     </tr>
                                 </thead>
@@ -593,7 +868,6 @@
                                             <td class="stat-col">{{ $stat->points }}</td>
                                             <td class="stat-col">{{ $stat->assists }}</td>
                                             <td class="stat-col">{{ $stat->steals }}</td>
-                                       
                                             <td class="stat-col">{{ $stat->rebounds }}</td>
                                             <td class="stat-col">{{ $stat->fouls }}</td>
                                         </tr>
@@ -745,6 +1019,29 @@
 </div>
 
 <script>
+// Toast Notification Functions
+function showToast(message) {
+    const toast = document.getElementById('successToast');
+    const toastMessage = document.getElementById('toastMessage');
+    
+    toastMessage.textContent = message;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        hideToast();
+    }, 4000);
+}
+
+function hideToast() {
+    const toast = document.getElementById('successToast');
+    toast.classList.remove('show');
+    toast.classList.add('hide');
+    
+    setTimeout(() => {
+        toast.classList.remove('hide');
+    }, 400);
+}
+
 let selectedMVPStatId = null;
 
 function selectMVPCandidate(statId) {
@@ -798,12 +1095,13 @@ function confirmMVP() {
     })
     .then(data => {
         if (data.success) {
+            showToast('🏆 MVP has been selected successfully!');
             btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> MVP Selected!';
             btn.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
             
             setTimeout(() => {
                 location.reload();
-            }, 1000);
+            }, 1500);
         } else {
             throw new Error(data.message || 'Failed to select MVP');
         }

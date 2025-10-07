@@ -39,6 +39,8 @@ Route::post('/games/{game}/select-mvp', [GameController::class, 'selectMVP'])->n
 Route::get('/tournaments', [TournamentController::class, 'index'])->name('tournaments.index');
 Route::post('/tournaments', [TournamentController::class, 'store'])->name('tournaments.store');
 Route::get('/tournaments/{id}', [BracketController::class, 'showTournament'])->name('tournaments.show');
+Route::put('/tournaments/{tournament}', [TournamentController::class, 'update'])->name('tournaments.update');
+Route::delete('/tournaments/{tournament}', [TournamentController::class, 'destroy'])->name('tournaments.destroy');
 
 // Bracket Routes
 Route::post('/tournaments/{tournament}/brackets', [BracketController::class, 'store'])->name('brackets.store');
@@ -82,6 +84,8 @@ Route::get('/tournament/{id}/guest', [BracketController::class, 'guestView'])->n
 Route::get('/teams', [TeamsController::class, 'index'])->name('teams.index');
 Route::post('/teams', [TeamsController::class, 'store'])->name('teams.store');
 Route::get('/teams/{id}', [TeamsController::class, 'show'])->name('teams.show');
+Route::put('/teams/{team}', [TeamsController::class, 'update'])->name('teams.update');
+Route::delete('/teams/{team}', [TeamsController::class, 'destroy'])->name('teams.destroy');
 
 // Other Routes
 
