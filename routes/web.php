@@ -66,6 +66,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 Route::get('/players', [PlayersController::class, 'index'])->name('players.index');
 Route::post('/players', [PlayersController::class, 'store'])->name('players.store');
 Route::resource('/players', PlayersController::class);
+Route::get('/players/stats', [PlayerController::class, 'stats'])->name('players.stats');
 
 // Landing page route (should be first)
 Route::get('/', [LandingController::class, 'index'])->name('landing');

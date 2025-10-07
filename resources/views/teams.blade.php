@@ -28,6 +28,21 @@ body {
     padding: 2rem 0;
 }
 
+/* Change Add Team button color in modal footer */
+.modal-footer .btn.btn-primary {
+  background: var(--primary-purple);
+  border: none;
+  color: #fff;
+  transition: 0.3s ease;
+}
+
+.modal-footer .btn.btn-primary:hover {
+  background: var(--secondary-purple);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(157, 78, 221, 0.3);
+}
+
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -100,6 +115,7 @@ body {
     display: flex;
     align-items: center;
     gap: 1rem;
+    
 }
 
 .search-container {

@@ -82,6 +82,92 @@
             position: relative;
         }
 
+        /* Dropdown Navigation Styles */
+        .dropdown-nav {
+            position: relative;
+        }
+
+        .dropdown-nav > a {
+            position: relative;
+        }
+
+        .dropdown-icon {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-nav:hover .dropdown-icon {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu-custom {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #ffffff;
+            backdrop-filter: blur(10px);
+            min-width: 200px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            list-style: none;
+            padding: 8px;
+            margin: 8px 0 0 0;
+            z-index: 1000;
+            border: 1px solid #e2e8f0;
+        }
+
+        .dropdown-nav:hover .dropdown-menu-custom {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu-custom li {
+            margin: 0;
+        }
+
+        .dropdown-menu-custom li a {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    color: #9d4edd !important;    /* ✅ PURPLE TEXT */
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.dropdown-menu-custom li a:hover {
+    background: #f3e8ff !important;    /* ✅ LIGHT PURPLE HOVER */
+    color: #7c3aed !important;    /* ✅ DARKER PURPLE ON HOVER */
+    transform: translateX(4px);
+}
+
+        .dropdown-menu-custom li a i {
+            font-size: 16px;
+            width: 20px;
+        }
+
+        /* Active dropdown state for mobile */
+        .dropdown-nav.active-dropdown .dropdown-menu-custom {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .dropdown-nav.active-dropdown .dropdown-menu-custom {
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
         .nav-links li a {
             display: flex;
             align-items: center;
@@ -292,6 +378,18 @@
                 padding: 10px 24px;
                 font-size: 13px;
             }
+
+            /* Mobile dropdown adjustments */
+            .dropdown-menu-custom {
+                position: fixed;
+                left: 50%;
+                transform: translateX(-50%) translateY(-10px);
+                min-width: 240px;
+            }
+
+            .dropdown-nav:hover .dropdown-menu-custom {
+                transform: translateX(-50%) translateY(0);
+            }
         }
 
         @media (max-width: 480px) {
@@ -353,10 +451,23 @@
                     <i class="bi bi-people-fill me-1"></i>
                     <span>Teams</span>
                 </a></li>
-                <li><a href="{{ route('players.index') }}" class="{{ request()->routeIs('players.*') ? 'active' : '' }}">
-                    <i class="bi bi-person-badge me-1"></i>
-                    <span>Players</span>
-                </a></li>
+                <li class="dropdown-nav">
+                    <a href="{{ route('players.index') }}" class="{{ request()->routeIs('players.*') ? 'active' : '' }}">
+                        <i class="bi bi-person-badge me-1"></i>
+                        <span>Players</span>
+                       
+                    </a>
+                    <ul class="dropdown-menu-custom">
+                        <li><a href="{{ route('players.index') }}">
+                            <i class="bi bi-list-ul me-2"></i>
+                            Player List
+                        </a></li>
+                        <li><a href="{{ route('players.stats') }}">
+                            <i class="bi bi-graph-up me-2"></i>
+                            Player Stats
+                        </a></li>
+                    </ul>
+                </li>
                 <li><a href="{{ route('tournaments.index') }}" class="{{ request()->routeIs('tournaments.*') ? 'active' : '' }}">
                     <i class="bi bi-trophy me-1"></i>
                     <span>Tournaments</span>
@@ -440,6 +551,40 @@
                     logoutModal.hide();
                 }
             }
+        });
+
+        // Mobile dropdown toggle support
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownNavs = document.querySelectorAll('.dropdown-nav > a');
+            
+            dropdownNavs.forEach(function(dropdownLink) {
+                dropdownLink.addEventListener('click', function(e) {
+                    // Only prevent default on mobile
+                    if (window.innerWidth <= 768) {
+                        e.preventDefault();
+                        const parent = this.parentElement;
+                        
+                        // Close other dropdowns
+                        document.querySelectorAll('.dropdown-nav').forEach(function(nav) {
+                            if (nav !== parent) {
+                                nav.classList.remove('active-dropdown');
+                            }
+                        });
+                        
+                        // Toggle current dropdown
+                        parent.classList.toggle('active-dropdown');
+                    }
+                });
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown-nav')) {
+                    document.querySelectorAll('.dropdown-nav').forEach(function(nav) {
+                        nav.classList.remove('active-dropdown');
+                    });
+                }
+            });
         });
     </script>
 
