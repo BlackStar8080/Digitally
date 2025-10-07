@@ -20,6 +20,7 @@
                 height: 100vh;
                 display: flex;
                 flex-direction: column;
+                overflow: hidden;
             }
 
 
@@ -33,6 +34,7 @@
                 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
                 position: relative;
                 min-height: 70px;
+
             }
 
             /* Hamburger Menu */
@@ -312,6 +314,7 @@
             .container {
                 display: grid;
                 grid-template-columns: minmax(300px, 320px) 1fr minmax(300px, 320px);
+                grid-template-rows: 1fr;
                 gap: 1px;
                 /* Add subtle gap */
                 flex: 1;
@@ -326,6 +329,8 @@
                 display: flex;
                 flex-direction: column;
                 border-right: 1px solid #444;
+                height: 100%;
+                overflow: hidden;
             }
 
             .roster-header {
@@ -435,6 +440,8 @@
                 display: flex;
                 flex-direction: column;
                 border-right: 1px solid #444;
+                height: 100%;
+                overflow: hidden;
             }
 
             .log-header {
@@ -448,7 +455,9 @@
             .log-content {
                 flex: 1;
                 overflow-y: auto;
+                overflow-x: hidden;
                 padding: 0;
+
             }
 
             .log-entry {
@@ -521,6 +530,8 @@
                 gap: 12px;
                 /* Increased from 8px */
                 overflow-y: auto;
+                height: 100%;
+
             }
 
             .actions-header {
