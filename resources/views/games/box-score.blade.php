@@ -12,90 +12,60 @@
     }
 
     .box-score-container {
-        max-width: 1200px;
+        max-width: 1400px;
         margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    .game-title-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #333;
+    }
+
+    .game-title-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .main-content {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 1200px) {
+        .main-content {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* LEFT COLUMN - STATS */
+    .stats-column {
         background: white;
         border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        overflow: hidden;
-    }
-
-    .game-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
         padding: 2rem;
-        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
-    .game-title {
+    .team-section {
+        margin-bottom: 2rem;
+    }
+
+    .team-header {
         font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-    }
-
-    .final-score {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 3rem;
-        margin-top: 1.5rem;
-    }
-
-    .team-score-box {
-        text-align: center;
-    }
-
-    .team-score-name {
-        font-size: 1.1rem;
-        opacity: 0.9;
-        margin-bottom: 0.5rem;
-    }
-
-    .team-score-value {
-        font-size: 3rem;
-        font-weight: 700;
-        line-height: 1;
-    }
-
-    .winner-badge {
-        background: #ffd700;
-        color: #000;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        margin-top: 0.5rem;
-        display: inline-block;
-    }
-
-    .vs-separator {
-        font-size: 1.5rem;
-        opacity: 0.7;
-    }
-
-    .stats-section {
-        padding: 2rem;
-    }
-
-    .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid #e0e0e0;
-    }
-
-    .section-title {
-        font-size: 1.3rem;
         font-weight: 700;
         color: #333;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid #667eea;
     }
 
     .team-stats-table {
         width: 100%;
         border-collapse: collapse;
-        margin-bottom: 2rem;
     }
 
     .team-stats-table thead {
@@ -105,11 +75,12 @@
     .team-stats-table th {
         padding: 0.75rem;
         text-align: left;
-        font-size: 0.85rem;
-        font-weight: 600;
+        font-size: 0.8rem;
+        font-weight: 700;
         color: #666;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        border-bottom: 2px solid #e0e0e0;
     }
 
     .team-stats-table th.stat-col {
@@ -125,7 +96,7 @@
     .team-stats-table td.stat-col {
         text-align: center;
         font-weight: 600;
-        color: #667eea;
+        color: #333;
     }
 
     .team-stats-table tbody tr:hover {
@@ -141,7 +112,7 @@
     .player-number {
         background: #667eea;
         color: white;
-        width: 32px;
+        min-width: 32px;
         height: 32px;
         border-radius: 50%;
         display: flex;
@@ -149,29 +120,191 @@
         justify-content: center;
         font-weight: 700;
         font-size: 0.9rem;
+        padding: 0 0.5rem;
     }
 
-    .mvp-row {
-        background: #fff9e6 !important;
-        border-left: 4px solid #ffd700;
+    .position-badge {
+        background: #e0e0e0;
+        color: #666;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
     }
 
-    .mvp-badge {
-        background: #ffd700;
-        color: #000;
-        padding: 0.25rem 0.5rem;
-        border-radius: 12px;
-        font-size: 0.7rem;
+    /* RIGHT COLUMN - SCORE & MVP */
+    .score-mvp-column {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .score-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .league-badge {
+        text-align: center;
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .score-display {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .team-score {
+        text-align: center;
+    }
+
+    .team-logo {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 0.5rem;
+        background: #f0f0f0;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .team-name {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .score-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+
+    .vs-text {
+        font-size: 1.2rem;
+        color: #999;
+        font-weight: 600;
+    }
+
+    .final-badge {
+        text-align: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.5rem;
+        border-radius: 8px;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-left: 0.5rem;
+        font-size: 0.9rem;
     }
 
-    .mvp-selection-section {
-        background: #f8f9fa;
+    /* MVP CARD */
+    .mvp-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
         padding: 2rem;
-        border-top: 2px solid #e0e0e0;
+        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .mvp-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    }
+
+    .mvp-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .mvp-title {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        opacity: 0.9;
+        margin-bottom: 0.5rem;
+    }
+
+    .mvp-player-photo {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 1rem;
+        border-radius: 50%;
+        border: 4px solid rgba(255,255,255,0.3);
+        background: rgba(255,255,255,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        font-weight: 700;
+    }
+
+    .mvp-player-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .mvp-player-team {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+
+    .mvp-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-top: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .mvp-stat-item {
+        text-align: center;
+        background: rgba(255,255,255,0.15);
+        padding: 1rem;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+    }
+
+    .mvp-stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .mvp-stat-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.9;
+    }
+
+    /* MVP SELECTION SECTION */
+    .mvp-selection-section {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
     }
 
     .mvp-selection-header {
@@ -195,18 +328,16 @@
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 1.5rem;
-        max-width: 1000px;
-        margin: 0 auto;
+        margin-bottom: 2rem;
     }
 
     .mvp-candidate-card {
-        background: white;
+        background: #f8f9fa;
         border: 2px solid #e0e0e0;
         border-radius: 12px;
         padding: 1.5rem;
         cursor: pointer;
         transition: all 0.3s ease;
-        position: relative;
     }
 
     .mvp-candidate-card:hover {
@@ -266,7 +397,7 @@
     .candidate-stat {
         text-align: center;
         padding: 0.5rem;
-        background: #f8f9fa;
+        background: white;
         border-radius: 8px;
     }
 
@@ -295,7 +426,7 @@
         cursor: pointer;
         transition: all 0.3s ease;
         display: block;
-        margin: 2rem auto 0;
+        margin: 0 auto;
         text-transform: uppercase;
         letter-spacing: 1px;
     }
@@ -311,33 +442,15 @@
         transform: none;
     }
 
-    .mvp-selected-banner {
-        background: linear-gradient(135deg, #ffd700, #ffed4e);
-        color: #000;
-        padding: 2rem;
-        text-align: center;
-        border-radius: 12px;
-        margin: 2rem auto;
-        max-width: 600px;
-    }
-
-    .mvp-selected-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-    }
-
-    .mvp-selected-player {
-        font-size: 1.2rem;
-        font-weight: 600;
-    }
-
+    /* BACK ACTIONS */
     .back-actions {
         display: flex;
         gap: 1rem;
         justify-content: center;
         padding: 2rem;
-        border-top: 2px solid #e0e0e0;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .action-btn {
@@ -380,152 +493,188 @@
         padding: 3rem;
         color: #666;
     }
-
-    .no-stats-icon {
-        font-size: 3rem;
-        opacity: 0.3;
-        margin-bottom: 1rem;
-    }
 </style>
 @endpush
 
 @section('content')
 <div class="box-score-page">
     <div class="box-score-container">
-        <!-- Game Header -->
-        <div class="game-header">
-            <div class="game-title">
-                <i class="bi bi-trophy"></i>
+        <!-- Game Title -->
+        <div class="game-title-header">
+            <h1>
                 {{ $game->bracket->tournament->name ?? 'Game' }}
                 @if($game->round)
                     - {{ $game->getDisplayName() }}
                 @endif
-            </div>
-            
-            <div class="final-score">
-                <div class="team-score-box">
-                    <div class="team-score-name">{{ $game->team1->team_name }}</div>
-                    <div class="team-score-value">{{ $game->team1_score ?? 0 }}</div>
-                    @if($game->winner_id === $game->team1_id)
-                        <div class="winner-badge">WINNER</div>
-                    @endif
-                </div>
-                
-                <div class="vs-separator">VS</div>
-                
-                <div class="team-score-box">
-                    <div class="team-score-name">{{ $game->team2->team_name }}</div>
-                    <div class="team-score-value">{{ $game->team2_score ?? 0 }}</div>
-                    @if($game->winner_id === $game->team2_id)
-                        <div class="winner-badge">WINNER</div>
-                    @endif
-                </div>
-            </div>
+            </h1>
         </div>
 
-        <!-- Player Statistics -->
-        <div class="stats-section">
-            @if($team1Stats->count() > 0 || $team2Stats->count() > 0)
-                <!-- Team 1 Stats -->
-                <div class="section-header">
-                    <h3 class="section-title">
-                        <i class="bi bi-people-fill"></i>
-                        {{ $game->team1->team_name }} - Player Statistics
-                    </h3>
-                </div>
-
-                @if($team1Stats->count() > 0)
-                    <table class="team-stats-table">
-    <thead>
-        <tr>
-            <th>Player</th>
-            <th class="stat-col">PTS</th>
-            <th class="stat-col">REB</th>
-            <th class="stat-col">AST</th>
-            <th class="stat-col">STL</th>
-            <th class="stat-col">FOULS</th>
-            <th class="stat-col">FG%</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($team1Stats as $stat)
-            <tr class="{{ $stat->is_mvp ? 'mvp-row' : '' }}">
-                <td>
-                    <div class="player-name-col">
-                        <div class="player-number">{{ $stat->player->number ?? '0' }}</div>
-                        <span>{{ $stat->player->name }}</span>
-                        @if($stat->is_mvp)
-                            <span class="mvp-badge">MVP</span>
+        <!-- Main Two Column Layout -->
+        <div class="main-content">
+            <!-- LEFT COLUMN - STATISTICS -->
+            <div class="stats-column">
+                @if($team1Stats->count() > 0 || $team2Stats->count() > 0)
+                    <!-- Team 1 Stats -->
+                    <div class="team-section">
+                        <h2 class="team-header">{{ strtoupper($game->team1->team_name) }}</h2>
+                        @if($team1Stats->count() > 0)
+                            <table class="team-stats-table">
+                                <thead>
+                                    <tr>
+                                        <th>PLAYER</th>
+                                        <th class="stat-col">POSITION</th>
+                                        <th class="stat-col">POINTS</th>
+                                        <th class="stat-col">ASSIST</th>
+                                        <th class="stat-col">STEAL</th>
+                                      
+                                        <th class="stat-col">REBOUND</th>
+                                        
+                                        <th class="stat-col">FOUL</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($team1Stats as $stat)
+                                        <tr>
+                                            <td>
+                                                <div class="player-name-col">
+                                                    <div class="player-number">{{ $stat->player->number ?? '0' }}</div>
+                                                    <span>{{ $stat->player->name }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="stat-col">
+                                                <span class="position-badge">{{ $stat->player->position ?? 'N/A' }}</span>
+                                            </td>
+                                            <td class="stat-col">{{ $stat->points }}</td>
+                                            <td class="stat-col">{{ $stat->assists }}</td>
+                                            <td class="stat-col">{{ $stat->steals }}</td>
+                                  
+                                            <td class="stat-col">{{ $stat->rebounds }}</td>
+                                      
+                                            <td class="stat-col">{{ $stat->fouls }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <p class="text-muted text-center py-3">No statistics recorded</p>
                         @endif
                     </div>
-                </td>
-                <td class="stat-col">{{ $stat->points }}</td>
-                <td class="stat-col">{{ $stat->rebounds }}</td>
-                <td class="stat-col">{{ $stat->assists }}</td>
-                <td class="stat-col">{{ $stat->steals }}</td>
-                <td class="stat-col">{{ $stat->fouls }}</td>
-                <td class="stat-col">{{ $stat->getFieldGoalPercentage() }}%</td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
-                @else
-                    <p class="text-muted text-center py-3">No statistics recorded</p>
-                @endif
 
-                <!-- Team 2 Stats -->
-                <div class="section-header" style="margin-top: 3rem;">
-                    <h3 class="section-title">
-                        <i class="bi bi-people-fill"></i>
-                        {{ $game->team2->team_name }} - Player Statistics
-                    </h3>
-                </div>
-
-                @if($team2Stats->count() > 0)
-                    <table class="team-stats-table">
-                        <thead>
-                            <tr>
-                                <th>Player</th>
-                                <th class="stat-col">PTS</th>
-                                <th class="stat-col">FOULS</th>
-                                <th class="stat-col">FT%</th>
-                                <th class="stat-col">FG%</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($team2Stats as $stat)
-                                <tr class="{{ $stat->is_mvp ? 'mvp-row' : '' }}">
-                                    <td>
-                                        <div class="player-name-col">
-                                            <div class="player-number">{{ $stat->player->number ?? '0' }}</div>
-                                            <span>{{ $stat->player->name }}</span>
-                                            @if($stat->is_mvp)
-                                                <span class="mvp-badge">MVP</span>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td class="stat-col">{{ $stat->points }}</td>
-                                    <td class="stat-col">{{ $stat->fouls }}</td>
-                                    <td class="stat-col">{{ $stat->getFreeThrowPercentage() }}%</td>
-                                    <td class="stat-col">{{ $stat->getFieldGoalPercentage() }}%</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @else
-                    <p class="text-muted text-center py-3">No statistics recorded</p>
-                @endif
-            @else
-                <div class="no-stats-message">
-                    <div class="no-stats-icon">
-                        <i class="bi bi-clipboard-data"></i>
+                    <!-- Team 2 Stats -->
+                    <div class="team-section">
+                        <h2 class="team-header">{{ strtoupper($game->team2->team_name) }}</h2>
+                        @if($team2Stats->count() > 0)
+                            <table class="team-stats-table">
+                                <thead>
+                                    <tr>
+                                        <th>PLAYER</th>
+                                        <th class="stat-col">POSITION</th>
+                                        <th class="stat-col">POINTS</th>
+                                        <th class="stat-col">ASSIST</th>
+                                        <th class="stat-col">STEAL</th>
+                                  
+                                        <th class="stat-col">REBOUND</th>
+                                
+                                        <th class="stat-col">FOUL</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($team2Stats as $stat)
+                                        <tr>
+                                            <td>
+                                                <div class="player-name-col">
+                                                    <div class="player-number">{{ $stat->player->number ?? '0' }}</div>
+                                                    <span>{{ $stat->player->name }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="stat-col">
+                                                <span class="position-badge">{{ $stat->player->position ?? 'N/A' }}</span>
+                                            </td>
+                                            <td class="stat-col">{{ $stat->points }}</td>
+                                            <td class="stat-col">{{ $stat->assists }}</td>
+                                            <td class="stat-col">{{ $stat->steals }}</td>
+                                       
+                                            <td class="stat-col">{{ $stat->rebounds }}</td>
+                                            <td class="stat-col">{{ $stat->fouls }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <p class="text-muted text-center py-3">No statistics recorded</p>
+                        @endif
                     </div>
-                    <p>No player statistics available for this game.</p>
+                @else
+                    <div class="no-stats-message">
+                        <p>No player statistics available for this game.</p>
+                    </div>
+                @endif
+            </div>
+
+            <!-- RIGHT COLUMN - SCORE & MVP -->
+            <div class="score-mvp-column">
+                <!-- Final Score Card -->
+                <div class="score-card">
+                    <div class="league-badge">
+                        {{ $game->bracket->tournament->name ?? 'Summer League 2k25' }}
+                    </div>
+                    
+                    <div class="score-display">
+                        <div class="team-score">
+                            <div class="team-logo">🏀</div>
+                            <div class="team-name">{{ $game->team1->team_name }}</div>
+                            <div class="score-number">{{ $game->team1_score ?? 0 }}</div>
+                        </div>
+                        
+                        <div class="vs-text">VS</div>
+                        
+                        <div class="team-score">
+                            <div class="team-logo">🏀</div>
+                            <div class="team-name">{{ $game->team2->team_name }}</div>
+                            <div class="score-number">{{ $game->team2_score ?? 0 }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="final-badge">FINAL</div>
                 </div>
-            @endif
+
+                <!-- MVP Card -->
+                @php
+                    $mvp = $game->getMVP();
+                @endphp
+                @if($mvp)
+                <div class="mvp-card">
+                    <div class="mvp-header">
+                        <div class="mvp-title">Player of the Game</div>
+                        <div class="mvp-player-photo">#{{ $mvp->player->number ?? '1' }}</div>
+                        <div class="mvp-player-name">{{ strtoupper($mvp->player->name) }}</div>
+                        <div class="mvp-player-team">{{ $mvp->team->team_name }}</div>
+                    </div>
+                    
+                    <div class="mvp-stats-grid">
+                        <div class="mvp-stat-item">
+                            <div class="mvp-stat-value">{{ $mvp->points }}</div>
+                            <div class="mvp-stat-label">Points</div>
+                        </div>
+                        <div class="mvp-stat-item">
+                            <div class="mvp-stat-value">{{ $mvp->assists }}</div>
+                            <div class="mvp-stat-label">Assists</div>
+                        </div>
+                        <div class="mvp-stat-item">
+                            <div class="mvp-stat-value">{{ $mvp->rebounds }}</div>
+                            <div class="mvp-stat-label">Rebounds</div>
+                        </div>
+                        <div class="mvp-stat-item">
+                            <div class="mvp-stat-value">{{ $mvp->steals }}</div>
+                            <div class="mvp-stat-label">Steals</div>
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </div>
         </div>
 
-        <!-- MVP Selection Section -->
+        <!-- MVP Selection Section (if not selected) -->
         @if(!$mvpSelected && ($team1Stats->count() > 0 || $team2Stats->count() > 0))
             <div class="mvp-selection-section">
                 <div class="mvp-selection-header">
@@ -552,8 +701,16 @@
                                     <div class="candidate-stat-label">Points</div>
                                 </div>
                                 <div class="candidate-stat">
-                                    <div class="candidate-stat-value">{{ $stat->fouls }}</div>
-                                    <div class="candidate-stat-label">Fouls</div>
+                                    <div class="candidate-stat-value">{{ $stat->assists }}</div>
+                                    <div class="candidate-stat-label">Assists</div>
+                                </div>
+                                <div class="candidate-stat">
+                                    <div class="candidate-stat-value">{{ $stat->rebounds }}</div>
+                                    <div class="candidate-stat-label">Rebounds</div>
+                                </div>
+                                <div class="candidate-stat">
+                                    <div class="candidate-stat-value">{{ $stat->steals }}</div>
+                                    <div class="candidate-stat-label">Steals</div>
                                 </div>
                             </div>
                         </div>
@@ -565,25 +722,6 @@
                     Confirm MVP Selection
                 </button>
             </div>
-        @elseif($mvpSelected)
-            @php
-                $mvp = $game->getMVP();
-            @endphp
-            @if($mvp)
-                <div class="mvp-selection-section">
-                    <div class="mvp-selected-banner">
-                        <div class="mvp-selected-title">
-                            <i class="bi bi-trophy-fill"></i>
-                            Match MVP
-                        </div>
-                        <div class="mvp-selected-player">
-                            #{{ $mvp->player->number ?? '0' }} {{ $mvp->player->name }}
-                            <br>
-                            <small style="opacity: 0.8;">{{ $mvp->team->team_name }} - {{ $mvp->points }} Points</small>
-                        </div>
-                    </div>
-                </div>
-            @endif
         @endif
 
         <!-- Back Actions -->
@@ -610,18 +748,15 @@
 let selectedMVPStatId = null;
 
 function selectMVPCandidate(statId) {
-    // Remove selected class from all cards
     document.querySelectorAll('.mvp-candidate-card').forEach(card => {
         card.classList.remove('selected');
     });
 
-    // Add selected class to clicked card
     const selectedCard = document.querySelector(`[data-stat-id="${statId}"]`);
     if (selectedCard) {
         selectedCard.classList.add('selected');
     }
 
-    // Store selection and enable confirm button
     selectedMVPStatId = statId;
     document.getElementById('confirmMVPBtn').disabled = false;
 }
@@ -636,13 +771,11 @@ function confirmMVP() {
     btn.disabled = true;
     btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Saving...';
 
-    // Get CSRF token - try multiple methods
     let csrfToken = '';
     const metaTag = document.querySelector('meta[name="csrf-token"]');
     if (metaTag) {
         csrfToken = metaTag.getAttribute('content');
     } else {
-        // Fallback: get from Laravel injected token
         csrfToken = '{{ csrf_token() }}';
     }
 
@@ -665,11 +798,9 @@ function confirmMVP() {
     })
     .then(data => {
         if (data.success) {
-            // Show success message
             btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> MVP Selected!';
             btn.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
             
-            // Reload page after short delay
             setTimeout(() => {
                 location.reload();
             }, 1000);

@@ -81,9 +81,8 @@ body {
   gap: 5px;
   margin-bottom: 4px;
   flex: 1;
-  align-items: stretch; /* 👈 important */
+  align-items: stretch;
 }
-
 
 .teams-section {
   display: flex;
@@ -94,7 +93,6 @@ body {
 .teams-section .box {
   flex: 1;
 }
-
 
 .box {
   border: 2px solid #000;
@@ -167,13 +165,13 @@ td, th {
 .running-score-table th {
   padding: 0;
   height: 11px;
-  vertical-align: middle; /* 👈 centers A and B vertically */
+  vertical-align: middle;
 }
 
 .running-score-table th {
-  font-size: 8px;          /* 👈 slightly bigger for headers (A/B) */
+  font-size: 8px;
   font-weight: bold;
-  padding: 15px 0;         /* 👈 add vertical space to center A/B nicely */
+  padding: 15px 0;
 }
 
 .running-score-container {
@@ -185,8 +183,6 @@ td, th {
 .running-score-container table {
   flex: 1;
 }
-
-
 
 .period-labels {
   display: flex;
@@ -301,45 +297,67 @@ td, th {
         <div class="period-labels">
           <span><strong>Time-outs</strong></span>
           <div class="timeout-grid" style="grid-template-columns: repeat(3, 12px);">
+            @php
+            $team1Timeouts = $liveData['team1_timeouts'] ?? 0;
+            @endphp
             @for($i = 0; $i < 2; $i++)
-            <div class="timeout-box">{{ isset($liveData['team1_timeouts']) && $liveData['team1_timeouts'] > $i ? '✓' : '' }}</div>
+            <div class="timeout-box">{{ $team1Timeouts > $i ? '✓' : '' }}</div>
             @endfor
             <div style="grid-column: 3;"></div>
             @for($i = 2; $i < 5; $i++)
-            <div class="timeout-box">{{ isset($liveData['team1_timeouts']) && $liveData['team1_timeouts'] > $i ? '✓' : '' }}</div>
+            <div class="timeout-box">{{ $team1Timeouts > $i ? '✓' : '' }}</div>
             @endfor
             @for($i = 5; $i < 8; $i++)
-            <div class="timeout-box">{{ isset($liveData['team1_timeouts']) && $liveData['team1_timeouts'] > $i ? '✓' : '' }}</div>
+            <div class="timeout-box">{{ $team1Timeouts > $i ? '✓' : '' }}</div>
             @endfor
           </div>
         </div>
+        
+        @php
+        // Calculate team fouls per period from events
+        $team1PeriodFouls = [1 => 0, 2 => 0, 3 => 0, 4 => 0];
+        if (isset($liveData['events']) && is_array($liveData['events'])) {
+            foreach ($liveData['events'] as $event) {
+                if ($event['team'] === 'A' && isset($event['action']) && str_contains($event['action'], 'Foul')) {
+                    // Extract period from event (e.g., "Q1", "Q2", etc.)
+                    if (isset($event['period'])) {
+                        $period = (int)filter_var($event['period'], FILTER_SANITIZE_NUMBER_INT);
+                        if ($period >= 1 && $period <= 4) {
+                            $team1PeriodFouls[$period]++;
+                        }
+                    }
+                }
+            }
+        }
+        @endphp
+        
         <div style="font-size: 6px; margin-top: 3px;">
           <div><strong>Team fouls</strong></div>
           <div style="display: flex; gap: 3px; align-items: center; margin-top: 2px;">
             <span style="font-size: 5px;">Period 1</span>
             <div class="foul-grid">
               @for($i = 0; $i < 4; $i++)
-              <div class="foul-box"></div>
+              <div class="foul-box">{{ $team1PeriodFouls[1] > $i ? '/' : '' }}</div>
               @endfor
             </div>
-            <span style="font-size: 5px; margin-left: 4px;">①</span>
+            <span style="font-size: 5px; margin-left: 4px;">②</span>
             <div class="foul-grid">
               @for($i = 0; $i < 4; $i++)
-              <div class="foul-box"></div>
+              <div class="foul-box">{{ $team1PeriodFouls[2] > $i ? '/' : '' }}</div>
               @endfor
             </div>
           </div>
           <div style="display: flex; gap: 3px; align-items: center; margin-top: 1px;">
-            <span style="font-size: 5px;">Period 2</span>
+            <span style="font-size: 5px;">Period 3</span>
             <div class="foul-grid">
               @for($i = 0; $i < 4; $i++)
-              <div class="foul-box"></div>
+              <div class="foul-box">{{ $team1PeriodFouls[3] > $i ? '/' : '' }}</div>
               @endfor
             </div>
-            <span style="font-size: 5px; margin-left: 4px;">③</span>
+            <span style="font-size: 5px; margin-left: 4px;">④</span>
             <div class="foul-grid">
               @for($i = 0; $i < 4; $i++)
-              <div class="foul-box"></div>
+              <div class="foul-box">{{ $team1PeriodFouls[4] > $i ? '/' : '' }}</div>
               @endfor
             </div>
           </div>
@@ -402,18 +420,40 @@ td, th {
         <div class="period-labels">
           <span><strong>Time-outs</strong></span>
           <div class="timeout-grid" style="grid-template-columns: repeat(3, 12px);">
+            @php
+            $team2Timeouts = $liveData['team2_timeouts'] ?? 0;
+            @endphp
             @for($i = 0; $i < 2; $i++)
-            <div class="timeout-box">{{ isset($liveData['team2_timeouts']) && $liveData['team2_timeouts'] > $i ? '✓' : '' }}</div>
+            <div class="timeout-box">{{ $team2Timeouts > $i ? '✓' : '' }}</div>
             @endfor
             <div style="grid-column: 3;"></div>
             @for($i = 2; $i < 5; $i++)
-            <div class="timeout-box">{{ isset($liveData['team2_timeouts']) && $liveData['team2_timeouts'] > $i ? '✓' : '' }}</div>
+            <div class="timeout-box">{{ $team2Timeouts > $i ? '✓' : '' }}</div>
             @endfor
             @for($i = 5; $i < 8; $i++)
-            <div class="timeout-box">{{ isset($liveData['team2_timeouts']) && $liveData['team2_timeouts'] > $i ? '✓' : '' }}</div>
+            <div class="timeout-box">{{ $team2Timeouts > $i ? '✓' : '' }}</div>
             @endfor
           </div>
         </div>
+        
+        @php
+        // Calculate team fouls per period from events
+        $team2PeriodFouls = [1 => 0, 2 => 0, 3 => 0, 4 => 0];
+        if (isset($liveData['events']) && is_array($liveData['events'])) {
+            foreach ($liveData['events'] as $event) {
+                if ($event['team'] === 'B' && isset($event['action']) && str_contains($event['action'], 'Foul')) {
+                    // Extract period from event (e.g., "Q1", "Q2", etc.)
+                    if (isset($event['period'])) {
+                        $period = (int)filter_var($event['period'], FILTER_SANITIZE_NUMBER_INT);
+                        if ($period >= 1 && $period <= 4) {
+                            $team2PeriodFouls[$period]++;
+                        }
+                    }
+                }
+            }
+        }
+        @endphp
+        
         <div style="font-size: 6px; margin-top: 3px; display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 3px; align-items: center;">
           <strong>Team fouls</strong>
           <div></div>
@@ -423,26 +463,26 @@ td, th {
           <span style="font-size: 5px;">Period ①</span>
           <div class="foul-grid">
             @for($i = 0; $i < 4; $i++)
-            <div class="foul-box"></div>
+            <div class="foul-box">{{ $team2PeriodFouls[1] > $i ? '/' : '' }}</div>
             @endfor
           </div>
           <span style="font-size: 5px;">②</span>
           <div class="foul-grid">
             @for($i = 0; $i < 4; $i++)
-            <div class="foul-box"></div>
+            <div class="foul-box">{{ $team2PeriodFouls[2] > $i ? '/' : '' }}</div>
             @endfor
           </div>
           
           <span style="font-size: 5px;">Period ③</span>
           <div class="foul-grid">
             @for($i = 0; $i < 4; $i++)
-            <div class="foul-box"></div>
+            <div class="foul-box">{{ $team2PeriodFouls[3] > $i ? '/' : '' }}</div>
             @endfor
           </div>
           <span style="font-size: 5px;">④</span>
           <div class="foul-grid">
             @for($i = 0; $i < 4; $i++)
-            <div class="foul-box"></div>
+            <div class="foul-box">{{ $team2PeriodFouls[4] > $i ? '/' : '' }}</div>
             @endfor
           </div>
           
@@ -505,8 +545,8 @@ td, th {
 
     <!-- Right: Running Score -->
     <div class="box running-score-container">
-  <div class="box-header" style="text-align: center;">RUNNING SCORE</div>
-  <table class="running-score-table">
+      <div class="box-header" style="text-align: center;">RUNNING SCORE</div>
+      <table class="running-score-table">
         <tr style="background: #f0f0f0; font-weight: bold; font-size: 5px;">
           @for($col = 0; $col < 4; $col++)
           <th style="width:10px;"></th>
@@ -562,6 +602,7 @@ td, th {
     <div class="box">
       <div class="box-header">Scores</div>
       @php
+      // Use period_scores from liveData if available
       $periodScores = $liveData['period_scores'] ?? ['team1' => [0,0,0,0], 'team2' => [0,0,0,0]];
       @endphp
       <table style="font-size: 6px; margin-bottom: 3px;">
