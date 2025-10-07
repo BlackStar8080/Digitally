@@ -21,6 +21,7 @@
                 display: flex;
                 flex-direction: column;
                 overflow: hidden;
+                max-height: 100vh;
             }
 
 
@@ -34,6 +35,7 @@
                 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
                 position: relative;
                 min-height: 70px;
+                flex-shrink: 0;
 
             }
 
@@ -314,13 +316,14 @@
             .container {
                 display: grid;
                 grid-template-columns: minmax(300px, 320px) 1fr minmax(300px, 320px);
-                grid-template-rows: 1fr;
+                grid-template-rows: minmax(0, 1fr);
                 gap: 1px;
-                /* Add subtle gap */
                 flex: 1;
                 overflow: hidden;
                 width: 100vw;
                 max-width: 100%;
+                 min-height: 0;
+                 max-height: 100%; 
             }
 
             /* Player Roster */
@@ -331,12 +334,15 @@
                 border-right: 1px solid #444;
                 height: 100%;
                 overflow: hidden;
+                min-height: 0;
+                max-height: 100%;
             }
 
             .roster-header {
                 display: flex;
                 background: #333;
                 border-bottom: 1px solid #444;
+                flex-shrink: 0;
             }
 
             .team-tab {
@@ -378,14 +384,14 @@
             }
 
             .players-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-                /* Increased from 8px */
-                padding: 20px;
-                /* Increased from 15px */
-                flex: 1;
-                overflow-y: auto;
+                 display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 12px;
+                    padding: 20px;
+                    flex: 1;
+                    overflow-y: auto;
+                    min-height: 0; 
+                    max-height: 100%;
             }
 
             .player-card {
@@ -442,14 +448,18 @@
                 border-right: 1px solid #444;
                 height: 100%;
                 overflow: hidden;
-            }
+                min-height: 0;
+                max-height: calc(100vh - 70px); /* 70px is your scoreboard height */
+                }
+
 
             .log-header {
                 padding: 15px 20px;
-                background: #333;
-                border-bottom: 1px solid #444;
-                font-weight: 600;
-                font-size: 14px;
+    background: #333;
+    border-bottom: 1px solid #444;
+    font-weight: 600;
+    font-size: 14px;
+    flex-shrink: 0;
             }
 
             .log-content {
@@ -457,8 +467,41 @@
                 overflow-y: auto;
                 overflow-x: hidden;
                 padding: 0;
+                min-height: 0;
+                max-height: 100%;
+                display: flex;
+                flex-direction: column;
+                scrollbar-width: none; /* Firefox - hide scrollbar */
+                }
 
-            }
+                .log-content:hover {
+                scrollbar-width: thin;
+                scrollbar-color: #4CAF50 #2a2a2a; /* Thumb color and track */
+                }
+
+                .log-content::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+
+.log-content:hover::-webkit-scrollbar {
+  width: 8px;
+}
+
+.log-content::-webkit-scrollbar-thumb {
+  background: #4CAF50;
+  border-radius: 6px;
+}
+
+.log-content::-webkit-scrollbar-thumb:hover {
+  background: #66bb6a;
+}
+
+.log-content::-webkit-scrollbar-track {
+  background: #2a2a2a;
+  border-radius: 6px;
+}
+
 
             .log-entry {
                 display: grid;
@@ -526,11 +569,12 @@
                 display: flex;
                 flex-direction: column;
                 padding: 24px 20px;
-                /* Increased top/bottom padding */
                 gap: 12px;
-                /* Increased from 8px */
-                overflow-y: auto;
                 height: 100%;
+                min-height: 0;
+                overflow-y: auto; 
+                max-height: 100%;
+
 
             }
 
@@ -545,6 +589,7 @@
                 padding-bottom: 8px;
                 border-bottom: 1px solid #444;
                 /* Add separator */
+                flex-shrink: 0;
             }
 
             /* Consistent button sizing */
