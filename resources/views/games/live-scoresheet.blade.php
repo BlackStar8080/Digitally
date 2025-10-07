@@ -390,7 +390,7 @@
                     padding: 20px;
                     flex: 1;
                     overflow-y: auto;
-                    min-height: 0; 
+                    min-height: 0;
                     max-height: 100%;
             }
 
