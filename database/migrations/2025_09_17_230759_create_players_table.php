@@ -19,18 +19,21 @@ return new class extends Migration
 
             $table->string('name');
             $table->unsignedBigInteger('team_id');
+            $table->unsignedBigInteger('sports_id'); // ✅ Changed from sport string to sports_id FK
             $table->integer('number')->nullable();
-
-            // add sport column here (borrowing from tournaments)
-            $table->string('sport');
-
             $table->string('position')->nullable();
             $table->integer('age')->nullable();
 
+            // Foreign keys
             $table->foreign('team_id')
                   ->references('id')
                   ->on('teams')
                   ->onDelete('cascade');
+                  
+            $table->foreign('sports_id')
+                  ->references('sports_id')
+                  ->on('sports')
+                  ->onDelete('restrict');
         });
     }
 

@@ -77,9 +77,12 @@ Route::prefix('pdf')->name('pdf.')->group(function () {
     Route::get('/basketball-scoresheet/{game}/view', [PdfController::class, 'viewBasketballScoresheet'])
         ->name('basketball.scoresheet.view');
     
-    // Add more PDF routes here as needed
-    // Route::get('/tournament-bracket/{tournament}', [PdfController::class, 'tournamentBracket'])
-    //     ->name('tournament.bracket');
+    // NEW: Tournament bracket routes
+    Route::get('/bracket/{bracket}/download', [PdfController::class, 'tournamentBracket'])
+        ->name('bracket.download');
+    
+    Route::get('/bracket/{bracket}/view', [PdfController::class, 'viewTournamentBracket'])
+        ->name('bracket.view');
 });
 
 // Player Routes

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Player;
 use App\Models\Team;
 use App\Models\Tournament;
+use App\Models\Sport;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -12,7 +13,7 @@ class PlayersController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Player::with('team');
+        $query = Player::with(['team', 'sport']); // ✅ Load sport relationship
 
         // 🔍 Apply filters
         if ($request->filled('team_id') && $request->team_id !== 'all') {
@@ -20,36 +21,35 @@ class PlayersController extends Controller
         }
 
         if ($request->filled('sport') && $request->sport !== 'all') {
-            $query->where('sport', $request->sport);
+            // ✅ Filter by sports_id instead of sport string
+            $query->where('sports_id', $request->sport);
         }
 
         if ($request->filled('position') && $request->position !== 'all') {
             $query->where('position', $request->position);
         }
 
-        // ✅ Real database search (not just client-side)
+        // ✅ Real database search
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('position', 'like', "%{$search}%")
-                  ->orWhere('sport', 'like', "%{$search}%")
+                  ->orWhereHas('sport', fn($sport) => $sport->where('sports_name', 'like', "%{$search}%"))
                   ->orWhereHas('team', fn($team) => $team->where('team_name', 'like', "%{$search}%"));
             });
         }
 
-        // ✅ Paginate and keep query params
         $players = $query->orderBy('name')->paginate(15)->withQueryString();
 
         $teams = Team::all();
         $tournaments = Tournament::all();
         $positions = Player::select('position')->whereNotNull('position')->distinct()->pluck('position');
-        $sports = Player::select('sport')->whereNotNull('sport')->distinct()->pluck('sport');
-
+        $sports = Sport::all();
+        
         return view('players', compact('players', 'teams', 'tournaments', 'positions', 'sports'));
     }
 
-    // Store new player
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -58,7 +58,7 @@ class PlayersController extends Controller
                 Rule::unique('players')->where(fn($query) => $query->where('team_id', $request->team_id)),
             ],
             'team_id'   => 'required|exists:teams,id',
-            'sport'     => 'required|string|max:100',
+            'sports_id' => 'required|exists:sports,sports_id', // ✅ Changed validation
             'number'    => 'nullable|integer',
             'position'  => 'nullable|string|max:50',
             'birthday'  => 'required|date',
@@ -77,14 +77,8 @@ class PlayersController extends Controller
 
         Player::create($validated);
 
-        // ✨ Enhanced success message with emoji
         return redirect()->route('players.index')
             ->with('success', '🎉 Player has been successfully added!');
-    }
-
-    public function edit(Player $player)
-    {
-        return redirect()->route('players.index');
     }
 
     public function update(Request $request, Player $player)
@@ -97,7 +91,7 @@ class PlayersController extends Controller
                 ),
             ],
             'team_id'   => 'required|exists:teams,id',
-            'sport'     => 'required|string|max:100',
+            'sports_id' => 'required|exists:sports,sports_id', // ✅ Changed validation
             'number'    => 'nullable|integer',
             'position'  => 'nullable|string|max:50',
             'birthday'  => 'required|date',
@@ -116,10 +110,12 @@ class PlayersController extends Controller
 
         $player->update($validated);
 
-        // ✨ Enhanced success message with emoji
         return redirect()->route('players.index')
             ->with('success', '✅ Player has been successfully updated!');
     }
+
+    // ... rest of your methods remain the same
+
 
     public function destroy(Player $player)
     {
@@ -169,7 +165,9 @@ class PlayersController extends Controller
 
         // Get filter options
         $teams = Team::all();
-        $sports = Player::select('sport')->whereNotNull('sport')->distinct()->pluck('sport');
+        
+        // 🔄 FIXED: Just get all sports
+        $sports = Sport::all();
 
         return view('stats', compact('playerStats', 'teams', 'sports'));
     }

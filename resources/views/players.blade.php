@@ -659,12 +659,13 @@
                             </select>
 
                             <select name="sport" class="filter-select" onchange="this.form.submit()">
-                                <option value="">All Sports</option>
-                                <option value="Basketball" {{ request('sport') == 'Basketball' ? 'selected' : '' }}>
-                                    Basketball</option>
-                                <option value="Volleyball" {{ request('sport') == 'Volleyball' ? 'selected' : '' }}>
-                                    Volleyball</option>
-                            </select>
+                            <option value="">All Sports</option>
+                            @foreach($sports as $sport)
+                                <option value="{{ $sport->sports_id }}" {{ request('sport') == $sport->sports_id ? 'selected' : '' }}>
+                                    {{ $sport->sports_name }}
+                                </option>
+                            @endforeach
+                        </select>
                         </form>
 
                         <div class="actions-group">
@@ -711,17 +712,20 @@
                                                 -
                                             @endif
                                         </td>
-                                        <td>{{ $player->sport ?? '-' }}</td>
+                                        <td>{{ $player->sport->sports_name ?? '-' }}</td>
                                         <td>{{ $player->team->team_name ?? '-' }}</td>
                                         <td>
                                             <div class="action-buttons">
                                                 <button type="button" class="btn-action btn-edit"
                                                     onclick="openEditFromButton(this)"
                                                     data-update-url="{{ route('players.update', $player->id) }}"
-                                                    data-id="{{ $player->id }}" data-name="{{ $player->name }}"
+                                                    data-id="{{ $player->id }}" 
+                                                    data-name="{{ $player->name }}"
                                                     data-team-id="{{ $player->team_id }}"
-                                                    data-number="{{ $player->number }}" data-sport="{{ $player->sport }}"
-                                                    data-position="{{ $player->position }}" data-age="{{ $player->age }}"
+                                                    data-number="{{ $player->number }}" 
+                                                    data-sport="{{ $player->sports_id }}"
+                                                    data-position="{{ $player->position }}" 
+                                                    data-age="{{ $player->age }}"
                                                     title="Edit Player">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </button>
@@ -814,10 +818,10 @@
                             <div style="flex:1; min-width: 0;">
                                 <div class="form-group">
                                     <label class="form-label">Sport</label>
-                                    <select name="sport" id="sportSelect" class="form-select" required>
+                                    <select name="sports_id" id="sportSelect" class="form-select" required>
                                         <option value="">Select sport</option>
-                                        @foreach ($tournaments as $tournament)
-                                            <option value="{{ $tournament->sport }}">{{ $tournament->sport }}</option>
+                                        @foreach($sports as $sport)
+                                            <option value="{{ $sport->sports_id }}">{{ $sport->sports_name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -892,9 +896,16 @@
             const playerBirthday = document.getElementById('playerBirthday');
 
             const positions = {
-                Basketball: ["Point Guard", "Shooting Guard", "Small Forward", "Power Forward", "Center"],
-                Volleyball: ["Setter", "Middle Blocker", "Outside Hitter", "Opposite Hitter", "Libero"]
-            };
+            @foreach($sports as $sport)
+                {{ $sport->sports_id }}: [
+                    @if($sport->sports_name == 'Basketball')
+                        "Point Guard", "Shooting Guard", "Small Forward", "Power Forward", "Center"
+                    @elseif($sport->sports_name == 'Volleyball')
+                        "Setter", "Middle Blocker", "Outside Hitter", "Opposite Hitter", "Libero"
+                    @endif
+                ],
+            @endforeach
+        };
 
             window.openModal = function() {
                 playerForm.reset();
@@ -906,37 +917,37 @@
             };
 
             window.openEditFromButton = function(button) {
-                playerForm.reset();
-                playerForm.action = button.dataset.updateUrl;
-                formMethodInput.value = "PUT";
-                modalTitleEl.innerHTML = '<i class="bi bi-pencil-square"></i> Edit Player';
+                    playerForm.reset();
+                    playerForm.action = button.dataset.updateUrl;
+                    formMethodInput.value = "PUT";
+                    modalTitleEl.innerHTML = '<i class="bi bi-pencil-square"></i> Edit Player';
 
-                playerName.value = button.dataset.name || '';
-                playerTeam.value = button.dataset.teamId || '';
-                playerNumber.value = button.dataset.number || '';
+                    playerName.value = button.dataset.name || '';
+                    playerTeam.value = button.dataset.teamId || '';
+                    playerNumber.value = button.dataset.number || '';
 
-                const sport = button.dataset.sport || '';
-                sportSelect.value = sport;
+                    const sportId = button.dataset.sport || ''; // This is now sports_id
+                    sportSelect.value = sportId;
 
-                positionSelect.innerHTML = '<option value="">Select position</option>';
-                if (positions[sport]) {
-                    positions[sport].forEach(pos => {
-                        const opt = document.createElement('option');
-                        opt.value = pos;
-                        opt.textContent = pos;
-                        if (pos === button.dataset.position) opt.selected = true;
-                        positionSelect.appendChild(opt);
-                    });
-                }
+                    positionSelect.innerHTML = '<option value="">Select position</option>';
+                    if (positions[sportId]) { // Use sportId (which is sports_id)
+                        positions[sportId].forEach(pos => {
+                            const opt = document.createElement('option');
+                            opt.value = pos;
+                            opt.textContent = pos;
+                            if (pos === button.dataset.position) opt.selected = true;
+                            positionSelect.appendChild(opt);
+                        });
+                    }
 
-                bsPlayerModal.show();
-            };
+                    bsPlayerModal.show();
+                };
 
             sportSelect.addEventListener('change', function() {
-                const sport = this.value;
+                const sportId = this.value; // This is now sports_id (1, 2, etc.)
                 positionSelect.innerHTML = '<option value="">Select position</option>';
-                if (positions[sport]) {
-                    positions[sport].forEach(pos => {
+                if (positions[sportId]) {
+                    positions[sportId].forEach(pos => {
                         const opt = document.createElement('option');
                         opt.value = pos;
                         opt.textContent = pos;

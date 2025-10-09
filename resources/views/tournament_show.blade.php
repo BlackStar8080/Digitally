@@ -1876,6 +1876,80 @@
             font-weight: 600;
             text-transform: uppercase;
         }
+
+        /* Print Styles for Bracket */
+@media print {
+    /* Hide everything except the bracket */
+    body * {
+        visibility: hidden;
+    }
+    
+    .bracket-container,
+    .bracket-container * {
+        visibility: visible;
+    }
+    
+    .bracket-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white !important;
+        box-shadow: none !important;
+        padding: 20px !important;
+    }
+    
+    /* Hide buttons and interactive elements */
+    .btn,
+    .filter-btn,
+    .game-actions,
+    .score-form,
+    .score-input-form,
+    button {
+        display: none !important;
+    }
+    
+    /* Optimize bracket for print */
+    .bracket-game {
+        page-break-inside: avoid;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
+    }
+    
+    .bracket-rounds {
+        gap: 30px !important;
+    }
+    
+    /* Make text more readable */
+    .bracket-game,
+    .team-slot,
+    .game-title {
+        font-size: 11px !important;
+    }
+    
+    .round-title {
+        font-size: 14px !important;
+    }
+    
+    /* Keep colors for winner indication */
+    .team-slot.winner {
+        background: #e8f5e9 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    /* Print connector lines */
+    .bracket-svg {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+
+/* Landscape orientation for wider brackets */
+@media print and (orientation: landscape) {
+    .bracket-container {
+        max-width: 100%;
+    }
+}
     </style>
 @endpush
 
@@ -3837,5 +3911,22 @@
                 });
             }
         })();
+
+        function printBracket(bracketId) {
+            // Store current scroll position
+            const scrollPos = window.pageYOffset;
+            
+            // Add print class to body
+            document.body.classList.add('printing-bracket');
+            
+            // Trigger print
+            window.print();
+            
+            // Remove print class after print dialog closes
+            setTimeout(() => {
+                document.body.classList.remove('printing-bracket');
+                window.scrollTo(0, scrollPos);
+            }, 100);
+        }
     </script>
 @endif
