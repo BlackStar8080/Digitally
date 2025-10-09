@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Team;
 use App\Models\Tournament;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TeamsController extends Controller
 {
@@ -38,9 +39,19 @@ class TeamsController extends Controller
             'address'       => 'nullable|string|max:255',
             'sport'         => 'required|string|max:100',
             'tournament_id' => 'nullable|exists:tournaments,id',
+            'logo'          => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Add validation
         ], [
             'team_name.unique' => 'This team name is already registered.',
+            'logo.image' => 'The logo must be an image file.',
+            'logo.mimes' => 'The logo must be a file of type: jpeg, png, jpg, gif, svg.',
+            'logo.max' => 'The logo must not be greater than 2MB.',
         ]);
+
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            $logoPath = $request->file('logo')->store('team_logos', 'public');
+            $validated['logo'] = $logoPath;
+        }
 
         Team::create($validated);
 
@@ -67,7 +78,19 @@ class TeamsController extends Controller
             'address'       => 'nullable|string|max:255',
             'sport'         => 'required|string|max:100',
             'tournament_id' => 'nullable|exists:tournaments,id',
+            'logo'          => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Add validation
         ]);
+
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            // Delete old logo if exists
+            if ($team->logo && Storage::disk('public')->exists($team->logo)) {
+                Storage::disk('public')->delete($team->logo);
+            }
+            
+            $logoPath = $request->file('logo')->store('team_logos', 'public');
+            $validated['logo'] = $logoPath;
+        }
 
         $team->update($validated);
 
@@ -80,6 +103,12 @@ class TeamsController extends Controller
     public function destroy(Team $team)
     {
         $teamName = $team->team_name; // Store name before deletion
+        
+        // Delete logo if exists
+        if ($team->logo && Storage::disk('public')->exists($team->logo)) {
+            Storage::disk('public')->delete($team->logo);
+        }
+        
         $team->delete();
         
         // ✨ Enhanced success message with emoji

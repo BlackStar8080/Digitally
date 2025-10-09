@@ -22,8 +22,8 @@ class PlayerGameStat extends Model
         'three_points_made',
         'three_points_attempted',
         'assists',      // ADD THIS
-    'steals',       // ADD THIS
-    'rebounds', 
+            'steals',       // ADD THIS
+            'rebounds', 
         'is_mvp',
     ];
 

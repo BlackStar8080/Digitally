@@ -10,6 +10,7 @@ use App\Http\Controllers\BracketController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\PdfController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,6 +64,23 @@ Route::get('/games/{game}/tallysheet', [GameController::class, 'tallysheet'])->n
 
 // Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+
+
+
+// PDF Routes
+Route::prefix('pdf')->name('pdf.')->group(function () {
+    // Basketball scoresheet
+    Route::get('/basketball-scoresheet/{game}/download', [PdfController::class, 'basketballScoresheet'])
+        ->name('basketball.scoresheet.download');
+    
+    Route::get('/basketball-scoresheet/{game}/view', [PdfController::class, 'viewBasketballScoresheet'])
+        ->name('basketball.scoresheet.view');
+    
+    // Add more PDF routes here as needed
+    // Route::get('/tournament-bracket/{tournament}', [PdfController::class, 'tournamentBracket'])
+    //     ->name('tournament.bracket');
+});
 
 // Player Routes
 Route::get('/players', [PlayersController::class, 'index'])->name('players.index');

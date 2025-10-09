@@ -49,9 +49,7 @@ class Game extends Model
         return $this->belongsTo(Bracket::class);
     }
 
-    /**
-     * Team 1 relationship.
-     */
+
     public function team1()
     {
         return $this->belongsTo(Team::class, 'team1_id');

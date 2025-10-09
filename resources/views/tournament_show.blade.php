@@ -1982,8 +1982,7 @@
                         <div class="empty-state">
                             <i class="bi bi-people"></i>
                             <p>No teams assigned yet.</p>
-                            @if (isset($availableTeams) && $availableTeams->count() > 0)
-                                
+                            @if (isset($availableTeams) && $availableTeams->count() > 0)                               
                             @else
                                 <p class="text-muted small">
                                     <a href="{{ route('teams.index') }}" class="text-decoration-none">

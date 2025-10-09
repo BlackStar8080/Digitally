@@ -4,6 +4,7 @@
 
 @push('styles')
 <style>
+/* [Previous CSS styles remain the same - keeping all existing styles] */
 /* Toast Notification Styles */
 .toast-container {
     position: fixed;
@@ -90,7 +91,6 @@
     color: #212529;
 }
 
-/* Fade in animation */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -106,7 +106,6 @@
     animation: fadeIn 0.4s ease-in;
 }
 
-/* Root Variables */
 :root {
     --primary-purple: #9d4edd;
     --secondary-purple: #7c3aed;
@@ -281,7 +280,6 @@ body {
     box-shadow: 0 4px 12px rgba(157, 78, 221, 0.3);
 }
 
-/* Teams Grid */
 .teams-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -373,6 +371,14 @@ body {
     color: white;
     flex-shrink: 0;
     background: var(--primary-purple);
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.team-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .team-info h3 {
@@ -421,7 +427,6 @@ body {
     margin-bottom: 20px;
 }
 
-/* Modal Styling */
 .modal-content {
     border: none;
     border-radius: 16px;
@@ -449,7 +454,59 @@ body {
     opacity: 1;
 }
 
-/* Responsive Design */
+/* Logo Upload Styles */
+.logo-upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border: 2px dashed var(--border-color);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    background: #f8f9fa;
+}
+
+.logo-upload-container:hover {
+    border-color: var(--primary-purple);
+    background: var(--hover-purple);
+}
+
+.logo-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-purple);
+    color: white;
+    font-size: 36px;
+}
+
+.logo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.upload-text {
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.upload-text strong {
+    color: var(--primary-purple);
+    display: block;
+    margin-bottom: 5px;
+}
+
+#logo, #edit_logo {
+    display: none;
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 0 0.5rem;
@@ -532,14 +589,11 @@ body {
 <div class="teams-page">
     <div class="container">
         <div class="page-card">
-            <!-- Page Header -->
             <div class="page-header">
                 <h1 class="page-title">Teams Management</h1>
             </div>
             
-            <!-- Page Content -->
             <div class="page-content">
-                <!-- Controls Section -->
                 <div class="controls-section">
                     <div class="filters-group">
                         <select class="filter-select" id="sportFilter">
@@ -563,7 +617,6 @@ body {
                     </div>
                 </div>
                 
-                <!-- Teams Grid -->
                 <div class="teams-grid" id="teamsGrid"></div>
             </div>
         </div>
@@ -593,8 +646,24 @@ body {
                     </div>
                 @endif
                 
-                <form id="addTeamForm" action="{{ route('teams.store') }}" method="POST">
+                <form id="addTeamForm" action="{{ route('teams.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    
+                    <!-- Logo Upload -->
+                    <div class="mb-4">
+                        <label class="form-label">Team Logo</label>
+                        <div class="logo-upload-container" onclick="document.getElementById('logo').click()">
+                            <div class="logo-preview" id="logoPreview">
+                                <i class="bi bi-image"></i>
+                            </div>
+                            <div class="upload-text">
+                                <strong>Click to upload logo</strong>
+                                <small>PNG, JPG, GIF, SVG (Max 2MB)</small>
+                            </div>
+                        </div>
+                        <input type="file" id="logo" name="logo" accept="image/*" onchange="previewLogo(event, 'logoPreview')">
+                    </div>
+                    
                     <div class="mb-3">
                         <label for="team_name" class="form-label">Team Name</label>
                         <input type="text" class="form-control @error('team_name') is-invalid @enderror" 
@@ -666,9 +735,25 @@ body {
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="editTeamForm" method="POST">
+                <form id="editTeamForm" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
+                    
+                    <!-- Logo Upload -->
+                    <div class="mb-4">
+                        <label class="form-label">Team Logo</label>
+                        <div class="logo-upload-container" onclick="document.getElementById('edit_logo').click()">
+                            <div class="logo-preview" id="editLogoPreview">
+                                <i class="bi bi-image"></i>
+                            </div>
+                            <div class="upload-text">
+                                <strong>Click to upload logo</strong>
+                                <small>PNG, JPG, GIF, SVG (Max 2MB)</small>
+                            </div>
+                        </div>
+                        <input type="file" id="edit_logo" name="logo" accept="image/*" onchange="previewLogo(event, 'editLogoPreview')">
+                    </div>
+                    
                     <div class="mb-3">
                         <label for="edit_team_name" class="form-label">Team Name</label>
                         <input type="text" class="form-control" id="edit_team_name" name="team_name" required>
@@ -712,6 +797,20 @@ body {
 
 @section('scripts')
 <script>
+// Logo Preview Function
+function previewLogo(event, previewId) {
+    const file = event.target.files[0];
+    const preview = document.getElementById(previewId);
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `<img src="${e.target.result}" alt="Logo Preview">`;
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
 // Toast Notification Functions
 function showToast(message) {
     const toast = document.getElementById('successToast');
@@ -773,6 +872,14 @@ function hideToast() {
             const playersCount = Number(team.players_count ?? 0);
             const wins = Number(team.wins ?? 0);
             const losses = Number(team.losses ?? 0);
+            
+            // Logo rendering
+            let logoHtml;
+            if (team.logo) {
+                logoHtml = `<img src="/storage/${escapeHtml(team.logo)}" alt="${name} Logo">`;
+            } else {
+                logoHtml = escapeHtml(String((team.team_name || '').charAt(0) || '').toUpperCase());
+            }
 
             return `
                 <div class="team-card fade-in-card" style="animation-delay: ${index * 0.05}s">
@@ -787,7 +894,7 @@ function hideToast() {
                     <a href="/teams/${team.id}" style="text-decoration: none; color: inherit; display: block;">
                         <div class="team-header">
                             <div class="team-logo">
-                                ${escapeHtml(String((team.team_name || '').charAt(0) || '').toUpperCase())}
+                                ${logoHtml}
                             </div>
                             <div class="team-info">
                                 <h3>${name}</h3>
@@ -849,6 +956,14 @@ function hideToast() {
         document.getElementById('edit_contact').value = team.contact || '';
         document.getElementById('edit_address').value = team.address || '';
         document.getElementById('edit_sport').value = team.sport || '';
+        
+        // Preview existing logo
+        const editLogoPreview = document.getElementById('editLogoPreview');
+        if (team.logo) {
+            editLogoPreview.innerHTML = `<img src="/storage/${team.logo}" alt="Team Logo">`;
+        } else {
+            editLogoPreview.innerHTML = '<i class="bi bi-image"></i>';
+        }
 
         const modal = new bootstrap.Modal(document.getElementById('editTeamModal'));
         modal.show();
@@ -864,10 +979,8 @@ function hideToast() {
             form.method = 'POST';
             form.action = `/teams/${teamId}`;
             
-            // Get CSRF token from meta tag or fallback to Laravel's csrf_token
             let csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
             
-            // Fallback: use Laravel's injected token
             if (!csrfToken) {
                 csrfToken = '{{ csrf_token() }}';
             }

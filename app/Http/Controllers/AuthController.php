@@ -78,7 +78,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('dashboard');
+        return redirect()('login');
     }
 
     // Handle logout
