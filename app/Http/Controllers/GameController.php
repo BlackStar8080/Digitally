@@ -68,29 +68,36 @@ class GameController extends Controller
     if ($request->has('live_data')) {
         $liveData = json_decode(urldecode($request->get('live_data')), true);
     } else {
-        // ✅ Load saved tallysheet if game is completed
-        if ($game->status === 'completed' && $game->tallysheet) {
-            $tallysheet = $game->tallysheet;
+        // ✅ NEW: Load from normalized tables if game is completed
+        if ($game->status === 'completed') {
             $liveData = [
-                'team1_score' => $tallysheet->team1_score,
-                'team2_score' => $tallysheet->team2_score,
-                'team1_fouls' => $tallysheet->team1_fouls,
-                'team2_fouls' => $tallysheet->team2_fouls,
-                'team1_timeouts' => $tallysheet->team1_timeouts,
-                'team2_timeouts' => $tallysheet->team2_timeouts,
-                'period_scores' => $tallysheet->period_scores,
-                'events' => $tallysheet->game_events,
+                'team1_score' => $game->team1_score,
+                'team2_score' => $game->team2_score,
+                'team1_fouls' => $game->team1_fouls,
+                'team2_fouls' => $game->team2_fouls,
+                'team1_timeouts' => $game->team1_timeouts,
+                'team2_timeouts' => $game->team2_timeouts,
+                'period_scores' => $game->getPeriodScores(),
+                'events' => $game->getEventsReverseOrder()->map(function($event) {
+                    return [
+                        'id' => $event->sequence_number,
+                        'team' => $event->team,
+                        'player' => $event->player_number,
+                        'action' => $event->action,
+                        'points' => $event->points,
+                        'time' => $event->game_time,
+                        'period' => 'Q' . $event->period,
+                    ];
+                })->toArray(),
             ];
         }
     }
 
-    $team1Data = json_decode($game->team1_selected_players, true) ?? [];
-    $team2Data = json_decode($game->team2_selected_players, true) ?? [];
-
+    // ✅ NEW: Load roster from game_rosters table
     $game->load(['team1.players', 'team2.players', 'bracket.tournament']);
     
-    $team1RosterIds = $team1Data['roster'] ?? [];
-    $team2RosterIds = $team2Data['roster'] ?? [];
+    $team1RosterIds = $game->getTeam1RosterIds();
+    $team2RosterIds = $game->getTeam2RosterIds();
 
     $team1Players = $game->team1->players->filter(function($player) use ($team1RosterIds) {
         return in_array($player->id, $team1RosterIds);
@@ -109,121 +116,130 @@ class GameController extends Controller
 }
 
     public function startLive(Request $request, Game $game)
-    {
-        // Validate the roster and starter selections (NEW FORMAT)
-        $validated = $request->validate([
-            'team1_roster' => 'required|json',
-            'team2_roster' => 'required|json',
-            'team1_starters' => 'required|json', 
-            'team2_starters' => 'required|json',
-        ]);
+{
+    // Validate the roster and starter selections
+    $validated = $request->validate([
+        'team1_roster' => 'required|json',
+        'team2_roster' => 'required|json',
+        'team1_starters' => 'required|json', 
+        'team2_starters' => 'required|json',
+    ]);
 
-        // Decode the selections
-        $team1RosterIds = json_decode($validated['team1_roster'], true);
-        $team2RosterIds = json_decode($validated['team2_roster'], true);
-        $team1StarterIds = json_decode($validated['team1_starters'], true);
-        $team2StarterIds = json_decode($validated['team2_starters'], true);
+    // Decode the selections
+    $team1RosterIds = json_decode($validated['team1_roster'], true);
+    $team2RosterIds = json_decode($validated['team2_roster'], true);
+    $team1StarterIds = json_decode($validated['team1_starters'], true);
+    $team2StarterIds = json_decode($validated['team2_starters'], true);
 
-        // Validate roster sizes (minimum 5 players each)
-        if (count($team1RosterIds) < 5 || count($team2RosterIds) < 5) {
-            return back()->with('error', 'You must select at least 5 players for each team roster!');
-        }
+    // Validate roster sizes (minimum 5 players each)
+    if (count($team1RosterIds) < 5 || count($team2RosterIds) < 5) {
+        return back()->with('error', 'You must select at least 5 players for each team roster!');
+    }
 
-        // Validate starter selections (exactly 5 players each)
-        if (count($team1StarterIds) !== 5 || count($team2StarterIds) !== 5) {
-            return back()->with('error', 'You must select exactly 5 starters for each team!');
-        }
+    // Validate starter selections (exactly 5 players each)
+    if (count($team1StarterIds) !== 5 || count($team2StarterIds) !== 5) {
+        return back()->with('error', 'You must select exactly 5 starters for each team!');
+    }
 
-        // Validate that starters are from the roster
-        if (array_diff($team1StarterIds, $team1RosterIds) || array_diff($team2StarterIds, $team2RosterIds)) {
-            return back()->with('error', 'All starters must be selected from the team roster!');
-        }
+    // Validate that starters are from the roster
+    if (array_diff($team1StarterIds, $team1RosterIds) || array_diff($team2StarterIds, $team2RosterIds)) {
+        return back()->with('error', 'All starters must be selected from the team roster!');
+    }
 
-        // Validate that at least one referee is assigned
-        if (empty($game->referee)) {
-            return back()->with('error', 'You must assign at least one referee before starting the game!');
-        }
+    // Validate that at least one referee is assigned
+    if (empty($game->referee)) {
+        return back()->with('error', 'You must assign at least one referee before starting the game!');
+    }
 
-        // Store combined roster/starter data in existing JSON columns
-        $team1Data = [
-            'roster' => $team1RosterIds,
-            'starters' => $team1StarterIds,
-            'all_players' => array_map(function($id) { return "player1_{$id}"; }, $team1RosterIds)
-        ];
+    // ✅ NEW: Store roster in game_rosters table instead of JSON
+    try {
+        \DB::beginTransaction();
 
-        $team2Data = [
-            'roster' => $team2RosterIds,
-            'starters' => $team2StarterIds, 
-            'all_players' => array_map(function($id) { return "player2_{$id}"; }, $team2RosterIds)
-        ];
-
-        // Update game status and store player selections in existing columns
+        // Update game status
         $game->update([
             'status' => 'in_progress',
             'started_at' => now(),
-            'team1_selected_players' => json_encode($team1Data),
-            'team2_selected_players' => json_encode($team2Data),
         ]);
+
+        // Store Team 1 roster
+        foreach ($team1RosterIds as $playerId) {
+            \App\Models\GameRoster::create([
+                'game_id' => $game->id,
+                'player_id' => $playerId,
+                'team_id' => $game->team1_id,
+                'is_starter' => in_array($playerId, $team1StarterIds),
+                'position_number' => in_array($playerId, $team1StarterIds) 
+                    ? array_search($playerId, $team1StarterIds) + 1 
+                    : null
+            ]);
+        }
+
+        // Store Team 2 roster
+        foreach ($team2RosterIds as $playerId) {
+            \App\Models\GameRoster::create([
+                'game_id' => $game->id,
+                'player_id' => $playerId,
+                'team_id' => $game->team2_id,
+                'is_starter' => in_array($playerId, $team2StarterIds),
+                'position_number' => in_array($playerId, $team2StarterIds) 
+                    ? array_search($playerId, $team2StarterIds) + 1 
+                    : null
+            ]);
+        }
+
+        \DB::commit();
 
         // Redirect to live scoresheet
         return redirect()->route('games.live', $game)->with('success', 'Game started successfully!');
+
+    } catch (\Exception $e) {
+        \DB::rollBack();
+        \Log::error('Failed to start game: ' . $e->getMessage());
+        return back()->with('error', 'Failed to start game. Please try again.');
     }
+}
 
     public function live(Game $game)
-    {
-        // Ensure game is in progress
-        if ($game->status !== 'in_progress') {
-            return redirect()->back()->with('error', 'Game has not been started yet!');
-        }
-
-        // Get stored player data
-        $team1Data = json_decode($game->team1_selected_players, true) ?? [];
-        $team2Data = json_decode($game->team2_selected_players, true) ?? [];
-
-        // Load the actual player data
-        $game->load(['team1.players', 'team2.players']);
-        
-        // Extract roster and starter IDs
-        $team1RosterIds = $team1Data['roster'] ?? [];
-        $team2RosterIds = $team2Data['roster'] ?? [];
-        $team1StarterIds = $team1Data['starters'] ?? [];
-        $team2StarterIds = $team2Data['starters'] ?? [];
-
-        // Filter players based on roster selection
-        $team1Players = $game->team1->players->filter(function($player) use ($team1RosterIds) {
-            return in_array($player->id, $team1RosterIds);
-        });
-        
-        $team2Players = $game->team2->players->filter(function($player) use ($team2RosterIds) {
-            return in_array($player->id, $team2RosterIds);
-        });
-
-        // Convert IDs to strings for JavaScript comparison
-        $team1Roster = array_map('strval', $team1RosterIds);
-        $team2Roster = array_map('strval', $team2RosterIds);
-        $team1Starters = array_map('strval', $team1StarterIds);
-        $team2Starters = array_map('strval', $team2StarterIds);
-
-        // Debug output (remove this after testing)
-        \Log::info('Live Game Data:', [
-            'team1Players_count' => $team1Players->count(),
-            'team2Players_count' => $team2Players->count(),
-            'team1Roster' => $team1Roster,
-            'team1Starters' => $team1Starters,
-            'team2Roster' => $team2Roster,
-            'team2Starters' => $team2Starters,
-        ]);
-
-        return view('games.live-scoresheet', compact(
-            'game', 
-            'team1Players', 
-            'team2Players',
-            'team1Roster',
-            'team2Roster', 
-            'team1Starters', 
-            'team2Starters'
-        ));
+{
+    // Ensure game is in progress
+    if ($game->status !== 'in_progress') {
+        return redirect()->back()->with('error', 'Game has not been started yet!');
     }
+
+    // ✅ NEW: Load roster from game_rosters table
+    $game->load(['team1.players', 'team2.players']);
+    
+    // Get roster and starter IDs from normalized table
+    $team1RosterIds = $game->getTeam1RosterIds();
+    $team2RosterIds = $game->getTeam2RosterIds();
+    $team1StarterIds = $game->getTeam1StarterIds();
+    $team2StarterIds = $game->getTeam2StarterIds();
+
+    // Filter players based on roster selection
+    $team1Players = $game->team1->players->filter(function($player) use ($team1RosterIds) {
+        return in_array($player->id, $team1RosterIds);
+    });
+    
+    $team2Players = $game->team2->players->filter(function($player) use ($team2RosterIds) {
+        return in_array($player->id, $team2RosterIds);
+    });
+
+    // Convert IDs to strings for JavaScript comparison
+    $team1Roster = array_map('strval', $team1RosterIds);
+    $team2Roster = array_map('strval', $team2RosterIds);
+    $team1Starters = array_map('strval', $team1StarterIds);
+    $team2Starters = array_map('strval', $team2StarterIds);
+
+    return view('games.live-scoresheet', compact(
+        'game', 
+        'team1Players', 
+        'team2Players',
+        'team1Roster',
+        'team2Roster', 
+        'team1Starters', 
+        'team2Starters'
+    ));
+}
 
     // NEW TALLYSHEET METHODS
     public function tallysheet(Game $game, Request $request)
@@ -273,33 +289,24 @@ class GameController extends Controller
     /**
  * Save tallysheet data when completing a game
  */
-private function saveTallysheet(Game $game, array $gameData)
+/**
+ * Save simplified tallysheet (best player only)
+ */
+private function saveTallysheet(Game $game)
 {
     try {
-        // Process running scores from game events
-        $runningScores = $this->processRunningScores($gameData['game_events'] ?? []);
+        // Tallysheet now only stores best player/MVP info
+        // All other data is in normalized tables
         
-        // Process player fouls from game events
-        $playerFouls = $this->processPlayerFouls($gameData['game_events'] ?? []);
-        
-        // Create or update tallysheet
         Tallysheet::updateOrCreate(
             ['game_id' => $game->id],
             [
-                'team1_score' => $gameData['team1_score'],
-                'team2_score' => $gameData['team2_score'],
-                'team1_fouls' => $gameData['team1_fouls'] ?? 0,
-                'team2_fouls' => $gameData['team2_fouls'] ?? 0,
-                'team1_timeouts' => $gameData['team1_timeouts'] ?? 0,
-                'team2_timeouts' => $gameData['team2_timeouts'] ?? 0,
-                'period_scores' => $gameData['period_scores'] ?? null,
-                'running_scores' => $runningScores,
-                'game_events' => $gameData['game_events'] ?? [],
-                'player_fouls' => $playerFouls,
+                // best_player_id and best_player_stats will be set later
+                // when MVP is selected
             ]
         );
 
-        \Log::info("Tallysheet saved for game {$game->id}");
+        \Log::info("Tallysheet created for game {$game->id}");
         
     } catch (\Exception $e) {
         \Log::error("Failed to save tallysheet for game {$game->id}", [
@@ -309,63 +316,8 @@ private function saveTallysheet(Game $game, array $gameData)
     }
 }
 
-/**
- * Process running scores from game events
- */
-private function processRunningScores(array $events)
-{
-    $runningScores = [];
-    $scoreA = 0;
-    $scoreB = 0;
-    
-    // Process events in reverse order (they're stored newest first)
-    $sortedEvents = array_reverse($events);
-    
-    foreach ($sortedEvents as $event) {
-        if (isset($event['points']) && $event['points'] > 0) {
-            if ($event['team'] === 'A') {
-                $scoreA += $event['points'];
-                if ($scoreA <= 160) { // Max score on tallysheet
-                    $runningScores[] = [
-                        'team' => 'A',
-                        'score' => $scoreA,
-                        'sequence' => count($runningScores) + 1
-                    ];
-                }
-            } else {
-                $scoreB += $event['points'];
-                if ($scoreB <= 160) { // Max score on tallysheet
-                    $runningScores[] = [
-                        'team' => 'B',
-                        'score' => $scoreB,
-                        'sequence' => count($runningScores) + 1
-                    ];
-                }
-            }
-        }
-    }
-    
-    return $runningScores;
-}
 
-/**
- * Process player fouls from game events
- */
-private function processPlayerFouls(array $events)
-{
-    $playerFouls = [];
-    
-    foreach ($events as $event) {
-        if (isset($event['action']) && str_contains($event['action'], 'Foul')) {
-            if (isset($event['player']) && $event['player'] !== 'TEAM' && $event['player'] !== 'SYSTEM') {
-                $playerKey = $event['team'] . '_' . $event['player'];
-                $playerFouls[$playerKey] = ($playerFouls[$playerKey] ?? 0) + 1;
-            }
-        }
-    }
-    
-    return $playerFouls;
-}
+
 
     private function processLiveGameData($liveData)
     {
@@ -455,7 +407,8 @@ private function processPlayerFouls(array $events)
     /**
      * Complete a game and save final results from live scoresheet
      */
-   public function completeGame(Request $request, Game $game)
+
+public function completeGame(Request $request, Game $game)
 {
     $game->load(['bracket.tournament', 'team1.players', 'team2.players']);
    
@@ -476,7 +429,7 @@ private function processPlayerFouls(array $events)
             'player_stats' => 'array',
         ]);
 
-        DB::beginTransaction();
+        \DB::beginTransaction();
 
         // Determine winner
         $winnerId = null;
@@ -486,32 +439,37 @@ private function processPlayerFouls(array $events)
             $winnerId = $game->team2_id;
         }
 
-        // Update game
+        // ✅ NEW: Update game with normalized columns
         $game->update([
             'team1_score' => $validated['team1_score'],
             'team2_score' => $validated['team2_score'],
+            'team1_fouls' => $validated['team1_fouls'] ?? 0,
+            'team2_fouls' => $validated['team2_fouls'] ?? 0,
+            'team1_timeouts' => $validated['team1_timeouts'] ?? 0,
+            'team2_timeouts' => $validated['team2_timeouts'] ?? 0,
+            'total_quarters' => $validated['total_quarters'] ?? 4,
             'winner_id' => $winnerId,
             'status' => 'completed',
             'completed_at' => now(),
-            'game_data' => [
-                'team1_fouls' => $validated['team1_fouls'] ?? 0,
-                'team2_fouls' => $validated['team2_fouls'] ?? 0,
-                'team1_timeouts' => $validated['team1_timeouts'] ?? 0,
-                'team2_timeouts' => $validated['team2_timeouts'] ?? 0,
-                'total_quarters' => $validated['total_quarters'] ?? 4,
-                'game_events' => $validated['game_events'] ?? [],
-                'period_scores' => $validated['period_scores'] ?? [],
-                'completed_by_scoresheet' => true
-            ]
         ]);
+
+        // ✅ NEW: Save game events to game_events table
+        if (isset($validated['game_events']) && is_array($validated['game_events'])) {
+            $this->saveGameEvents($game, $validated['game_events']);
+        }
+
+        // ✅ NEW: Save quarter scores to quarter_scores table
+        if (isset($validated['period_scores']) && is_array($validated['period_scores'])) {
+            $this->saveQuarterScores($game, $validated['period_scores']);
+        }
 
         // Save player statistics
         if (isset($validated['player_stats']) && is_array($validated['player_stats'])) {
             $this->savePlayerStats($game, $validated['player_stats']);
         }
 
-        // ✅ NEW: Save tallysheet
-        $this->saveTallysheet($game, $validated);
+        // ✅ NEW: Save simplified tallysheet (only best player info)
+        $this->saveTallysheet($game);
 
         // Advance bracket if needed
         if ($game->bracket_id && $winnerId) {
@@ -522,20 +480,21 @@ private function processPlayerFouls(array $events)
             $this->updateBracketStatus($game->bracket_id);
         }
 
-        DB::commit();
+        \DB::commit();
 
         return response()->json([
             'success' => true,
-            'message' => 'Game completed and tallysheet saved successfully',
+            'message' => 'Game completed and saved successfully',
             'game_id' => $game->id,
             'winner_id' => $winnerId,
             'redirect_url' => route('games.box-score', $game->id)
         ]);
 
     } catch (\Exception $e) {
-        DB::rollBack();
+        \DB::rollBack();
         \Log::error("Failed to complete game {$game->id}", [
-            'error' => $e->getMessage()
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
         ]);
 
         return response()->json([
@@ -543,6 +502,35 @@ private function processPlayerFouls(array $events)
             'message' => 'Failed to complete game: ' . $e->getMessage()
         ], 500);
     }
+}
+
+/**
+ * Save game events to normalized table
+ */
+private function saveGameEvents(Game $game, array $events)
+{
+    foreach ($events as $event) {
+        // Extract period number from string like "Q1", "Q2"
+        $period = 1;
+        if (isset($event['period'])) {
+            $period = (int) filter_var($event['period'], FILTER_SANITIZE_NUMBER_INT);
+            if ($period < 1 || $period > 4) $period = 1;
+        }
+
+        \App\Models\GameEvent::create([
+            'game_id' => $game->id,
+            'sequence_number' => $event['id'] ?? 0,
+            'team' => $event['team'] ?? 'GAME',
+            'player_number' => $event['player'] ?? null,
+            'action' => $event['action'] ?? 'Unknown',
+            'points' => $event['points'] ?? 0,
+            'game_time' => $event['time'] ?? '00:00',
+            'period' => $period,
+            'occurred_at' => now(),
+        ]);
+    }
+
+    \Log::info("Saved " . count($events) . " game events for game {$game->id}");
 }
 
 /**
@@ -612,6 +600,38 @@ private function savePlayerStats(Game $game, array $playerStatsData)
         'total_attempted' => count($playerStatsData),
         'errors' => $errors
     ]);
+}
+
+/**
+ * Save quarter scores to normalized table
+ */
+private function saveQuarterScores(Game $game, array $periodScores)
+{
+    if (!isset($periodScores['team1']) || !isset($periodScores['team2'])) {
+        \Log::warning("Invalid period scores format for game {$game->id}");
+        return;
+    }
+
+    $team1Scores = $periodScores['team1'];
+    $team2Scores = $periodScores['team2'];
+
+    for ($quarter = 1; $quarter <= 4; $quarter++) {
+        $team1Score = $team1Scores[$quarter - 1] ?? 0;
+        $team2Score = $team2Scores[$quarter - 1] ?? 0;
+
+        \App\Models\QuarterScore::updateOrCreate(
+            [
+                'game_id' => $game->id,
+                'quarter' => $quarter,
+            ],
+            [
+                'team1_score' => $team1Score,
+                'team2_score' => $team2Score,
+            ]
+        );
+    }
+
+    \Log::info("Saved quarter scores for game {$game->id}");
 }
 
     /**
