@@ -15,7 +15,6 @@ class Team extends Model
         'contact',
         'address',
         'sport',
-        'logo',
         'tournament_id', // ✅ Added this
     ];
 

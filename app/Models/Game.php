@@ -26,25 +26,19 @@ class Game extends Model
         'referee',
         'assistant_referee_1',
         'assistant_referee_2',
-        'is_bye',
-        'team1_fouls',      // NEW
-        'team2_fouls',      // NEW
-        'team1_timeouts',   // NEW
-        'team2_timeouts',   // NEW
-        'total_quarters',   // NEW
+        'team1_selected_players',     // This now stores roster + starter data
+        'team2_selected_players',     // This now stores roster + starter data
+        'game_data',
     ];
 
     protected $casts = [
         'scheduled_at' => 'datetime',
         'started_at' => 'datetime',
         'completed_at' => 'datetime',
-        'game_details' => 'array',
-        'is_bye' => 'boolean',
-        'team1_fouls' => 'integer',      // NEW
-        'team2_fouls' => 'integer',      // NEW
-        'team1_timeouts' => 'integer',   // NEW
-        'team2_timeouts' => 'integer',   // NEW
-        'total_quarters' => 'integer',   // NEW
+        'game_details' => 'array', // JSON to array conversion
+        'team1_selected_players' => 'array', // Add this for easier access
+        'team2_selected_players' => 'array', // Add this for easier access
+        'game_data' => 'array',
     ];
 
     /**
@@ -92,183 +86,6 @@ class Game extends Model
         return Team::find($loserId);
     }
 
-    // ==========================================
-    // NEW: Game Roster Relationships
-    // ==========================================
-
-    /**
-     * Get all roster entries for this game
-     */
-    public function gameRosters()
-    {
-        return $this->hasMany(GameRoster::class);
-    }
-
-    /**
-     * Get Team 1 roster
-     */
-    public function team1Roster()
-    {
-        return $this->gameRosters()->forTeam($this->team1_id);
-    }
-
-    /**
-     * Get Team 2 roster
-     */
-    public function team2Roster()
-    {
-        return $this->gameRosters()->forTeam($this->team2_id);
-    }
-
-    /**
-     * Get Team 1 starters
-     */
-    public function team1Starters()
-    {
-        return $this->team1Roster()->starters();
-    }
-
-    /**
-     * Get Team 2 starters
-     */
-    public function team2Starters()
-    {
-        return $this->team2Roster()->starters();
-    }
-
-    /**
-     * Get Team 1 roster player IDs
-     */
-    public function getTeam1RosterIds()
-    {
-        return $this->team1Roster()->pluck('player_id')->toArray();
-    }
-
-    /**
-     * Get Team 2 roster player IDs
-     */
-    public function getTeam2RosterIds()
-    {
-        return $this->team2Roster()->pluck('player_id')->toArray();
-    }
-
-    /**
-     * Get Team 1 starter IDs
-     */
-    public function getTeam1StarterIds()
-    {
-        return $this->team1Starters()->pluck('player_id')->toArray();
-    }
-
-    /**
-     * Get Team 2 starter IDs
-     */
-    public function getTeam2StarterIds()
-    {
-        return $this->team2Starters()->pluck('player_id')->toArray();
-    }
-
-    // ==========================================
-    // NEW: Game Events Relationships
-    // ==========================================
-
-    /**
-     * Get all events for this game
-     */
-    public function gameEvents()
-    {
-        return $this->hasMany(GameEvent::class);
-    }
-
-    /**
-     * Get events in chronological order
-     */
-    public function getEventsInOrder()
-    {
-        return $this->gameEvents()->inOrder()->get();
-    }
-
-    /**
-     * Get events in reverse order (newest first)
-     */
-    public function getEventsReverseOrder()
-    {
-        return $this->gameEvents()->reverseOrder()->get();
-    }
-
-    /**
-     * Get scoring events only
-     */
-    public function getScoringEvents()
-    {
-        return $this->gameEvents()->scoringEvents()->get();
-    }
-
-    // ==========================================
-    // NEW: Quarter Scores Relationships
-    // ==========================================
-
-    /**
-     * Get quarter scores for this game
-     */
-    public function quarterScores()
-    {
-        return $this->hasMany(QuarterScore::class);
-    }
-
-    /**
-     * Get quarter scores in order
-     */
-    public function getQuarterScoresInOrder()
-    {
-        return $this->quarterScores()->inOrder()->get();
-    }
-
-    /**
-     * Get period scores array (for compatibility)
-     */
-    public function getPeriodScores()
-    {
-        $quarters = $this->quarterScores()->inOrder()->get();
-        
-        return [
-            'team1' => $quarters->pluck('team1_score')->toArray(),
-            'team2' => $quarters->pluck('team2_score')->toArray(),
-        ];
-    }
-
-    // ==========================================
-    // Player Stats Relationship (existing)
-    // ==========================================
-
-    /**
-     * Get player statistics for this game
-     */
-    public function playerStats()
-    {
-        return $this->hasMany(PlayerGameStat::class);
-    }
-
-    /**
-     * Get the MVP of this game
-     */
-    public function getMVP()
-    {
-        return $this->playerStats()->where('is_mvp', true)->first();
-    }
-
-    /**
-     * Tallysheet relationship
-     */
-    public function tallysheet()
-    {
-        return $this->hasOne(Tallysheet::class);
-    }
-
-    // ==========================================
-    // Game State Helpers
-    // ==========================================
-
     /**
      * Check if game has both teams assigned.
      */
@@ -283,25 +100,6 @@ class Game extends Model
     public function isCompleted()
     {
         return $this->status === 'completed';
-    }
-
-    /**
-     * Check if this is a bye game
-     */
-    public function isBye()
-    {
-        return $this->is_bye === true || $this->team2_id === null;
-    }
-
-    /**
-     * Get the team that received the bye
-     */
-    public function getByeTeam()
-    {
-        if ($this->isBye()) {
-            return $this->team1_id ? $this->team1 : null;
-        }
-        return null;
     }
 
     /**
@@ -365,11 +163,114 @@ class Game extends Model
         return $this;
     }
 
-    /**
-     * Check if game has detailed stats (events)
-     */
+    // Helper methods for roster/starter data
+    public function getTeam1RosterIds()
+    {
+        return $this->team1_selected_players['roster'] ?? [];
+    }
+
+    public function getTeam1StarterIds()
+    {
+        return $this->team1_selected_players['starters'] ?? [];
+    }
+
+    public function getTeam2RosterIds()
+    {
+        return $this->team2_selected_players['roster'] ?? [];
+    }
+
+    public function getTeam2StarterIds()
+    {
+        return $this->team2_selected_players['starters'] ?? [];
+    }
+
+    // Game data helpers
+    public function getTeam1Fouls()
+    {
+        return $this->game_data['team1_fouls'] ?? 0;
+    }
+
+    public function getTeam2Fouls()
+    {
+        return $this->game_data['team2_fouls'] ?? 0;
+    }
+
+    public function getTeam1Timeouts()
+    {
+        return $this->game_data['team1_timeouts'] ?? 0;
+    }
+
+    public function getTeam2Timeouts()
+    {
+        return $this->game_data['team2_timeouts'] ?? 0;
+    }
+
+    public function getTotalQuarters()
+    {
+        return $this->game_data['total_quarters'] ?? 4;
+    }
+
+    public function getGameEvents()
+    {
+        return $this->game_data['game_events'] ?? [];
+    }
+
+    public function getPeriodScores()
+    {
+        return $this->game_data['period_scores'] ?? [
+            'team1' => [0, 0, 0, 0],
+            'team2' => [0, 0, 0, 0]
+        ];
+    }
+
+    public function wasCompletedByScoresheet()
+    {
+        return $this->game_data['completed_by_scoresheet'] ?? false;
+    }
+
     public function hasDetailedStats()
     {
-        return $this->gameEvents()->count() > 0;
+        return !empty($this->game_data['game_events']) || $this->wasCompletedByScoresheet();
     }
+
+    /**
+ * Get player statistics for this game
+ */
+public function playerStats()
+{
+    return $this->hasMany(PlayerGameStat::class);
+}
+
+/**
+ * Get the MVP of this game
+ */
+public function getMVP()
+{
+    return $this->playerStats()->where('is_mvp', true)->first();
+}
+
+/**
+ * Check if this is a bye game
+ */
+public function isBye()
+{
+    return $this->is_bye === true || $this->team2_id === null;
+}
+
+/**
+ * Get the team that received the bye
+ */
+public function getByeTeam()
+{
+    if ($this->isBye()) {
+        return $this->team1_id ? $this->team1 : null;
+    }
+    return null;
+}
+
+public function tallysheet()
+{
+    return $this->hasOne(Tallysheet::class);
+}
+
 }

@@ -14,11 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('sports', function (Blueprint $table) {
-            $table->id('sports_id');
-            $table->string('sports_name')->unique();
-            $table->text('sports_details')->nullable();
+            $table->id();
+            $table->string('name')->unique(); // e.g., Basketball, Volleyball
+            $table->string('type')->nullable(); // optional: indoor/outdoor
             $table->timestamps();
         });
+
     }
 
     /**

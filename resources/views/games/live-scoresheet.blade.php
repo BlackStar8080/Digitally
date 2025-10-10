@@ -322,8 +322,8 @@
                 overflow: hidden;
                 width: 100vw;
                 max-width: 100%;
-                min-height: 0;
-                max-height: 100%;
+                 min-height: 0;
+                 max-height: 100%; 
             }
 
             /* Player Roster */
@@ -384,14 +384,14 @@
             }
 
             .players-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-                padding: 20px;
-                flex: 1;
-                overflow-y: auto;
-                min-height: 0;
-                max-height: 100%;
+                 display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 12px;
+                    padding: 20px;
+                    flex: 1;
+                    overflow-y: auto;
+                    min-height: 0;
+                    max-height: 100%;
             }
 
             .player-card {
@@ -449,18 +449,17 @@
                 height: 100%;
                 overflow: hidden;
                 min-height: 0;
-                max-height: calc(100vh - 70px);
-                /* 70px is your scoreboard height */
-            }
+                max-height: calc(100vh - 70px); /* 70px is your scoreboard height */
+                }
 
 
             .log-header {
                 padding: 15px 20px;
-                background: #333;
-                border-bottom: 1px solid #444;
-                font-weight: 600;
-                font-size: 14px;
-                flex-shrink: 0;
+    background: #333;
+    border-bottom: 1px solid #444;
+    font-weight: 600;
+    font-size: 14px;
+    flex-shrink: 0;
             }
 
             .log-content {
@@ -472,38 +471,36 @@
                 max-height: 100%;
                 display: flex;
                 flex-direction: column;
-                scrollbar-width: none;
-                /* Firefox - hide scrollbar */
-            }
+                scrollbar-width: none; /* Firefox - hide scrollbar */
+                }
 
-            .log-content:hover {
+                .log-content:hover {
                 scrollbar-width: thin;
-                scrollbar-color: #4CAF50 #2a2a2a;
-                /* Thumb color and track */
-            }
+                scrollbar-color: #4CAF50 #2a2a2a; /* Thumb color and track */
+                }
 
-            .log-content::-webkit-scrollbar {
-                width: 8px;
-                background: transparent;
-            }
+                .log-content::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
 
-            .log-content:hover::-webkit-scrollbar {
-                width: 8px;
-            }
+.log-content:hover::-webkit-scrollbar {
+  width: 8px;
+}
 
-            .log-content::-webkit-scrollbar-thumb {
-                background: #4CAF50;
-                border-radius: 6px;
-            }
+.log-content::-webkit-scrollbar-thumb {
+  background: #4CAF50;
+  border-radius: 6px;
+}
 
-            .log-content::-webkit-scrollbar-thumb:hover {
-                background: #66bb6a;
-            }
+.log-content::-webkit-scrollbar-thumb:hover {
+  background: #66bb6a;
+}
 
-            .log-content::-webkit-scrollbar-track {
-                background: #2a2a2a;
-                border-radius: 6px;
-            }
+.log-content::-webkit-scrollbar-track {
+  background: #2a2a2a;
+  border-radius: 6px;
+}
 
 
             .log-entry {
@@ -575,7 +572,7 @@
                 gap: 12px;
                 height: 100%;
                 min-height: 0;
-                overflow-y: auto;
+                overflow-y: auto; 
                 max-height: 100%;
 
 
@@ -2349,131 +2346,131 @@
 
             // NEW: Collect player statistics from game events
             // Collect player statistics from game events
-            function collectPlayerStats() {
-                const playerStats = {};
+function collectPlayerStats() {
+    const playerStats = {};
 
-                // Helper to get player by number and team
-                function findPlayerByNumber(playerNumber, team) {
-                    const players = team === 'A' ? [...activePlayers.A, ...benchPlayers.A] : [...activePlayers.B, ...
-                        benchPlayers.B
-                    ];
+    // Helper to get player by number and team
+    function findPlayerByNumber(playerNumber, team) {
+        const players = team === 'A' 
+            ? [...activePlayers.A, ...benchPlayers.A]
+            : [...activePlayers.B, ...benchPlayers.B];
+        
+        return players.find(p => (p.number || '00').toString() === playerNumber.toString());
+    }
 
-                    return players.find(p => (p.number || '00').toString() === playerNumber.toString());
+    // Initialize stats for all players
+    [...activePlayers.A, ...benchPlayers.A].forEach(player => {
+        const key = `A_${player.id}`;
+        playerStats[key] = {
+            player_id: player.id,
+            team_id: player.team_id,
+            points: 0,
+            fouls: player.fouls || 0,
+            free_throws_made: 0,
+            free_throws_attempted: 0,
+            two_points_made: 0,
+            two_points_attempted: 0,
+            three_points_made: 0,
+            three_points_attempted: 0,
+            assists: 0,      // ADD THIS
+            steals: 0,       // ADD THIS
+            rebounds: 0      // ADD THIS
+        };
+    });
+
+    [...activePlayers.B, ...benchPlayers.B].forEach(player => {
+        const key = `B_${player.id}`;
+        playerStats[key] = {
+            player_id: player.id,
+            team_id: player.team_id,
+            points: 0,
+            fouls: player.fouls || 0,
+            free_throws_made: 0,
+            free_throws_attempted: 0,
+            two_points_made: 0,
+            two_points_attempted: 0,
+            three_points_made: 0,
+            three_points_attempted: 0,
+            assists: 0,      // ADD THIS
+            steals: 0,       // ADD THIS
+            rebounds: 0      // ADD THIS
+        };
+    });
+
+    console.log('Initial player stats:', playerStats);
+    console.log('Processing game events:', gameEvents);
+
+    // Process game events to calculate stats
+    gameEvents.forEach(event => {
+        // Skip system/team events
+        if (event.player === 'TEAM' || event.player === 'SYSTEM') {
+            return;
+        }
+
+        // Find the player
+        const player = findPlayerByNumber(event.player, event.team);
+        
+        if (!player) {
+            console.warn(`Player not found for event:`, event);
+            return;
+        }
+
+        const key = `${event.team}_${player.id}`;
+        
+        if (!playerStats[key]) {
+            console.warn(`No stats entry for player ${player.id}`);
+            return;
+        }
+
+        // Process scoring events
+        if (event.action.includes('Points') || event.action.includes('Made')) {
+            playerStats[key].points += (event.points || 0);
+
+            // Track shot types
+            if (event.action.includes('Free Throw')) {
+                if (event.action.includes('Made')) {
+                    playerStats[key].free_throws_made++;
+                    playerStats[key].free_throws_attempted++;
+                } else if (event.action.includes('Miss')) {
+                    playerStats[key].free_throws_attempted++;
                 }
-
-                // Initialize stats for all players
-                [...activePlayers.A, ...benchPlayers.A].forEach(player => {
-                    const key = `A_${player.id}`;
-                    playerStats[key] = {
-                        player_id: player.id,
-                        team_id: player.team_id,
-                        points: 0,
-                        fouls: player.fouls || 0,
-                        free_throws_made: 0,
-                        free_throws_attempted: 0,
-                        two_points_made: 0,
-                        two_points_attempted: 0,
-                        three_points_made: 0,
-                        three_points_attempted: 0,
-                        assists: 0, // ADD THIS
-                        steals: 0, // ADD THIS
-                        rebounds: 0 // ADD THIS
-                    };
-                });
-
-                [...activePlayers.B, ...benchPlayers.B].forEach(player => {
-                    const key = `B_${player.id}`;
-                    playerStats[key] = {
-                        player_id: player.id,
-                        team_id: player.team_id,
-                        points: 0,
-                        fouls: player.fouls || 0,
-                        free_throws_made: 0,
-                        free_throws_attempted: 0,
-                        two_points_made: 0,
-                        two_points_attempted: 0,
-                        three_points_made: 0,
-                        three_points_attempted: 0,
-                        assists: 0, // ADD THIS
-                        steals: 0, // ADD THIS
-                        rebounds: 0 // ADD THIS
-                    };
-                });
-
-                console.log('Initial player stats:', playerStats);
-                console.log('Processing game events:', gameEvents);
-
-                // Process game events to calculate stats
-                gameEvents.forEach(event => {
-                    // Skip system/team events
-                    if (event.player === 'TEAM' || event.player === 'SYSTEM') {
-                        return;
-                    }
-
-                    // Find the player
-                    const player = findPlayerByNumber(event.player, event.team);
-
-                    if (!player) {
-                        console.warn(`Player not found for event:`, event);
-                        return;
-                    }
-
-                    const key = `${event.team}_${player.id}`;
-
-                    if (!playerStats[key]) {
-                        console.warn(`No stats entry for player ${player.id}`);
-                        return;
-                    }
-
-                    // Process scoring events
-                    if (event.action.includes('Points') || event.action.includes('Made')) {
-                        playerStats[key].points += (event.points || 0);
-
-                        // Track shot types
-                        if (event.action.includes('Free Throw')) {
-                            if (event.action.includes('Made')) {
-                                playerStats[key].free_throws_made++;
-                                playerStats[key].free_throws_attempted++;
-                            } else if (event.action.includes('Miss')) {
-                                playerStats[key].free_throws_attempted++;
-                            }
-                        } else if (event.action.includes('2 Points')) {
-                            playerStats[key].two_points_made++;
-                            playerStats[key].two_points_attempted++;
-                        } else if (event.action.includes('3 Points')) {
-                            playerStats[key].three_points_made++;
-                            playerStats[key].three_points_attempted++;
-                        }
-                    }
-
-                    // ADD: Process assists
-                    if (event.action === 'Assist') {
-                        playerStats[key].assists++;
-                        console.log(`Assist recorded for player ${player.id}`);
-                    }
-
-                    // ADD: Process steals
-                    if (event.action === 'Steal') {
-                        playerStats[key].steals++;
-                        console.log(`Steal recorded for player ${player.id}`);
-                    }
-
-                    // ADD: Process rebounds
-                    if (event.action === 'Rebound') {
-                        playerStats[key].rebounds++;
-                        console.log(`Rebound recorded for player ${player.id}`);
-                    }
-
-                    console.log(`Updated stats for player ${player.id}:`, playerStats[key]);
-                });
-
-                // Convert to array
-                const statsArray = Object.values(playerStats);
-
-                console.log('Final player stats array:', statsArray);
-
-                return statsArray;
+            } else if (event.action.includes('2 Points')) {
+                playerStats[key].two_points_made++;
+                playerStats[key].two_points_attempted++;
+            } else if (event.action.includes('3 Points')) {
+                playerStats[key].three_points_made++;
+                playerStats[key].three_points_attempted++;
             }
+        }
+
+        // ADD: Process assists
+        if (event.action === 'Assist') {
+            playerStats[key].assists++;
+            console.log(`Assist recorded for player ${player.id}`);
+        }
+
+        // ADD: Process steals
+        if (event.action === 'Steal') {
+            playerStats[key].steals++;
+            console.log(`Steal recorded for player ${player.id}`);
+        }
+
+        // ADD: Process rebounds
+        if (event.action === 'Rebound') {
+            playerStats[key].rebounds++;
+            console.log(`Rebound recorded for player ${player.id}`);
+        }
+
+        console.log(`Updated stats for player ${player.id}:`, playerStats[key]);
+    });
+
+    // Convert to array
+    const statsArray = Object.values(playerStats);
+    
+    console.log('Final player stats array:', statsArray);
+    
+    return statsArray;
+}
 
             // NEW: Retry save function
             function retryGameSave() {
@@ -3505,38 +3502,37 @@
                 }
 
                 function handleTallysheet() {
-                    const currentGameData = {
-                        id: gameData.id,
-                        team1_score: scoreA,
-                        team2_score: scoreB,
-                        team1_fouls: foulsA,
-                        team2_fouls: foulsB,
-                        team1_timeouts: timeoutsA,
-                        team2_timeouts: timeoutsB,
-                        current_quarter: currentQuarter,
-                        game_time: timerDisplay.textContent,
-                        events: gameEvents,
-                        period_scores: {
-                            team1: periodScores.teamA,
-                            team2: periodScores.teamB
-                        }
-                    };
+    const currentGameData = {
+        id: gameData.id,
+        team1_score: scoreA,
+        team2_score: scoreB,
+        team1_fouls: foulsA,
+        team2_fouls: foulsB,
+        team1_timeouts: timeoutsA,
+        team2_timeouts: timeoutsB,
+        current_quarter: currentQuarter,
+        game_time: timerDisplay.textContent,
+        events: gameEvents,
+        period_scores: {
+            team1: periodScores.teamA,
+            team2: periodScores.teamB
+        }
+    };
 
-                    const tallysheeetUrl =
-                        `/games/${gameData.id}/basketball-scoresheet?live_data=${encodeURIComponent(JSON.stringify(currentGameData))}`;
+    const tallysheeetUrl = `/games/${gameData.id}/basketball-scoresheet?live_data=${encodeURIComponent(JSON.stringify(currentGameData))}`;
+    
+    const tallysheeetWindow = window.open(
+        tallysheeetUrl,
+        'scoresheet',
+        'width=1200,height=900,scrollbars=yes,resizable=yes'
+    );
 
-                    const tallysheeetWindow = window.open(
-                        tallysheeetUrl,
-                        'scoresheet',
-                        'width=1200,height=900,scrollbars=yes,resizable=yes'
-                    );
-
-                    if (tallysheeetWindow) {
-                        tallysheeetWindow.focus();
-                    } else {
-                        alert('Please allow popups for this site to view the scoresheet.');
-                    }
-                }
+    if (tallysheeetWindow) {
+        tallysheeetWindow.focus();
+    } else {
+        alert('Please allow popups for this site to view the scoresheet.');
+    }
+}
 
             });
 

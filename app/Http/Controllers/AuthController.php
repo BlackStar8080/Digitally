@@ -18,21 +18,21 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'Scorekeeper_email' => 'required|email',
+            'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($request->only('Scorekeeper_email', 'password'))) {
+        if (Auth::attempt($request->only('email', 'password'))) {
             $request->session()->regenerate();
             return redirect()->route('dashboard');
         }
 
         return back()->withErrors([
-            'Scorekeeper_email' => 'The provided credentials do not match our records.',
-        ])->with('form_type', 'login');
+            'email' => 'The provided credentials do not match our records.',
+        ])->with('form_type', 'login'); // ✅ Added for modal
     }
 
-    // Show register form
+    // Show the register form
     public function showRegisterForm()
     {
         return view('auth.register');
@@ -42,25 +42,42 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'Scorekeeper_name' => [
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[A-Za-z0-9 ]+$/', // ✅ No special characters
+            ],
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8|confirmed',
+        ], [
+            'name.regex' => 'The name must not contain special characters.',
+        ]);
+
+        // Check if validation fails manually to add form_type
+        $validator = \Validator::make($request->all(), [
+            'name' => [
                 'required',
                 'string',
                 'max:255',
                 'regex:/^[A-Za-z0-9 ]+$/',
             ],
-            'Scorekeeper_email' => 'required|email|unique:users,Scorekeeper_email',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
-        ], [
-            'Scorekeeper_name.regex' => 'The name must not contain special characters.',
         ]);
 
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->with('form_type', 'register'); // ✅ Added for modal
+        }
+
         $user = User::create([
-            'Scorekeeper_name' => $request->Scorekeeper_name,
-            'Scorekeeper_email' => $request->Scorekeeper_email,
+            'name' => $request->name,
+            'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);
 
         Auth::login($user);
+
         return redirect()->route('dashboard');
     }
 
@@ -71,6 +88,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('landing');
+        return redirect()->route('landing'); // ✅ Changed to landing page since using modal
     }
 }

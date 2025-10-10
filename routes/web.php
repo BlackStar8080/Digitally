@@ -10,7 +10,6 @@ use App\Http\Controllers\BracketController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ReportsController;
-use App\Http\Controllers\PdfController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,8 +27,6 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
 });
-
-Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
 Route::post('/games/{game}/complete', [GameController::class, 'completeGame'])->name('games.complete');
 
@@ -67,32 +64,11 @@ Route::get('/games/{game}/tallysheet', [GameController::class, 'tallysheet'])->n
 // Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-
-
-
-// PDF Routes
-Route::prefix('pdf')->name('pdf.')->group(function () {
-    // Basketball scoresheet
-    Route::get('/basketball-scoresheet/{game}/download', [PdfController::class, 'basketballScoresheet'])
-        ->name('basketball.scoresheet.download');
-    
-    Route::get('/basketball-scoresheet/{game}/view', [PdfController::class, 'viewBasketballScoresheet'])
-        ->name('basketball.scoresheet.view');
-    
-    // NEW: Tournament bracket routes
-    Route::get('/bracket/{bracket}/download', [PdfController::class, 'tournamentBracket'])
-        ->name('bracket.download');
-    
-    Route::get('/bracket/{bracket}/view', [PdfController::class, 'viewTournamentBracket'])
-        ->name('bracket.view');
-});
-
 // Player Routes
 Route::get('/players', [PlayersController::class, 'index'])->name('players.index');
 Route::post('/players', [PlayersController::class, 'store'])->name('players.store');
 Route::get('/stats', [PlayersController::class, 'stats'])->name('players.stats');
 Route::resource('/players', PlayersController::class);
-
 
 
 // Landing page route (should be first)

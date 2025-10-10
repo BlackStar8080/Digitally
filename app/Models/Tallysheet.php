@@ -11,11 +11,25 @@ class Tallysheet extends Model
 
     protected $fillable = [
         'game_id',
+        'team1_score',
+        'team2_score',
+        'team1_fouls',
+        'team2_fouls',
+        'team1_timeouts',
+        'team2_timeouts',
+        'period_scores',
+        'running_scores',
+        'game_events',
+        'player_fouls',
         'best_player_id',
         'best_player_stats',
     ];
 
     protected $casts = [
+        'period_scores' => 'array',
+        'running_scores' => 'array',
+        'game_events' => 'array',
+        'player_fouls' => 'array',
         'best_player_stats' => 'array',
     ];
 
@@ -36,52 +50,11 @@ class Tallysheet extends Model
     }
 
     /**
-     * Get running score from game events (helper method)
-     */
-    public function getRunningScores()
-    {
-        $game = $this->game;
-        if (!$game) return [];
-
-        $runningScores = [];
-        $scoreA = 0;
-        $scoreB = 0;
-        
-        $events = $game->getEventsInOrder();
-        
-        foreach ($events as $event) {
-            if ($event->points > 0) {
-                if ($event->team === 'A') {
-                    $scoreA += $event->points;
-                    if ($scoreA <= 160) {
-                        $runningScores[] = [
-                            'team' => 'A',
-                            'score' => $scoreA,
-                            'sequence' => count($runningScores) + 1
-                        ];
-                    }
-                } else if ($event->team === 'B') {
-                    $scoreB += $event->points;
-                    if ($scoreB <= 160) {
-                        $runningScores[] = [
-                            'team' => 'B',
-                            'score' => $scoreB,
-                            'sequence' => count($runningScores) + 1
-                        ];
-                    }
-                }
-            }
-        }
-        
-        return $runningScores;
-    }
-
-    /**
-     * Helper: Check if a specific running score exists
+     * Get running score for a specific team and score value
      */
     public function hasRunningScore($team, $score)
     {
-        $runningScores = $this->getRunningScores();
+        $runningScores = $this->running_scores ?? [];
         
         foreach ($runningScores as $entry) {
             if ($entry['team'] === $team && $entry['score'] === $score) {
@@ -93,17 +66,11 @@ class Tallysheet extends Model
     }
 
     /**
-     * Get player foul count from game events (helper method)
+     * Get player foul count by team and player number
      */
     public function getPlayerFouls($team, $playerNumber)
     {
-        $game = $this->game;
-        if (!$game) return 0;
-
-        return $game->gameEvents()
-            ->where('team', $team)
-            ->where('player_number', $playerNumber)
-            ->where('action', 'like', '%Foul%')
-            ->count();
+        $playerKey = "{$team}_{$playerNumber}";
+        return $this->player_fouls[$playerKey] ?? 0;
     }
 }

@@ -227,17 +227,7 @@ td, th {
 </head>
 <body>
 
-<a href="{{ route('pdf.basketball.scoresheet.download', $game->id) }}" 
-   class="btn btn-success">
-    📥 Download Scoresheet PDF
-</a>
-
-<!-- View PDF in browser -->
-<a href="{{ route('pdf.basketball.scoresheet.view', $game->id) }}" 
-   class="btn btn-primary" 
-   target="_blank">
-    👁️ View Scoresheet PDF
-</a>
+<button class="print-btn" onclick="window.print()">🖨️ Print Scoresheet</button>
 
 <div class="sheet">
   <!-- Header -->
