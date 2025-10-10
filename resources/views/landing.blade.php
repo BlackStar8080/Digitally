@@ -1047,7 +1047,7 @@
                             <form action="{{ route('login') }}" method="POST" id="loginForm">
                                 @csrf
                                 <input type="hidden" name="form_type" value="login">
-                                <input type="email" name="email" class="form-input" placeholder="Email Address"
+                                <input type="email" name="Scorekeeper_email" class="form-input" placeholder="Email Address"
                                     required pattern="^[a-zA-Z0-9@.]+$" title="No special characters allowed"
                                     value="{{ old('email') }}">
                                 <input type="password" name="password" class="form-input" placeholder="Password"
@@ -1071,10 +1071,10 @@
                             <form action="{{ route('register') }}" method="POST" id="registerForm">
                                 @csrf
                                 <input type="hidden" name="form_type" value="register">
-                                <input type="text" name="name" class="form-input" placeholder="Full Name" required
+                                <input type="text" name="Scorekeeper_name" class="form-input" placeholder="Full Name" required
                                     pattern="^[a-zA-Z0-9 ]+$" title="No special characters allowed"
                                     value="{{ old('name') }}">
-                                <input type="email" name="email" class="form-input" placeholder="Email Address"
+                                <input type="email" name="Scorekeeper_email" class="form-input" placeholder="Email Address"
                                     required pattern="^[a-zA-Z0-9@.]+$" title="No special characters allowed"
                                     value="{{ old('email') }}">
                                 <input type="password" name="password" class="form-input" placeholder="Password"

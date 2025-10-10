@@ -28,6 +28,8 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
 });
+
+Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
 Route::post('/games/{game}/complete', [GameController::class, 'completeGame'])->name('games.complete');
 
@@ -90,6 +92,7 @@ Route::get('/players', [PlayersController::class, 'index'])->name('players.index
 Route::post('/players', [PlayersController::class, 'store'])->name('players.store');
 Route::get('/stats', [PlayersController::class, 'stats'])->name('players.stats');
 Route::resource('/players', PlayersController::class);
+
 
 
 // Landing page route (should be first)
