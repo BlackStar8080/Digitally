@@ -6,39 +6,34 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('players', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-
             $table->string('name');
+            
             $table->unsignedBigInteger('team_id');
-            $table->integer('number')->nullable();
-
-            // add sport column here (borrowing from tournaments)
-            $table->string('sport');
-
-            $table->string('position')->nullable();
-            $table->integer('age')->nullable();
-
             $table->foreign('team_id')
                   ->references('id')
                   ->on('teams')
                   ->onDelete('cascade');
+            
+            $table->integer('number')->nullable();
+            
+            // Foreign key to sports table
+            $table->unsignedBigInteger('sport_id');
+            $table->foreign('sport_id')
+                  ->references('sports_id')
+                  ->on('sports')
+                  ->onDelete('restrict');
+            
+            $table->string('position')->nullable();
+            $table->integer('age')->nullable();
+            $table->date('birthday')->nullable();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('players');

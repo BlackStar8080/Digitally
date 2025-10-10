@@ -12,15 +12,21 @@ class Player extends Model
     protected $fillable = [
         'name',
         'team_id',
+        'sport_id',
         'number',
-        'sport',
         'position',
         'age',
+        'birthday',
     ];
 
     public function team()
     {
         return $this->belongsTo(Team::class);
+    }
+
+    public function sport()
+    {
+        return $this->belongsTo(Sport::class, 'sport_id', 'sports_id');
     }
 
     public function gameStats()

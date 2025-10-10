@@ -6,24 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('teams', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('team_name')->unique(); // Unique team name
-            $table->string('coach_name')->nullable();    // Renamed from coach_name
-            $table->string('contact')->nullable();  // Changed from integer to string
+            $table->string('team_name')->unique();
+            $table->string('coach_name')->nullable();
+            $table->string('contact')->nullable();
             $table->string('address')->nullable();
-            $table->string('sport')->nullable();
-            $table->unsignedBigInteger('tournament_id')->nullable(); // Added this line
             
-            // Add foreign key constraint
+            // Foreign key to sports table
+            $table->unsignedBigInteger('sport_id');
+            $table->foreign('sport_id')
+                  ->references('sports_id')
+                  ->on('sports')
+                  ->onDelete('restrict');
+            
+            $table->unsignedBigInteger('tournament_id')->nullable();
             $table->foreign('tournament_id')
                   ->references('id')
                   ->on('tournaments')
@@ -31,11 +31,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('teams');

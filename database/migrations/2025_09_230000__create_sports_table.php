@@ -8,26 +8,21 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('sports', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique(); // e.g., Basketball, Volleyball
-            $table->string('type')->nullable(); // optional: indoor/outdoor
+            $table->id('sports_id');
+            $table->string('sports_name')->unique();
+            $table->text('sports_details')->nullable();
             $table->timestamps();
         });
-
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('sports');
     }

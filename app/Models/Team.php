@@ -14,8 +14,8 @@ class Team extends Model
         'coach_name',
         'contact',
         'address',
-        'sport',
-        'tournament_id', // ✅ Added this
+        'sport_id',
+        'tournament_id',
     ];
 
     /**
@@ -24,6 +24,14 @@ class Team extends Model
     public function tournament()
     {
         return $this->belongsTo(Tournament::class);
+    }
+
+    /**
+     * A team belongs to a sport.
+     */
+    public function sport()
+    {
+        return $this->belongsTo(Sport::class, 'sport_id', 'sports_id');
     }
 
     /**
