@@ -1890,7 +1890,7 @@
                     <div>
                         <h1 class="tournament-title">{{ $tournament->name }}</h1>
                         <p class="tournament-subtitle">
-                            {{ $tournament->sport }} • {{ $tournament->division }} •
+                            {{ $tournament->sport->sports_name ?? 'N/A' }} • {{ $tournament->division }} •
                             {{ $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('F j, Y') : 'Date TBD' }}
                         </p>
                     </div>
@@ -1908,8 +1908,6 @@
                     <div class="row">
                         <div class="col-md-6">
                             <h5 class="section-title">Tournament Information</h5>
-                            <p><strong>Bracket Type:</strong>
-                                {{ ucwords(str_replace('-', ' ', $tournament->bracket_type)) }}</p>
                             <p><strong>Teams Registered:</strong> {{ $tournament->teams->count() }}</p>
                             <p><strong>Status:</strong>
                                 @if ($tournament->brackets->isNotEmpty())
@@ -1999,7 +1997,7 @@
                         <div class="alert alert-info">
                             <small>
                                 <i class="bi bi-info-circle"></i>
-                                {{ $availableTeams->count() }} {{ $tournament->sport }} teams available to assign.
+                                {{ $availableTeams->count() }} {{ $tournament->sport->sports_name ?? 'Sport' }} teams available to assign.
                             </small>
                         </div>
                     @endif
@@ -2927,7 +2925,7 @@
                     <!-- Info Banner -->
                     <div class="alert alert-info mb-3">
                         <i class="bi bi-info-circle me-2"></i>
-                        <strong>Select teams to add:</strong> Only compatible {{ $tournament->sport }} teams that aren't
+                        <strong>Select teams to add:</strong> Only compatible {{ $tournament->sport->sports_name }} teams
                         in other tournaments are shown.
                     </div>
 
@@ -2983,8 +2981,8 @@
                     <!-- Teams Grid -->
                     <div class="teams-grid" id="teamsGrid">
                         @php
-                            $allTeams = \App\Models\Team::all();
-                            $tournamentSport = strtolower($tournament->sport);
+                            $allTeams = \App\Models\Team::with('sport')->get();
+                            $tournamentSport = $tournament->sport_id;
                             $availableTeamsCount = 0;
                             $addedTeamsCount = 0;
                         @endphp
@@ -2992,8 +2990,7 @@
                         @if ($allTeams->count() > 0)
                             @foreach ($allTeams as $team)
                                 @php
-                                    $teamSport = strtolower($team->sport ?? '');
-                                    $isCompatible = $teamSport === $tournamentSport;
+                                    $isCompatible = $team->sport_id === $tournamentSport;
                                     $isAlreadyAdded = $team->tournament_id == $tournament->id;
                                     $isInOtherTournament =
                                         $team->tournament_id && $team->tournament_id != $tournament->id;
@@ -3033,7 +3030,7 @@
                                                         </div>
                                                         <div class="detail-item">
                                                             <i class="bi bi-trophy"></i>
-                                                            <span>{{ $team->sport }}</span>
+                                                            <span>{{ $team->sport->sports_name ?? 'N/A' }}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -3065,7 +3062,7 @@
                                                         </div>
                                                         <div class="detail-item">
                                                             <i class="bi bi-trophy"></i>
-                                                            <span>{{ $team->sport }}</span>
+                                                            <span>{{ $team->sport->sports_name ?? 'N/A' }}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -3083,8 +3080,7 @@
                                 <div class="no-teams-message" style="grid-column: 1/-1;">
                                     <div class="text-center py-5">
                                         <i class="bi bi-inbox" style="font-size: 3rem; opacity: 0.3;"></i>
-                                        <p class="text-muted mt-3">No compatible {{ $tournament->sport }} teams
-                                            available.</p>
+                                        <p class="text-muted mt-3">No compatible {{ $tournament->sport->sports_name ?? 'Sport' }} teams available.</p>
                                         <small class="text-muted">Teams in other tournaments are hidden.</small>
                                     </div>
                                 </div>

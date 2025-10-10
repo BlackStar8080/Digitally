@@ -11,8 +11,15 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->string('division');
-            $table->string('sport');
-            $table->string('bracket_type'); // e.g. single-elimination, round-robin
+            
+            // Foreign key to sports table
+            $table->unsignedBigInteger('sport_id');
+            $table->foreign('sport_id')
+                  ->references('sports_id')
+                  ->on('sports')
+                  ->onDelete('restrict');
+            
+
             $table->date('start_date')->nullable();
             $table->timestamps();
         });

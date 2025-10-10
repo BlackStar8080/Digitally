@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Team;
 use App\Models\Tournament;
+use App\Models\Sport;
 use Illuminate\Http\Request;
 
 class TeamsController extends Controller
@@ -11,7 +12,7 @@ class TeamsController extends Controller
     // ✅ Show all teams with wins & losses included
     public function index()
     {
-        $teams = Team::with('tournament')
+        $teams = Team::with(['tournament', 'sport'])
             ->withCount('players')
             ->orderBy('team_name')
             ->get()
@@ -24,8 +25,9 @@ class TeamsController extends Controller
             });
 
         $tournaments = Tournament::orderBy('name')->get();
+        $sports = Sport::all();
 
-        return view('teams', compact('teams', 'tournaments'));
+        return view('teams', compact('teams', 'tournaments', 'sports'));
     }
 
     // Store new team
@@ -36,7 +38,7 @@ class TeamsController extends Controller
             'coach_name'    => 'nullable|string|max:255',
             'contact'       => 'nullable|string|max:255',
             'address'       => 'nullable|string|max:255',
-            'sport'         => 'required|string|max:100',
+            'sport_id'      => 'required|exists:sports,sports_id',
             'tournament_id' => 'nullable|exists:tournaments,id',
         ], [
             'team_name.unique' => 'This team name is already registered.',
@@ -52,7 +54,7 @@ class TeamsController extends Controller
     // Show single team
     public function show($id)
     {
-        $team = Team::with(['players'])->findOrFail($id);
+        $team = Team::with(['players', 'sport'])->findOrFail($id);
 
         return view('team_show', compact('team'));
     }
@@ -65,7 +67,7 @@ class TeamsController extends Controller
             'coach_name'    => 'nullable|string|max:255',
             'contact'       => 'nullable|string|max:255',
             'address'       => 'nullable|string|max:255',
-            'sport'         => 'required|string|max:100',
+            'sport_id'      => 'required|exists:sports,sports_id',
             'tournament_id' => 'nullable|exists:tournaments,id',
         ]);
 

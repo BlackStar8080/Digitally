@@ -12,11 +12,17 @@ class Tournament extends Model
     protected $fillable = [
         'name',
         'division',
-        'location',
-        'sport',
+        'sport_id',
         'start_date',
-        'bracket_type',
     ];
+
+    /**
+     * A tournament belongs to a sport.
+     */
+    public function sport()
+    {
+        return $this->belongsTo(Sport::class, 'sport_id', 'sports_id');
+    }
 
     /**
      * A tournament has many brackets.

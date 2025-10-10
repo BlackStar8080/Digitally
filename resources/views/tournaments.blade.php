@@ -571,10 +571,9 @@
                 <div class="tournaments-grid" id="tournamentsGrid">
                     @forelse($tournaments as $index => $tournament)
                         <div class="tournament-card fade-in-card" style="animation-delay: {{ $index * 0.05 }}s"
-                             data-name="{{ strtolower($tournament->name) }}"
-                             data-sport="{{ strtolower($tournament->sport ?? '') }}"
-                             data-bracket="{{ strtolower($tournament->bracket_type ?? $tournament->bracketType ?? '') }}"
-                             data-id="{{ $tournament->id }}">
+                            data-name="{{ strtolower($tournament->name) }}"
+                            data-sport="{{ strtolower($tournament->sport->sports_name ?? '') }}"
+                            data-id="{{ $tournament->id }}">
                             <div class="tournament-actions">
                                 <button class="btn-card-action btn-card-edit" onclick="openEditModal({{ $tournament->id }}, event)" title="Edit Tournament">
                                     <i class="bi bi-pencil-fill"></i>
@@ -591,16 +590,13 @@
                                             {{ \Carbon\Carbon::parse($tournament->start_date ?? $tournament->date ?? now())->format('F d, Y') }}
                                         </p>
                                     </div>
-                                    <div class="sport-icon {{ strtolower($tournament->sport ?? '') }}">
-                                        @php $s = strtolower($tournament->sport ?? ''); @endphp
-                                        @if($s === 'basketball') 🏀
-                                        @elseif($s === 'volleyball') 🏐
+                                    <div class="sport-icon {{ strtolower($tournament->sport->sports_name ?? '') }}">
+                                        @php $sportName = strtolower($tournament->sport->sports_name ?? ''); @endphp
+                                        @if($sportName === 'basketball') 🏀
+                                        @elseif($sportName === 'volleyball') 🏐
                                         @else 🏆
                                         @endif
                                     </div>
-                                </div>
-                                <div class="tournament-type">
-                                    {{ $tournament->bracket_type ?? $tournament->bracketType ?? '---' }}
                                 </div>
                             </a>
                         </div>
@@ -646,22 +642,14 @@
                     <input type="date" id="tournamentDate" name="start_date" class="form-control">
                 </div>
                 <div class="mb-3">
-                    <label for="sportsType" class="form-label">Sports Type</label>
-                    <select id="sportsType" name="sport" class="form-select" required>
-                        <option value="">Select a sport</option>
-                        <option value="Basketball">Basketball</option>
-                        <option value="Volleyball">Volleyball</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="bracketType" class="form-label">Bracket Type</label>
-                    <select id="bracketType" name="bracket_type" class="form-select" required>
-                        <option value="">Select bracket type</option>
-                        <option value="single-elimination">Single Elimination</option>
-                        <option value="double-elimination">Double Elimination</option>
-                        <option value="round-robin">Round Robin</option>
-                    </select>
-                </div>
+                <label for="teamSport" class="form-label">Sport</label>
+                <select name="sport_id" id="teamSport" class="form-select" required>
+                    <option value="">Select sport</option>
+                    @foreach ($sports as $sport)
+                        <option value="{{ $sport->sports_id }}">{{ $sport->sports_name }}</option>
+                    @endforeach
+                </select>
+            </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -700,21 +688,14 @@
                 </div>
                 <div class="mb-3">
                     <label for="edit_sport" class="form-label">Sports Type</label>
-                    <select id="edit_sport" name="sport" class="form-select" required>
+                    <select id="edit_sport" name="sport_id" class="form-select" required>
                         <option value="">Select a sport</option>
-                        <option value="Basketball">Basketball</option>
-                        <option value="Volleyball">Volleyball</option>
+                        @foreach($sports as $sport)
+                            <option value="{{ $sport->sports_id }}">{{ $sport->sports_name }}</option>
+                        @endforeach
                     </select>
                 </div>
-                <div class="mb-3">
-                    <label for="edit_bracket_type" class="form-label">Bracket Type</label>
-                    <select id="edit_bracket_type" name="bracket_type" class="form-select" required>
-                        <option value="">Select bracket type</option>
-                        <option value="single-elimination">Single Elimination</option>
-                        <option value="double-elimination">Double Elimination</option>
-                        <option value="round-robin">Round Robin</option>
-                    </select>
-                </div>
+                
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -788,25 +769,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Edit Tournament Function
-    window.openEditModal = function(tournamentId, event) {
-        event.preventDefault();
-        event.stopPropagation();
-        
-        const tournament = tournaments.find(t => t.id === tournamentId);
-        if (!tournament) return;
+            window.openEditModal = function(tournamentId, event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const tournament = tournaments.find(t => t.id === tournamentId);
+            if (!tournament) return;
 
-        const form = document.getElementById('editTournamentForm');
-        form.action = `/tournaments/${tournamentId}`;
-        
-        document.getElementById('edit_name').value = tournament.name || '';
-        document.getElementById('edit_division').value = tournament.division || '';
-        document.getElementById('edit_date').value = tournament.start_date || tournament.date || '';
-        document.getElementById('edit_sport').value = tournament.sport || '';
-        document.getElementById('edit_bracket_type').value = tournament.bracket_type || tournament.bracketType || '';
+            const form = document.getElementById('editTournamentForm');
+            form.action = `/tournaments/${tournamentId}`;
+            
+            document.getElementById('edit_name').value = tournament.name || '';
+            document.getElementById('edit_division').value = tournament.division || '';
+            document.getElementById('edit_date').value = tournament.start_date || '';
+            document.getElementById('edit_sport').value = tournament.sport_id || '';
+            document.getElementById('edit_bracket_type').value = tournament.bracket_type || '';
 
-        const modal = new bootstrap.Modal(document.getElementById('editTournamentModal'));
-        modal.show();
-    };
+            const modal = new bootstrap.Modal(document.getElementById('editTournamentModal'));
+            modal.show();
+        };
 
     // Delete Tournament Function
     window.deleteTournament = function(tournamentId, tournamentName, event) {

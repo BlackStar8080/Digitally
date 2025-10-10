@@ -14,19 +14,19 @@ class BracketController extends Controller
      * Show tournament with its brackets
      */
     public function showTournament($id)
-    {
-        $tournament = Tournament::with(['brackets.games', 'teams'])->findOrFail($id);
+        {
+            $tournament = Tournament::with(['brackets.games', 'teams.sport', 'sport'])->findOrFail($id);
 
-        // Get teams not assigned to this tournament (case-insensitive sport matching)
-        $availableTeams = Team::whereRaw('LOWER(sport) = LOWER(?)', [$tournament->sport])
-            ->where(function ($query) use ($tournament) {
-                $query->whereNull('tournament_id')
-                    ->orWhere('tournament_id', '!=', $tournament->id);
-            })
-            ->get();
+            $availableTeams = Team::with('sport')
+                ->where('sport_id', $tournament->sport_id)
+                ->where(function ($query) use ($tournament) {
+                    $query->whereNull('tournament_id')
+                        ->orWhere('tournament_id', '!=', $tournament->id);
+                })
+                ->get();
 
-        return view('tournament_show', compact('tournament', 'availableTeams'));
-    }
+            return view('tournament_show', compact('tournament', 'availableTeams'));
+        }
 
     /**
      * Create a new bracket for a tournament
@@ -619,22 +619,22 @@ class BracketController extends Controller
      * Assign a team to a tournament
      */
     public function assignTeam(Request $request, $tournamentId)
-    {
-        $validated = $request->validate([
-            'team_id' => 'required|exists:teams,id',
-        ]);
+{
+    $validated = $request->validate([
+        'team_id' => 'required|exists:teams,id',
+    ]);
 
-        $tournament = Tournament::findOrFail($tournamentId);
-        $team = Team::findOrFail($validated['team_id']);
+    $tournament = Tournament::with('sport')->findOrFail($tournamentId);
+    $team = Team::with('sport')->findOrFail($validated['team_id']);
 
-        if (strtolower($team->sport) !== strtolower($tournament->sport)) {
-            return back()->with('error', 'Team sport does not match tournament sport.');
-        }
-
-        $team->update(['tournament_id' => $tournament->id]);
-
-        return back()->with('success', "Team '{$team->team_name}' has been assigned to the tournament!");
+    if ($team->sport_id !== $tournament->sport_id) {
+        return back()->with('error', 'Team sport does not match tournament sport.');
     }
+
+    $team->update(['tournament_id' => $tournament->id]);
+
+    return back()->with('success', "Team '{$team->team_name}' has been assigned to the tournament!");
+}
 
     /**
      * Remove a team from a tournament

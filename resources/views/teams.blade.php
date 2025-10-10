@@ -598,8 +598,9 @@ body {
                     <div class="filters-group">
                         <select class="filter-select" id="sportFilter">
                             <option value="all">All Sports</option>
-                            <option value="basketball">Basketball</option>
-                            <option value="volleyball">Volleyball</option>
+                            @foreach ($sports as $sport)
+                                <option value="{{ strtolower($sport->sports_name) }}">{{ $sport->sports_name }}</option>
+                            @endforeach
                         </select>
                     </div>
                     
@@ -701,17 +702,20 @@ body {
                     </div>
                     
                     <div class="mb-3">
-                        <label for="sport" class="form-label">Sport</label>
-                        <select class="form-control @error('sport') is-invalid @enderror" 
-                                id="sport" name="sport" required>
-                            <option value="">Select Sport</option>
-                            <option value="basketball" {{ old('sport')=='basketball'?'selected':'' }}>Basketball</option>
-                            <option value="volleyball" {{ old('sport')=='volleyball'?'selected':'' }}>Volleyball</option>
-                        </select>
-                        @error('sport')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+    <label for="sport" class="form-label">Sport</label>
+    <select class="form-control @error('sport_id') is-invalid @enderror" 
+            id="sport" name="sport_id" required>
+        <option value="">Select Sport</option>
+        @foreach ($sports as $sport)
+            <option value="{{ $sport->sports_id }}" {{ old('sport_id') == $sport->sports_id ? 'selected' : '' }}>
+                {{ $sport->sports_name }}
+            </option>
+        @endforeach
+    </select>
+    @error('sport_id')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -776,10 +780,11 @@ body {
                     
                     <div class="mb-3">
                         <label for="edit_sport" class="form-label">Sport</label>
-                        <select class="form-control" id="edit_sport" name="sport" required>
+                        <select class="form-control" id="edit_sport" name="sport_id" required>
                             <option value="">Select Sport</option>
-                            <option value="basketball">Basketball</option>
-                            <option value="volleyball">Volleyball</option>
+                            @foreach ($sports as $sport)
+                                <option value="{{ $sport->sports_id }}">{{ $sport->sports_name }}</option>
+                            @endforeach
                         </select>
                     </div>
                 </form>
@@ -928,8 +933,7 @@ function hideToast() {
         const filtered = teams.filter(team => {
             const name = (team.team_name || '').toString().toLowerCase();
             const address = (team.address || team.location || '').toString().toLowerCase();
-            const sport = (team.sport || '').toString().toLowerCase();
-
+            const sport = (team.sport?.sports_name || '').toString().toLowerCase();
             const matchSearch = !q || name.includes(q) || address.includes(q) || 
                               (team.coach_name || '').toString().toLowerCase().includes(q);
             const matchSport = selected === 'all' || (sport && sport === selected);
@@ -955,8 +959,7 @@ function hideToast() {
         document.getElementById('edit_coach_name').value = team.coach_name || '';
         document.getElementById('edit_contact').value = team.contact || '';
         document.getElementById('edit_address').value = team.address || '';
-        document.getElementById('edit_sport').value = team.sport || '';
-        
+        document.getElementById('edit_sport').value = team.sport_id || '';        
         // Preview existing logo
         const editLogoPreview = document.getElementById('editLogoPreview');
         if (team.logo) {

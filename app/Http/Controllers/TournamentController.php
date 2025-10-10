@@ -3,18 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tournament;
-use Illuminate\Http\Request;
+use App\Models\Sport;
 use App\Models\Team;
+use Illuminate\Http\Request;
 
 class TournamentController extends Controller
 {
     // Show all tournaments
     public function index()
     {
-        // Sort tournaments by start date ascending
-        $tournaments = Tournament::orderBy('start_date', 'asc')->get();
+        // Load tournaments with sport relationship
+        $tournaments = Tournament::with('sport')
+            ->orderBy('start_date', 'asc')
+            ->get();
 
-        return view('tournaments', compact('tournaments'));
+        $sports = Sport::all();
+
+        return view('tournaments', compact('tournaments', 'sports'));
     }
 
     // Store new tournament
@@ -23,8 +28,7 @@ class TournamentController extends Controller
         $validated = $request->validate([
             'name'         => 'required|string|max:255|unique:tournaments,name',
             'division'     => 'required|string|max:255',
-            'sport'        => 'required|string|max:100',
-            'bracket_type' => 'required|string|max:100',
+            'sport_id'     => 'required|exists:sports,sports_id',
             'start_date'   => 'nullable|date',
         ], [
             'name.unique' => 'This tournament name is already registered.',
@@ -40,7 +44,7 @@ class TournamentController extends Controller
     // View a single tournament
     public function show($id)
     {
-        $tournament = Tournament::findOrFail($id);
+        $tournament = Tournament::with('sport')->findOrFail($id);
 
         return view('tournaments.show', compact('tournament'));
     }
@@ -51,8 +55,7 @@ class TournamentController extends Controller
         $validated = $request->validate([
             'name'         => 'required|string|max:255|unique:tournaments,name,' . $tournament->id,
             'division'     => 'required|string|max:255',
-            'sport'        => 'required|string|max:100',
-            'bracket_type' => 'required|string|max:100',
+            'sport_id'     => 'required|exists:sports,sports_id',
             'start_date'   => 'nullable|date',
         ], [
             'name.unique' => 'This tournament name is already registered.',
@@ -86,15 +89,15 @@ class TournamentController extends Controller
             'team_ids.*' => 'required|exists:teams,id',
         ]);
 
-        $tournament = Tournament::findOrFail($tournamentId);
+        $tournament = Tournament::with('sport')->findOrFail($tournamentId);
         $successCount = 0;
         $errors = [];
 
         foreach ($validated['team_ids'] as $teamId) {
-            $team = Team::findOrFail($teamId);
+            $team = Team::with('sport')->findOrFail($teamId);
 
-            // Check if team sport matches tournament sport (case-insensitive)
-            if (strtolower($team->sport) !== strtolower($tournament->sport)) {
+            // Check if team sport matches tournament sport
+            if ($team->sport_id !== $tournament->sport_id) {
                 $errors[] = "Team '{$team->team_name}' sport does not match tournament sport.";
                 continue;
             }
