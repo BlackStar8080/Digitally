@@ -439,8 +439,9 @@
                             <label for="sportFilter"><i class="bi bi-funnel"></i> Sport:</label>
                             <select id="sportFilter" class="filter-select">
                                 <option value="">All Sports</option>
-                                <option value="Basketball">Basketball</option>
-                                <option value="Volleyball">Volleyball</option>
+                                @foreach(\App\Models\Sport::all() as $sport)
+                                    <option value="{{ $sport->sports_name }}">{{ $sport->sports_name }}</option>
+                                @endforeach
                             </select>
                         </div>
 
@@ -467,8 +468,7 @@
                                 {{ $tournament->name }}
                             </h2>
                             <div class="tournament-info">
-                                {{ $tournament->sport }} • {{ $tournament->division }} •
-                                {{ $tournament->games->count() }} Games
+                            {{ $tournament->sport->sports_name ?? 'N/A' }} • {{ $tournament->division }} •                                {{ $tournament->games->count() }} Games
                             </div>
                         </div>
                         <div class="tournament-info">
@@ -484,17 +484,17 @@
                         @if ($tournament->games->count() > 0)
                             <div class="games-grid">
                                 @foreach ($tournament->games as $game)
-                                    <div class="game-card {{ $game->status }}" data-sport="{{ $tournament->sport }}"
+                                    <div class="game-card {{ $game->status }}" data-sport="{{ $tournament->sport->sports_name ?? '' }}"
                                         data-status="{{ $game->status }}" data-game-id="{{ $game->id }}">
 
                                         <div class="game-info">
-                                            <span class="sport-tag">{{ $tournament->sport }}</span>
+                                            <span class="sport-tag">{{ $tournament->sport->sports_name ?? 'N/A' }}</span>
                                             <span class="game-status">
                                                 @if ($game->status === 'completed')
                                                     Final
                                                 @elseif($game->status === 'in-progress')
                                                     <span class="live-indicator">LIVE</span>
-                                                    @if ($tournament->sport === 'Basketball')
+                                                    @if ($tournament->sport->sports_name === 'Basketball')
                                                         Q{{ $game->current_quarter ?? 1 }} -
                                                         {{ $game->time_remaining ?? '12:00' }}
                                                     @else
