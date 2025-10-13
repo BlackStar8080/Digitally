@@ -1131,7 +1131,7 @@
                                                     data-tournament-id="{{ $tournament->id }}">
                                                     <div class="tab-info">
                                                         <span class="tab-name">{{ $tournament->name }}</span>
-                                                        <span class="tab-meta">{{ $tournament->sport }} • {{ $tournament->games->count() }} Games</span>
+                                                        <span class="tab-meta">{{ $tournament->sport_name }} • {{ $tournament->games->count() }} Games</span>
                                                     </div>
                                                     @if ($tournament->games->where('status', 'in-progress')->count() > 0)
                                                         <span class="live-dot"></span>
@@ -1167,13 +1167,13 @@
                                             @foreach ($gamesChunk as $game)
                                                 <div class="game-card" data-game-id="{{ $game->id }}">
                                                     <div class="game-info">
-                                                        <span class="sport-tag">{{ $tournament->sport }}</span>
+                                                        <span class="sport-tag">{{ $tournament->sport_name }}</span>
                                                         <span class="game-status">
                                                             @if ($game->status === 'completed')
                                                                 Final
                                                             @elseif($game->status === 'in-progress')
                                                                 <span class="live-indicator">LIVE</span>
-                                                                @if ($tournament->sport === 'Basketball')
+                                                                @if ($tournament->sport_name === 'Basketball')
                                                                     Q{{ $game->current_quarter ?? 1 }} -
                                                                     {{ $game->time_remaining ?? '12:00' }}
                                                                 @else
@@ -1288,7 +1288,7 @@
                         </p>
                         <p><i class="bi bi-people"></i> {{ $tournament->teams->count() }} Teams •
                             {{ ucwords(str_replace('-', ' ', $tournament->bracket_type)) }}</p>
-                        <p><i class="bi bi-geo-alt"></i> {{ $tournament->sport }} • {{ $tournament->division }}</p>
+                        <p><i class="bi bi-geo-alt"></i> {{ $tournament->sport_name }} • {{ $tournament->division }}</p>
                     </div>
                     <a href="{{ route('tournaments.show', $tournament->id) }}" class="view-tournament-btn">
                         View Tournament

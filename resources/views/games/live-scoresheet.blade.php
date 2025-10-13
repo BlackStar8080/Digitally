@@ -322,8 +322,8 @@
                 overflow: hidden;
                 width: 100vw;
                 max-width: 100%;
-                 min-height: 0;
-                 max-height: 100%; 
+                min-height: 0;
+                max-height: 100%;
             }
 
             /* Player Roster */
@@ -384,14 +384,14 @@
             }
 
             .players-grid {
-                 display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 12px;
-                    padding: 20px;
-                    flex: 1;
-                    overflow-y: auto;
-                    min-height: 0;
-                    max-height: 100%;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+                padding: 20px;
+                flex: 1;
+                overflow-y: auto;
+                min-height: 0;
+                max-height: 100%;
             }
 
             .player-card {
@@ -449,17 +449,18 @@
                 height: 100%;
                 overflow: hidden;
                 min-height: 0;
-                max-height: calc(100vh - 70px); /* 70px is your scoreboard height */
-                }
+                max-height: calc(100vh - 70px);
+                /* 70px is your scoreboard height */
+            }
 
 
             .log-header {
                 padding: 15px 20px;
-    background: #333;
-    border-bottom: 1px solid #444;
-    font-weight: 600;
-    font-size: 14px;
-    flex-shrink: 0;
+                background: #333;
+                border-bottom: 1px solid #444;
+                font-weight: 600;
+                font-size: 14px;
+                flex-shrink: 0;
             }
 
             .log-content {
@@ -471,36 +472,38 @@
                 max-height: 100%;
                 display: flex;
                 flex-direction: column;
-                scrollbar-width: none; /* Firefox - hide scrollbar */
-                }
+                scrollbar-width: none;
+                /* Firefox - hide scrollbar */
+            }
 
-                .log-content:hover {
+            .log-content:hover {
                 scrollbar-width: thin;
-                scrollbar-color: #4CAF50 #2a2a2a; /* Thumb color and track */
-                }
+                scrollbar-color: #4CAF50 #2a2a2a;
+                /* Thumb color and track */
+            }
 
-                .log-content::-webkit-scrollbar {
-  width: 8px;
-  background: transparent;
-}
+            .log-content::-webkit-scrollbar {
+                width: 8px;
+                background: transparent;
+            }
 
-.log-content:hover::-webkit-scrollbar {
-  width: 8px;
-}
+            .log-content:hover::-webkit-scrollbar {
+                width: 8px;
+            }
 
-.log-content::-webkit-scrollbar-thumb {
-  background: #4CAF50;
-  border-radius: 6px;
-}
+            .log-content::-webkit-scrollbar-thumb {
+                background: #4CAF50;
+                border-radius: 6px;
+            }
 
-.log-content::-webkit-scrollbar-thumb:hover {
-  background: #66bb6a;
-}
+            .log-content::-webkit-scrollbar-thumb:hover {
+                background: #66bb6a;
+            }
 
-.log-content::-webkit-scrollbar-track {
-  background: #2a2a2a;
-  border-radius: 6px;
-}
+            .log-content::-webkit-scrollbar-track {
+                background: #2a2a2a;
+                border-radius: 6px;
+            }
 
 
             .log-entry {
@@ -572,7 +575,7 @@
                 gap: 12px;
                 height: 100%;
                 min-height: 0;
-                overflow-y: auto; 
+                overflow-y: auto;
                 max-height: 100%;
 
 
@@ -1554,6 +1557,153 @@
                 transform: translateY(-2px);
                 box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
             }
+
+            /* Hotkeys Modal Styles */
+            .hotkeys-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: none;
+                justify-content: center;
+                align-items: center;
+                z-index: 8000;
+            }
+
+            .hotkeys-content {
+                background: #2d2d2d;
+                border-radius: 12px;
+                padding: 30px;
+                width: 90%;
+                max-width: 800px;
+                max-height: 80vh;
+                overflow-y: auto;
+                position: relative;
+            }
+
+            .hotkeys-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                border-bottom: 2px solid #444;
+                padding-bottom: 15px;
+            }
+
+            .hotkeys-title {
+                font-size: 24px;
+                font-weight: bold;
+                color: white;
+            }
+
+            .hotkeys-close {
+                background: #666;
+                border: none;
+                color: white;
+                padding: 8px 12px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 18px;
+            }
+
+            .hotkeys-close:hover {
+                background: #777;
+            }
+
+            .hotkeys-instructions {
+                text-align: center;
+                color: #aaa;
+                margin-bottom: 25px;
+                padding: 12px;
+                background: #333;
+                border-radius: 6px;
+                font-size: 14px;
+            }
+
+            .hotkeys-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 15px;
+                margin-bottom: 25px;
+            }
+
+            .hotkey-item {
+                background: #3d3d3d;
+                padding: 15px;
+                border-radius: 8px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .hotkey-label {
+                color: white;
+                font-weight: 600;
+                font-size: 14px;
+            }
+
+            .hotkey-input {
+                background: #4d4d4d;
+                padding: 10px;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: all 0.2s;
+                border: 2px solid transparent;
+                text-align: center;
+            }
+
+            .hotkey-input:hover {
+                background: #5d5d5d;
+                border-color: #4CAF50;
+            }
+
+            .hotkey-input.listening {
+                background: #FF9800;
+                border-color: #F57C00;
+                animation: pulse 1s infinite;
+            }
+
+            .current-key {
+                color: white;
+                font-weight: bold;
+                font-size: 16px;
+                font-family: 'Courier New', monospace;
+            }
+
+            .hotkeys-actions {
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+                padding-top: 20px;
+                border-top: 1px solid #444;
+            }
+
+            .hotkey-btn {
+                padding: 12px 24px;
+                border: none;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+
+            .hotkey-btn.reset {
+                background: linear-gradient(135deg, #666 0%, #555 100%);
+                color: white;
+            }
+
+            .hotkey-btn.save {
+                background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+                color: white;
+            }
+
+            .hotkey-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
         </style>
     </head>
 
@@ -1577,6 +1727,7 @@
                 <div class="dropdown-menu" id="dropdownMenu">
                     <button class="dropdown-item" id="postponeBtn">Postpone Game</button>
                     <button class="dropdown-item" id="tallysheetBtn">Tallysheet</button>
+                    <button class="dropdown-item" id="hotkeysBtn">Customize Hotkeys</button>
                 </div>
             </div>
 
@@ -1812,6 +1963,113 @@
                     <button class="retry-btn" id="retryBtn" style="display: none;" onclick="retryGameSave()">
                         Retry Save
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hotkeys Modal -->
+        <div class="hotkeys-modal" id="hotkeysModal">
+            <div class="hotkeys-content">
+                <div class="hotkeys-header">
+                    <div class="hotkeys-title">Customize Hotkeys</div>
+                    <button class="hotkeys-close" id="hotkeysClose">&times;</button>
+                </div>
+
+                <div class="hotkeys-body">
+                    <div class="hotkeys-instructions">
+                        Click on an action and press a key to assign a hotkey. Press ESC to clear.
+                    </div>
+
+                    <div class="hotkeys-grid">
+                        <div class="hotkey-item">
+                            <div class="hotkey-label">Free Throw</div>
+                            <div class="hotkey-input" data-action="Free Throw">
+                                <span class="current-key" id="key-freethrow">F</span>
+                            </div>
+                        </div>
+
+                        <div class="hotkey-item">
+                            <div class="hotkey-label">2 Points</div>
+                            <div class="hotkey-input" data-action="2 Points">
+                                <span class="current-key" id="key-2points">2</span>
+                            </div>
+                        </div>
+
+                        <div class="hotkey-item">
+                            <div class="hotkey-label">3 Points</div>
+                            <div class="hotkey-input" data-action="3 Points">
+                                <span class="current-key" id="key-3points">3</span>
+                            </div>
+                        </div>
+
+                        <div class="hotkey-item">
+                            <div class="hotkey-label">Assist</div>
+                            <div class="hotkey-input" data-action="Assist">
+                                <span class="current-key" id="key-assist">A</span>
+                            </div>
+                        </div>
+
+                        <div class="hotkey-item">
+                            <div class="hotkey-label">Steal</div>
+                            <div class="hotkey-input" data-action="Steal">
+                                <span class="current-key" id="key-steal">S</span>
+                            </div>
+                        </div>
+
+                        <div class="hotkey-item">
+                            <div class="hotkey-label">Rebound</div>
+                            <div class="hotkey-input" data-action="Rebound">
+                                <span class="current-key" id="key-rebound">R</span>
+                            </div>
+                        </div>
+
+                        <div class="hotkey-item">
+                            <div class="hotkey-label">Foul</div>
+                            <div class="hotkey-input" data-action="Foul">
+                                <span class="current-key" id="key-foul">L</span>
+                            </div>
+                        </div>
+
+                        <div class="hotkey-item">
+                            <div class="hotkey-label">Technical Foul</div>
+                            <div class="hotkey-input" data-action="Tech Foul">
+                                <span class="current-key" id="key-tech">T</span>
+                            </div>
+                        </div>
+
+                        <div class="hotkey-item">
+                            <div class="hotkey-label">Timeout</div>
+                            <div class="hotkey-input" data-action="Timeout">
+                                <span class="current-key" id="key-timeout">O</span>
+                            </div>
+                        </div>
+
+                        <div class="hotkey-item">
+                            <div class="hotkey-label">Substitution</div>
+                            <div class="hotkey-input" data-action="Substitution">
+                                <span class="current-key" id="key-substitution">U</span>
+                            </div>
+                        </div>
+
+                        <div class="hotkey-item">
+                            <div class="hotkey-label">Undo</div>
+                            <div class="hotkey-input" data-action="Undo">
+                                <span class="current-key" id="key-undo">Z</span>
+                            </div>
+                        </div>
+
+                        <div class="hotkey-item">
+                            <div class="hotkey-label">Play/Pause Timer</div>
+                            <div class="hotkey-input" data-action="PlayPause">
+                                <span class="current-key" id="key-playpause">SPACE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hotkeys-actions">
+                        <button class="hotkey-btn reset" id="resetHotkeys">Reset to Defaults</button>
+                        <button class="hotkey-btn save" id="saveHotkeys">Save Changes</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2346,131 +2604,131 @@
 
             // NEW: Collect player statistics from game events
             // Collect player statistics from game events
-function collectPlayerStats() {
-    const playerStats = {};
+            function collectPlayerStats() {
+                const playerStats = {};
 
-    // Helper to get player by number and team
-    function findPlayerByNumber(playerNumber, team) {
-        const players = team === 'A' 
-            ? [...activePlayers.A, ...benchPlayers.A]
-            : [...activePlayers.B, ...benchPlayers.B];
-        
-        return players.find(p => (p.number || '00').toString() === playerNumber.toString());
-    }
+                // Helper to get player by number and team
+                function findPlayerByNumber(playerNumber, team) {
+                    const players = team === 'A' ?
+                        [...activePlayers.A, ...benchPlayers.A] :
+                        [...activePlayers.B, ...benchPlayers.B];
 
-    // Initialize stats for all players
-    [...activePlayers.A, ...benchPlayers.A].forEach(player => {
-        const key = `A_${player.id}`;
-        playerStats[key] = {
-            player_id: player.id,
-            team_id: player.team_id,
-            points: 0,
-            fouls: player.fouls || 0,
-            free_throws_made: 0,
-            free_throws_attempted: 0,
-            two_points_made: 0,
-            two_points_attempted: 0,
-            three_points_made: 0,
-            three_points_attempted: 0,
-            assists: 0,      // ADD THIS
-            steals: 0,       // ADD THIS
-            rebounds: 0      // ADD THIS
-        };
-    });
-
-    [...activePlayers.B, ...benchPlayers.B].forEach(player => {
-        const key = `B_${player.id}`;
-        playerStats[key] = {
-            player_id: player.id,
-            team_id: player.team_id,
-            points: 0,
-            fouls: player.fouls || 0,
-            free_throws_made: 0,
-            free_throws_attempted: 0,
-            two_points_made: 0,
-            two_points_attempted: 0,
-            three_points_made: 0,
-            three_points_attempted: 0,
-            assists: 0,      // ADD THIS
-            steals: 0,       // ADD THIS
-            rebounds: 0      // ADD THIS
-        };
-    });
-
-    console.log('Initial player stats:', playerStats);
-    console.log('Processing game events:', gameEvents);
-
-    // Process game events to calculate stats
-    gameEvents.forEach(event => {
-        // Skip system/team events
-        if (event.player === 'TEAM' || event.player === 'SYSTEM') {
-            return;
-        }
-
-        // Find the player
-        const player = findPlayerByNumber(event.player, event.team);
-        
-        if (!player) {
-            console.warn(`Player not found for event:`, event);
-            return;
-        }
-
-        const key = `${event.team}_${player.id}`;
-        
-        if (!playerStats[key]) {
-            console.warn(`No stats entry for player ${player.id}`);
-            return;
-        }
-
-        // Process scoring events
-        if (event.action.includes('Points') || event.action.includes('Made')) {
-            playerStats[key].points += (event.points || 0);
-
-            // Track shot types
-            if (event.action.includes('Free Throw')) {
-                if (event.action.includes('Made')) {
-                    playerStats[key].free_throws_made++;
-                    playerStats[key].free_throws_attempted++;
-                } else if (event.action.includes('Miss')) {
-                    playerStats[key].free_throws_attempted++;
+                    return players.find(p => (p.number || '00').toString() === playerNumber.toString());
                 }
-            } else if (event.action.includes('2 Points')) {
-                playerStats[key].two_points_made++;
-                playerStats[key].two_points_attempted++;
-            } else if (event.action.includes('3 Points')) {
-                playerStats[key].three_points_made++;
-                playerStats[key].three_points_attempted++;
+
+                // Initialize stats for all players
+                [...activePlayers.A, ...benchPlayers.A].forEach(player => {
+                    const key = `A_${player.id}`;
+                    playerStats[key] = {
+                        player_id: player.id,
+                        team_id: player.team_id,
+                        points: 0,
+                        fouls: player.fouls || 0,
+                        free_throws_made: 0,
+                        free_throws_attempted: 0,
+                        two_points_made: 0,
+                        two_points_attempted: 0,
+                        three_points_made: 0,
+                        three_points_attempted: 0,
+                        assists: 0, // ADD THIS
+                        steals: 0, // ADD THIS
+                        rebounds: 0 // ADD THIS
+                    };
+                });
+
+                [...activePlayers.B, ...benchPlayers.B].forEach(player => {
+                    const key = `B_${player.id}`;
+                    playerStats[key] = {
+                        player_id: player.id,
+                        team_id: player.team_id,
+                        points: 0,
+                        fouls: player.fouls || 0,
+                        free_throws_made: 0,
+                        free_throws_attempted: 0,
+                        two_points_made: 0,
+                        two_points_attempted: 0,
+                        three_points_made: 0,
+                        three_points_attempted: 0,
+                        assists: 0, // ADD THIS
+                        steals: 0, // ADD THIS
+                        rebounds: 0 // ADD THIS
+                    };
+                });
+
+                console.log('Initial player stats:', playerStats);
+                console.log('Processing game events:', gameEvents);
+
+                // Process game events to calculate stats
+                gameEvents.forEach(event => {
+                    // Skip system/team events
+                    if (event.player === 'TEAM' || event.player === 'SYSTEM') {
+                        return;
+                    }
+
+                    // Find the player
+                    const player = findPlayerByNumber(event.player, event.team);
+
+                    if (!player) {
+                        console.warn(`Player not found for event:`, event);
+                        return;
+                    }
+
+                    const key = `${event.team}_${player.id}`;
+
+                    if (!playerStats[key]) {
+                        console.warn(`No stats entry for player ${player.id}`);
+                        return;
+                    }
+
+                    // Process scoring events
+                    if (event.action.includes('Points') || event.action.includes('Made')) {
+                        playerStats[key].points += (event.points || 0);
+
+                        // Track shot types
+                        if (event.action.includes('Free Throw')) {
+                            if (event.action.includes('Made')) {
+                                playerStats[key].free_throws_made++;
+                                playerStats[key].free_throws_attempted++;
+                            } else if (event.action.includes('Miss')) {
+                                playerStats[key].free_throws_attempted++;
+                            }
+                        } else if (event.action.includes('2 Points')) {
+                            playerStats[key].two_points_made++;
+                            playerStats[key].two_points_attempted++;
+                        } else if (event.action.includes('3 Points')) {
+                            playerStats[key].three_points_made++;
+                            playerStats[key].three_points_attempted++;
+                        }
+                    }
+
+                    // ADD: Process assists
+                    if (event.action === 'Assist') {
+                        playerStats[key].assists++;
+                        console.log(`Assist recorded for player ${player.id}`);
+                    }
+
+                    // ADD: Process steals
+                    if (event.action === 'Steal') {
+                        playerStats[key].steals++;
+                        console.log(`Steal recorded for player ${player.id}`);
+                    }
+
+                    // ADD: Process rebounds
+                    if (event.action === 'Rebound') {
+                        playerStats[key].rebounds++;
+                        console.log(`Rebound recorded for player ${player.id}`);
+                    }
+
+                    console.log(`Updated stats for player ${player.id}:`, playerStats[key]);
+                });
+
+                // Convert to array
+                const statsArray = Object.values(playerStats);
+
+                console.log('Final player stats array:', statsArray);
+
+                return statsArray;
             }
-        }
-
-        // ADD: Process assists
-        if (event.action === 'Assist') {
-            playerStats[key].assists++;
-            console.log(`Assist recorded for player ${player.id}`);
-        }
-
-        // ADD: Process steals
-        if (event.action === 'Steal') {
-            playerStats[key].steals++;
-            console.log(`Steal recorded for player ${player.id}`);
-        }
-
-        // ADD: Process rebounds
-        if (event.action === 'Rebound') {
-            playerStats[key].rebounds++;
-            console.log(`Rebound recorded for player ${player.id}`);
-        }
-
-        console.log(`Updated stats for player ${player.id}:`, playerStats[key]);
-    });
-
-    // Convert to array
-    const statsArray = Object.values(playerStats);
-    
-    console.log('Final player stats array:', statsArray);
-    
-    return statsArray;
-}
 
             // NEW: Retry save function
             function retryGameSave() {
@@ -3502,37 +3760,38 @@ function collectPlayerStats() {
                 }
 
                 function handleTallysheet() {
-    const currentGameData = {
-        id: gameData.id,
-        team1_score: scoreA,
-        team2_score: scoreB,
-        team1_fouls: foulsA,
-        team2_fouls: foulsB,
-        team1_timeouts: timeoutsA,
-        team2_timeouts: timeoutsB,
-        current_quarter: currentQuarter,
-        game_time: timerDisplay.textContent,
-        events: gameEvents,
-        period_scores: {
-            team1: periodScores.teamA,
-            team2: periodScores.teamB
-        }
-    };
+                    const currentGameData = {
+                        id: gameData.id,
+                        team1_score: scoreA,
+                        team2_score: scoreB,
+                        team1_fouls: foulsA,
+                        team2_fouls: foulsB,
+                        team1_timeouts: timeoutsA,
+                        team2_timeouts: timeoutsB,
+                        current_quarter: currentQuarter,
+                        game_time: timerDisplay.textContent,
+                        events: gameEvents,
+                        period_scores: {
+                            team1: periodScores.teamA,
+                            team2: periodScores.teamB
+                        }
+                    };
 
-    const tallysheeetUrl = `/games/${gameData.id}/basketball-scoresheet?live_data=${encodeURIComponent(JSON.stringify(currentGameData))}`;
-    
-    const tallysheeetWindow = window.open(
-        tallysheeetUrl,
-        'scoresheet',
-        'width=1200,height=900,scrollbars=yes,resizable=yes'
-    );
+                    const tallysheeetUrl =
+                        `/games/${gameData.id}/basketball-scoresheet?live_data=${encodeURIComponent(JSON.stringify(currentGameData))}`;
 
-    if (tallysheeetWindow) {
-        tallysheeetWindow.focus();
-    } else {
-        alert('Please allow popups for this site to view the scoresheet.');
-    }
-}
+                    const tallysheeetWindow = window.open(
+                        tallysheeetUrl,
+                        'scoresheet',
+                        'width=1200,height=900,scrollbars=yes,resizable=yes'
+                    );
+
+                    if (tallysheeetWindow) {
+                        tallysheeetWindow.focus();
+                    } else {
+                        alert('Please allow popups for this site to view the scoresheet.');
+                    }
+                }
 
             });
 
@@ -3959,6 +4218,267 @@ function collectPlayerStats() {
 
                 renderLog();
 
+            });
+
+            // Hotkeys functionality
+            let hotkeys = {
+                'Free Throw': 'F',
+                '2 Points': '2',
+                '3 Points': '3',
+                'Assist': 'A',
+                'Steal': 'S',
+                'Rebound': 'R',
+                'Foul': 'L',
+                'Tech Foul': 'T',
+                'Timeout': 'O',
+                'Substitution': 'U',
+                'Undo': 'Z',
+                'PlayPause': ' ' // Space bar
+            };
+
+            const defaultHotkeys = {
+                ...hotkeys
+            };
+
+            // Load saved hotkeys from localStorage
+            function loadHotkeys() {
+                const saved = localStorage.getItem('gameHotkeys');
+                if (saved) {
+                    hotkeys = JSON.parse(saved);
+                }
+                applyHotkeys();
+            }
+
+            // Save hotkeys to localStorage
+            function saveHotkeys() {
+                localStorage.setItem('gameHotkeys', JSON.stringify(hotkeys));
+            }
+
+            // Apply hotkeys (global keyboard listener)
+            function applyHotkeys() {
+                document.addEventListener('keydown', handleHotkeyPress);
+            }
+
+            // Handle hotkey press
+            function handleHotkeyPress(e) {
+                // Ignore if typing in input fields or modal is open
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                if (document.querySelector('.hotkeys-modal').style.display === 'flex') return;
+                if (document.querySelector('.foul-modal')?.style.display === 'flex') return;
+                if (document.querySelector('.substitution-modal')?.style.display === 'flex') return;
+
+                const key = e.key.toUpperCase();
+
+                // Find action for this key
+                for (const [action, hotkey] of Object.entries(hotkeys)) {
+                    if (hotkey.toUpperCase() === key || (hotkey === ' ' && e.code === 'Space')) {
+                        e.preventDefault();
+                        executeHotkeyAction(action);
+                        break;
+                    }
+                }
+            }
+
+            // Execute action based on hotkey
+            function executeHotkeyAction(action) {
+                switch (action) {
+                    case 'Free Throw':
+                        document.querySelector('[data-action="Free Throw"]').click();
+                        break;
+                    case '2 Points':
+                        document.querySelector('[data-action="2 Points"]').click();
+                        break;
+                    case '3 Points':
+                        document.querySelector('[data-action="3 Points"]').click();
+                        break;
+                    case 'Assist':
+                        document.querySelector('[data-action="Assist"]').click();
+                        break;
+                    case 'Steal':
+                        document.querySelector('[data-action="Steal"]').click();
+                        break;
+                    case 'Rebound':
+                        document.querySelector('[data-action="Rebound"]').click();
+                        break;
+                    case 'Foul':
+                        document.querySelector('[data-action="Foul"]').click();
+                        break;
+                    case 'Tech Foul':
+                        document.querySelector('[data-action="Tech Foul"]').click();
+                        break;
+                    case 'Timeout':
+                        document.getElementById('timeoutBtn').click();
+                        break;
+                    case 'Substitution':
+                        document.querySelector('[data-action="Substitution"]').click();
+                        break;
+                    case 'Undo':
+                        document.getElementById('undoBtn').click();
+                        break;
+                    case 'PlayPause':
+                        document.getElementById('playPause').click();
+                        break;
+                }
+            }
+
+            // Open hotkeys modal
+            function openHotkeysModal() {
+                const modal = document.getElementById('hotkeysModal');
+                modal.style.display = 'flex';
+                updateHotkeyDisplay();
+            }
+
+            // Close hotkeys modal
+            function closeHotkeysModal() {
+                const modal = document.getElementById('hotkeysModal');
+                modal.style.display = 'none';
+                // Remove any listening state
+                document.querySelectorAll('.hotkey-input').forEach(input => {
+                    input.classList.remove('listening');
+                });
+            }
+
+            // Update hotkey display in modal
+            function updateHotkeyDisplay() {
+                for (const [action, key] of Object.entries(hotkeys)) {
+                    const actionKey = action.toLowerCase().replace(/\s+/g, '').replace('.', '');
+                    const display = key === ' ' ? 'SPACE' : key.toUpperCase();
+                    const element = document.getElementById(`key-${actionKey}`);
+                    if (element) {
+                        element.textContent = display;
+                    }
+                }
+            }
+
+            // Setup hotkey input listeners
+            function setupHotkeyInputs() {
+                const inputs = document.querySelectorAll('.hotkey-input');
+                let listeningInput = null;
+
+                inputs.forEach(input => {
+                    input.addEventListener('click', function() {
+                        // Remove listening from all inputs
+                        inputs.forEach(i => i.classList.remove('listening'));
+
+                        // Add listening to clicked input
+                        this.classList.add('listening');
+                        listeningInput = this;
+
+                        const keyDisplay = this.querySelector('.current-key');
+                        keyDisplay.textContent = 'Press a key...';
+                    });
+                });
+
+                // Listen for key press when an input is listening
+                document.addEventListener('keydown', function(e) {
+                    if (listeningInput) {
+                        e.preventDefault();
+
+                        const action = listeningInput.dataset.action;
+
+                        // ESC to clear
+                        if (e.key === 'Escape') {
+                            hotkeys[action] = '';
+                            listeningInput.querySelector('.current-key').textContent = 'NONE';
+                        } else {
+                            // Set the new hotkey
+                            const newKey = e.key === ' ' ? ' ' : e.key.toUpperCase();
+                            hotkeys[action] = newKey;
+                            const display = newKey === ' ' ? 'SPACE' : newKey;
+                            listeningInput.querySelector('.current-key').textContent = display;
+                        }
+
+                        listeningInput.classList.remove('listening');
+                        listeningInput = null;
+                    }
+                });
+            }
+
+            // Reset hotkeys to defaults
+            function resetHotkeysToDefault() {
+                if (confirm('Reset all hotkeys to default values?')) {
+                    hotkeys = {
+                        ...defaultHotkeys
+                    };
+                    updateHotkeyDisplay();
+                    saveHotkeys();
+                    showNotification('Hotkeys reset to defaults', '#4CAF50');
+                }
+            }
+
+            // Save hotkeys
+            function saveHotkeysSettings() {
+                saveHotkeys();
+                closeHotkeysModal();
+                showNotification('Hotkeys saved successfully', '#4CAF50');
+            }
+
+            // Show notification
+            function showNotification(message, color) {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${color};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+        z-index: 9999;
+        animation: fadeIn 0.3s;
+    `;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 3000);
+            }
+
+            // Initialize hotkeys on page load
+            document.addEventListener('DOMContentLoaded', function() {
+                // ... existing DOMContentLoaded code ...
+
+                // Add hotkeys button handler
+                const hotkeysBtn = document.getElementById('hotkeysBtn');
+                if (hotkeysBtn) {
+                    hotkeysBtn.addEventListener('click', function() {
+                        dropdownMenu.classList.remove('show');
+                        openHotkeysModal();
+                    });
+                }
+
+                // Setup hotkey modal
+                const hotkeysClose = document.getElementById('hotkeysClose');
+                if (hotkeysClose) {
+                    hotkeysClose.addEventListener('click', closeHotkeysModal);
+                }
+
+                const hotkeysModal = document.getElementById('hotkeysModal');
+                if (hotkeysModal) {
+                    hotkeysModal.addEventListener('click', function(e) {
+                        if (e.target === hotkeysModal) {
+                            closeHotkeysModal();
+                        }
+                    });
+                }
+
+                const resetBtn = document.getElementById('resetHotkeys');
+                if (resetBtn) {
+                    resetBtn.addEventListener('click', resetHotkeysToDefault);
+                }
+
+                const saveBtn = document.getElementById('saveHotkeys');
+                if (saveBtn) {
+                    saveBtn.addEventListener('click', saveHotkeysSettings);
+                }
+
+                // Setup hotkey inputs
+                setupHotkeyInputs();
+
+                // Load saved hotkeys
+                loadHotkeys();
             });
 
             updateTimer();

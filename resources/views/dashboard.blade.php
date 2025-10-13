@@ -707,7 +707,7 @@
                             onclick="switchDashboard('{{ $tournament->id }}', this)"
                             data-tournament-id="{{ $tournament->id }}">
                             <span class="tab-name">{{ $tournament->name }}</span>
-                            <span class="tab-sport">{{ $tournament->sport }} • {{ $tournament->division }}</span>
+                            <span class="tab-sport">{{ $tournament->sport_name }} • {{ $tournament->division }}</span>
                         </button>
                     @empty
                         <p style="color: var(--text-muted); padding: 1rem;">No tournaments available</p>

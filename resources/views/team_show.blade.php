@@ -2,6 +2,17 @@
 
 @section('title', $team->team_name . ' - Team Information')
 
+@php
+    // Map sport names to emojis - Define BEFORE styles
+    $sportName = strtolower($team->sport->sports_name ?? '');
+    $sportEmojis = [
+        'basketball' => '🏀',
+        'volleyball' => '🏐',
+    ];
+    
+    $sportEmoji = $sportEmojis[$sportName] ?? '⚽';
+@endphp
+
 @push('styles')
     <style>
         /* Animations */
@@ -85,7 +96,7 @@
         }
 
         .team-page .team-header-card::before {
-            content: '🏀';
+            content: '{{ $sportEmoji }}';
             position: absolute;
             right: 2rem;
             top: 50%;
@@ -501,6 +512,30 @@
 @endpush
 
 @section('content')
+    @php
+        // Map sport names to emojis
+        $sportName = strtolower($team->sport->sports_name ?? '');
+        $sportEmojis = [
+            'basketball' => '🏀',
+            'volleyball' => '🏐',
+            'football' => '⚽',
+            'soccer' => '⚽',
+            'tennis' => '🎾',
+            'baseball' => '⚾',
+            'badminton' => '🏸',
+            'table tennis' => '🏓',
+            'rugby' => '🏉',
+            'cricket' => '🏏',
+            'hockey' => '🏑',
+            'golf' => '⛳',
+            'swimming' => '🏊',
+            'boxing' => '🥊',
+            'martial arts' => '🥋',
+        ];
+        
+        $sportEmoji = $sportEmojis[$sportName] ?? '⚽';
+    @endphp
+
     <div class="team-page">
         <main>
             <a href="{{ route('teams.index') }}" class="back-button">
@@ -522,7 +557,7 @@
                             </span>
                             <span class="team-meta-item">
                                 <i class="bi bi-trophy-fill"></i>
-                                {{ $team->sport->sport_name ?? 'N/A' }}
+                                {{ $team->sport->sports_name ?? 'N/A' }}
                             </span>
                         </p>
                     </div>
