@@ -273,4 +273,66 @@ public function tallysheet()
     return $this->hasOne(Tallysheet::class);
 }
 
+// Add to your existing Game model
+
+/**
+ * Volleyball player statistics
+ */
+public function volleyballPlayerStats()
+{
+    return $this->hasMany(VolleyballPlayerStat::class);
+}
+
+/**
+ * Volleyball tallysheet
+ */
+public function volleyballTallysheet()
+{
+    return $this->hasOne(VolleyballTallysheet::class);
+}
+
+/**
+ * Check if this is a volleyball game
+ */
+public function isVolleyball()
+{
+    return $this->bracket && 
+           $this->bracket->tournament && 
+           $this->bracket->tournament->sport && 
+           strtolower($this->bracket->tournament->sport->sports_name) === 'volleyball';
+}
+
+/**
+ * Check if this is a basketball game
+ */
+public function isBasketball()
+{
+    return $this->bracket && 
+           $this->bracket->tournament && 
+           $this->bracket->tournament->sport && 
+           strtolower($this->bracket->tournament->sport->sports_name) === 'basketball';
+}
+
+/**
+ * Get the appropriate stats based on sport type
+ */
+public function getSportStats()
+{
+    if ($this->isVolleyball()) {
+        return $this->volleyballPlayerStats;
+    }
+    return $this->playerStats; // Basketball stats
+}
+
+/**
+ * Get the appropriate tallysheet based on sport type
+ */
+public function getSportTallysheet()
+{
+    if ($this->isVolleyball()) {
+        return $this->volleyballTallysheet;
+    }
+    return $this->tallysheet; // Basketball tallysheet
+}
+
 }

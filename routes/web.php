@@ -62,6 +62,13 @@ Route::get('/prepare', [GameController::class, 'index'])->name('games.prepare.in
 Route::get('/games/{game}/live', [GameController::class, 'live'])->name('games.live');
 Route::get('/games/{game}/tallysheet', [GameController::class, 'tallysheet'])->name('games.tallysheet');
 
+// Volleyball Game Routes
+Route::get('/games/{game}/volleyball-live', [GameController::class, 'volleyballLive'])->name('games.volleyball-live');
+Route::post('/games/{game}/volleyball-complete', [GameController::class, 'completeVolleyballGame'])->name('games.volleyball-complete');
+Route::get('/games/{game}/volleyball-scoresheet', [GameController::class, 'volleyballScoresheet'])->name('games.volleyball-scoresheet');
+Route::get('/games/{game}/volleyball-box-score', [GameController::class, 'volleyballBoxScore'])->name('games.volleyball-box-score');
+Route::post('/games/{game}/select-volleyball-mvp', [GameController::class, 'selectVolleyballMVP'])->name('games.select-volleyball-mvp');
+
 // Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 

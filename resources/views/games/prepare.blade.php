@@ -1874,6 +1874,43 @@ function switchToTab(tabName) {
         }, 3000);
     }
 
+    // Add this to your existing JavaScript in prepare.blade.php
+
+// Modify the form submission to route to correct sport
+document.getElementById('startGameForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const gameId = {{ $game->id }};
+    
+    // Check sport type
+    @if($game->isVolleyball())
+        // For volleyball, redirect to volleyball live
+        fetch(`/games/${gameId}/start-live`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = `/games/${gameId}/volleyball-live`;
+            } else {
+                alert(data.message || 'Failed to start game');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to start game. Please try again.');
+        });
+    @else
+        // For basketball, use normal submission
+        this.submit();
+    @endif
+});
+
     function updateReadinessChecks() {
         var team1Check = document.getElementById('team1-roster-check');
         var team2Check = document.getElementById('team2-roster-check');

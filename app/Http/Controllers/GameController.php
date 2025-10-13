@@ -805,4 +805,402 @@ public function selectMVP(Request $request, Game $game)
         ], 500);
     }
 }
+
+// Add these methods to your existing GameController
+
+/**
+ * Show volleyball live scoresheet
+ */
+public function volleyballLive(Game $game)
+{
+    // Ensure game is in progress
+    if ($game->status !== 'in_progress') {
+        return redirect()->back()->with('error', 'Game has not been started yet!');
+    }
+
+    // Get stored player data
+    $team1Data = json_decode($game->team1_selected_players, true) ?? [];
+    $team2Data = json_decode($game->team2_selected_players, true) ?? [];
+
+    // Load the actual player data
+    $game->load(['team1.players', 'team2.players']);
+    
+    // Extract roster IDs (volleyball typically uses 6 starting players)
+    $team1RosterIds = $team1Data['roster'] ?? [];
+    $team2RosterIds = $team2Data['roster'] ?? [];
+    $team1StarterIds = $team1Data['starters'] ?? [];
+    $team2StarterIds = $team2Data['starters'] ?? [];
+
+    // Filter players based on roster selection
+    $team1Players = $game->team1->players->filter(function($player) use ($team1RosterIds) {
+        return in_array($player->id, $team1RosterIds);
+    });
+    
+    $team2Players = $game->team2->players->filter(function($player) use ($team2RosterIds) {
+        return in_array($player->id, $team2RosterIds);
+    });
+
+    // Convert IDs to strings for JavaScript comparison
+    $team1Roster = array_map('strval', $team1RosterIds);
+    $team2Roster = array_map('strval', $team2RosterIds);
+    $team1Starters = array_map('strval', $team1StarterIds);
+    $team2Starters = array_map('strval', $team2StarterIds);
+
+    return view('games.volleyball-live', compact(
+        'game', 
+        'team1Players', 
+        'team2Players',
+        'team1Roster',
+        'team2Roster', 
+        'team1Starters', 
+        'team2Starters'
+    ));
+}
+
+/**
+ * Complete volleyball game and save results
+ */
+public function completeVolleyballGame(Request $request, Game $game)
+{
+    $game->load(['bracket.tournament', 'team1.players', 'team2.players']);
+   
+    try {
+        $validated = $request->validate([
+            'team1_score' => 'required|integer|min:0', // Sets won
+            'team2_score' => 'required|integer|min:0', // Sets won
+            'set_scores' => 'required|array',
+            'game_events' => 'array',
+            'winner_id' => 'nullable|integer|in:1,2',
+            'status' => 'string|in:completed',
+            'completed_at' => 'string',
+            'player_stats' => 'array',
+        ]);
+
+        DB::beginTransaction();
+
+        // Determine winner (best of 5 sets, first to 3 wins)
+        $winnerId = null;
+        if ($validated['team1_score'] > $validated['team2_score']) {
+            $winnerId = $game->team1_id;
+        } elseif ($validated['team2_score'] > $validated['team1_score']) {
+            $winnerId = $game->team2_id;
+        }
+
+        // Update game
+        $game->update([
+            'team1_score' => $validated['team1_score'], // Sets won by team 1
+            'team2_score' => $validated['team2_score'], // Sets won by team 2
+            'winner_id' => $winnerId,
+            'status' => 'completed',
+            'completed_at' => now(),
+            'game_data' => [
+                'set_scores' => $validated['set_scores'],
+                'game_events' => $validated['game_events'] ?? [],
+                'completed_by_scoresheet' => true,
+                'sport_type' => 'volleyball'
+            ]
+        ]);
+
+        // Save volleyball player statistics
+        if (isset($validated['player_stats']) && is_array($validated['player_stats'])) {
+            $this->saveVolleyballPlayerStats($game, $validated['player_stats']);
+        }
+
+        // Save volleyball tallysheet
+        $this->saveVolleyballTallysheet($game, $validated);
+
+        // Advance bracket if needed
+        if ($game->bracket_id && $winnerId) {
+            $this->advanceBracket($game, $winnerId);
+        }
+
+        if ($game->bracket_id) {
+            $this->updateBracketStatus($game->bracket_id);
+        }
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Volleyball game completed successfully',
+            'game_id' => $game->id,
+            'winner_id' => $winnerId,
+            'redirect_url' => route('games.volleyball-box-score', $game->id)
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error("Failed to complete volleyball game {$game->id}", [
+            'error' => $e->getMessage()
+        ]);
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to complete game: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+/**
+ * Save volleyball player statistics
+ */
+private function saveVolleyballPlayerStats(Game $game, array $playerStatsData)
+{
+    $savedCount = 0;
+    $errors = [];
+
+    foreach ($playerStatsData as $index => $playerData) {
+        try {
+            if (!isset($playerData['player_id']) || !isset($playerData['team_id'])) {
+                $errors[] = "Player data at index {$index} missing required fields";
+                continue;
+            }
+
+            $playerId = intval($playerData['player_id']);
+            $teamId = intval($playerData['team_id']);
+
+            $player = \App\Models\Player::find($playerId);
+            
+            if (!$player) {
+                $errors[] = "Player {$playerId} not found";
+                continue;
+            }
+
+            if ($teamId !== $game->team1_id && $teamId !== $game->team2_id) {
+                $errors[] = "Team {$teamId} is not part of this game";
+                continue;
+            }
+
+            VolleyballPlayerStat::updateOrCreate(
+                [
+                    'game_id' => $game->id,
+                    'player_id' => $playerId,
+                ],
+                [
+                    'team_id' => $teamId,
+                    'kills' => intval($playerData['kills'] ?? 0),
+                    'aces' => intval($playerData['aces'] ?? 0),
+                    'blocks' => intval($playerData['blocks'] ?? 0),
+                    'digs' => intval($playerData['digs'] ?? 0),
+                    'assists' => intval($playerData['assists'] ?? 0),
+                    'errors' => intval($playerData['errors'] ?? 0),
+                    'service_errors' => intval($playerData['service_errors'] ?? 0),
+                    'attack_attempts' => intval($playerData['attack_attempts'] ?? 0),
+                    'block_assists' => intval($playerData['block_assists'] ?? 0),
+                ]
+            );
+
+            $savedCount++;
+
+        } catch (\Exception $e) {
+            $errors[] = "Error saving player {$playerId}: " . $e->getMessage();
+            \Log::error("Failed to save volleyball player stat", [
+                'player_data' => $playerData,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    \Log::info("Saved volleyball player stats for game {$game->id}", [
+        'saved_count' => $savedCount,
+        'total_attempted' => count($playerStatsData),
+        'errors' => $errors
+    ]);
+}
+
+/**
+ * Save volleyball tallysheet
+ */
+private function saveVolleyballTallysheet(Game $game, array $gameData)
+{
+    try {
+        // Process running scores from game events
+        $runningScores = $this->processVolleyballRunningScores($gameData['game_events'] ?? []);
+        
+        // Create or update volleyball tallysheet
+        VolleyballTallysheet::updateOrCreate(
+            ['game_id' => $game->id],
+            [
+                'team1_sets_won' => $gameData['team1_score'],
+                'team2_sets_won' => $gameData['team2_score'],
+                'set_scores' => $gameData['set_scores'],
+                'game_events' => $gameData['game_events'] ?? [],
+                'running_scores' => $runningScores,
+            ]
+        );
+
+        \Log::info("Volleyball tallysheet saved for game {$game->id}");
+        
+    } catch (\Exception $e) {
+        \Log::error("Failed to save volleyball tallysheet for game {$game->id}", [
+            'error' => $e->getMessage()
+        ]);
+        throw $e;
+    }
+}
+
+/**
+ * Process running scores for volleyball
+ */
+private function processVolleyballRunningScores(array $events)
+{
+    $runningScores = [];
+    $scoreA = 0;
+    $scoreB = 0;
+    
+    // Process events in reverse order (they're stored newest first)
+    $sortedEvents = array_reverse($events);
+    
+    foreach ($sortedEvents as $event) {
+        if (isset($event['points']) && $event['points'] > 0) {
+            if ($event['team'] === 'A') {
+                $scoreA += $event['points'];
+                $runningScores[] = [
+                    'team' => 'A',
+                    'score' => $scoreA,
+                    'set' => $event['set'] ?? 1,
+                    'sequence' => count($runningScores) + 1
+                ];
+            } else {
+                $scoreB += $event['points'];
+                $runningScores[] = [
+                    'team' => 'B',
+                    'score' => $scoreB,
+                    'set' => $event['set'] ?? 1,
+                    'sequence' => count($runningScores) + 1
+                ];
+            }
+        }
+    }
+    
+    return $runningScores;
+}
+
+/**
+ * Show volleyball scoresheet (for printing/viewing)
+ */
+public function volleyballScoresheet(Game $game, Request $request)
+{
+    // Get live data if passed from the game interface
+    $liveData = null;
+    if ($request->has('live_data')) {
+        $liveData = json_decode(urldecode($request->get('live_data')), true);
+    } else {
+        // Load saved tallysheet if game is completed
+        if ($game->status === 'completed' && $game->volleyballTallysheet) {
+            $tallysheet = $game->volleyballTallysheet;
+            $liveData = [
+                'team1_score' => $tallysheet->team1_sets_won,
+                'team2_score' => $tallysheet->team2_sets_won,
+                'set_scores' => $tallysheet->set_scores,
+                'events' => $tallysheet->game_events,
+            ];
+        }
+    }
+
+    $team1Data = json_decode($game->team1_selected_players, true) ?? [];
+    $team2Data = json_decode($game->team2_selected_players, true) ?? [];
+
+    $game->load(['team1.players', 'team2.players', 'bracket.tournament']);
+    
+    $team1RosterIds = $team1Data['roster'] ?? [];
+    $team2RosterIds = $team2Data['roster'] ?? [];
+
+    $team1Players = $game->team1->players->filter(function($player) use ($team1RosterIds) {
+        return in_array($player->id, $team1RosterIds);
+    });
+    
+    $team2Players = $game->team2->players->filter(function($player) use ($team2RosterIds) {
+        return in_array($player->id, $team2RosterIds);
+    });
+    
+    return view('games.volleyball-scoresheet', compact(
+        'game',
+        'team1Players',
+        'team2Players',
+        'liveData'
+    ));
+}
+
+/**
+ * Show volleyball box score
+ */
+public function volleyballBoxScore(Game $game)
+{
+    // Load necessary relationships
+    $game->load([
+        'team1',
+        'team2',
+        'volleyballPlayerStats.player',
+        'bracket.tournament',
+        'volleyballTallysheet'
+    ]);
+
+    // Get player stats grouped by team
+    $team1Stats = $game->volleyballPlayerStats()
+        ->where('team_id', $game->team1_id)
+        ->with('player')
+        ->orderByDesc('kills')
+        ->get();
+
+    $team2Stats = $game->volleyballPlayerStats()
+        ->where('team_id', $game->team2_id)
+        ->with('player')
+        ->orderByDesc('kills')
+        ->get();
+
+    // Check if MVP has been selected
+    $mvpSelected = $game->volleyballPlayerStats()->where('is_mvp', true)->exists();
+
+    return view('games.volleyball-box-score', compact(
+        'game',
+        'team1Stats',
+        'team2Stats',
+        'mvpSelected'
+    ));
+}
+
+/**
+ * Select MVP for volleyball game
+ */
+public function selectVolleyballMVP(Request $request, Game $game)
+{
+    $validated = $request->validate([
+        'player_stat_id' => 'required|exists:volleyball_player_stats,id'
+    ]);
+
+    DB::beginTransaction();
+    
+    try {
+        // Clear any existing MVP
+        $game->volleyballPlayerStats()->update(['is_mvp' => false]);
+
+        // Set new MVP
+        $mvpStat = VolleyballPlayerStat::findOrFail($validated['player_stat_id']);
+        $mvpStat->update(['is_mvp' => true]);
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'MVP selected successfully',
+            'mvp' => [
+                'player_name' => $mvpStat->player->name,
+                'player_number' => $mvpStat->player->number,
+                'kills' => $mvpStat->kills,
+                'aces' => $mvpStat->aces,
+                'blocks' => $mvpStat->blocks,
+            ]
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to select MVP: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
 }

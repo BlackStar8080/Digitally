@@ -1876,6 +1876,27 @@
             font-weight: 600;
             text-transform: uppercase;
         }
+
+        .sport-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .sport-badge.volleyball {
+            background: rgba(255, 152, 0, 0.2);
+            color: #FF9800;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+        }
+
+        .sport-badge.basketball {
+            background: rgba(33, 150, 243, 0.2);
+            color: #2196F3;
+            border: 1px solid rgba(33, 150, 243, 0.3);
+        }
     </style>
 @endpush
 
@@ -1981,7 +2002,6 @@
                             <i class="bi bi-people"></i>
                             <p>No teams assigned yet.</p>
                             @if (isset($availableTeams) && $availableTeams->count() > 0)
-                                
                             @else
                                 <p class="text-muted small">
                                     <a href="{{ route('teams.index') }}" class="text-decoration-none">
@@ -1997,7 +2017,8 @@
                         <div class="alert alert-info">
                             <small>
                                 <i class="bi bi-info-circle"></i>
-                                {{ $availableTeams->count() }} {{ $tournament->sport->sports_name ?? 'Sport' }} teams available to assign.
+                                {{ $availableTeams->count() }} {{ $tournament->sport->sports_name ?? 'Sport' }} teams
+                                available to assign.
                             </small>
                         </div>
                     @endif
@@ -2197,7 +2218,7 @@
                                                         <th>W</th>
                                                         <th>L</th>
                                                         <th>Win%</th>
-                                                        
+
                                                         <th>Status</th>
                                                     </tr>
                                                 </thead>
@@ -2219,8 +2240,8 @@
                                                             <td class="text-success fw-bold">{{ $standing['wins'] }}</td>
                                                             <td class="text-danger">{{ $standing['losses'] }}</td>
                                                             <td>{{ number_format($standing['win_percentage'], 1) }}%</td>
-                                                           
-        
+
+
                                                             <td>
                                                                 @if ($bracket->isRoundRobinPhaseComplete())
                                                                     @if ($standing['playoff_qualified'])
@@ -2422,7 +2443,7 @@
                                                         <th>W</th>
                                                         <th>L</th>
                                                         <th>Win%</th>
-                                                        
+
                                                         <th>Rem</th>
                                                     </tr>
                                                 </thead>
@@ -2635,7 +2656,8 @@
                                     <!-- Keep all your existing games grid HTML exactly as is -->
                                     <div class="games-grid" id="gamesGrid">
                                         @foreach ($bracket->games->sortBy(['round', 'match_number']) as $game)
-@if ($game->is_bye)                                                {{-- BYE GAME CARD --}}
+                                            @if ($game->is_bye)
+                                                {{-- BYE GAME CARD --}}
                                                 <div class="game-card bye" data-status="completed"
                                                     data-round="{{ $game->round }}">
                                                     <div class="game-header"
@@ -2697,33 +2719,42 @@
                                                 <div class="game-card {{ $game->status }}"
                                                     data-status="{{ $game->status }}"
                                                     data-round="{{ $game->round }}">
-                                                    <div class="game-header {{ $game->status }}">
-                                                        <div class="game-league">{{ $tournament->name }}</div>
-                                                        <div class="game-date">
-                                                            {{ $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('M j, Y') : 'Date TBD' }}
+                                                    {{-- Add sport badge to game header --}}
+                                                        <div class="game-header {{ $game->status === 'completed' ? 'completed' : ($game->status === 'in_progress' ? 'in-progress' : 'upcoming') }}">
+                                                            <div class="game-league">
+                                                                {{ $tournament->name }}
+                                                                {{-- ADD THIS SPORT BADGE --}}
+                                                                @if($game->isVolleyball())
+                                                                    <span class="sport-badge volleyball">🏐 Volleyball</span>
+                                                                @elseif($game->isBasketball())
+                                                                    <span class="sport-badge basketball">🏀 Basketball</span>
+                                                                @endif
+                                                            </div>
+                                                            <div class="game-date">
+                                                                {{ $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('M j, Y') : 'Date TBD' }}
+                                                            </div>
+                                                            <h6 class="game-round">
+                                                                @if ($game->round == ($game->bracket ? $game->bracket->getTotalRounds() : 0))
+                                                                    🏆 Finals
+                                                                @elseif($game->round == ($game->bracket ? $game->bracket->getTotalRounds() - 1 : 0))
+                                                                    🥇 Semifinals
+                                                                @elseif($game->round == ($game->bracket ? $game->bracket->getTotalRounds() - 2 : 0))
+                                                                    🏅 Quarterfinals
+                                                                @else
+                                                                    Round {{ $game->round }}
+                                                                @endif
+                                                                - Game {{ $game->match_number }}
+                                                            </h6>
+                                                            <div class="game-status-badge">
+                                                                @if ($game->status === 'completed')
+                                                                    ✅ Completed
+                                                                @elseif($game->status === 'in_progress')
+                                                                    🔴 Live
+                                                                @else
+                                                                    {{ ucfirst(str_replace('-', ' ', $game->status)) }}
+                                                                @endif
+                                                            </div>
                                                         </div>
-                                                        <h6 class="game-round">
-                                                            @if ($game->round == $bracket->getTotalRounds())
-                                                                🏆 Finals
-                                                            @elseif($game->round == $bracket->getTotalRounds() - 1)
-                                                                🥇 Semifinals
-                                                            @elseif($game->round == $bracket->getTotalRounds() - 2)
-                                                                🏅 Quarterfinals
-                                                            @else
-                                                                Round {{ $game->round }}
-                                                            @endif
-                                                            - Game {{ $game->match_number }}
-                                                        </h6>
-                                                        <div class="game-status-badge">
-                                                            @if ($game->status === 'completed')
-                                                                ✅ Completed
-                                                            @elseif($game->status === 'in_progress')
-                                                                🔴 Live
-                                                            @else
-                                                                {{ ucfirst(str_replace('-', ' ', $game->status)) }}
-                                                            @endif
-                                                        </div>
-                                                    </div>
 
                                                     <div class="teams-container">
                                                         @if ($game->isReady())
@@ -2799,28 +2830,45 @@
                                                     </div>
 
                                                     <div class="game-actions">
-                                                        @if (!$game->isCompleted() && $game->isReady() && $game->status !== 'in_progress')
-                                                            <a href="{{ route('games.prepare', $game->id) }}"
-                                                                class="start-game-btn">
-                                                                <i class="bi bi-play-fill"></i> Start Game
-                                                            </a>
-                                                        @elseif($game->status === 'in_progress')
-                                                            <a href="{{ route('games.live', $game->id) }}"
-                                                                class="start-game-btn" style="background: #FF9800;">
-                                                                <i class="bi bi-play-circle"></i> Resume Live Game
-                                                            </a>
-                                                        @endif
+    @if (!$game->isCompleted() && $game->isReady() && $game->status !== 'in_progress')
+        <a href="{{ route('games.prepare', $game->id) }}" class="start-game-btn">
+            <i class="bi bi-play-fill"></i> Start Game
+        </a>
+    @elseif($game->status === 'in_progress')
+        {{-- Route to correct sport live game --}}
+        @if($game->isVolleyball())
+            <a href="{{ route('games.volleyball-live', $game->id) }}" class="start-game-btn" style="background: #FF9800;">
+                <i class="bi bi-play-circle"></i> Resume Volleyball
+            </a>
+        @else
+            <a href="{{ route('games.live', $game->id) }}" class="start-game-btn" style="background: #FF9800;">
+                <i class="bi bi-play-circle"></i> Resume Basketball
+            </a>
+        @endif
+    @endif
 
-                                                        <a href="#" class="tally-sheet-btn"
-                                                            onclick="openTallySheet({{ $game->id }})">
-                                                            <i class="bi bi-clipboard-data"></i> Tallysheet
-                                                        </a>
+    {{-- Scoresheet button - route to correct sport --}}
+    @if($game->isVolleyball())
+        <a href="#" class="tally-sheet-btn" onclick="openVolleyballScoresheet({{ $game->id }})">
+            <i class="bi bi-clipboard-data"></i> Volleyball Sheet
+        </a>
+    @else
+        <a href="#" class="tally-sheet-btn" onclick="openTallySheet({{ $game->id }})">
+            <i class="bi bi-clipboard-data"></i> Basketball Sheet
+        </a>
+    @endif
 
-                                                        <a href="{{ route('games.box-score', $game->id) }}"
-                                                            class="box-score-btn">
-                                                            <i class="bi bi-table"></i> Box Score
-                                                        </a>
-                                                    </div>
+    {{-- Box Score button - route to correct sport --}}
+    @if($game->isVolleyball())
+        <a href="{{ route('games.volleyball-box-score', $game->id) }}" class="box-score-btn">
+            <i class="bi bi-table"></i> Volleyball Stats
+        </a>
+    @else
+        <a href="{{ route('games.box-score', $game->id) }}" class="box-score-btn">
+            <i class="bi bi-table"></i> Basketball Stats
+        </a>
+    @endif
+</div>
                                                 </div>
                                             @endif
                                         @endforeach
@@ -3080,7 +3128,8 @@
                                 <div class="no-teams-message" style="grid-column: 1/-1;">
                                     <div class="text-center py-5">
                                         <i class="bi bi-inbox" style="font-size: 3rem; opacity: 0.3;"></i>
-                                        <p class="text-muted mt-3">No compatible {{ $tournament->sport->sports_name ?? 'Sport' }} teams available.</p>
+                                        <p class="text-muted mt-3">No compatible
+                                            {{ $tournament->sport->sports_name ?? 'Sport' }} teams available.</p>
                                         <small class="text-muted">Teams in other tournaments are hidden.</small>
                                     </div>
                                 </div>
@@ -3327,6 +3376,22 @@
                 form.submit();
             }
 
+                    function openVolleyballScoresheet(gameId) {
+                    const url = `/games/${gameId}/volleyball-scoresheet`;
+                    
+                    const scoresheetWindow = window.open(
+                        url,
+                        'volleyball-scoresheet',
+                        'width=1200,height=900,scrollbars=yes,resizable=yes'
+                    );
+
+                    if (scoresheetWindow) {
+                        scoresheetWindow.focus();
+                    } else {
+                        alert('Please allow popups for this site to view the scoresheet.');
+                    }
+                }
+
             // Enhanced filter functionality that works with selection
             const filterTabs = document.querySelectorAll('.filter-tab');
             const teamCards = document.querySelectorAll('.team-card-wrapper');
@@ -3447,21 +3512,21 @@
     });
 
     function openTallySheet(gameId) {
-    // Open the basketball scoresheet in a new window
-    const url = `/games/${gameId}/basketball-scoresheet`;
-    
-    const tallysheeetWindow = window.open(
-        url,
-        'scoresheet',
-        'width=1200,height=900,scrollbars=yes,resizable=yes'
-    );
+        // Open the basketball scoresheet in a new window
+        const url = `/games/${gameId}/basketball-scoresheet`;
 
-    if (tallysheeetWindow) {
-        tallysheeetWindow.focus();
-    } else {
-        alert('Please allow popups for this site to view the tallysheet.');
+        const tallysheeetWindow = window.open(
+            url,
+            'scoresheet',
+            'width=1200,height=900,scrollbars=yes,resizable=yes'
+        );
+
+        if (tallysheeetWindow) {
+            tallysheeetWindow.focus();
+        } else {
+            alert('Please allow popups for this site to view the tallysheet.');
+        }
     }
-}
 
     // Drag and Drop Bracket Customizer Functions
     let draggedTeamData = null;
