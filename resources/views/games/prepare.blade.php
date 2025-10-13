@@ -1058,12 +1058,19 @@ body {
                 <!-- Players Tab -->
                 <div id="players-tab" class="tab-pane-custom active">
                     <!-- Selection Step Instructions -->
+                    <!-- Selection Step Instructions -->
                     <div class="selection-step">
                         <div class="step-title">Player Selection Process</div>
                         <div class="step-description">
-                            First select all players for your game roster (minimum 5 required), then choose exactly 5
-                            starters from the selected players. Remaining players will be available for substitution
-                            during the game.
+                            @if($game->isVolleyball())
+                                First select all players for your game roster (minimum 6 required), then choose exactly 6
+                                starters from the selected players. Remaining players will be available for substitution
+                                during the game.
+                            @else
+                                First select all players for your game roster (minimum 5 required), then choose exactly 5
+                                starters from the selected players. Remaining players will be available for substitution
+                                during the game.
+                            @endif
                         </div>
                         <div class="step-toggle">
                             <button class="step-btn active" id="roster-step-btn" data-step="roster">
@@ -1086,8 +1093,8 @@ body {
                                 <div class="team-selection-info">
                                     <span class="roster-count" id="team1-roster">0 selected</span>
                                     <small class="text-muted">roster players</small>
-                                    <span class="starters-count" id="team1-starters">0/5</span>
-                                    <small class="text-muted">starters chosen</small>
+                                    <span class="starters-count" id="team1-starters">0/{{ $game->isVolleyball() ? 6 : 5 }}</span>
+<small class="text-muted">starters chosen</small>
                                 </div>
                             </div>
 
@@ -1139,8 +1146,8 @@ body {
                                 <div class="team-selection-info">
                                     <span class="roster-count" id="team2-roster">0 selected</span>
                                     <small class="text-muted">roster players</small>
-                                    <span class="starters-count" id="team2-starters">0/5</span>
-                                    <small class="text-muted">starters chosen</small>
+                                    <span class="starters-count" id="team2-starters">0/{{ $game->isVolleyball() ? 6 : 5 }}</span>
+<small class="text-muted">starters chosen</small>
                                 </div>
                             </div>
 
@@ -1485,12 +1492,17 @@ function toggleSelectAll(team) {
         }
     };
 
+    
+
     // Officials state
     var officialsData = {
         referee: '{{ $game->referee }}',
         assistant_referee_1: '{{ $game->assistant_referee_1 }}',
         assistant_referee_2: '{{ $game->assistant_referee_2 }}'
     };
+
+    var requiredStarters = {{ $game->isVolleyball() ? 6 : 5 }};
+   var minRosterSize = {{ $game->isVolleyball() ? 6 : 5 }};
 
     // Tab functionality
     window.addEventListener('load', function() {
@@ -1650,49 +1662,43 @@ function toggleSelectAll(team) {
     }
 
     function handleStarterSelection(checkbox) {
-        var team = checkbox.getAttribute('data-team');
-        var playerId = checkbox.id.replace('starter1_', '').replace('starter2_', '');
-        var playerItem = checkbox.closest('.player-item');
-        var starterBadge = playerItem.querySelector('.badge-starter');
+    var team = checkbox.getAttribute('data-team');
+    var playerId = checkbox.id.replace('starter1_', '').replace('starter2_', '');
+    var playerItem = checkbox.closest('.player-item');
+    var starterBadge = playerItem.querySelector('.badge-starter');
 
-        if (checkbox.checked) {
-            if (gameState.selectedStarters[team].length >= 5) {
-                checkbox.checked = false;
-                alert('You can only select 5 starters per team!');
-                return;
-            }
-
-            gameState.selectedStarters[team].push(playerId);
-            playerItem.classList.add('is-starter');
-            starterBadge.style.display = 'inline-block';
-        } else {
-            var index = gameState.selectedStarters[team].indexOf(playerId);
-            if (index > -1) {
-                gameState.selectedStarters[team].splice(index, 1);
-            }
-            playerItem.classList.remove('is-starter');
-            starterBadge.style.display = 'none';
+    if (checkbox.checked) {
+        // UPDATED: Check against dynamic requiredStarters
+        if (gameState.selectedStarters[team].length >= requiredStarters) {
+            checkbox.checked = false;
+            alert('You can only select ' + requiredStarters + ' starters per team!');
+            return;
         }
 
-        updateStartersCounter(team);
-        updateReadinessChecks();
-        // After updating starters, check if both teams have 5 starters
-        setTimeout(function() {
-            var team1Count = document.querySelectorAll('.player-item[data-team="team1"] .starter-select:checked').length;
-            var team2Count = document.querySelectorAll('.player-item[data-team="team2"] .starter-select:checked').length;
-            if (team1Count === 5 && team2Count === 5) {
-                animateTabSwitch('staff');
-            }
-        }, 200);
-        // After updating starters, check if both teams have 5 starters
-        setTimeout(function() {
-            var team1Count = document.querySelectorAll('.player-item[data-team="team1"] .starter-select:checked').length;
-            var team2Count = document.querySelectorAll('.player-item[data-team="team2"] .starter-select:checked').length;
-            if (team1Count === 5 && team2Count === 5) {
-                animateTabSwitch('staff');
-            }
-        }, 200);
+        gameState.selectedStarters[team].push(playerId);
+        playerItem.classList.add('is-starter');
+        starterBadge.style.display = 'inline-block';
+    } else {
+        var index = gameState.selectedStarters[team].indexOf(playerId);
+        if (index > -1) {
+            gameState.selectedStarters[team].splice(index, 1);
+        }
+        playerItem.classList.remove('is-starter');
+        starterBadge.style.display = 'none';
     }
+
+    updateStartersCounter(team);
+    updateReadinessChecks();
+    
+    // UPDATED: Check if both teams have required starters
+    setTimeout(function() {
+        var team1Count = document.querySelectorAll('.player-item[data-team="team1"] .starter-select:checked').length;
+        var team2Count = document.querySelectorAll('.player-item[data-team="team2"] .starter-select:checked').length;
+        if (team1Count === requiredStarters && team2Count === requiredStarters) {
+            animateTabSwitch('staff');
+        }
+    }, 200);
+}
 
 // Animation for tab switch
 function animateTabSwitch(tabName) {
@@ -1742,17 +1748,18 @@ function switchToTab(tabName) {
     }
 
     function updateStartersCounter(team) {
-        var counter = document.getElementById(team + '-starters');
-        if (counter) {
-            counter.textContent = gameState.selectedStarters[team].length + '/5';
+    var counter = document.getElementById(team + '-starters');
+    if (counter) {
+        // UPDATED: Show dynamic required starters count
+        counter.textContent = gameState.selectedStarters[team].length + '/' + requiredStarters;
 
-            if (gameState.selectedStarters[team].length === 5) {
-                counter.style.color = 'var(--success-color)';
-            } else {
-                counter.style.color = 'var(--warning-color)';
-            }
+        if (gameState.selectedStarters[team].length === requiredStarters) {
+            counter.style.color = 'var(--success-color)';
+        } else {
+            counter.style.color = 'var(--warning-color)';
         }
     }
+}
 
     function setupOfficialsForm() {
         var officialsForm = document.getElementById('officialsForm');
@@ -1912,68 +1919,70 @@ document.getElementById('startGameForm').addEventListener('submit', function(e) 
 });
 
     function updateReadinessChecks() {
-        var team1Check = document.getElementById('team1-roster-check');
-        var team2Check = document.getElementById('team2-roster-check');
-        var officialsCheck = document.getElementById('officials-check');
-        var startButton = document.getElementById('startGameBtn');
+    var team1Check = document.getElementById('team1-roster-check');
+    var team2Check = document.getElementById('team2-roster-check');
+    var officialsCheck = document.getElementById('officials-check');
+    var startButton = document.getElementById('startGameBtn');
 
-        var team1RosterInput = document.getElementById('team1_roster_input');
-        var team2RosterInput = document.getElementById('team2_roster_input');
-        var team1StartersInput = document.getElementById('team1_starters_input');
-        var team2StartersInput = document.getElementById('team2_starters_input');
+    var team1RosterInput = document.getElementById('team1_roster_input');
+    var team2RosterInput = document.getElementById('team2_roster_input');
+    var team1StartersInput = document.getElementById('team1_starters_input');
+    var team2StartersInput = document.getElementById('team2_starters_input');
 
-        var team1Ready = gameState.selectedRoster.team1.length >= 5 &&
-            gameState.selectedStarters.team1.length === 5;
+    // UPDATED: Check against dynamic minRosterSize and requiredStarters
+    var team1Ready = gameState.selectedRoster.team1.length >= minRosterSize &&
+        gameState.selectedStarters.team1.length === requiredStarters;
 
-        if (team1Ready) {
-            team1Check.classList.remove('not-ready');
-            team1Check.classList.add('ready');
-            team1Check.textContent = '✓';
-        } else {
-            team1Check.classList.remove('ready');
-            team1Check.classList.add('not-ready');
-            team1Check.textContent = '!';
-        }
-
-        var team2Ready = gameState.selectedRoster.team2.length >= 5 &&
-            gameState.selectedStarters.team2.length === 5;
-
-        if (team2Ready) {
-            team2Check.classList.remove('not-ready');
-            team2Check.classList.add('ready');
-            team2Check.textContent = '✓';
-        } else {
-            team2Check.classList.remove('ready');
-            team2Check.classList.add('not-ready');
-            team2Check.textContent = '!';
-        }
-
-        var hasReferee = officialsData.referee && officialsData.referee.trim() !== '';
-
-        if (hasReferee) {
-            officialsCheck.classList.remove('not-ready');
-            officialsCheck.classList.add('ready');
-            officialsCheck.textContent = '✓';
-        } else {
-            officialsCheck.classList.remove('ready');
-            officialsCheck.classList.add('not-ready');
-            officialsCheck.textContent = '!';
-        }
-
-        var allReady = team1Ready && team2Ready && hasReferee;
-
-        if (allReady) {
-            startButton.disabled = false;
-            startButton.style.opacity = '1';
-
-            if (team1RosterInput) team1RosterInput.value = JSON.stringify(gameState.selectedRoster.team1);
-            if (team2RosterInput) team2RosterInput.value = JSON.stringify(gameState.selectedRoster.team2);
-            if (team1StartersInput) team1StartersInput.value = JSON.stringify(gameState.selectedStarters.team1);
-            if (team2StartersInput) team2StartersInput.value = JSON.stringify(gameState.selectedStarters.team2);
-        } else {
-            startButton.disabled = true;
-            startButton.style.opacity = '0.6';
-        }
+    if (team1Ready) {
+        team1Check.classList.remove('not-ready');
+        team1Check.classList.add('ready');
+        team1Check.textContent = '✓';
+    } else {
+        team1Check.classList.remove('ready');
+        team1Check.classList.add('not-ready');
+        team1Check.textContent = '!';
     }
+
+    // UPDATED: Check against dynamic minRosterSize and requiredStarters
+    var team2Ready = gameState.selectedRoster.team2.length >= minRosterSize &&
+        gameState.selectedStarters.team2.length === requiredStarters;
+
+    if (team2Ready) {
+        team2Check.classList.remove('not-ready');
+        team2Check.classList.add('ready');
+        team2Check.textContent = '✓';
+    } else {
+        team2Check.classList.remove('ready');
+        team2Check.classList.add('not-ready');
+        team2Check.textContent = '!';
+    }
+
+    var hasReferee = officialsData.referee && officialsData.referee.trim() !== '';
+
+    if (hasReferee) {
+        officialsCheck.classList.remove('not-ready');
+        officialsCheck.classList.add('ready');
+        officialsCheck.textContent = '✓';
+    } else {
+        officialsCheck.classList.remove('ready');
+        officialsCheck.classList.add('not-ready');
+        officialsCheck.textContent = '!';
+    }
+
+    var allReady = team1Ready && team2Ready && hasReferee;
+
+    if (allReady) {
+        startButton.disabled = false;
+        startButton.style.opacity = '1';
+
+        if (team1RosterInput) team1RosterInput.value = JSON.stringify(gameState.selectedRoster.team1);
+        if (team2RosterInput) team2RosterInput.value = JSON.stringify(gameState.selectedRoster.team2);
+        if (team1StartersInput) team1StartersInput.value = JSON.stringify(gameState.selectedStarters.team1);
+        if (team2StartersInput) team2StartersInput.value = JSON.stringify(gameState.selectedStarters.team2);
+    } else {
+        startButton.disabled = true;
+        startButton.style.opacity = '0.6';
+    }
+}
 </script>
 @endpush

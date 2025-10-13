@@ -109,65 +109,73 @@ class GameController extends Controller
 }
 
     public function startLive(Request $request, Game $game)
-    {
-        // Validate the roster and starter selections (NEW FORMAT)
-        $validated = $request->validate([
-            'team1_roster' => 'required|json',
-            'team2_roster' => 'required|json',
-            'team1_starters' => 'required|json', 
-            'team2_starters' => 'required|json',
-        ]);
+{
+    // Determine required counts based on sport
+    $requiredStarters = $game->isVolleyball() ? 6 : 5;
+    $minRosterSize = $game->isVolleyball() ? 6 : 5;
+    
+    // Validate the roster and starter selections
+    $validated = $request->validate([
+        'team1_roster' => 'required|json',
+        'team2_roster' => 'required|json',
+        'team1_starters' => 'required|json', 
+        'team2_starters' => 'required|json',
+    ]);
 
-        // Decode the selections
-        $team1RosterIds = json_decode($validated['team1_roster'], true);
-        $team2RosterIds = json_decode($validated['team2_roster'], true);
-        $team1StarterIds = json_decode($validated['team1_starters'], true);
-        $team2StarterIds = json_decode($validated['team2_starters'], true);
+    // Decode the selections
+    $team1RosterIds = json_decode($validated['team1_roster'], true);
+    $team2RosterIds = json_decode($validated['team2_roster'], true);
+    $team1StarterIds = json_decode($validated['team1_starters'], true);
+    $team2StarterIds = json_decode($validated['team2_starters'], true);
 
-        // Validate roster sizes (minimum 5 players each)
-        if (count($team1RosterIds) < 5 || count($team2RosterIds) < 5) {
-            return back()->with('error', 'You must select at least 5 players for each team roster!');
-        }
-
-        // Validate starter selections (exactly 5 players each)
-        if (count($team1StarterIds) !== 5 || count($team2StarterIds) !== 5) {
-            return back()->with('error', 'You must select exactly 5 starters for each team!');
-        }
-
-        // Validate that starters are from the roster
-        if (array_diff($team1StarterIds, $team1RosterIds) || array_diff($team2StarterIds, $team2RosterIds)) {
-            return back()->with('error', 'All starters must be selected from the team roster!');
-        }
-
-        // Validate that at least one referee is assigned
-        if (empty($game->referee)) {
-            return back()->with('error', 'You must assign at least one referee before starting the game!');
-        }
-
-        // Store combined roster/starter data in existing JSON columns
-        $team1Data = [
-            'roster' => $team1RosterIds,
-            'starters' => $team1StarterIds,
-            'all_players' => array_map(function($id) { return "player1_{$id}"; }, $team1RosterIds)
-        ];
-
-        $team2Data = [
-            'roster' => $team2RosterIds,
-            'starters' => $team2StarterIds, 
-            'all_players' => array_map(function($id) { return "player2_{$id}"; }, $team2RosterIds)
-        ];
-
-        // Update game status and store player selections in existing columns
-        $game->update([
-            'status' => 'in_progress',
-            'started_at' => now(),
-            'team1_selected_players' => json_encode($team1Data),
-            'team2_selected_players' => json_encode($team2Data),
-        ]);
-
-        // Redirect to live scoresheet
-        return redirect()->route('games.live', $game)->with('success', 'Game started successfully!');
+    // Validate roster sizes
+    if (count($team1RosterIds) < $minRosterSize || count($team2RosterIds) < $minRosterSize) {
+        return back()->with('error', "You must select at least {$minRosterSize} players for each team roster!");
     }
+
+    // Validate starter selections
+    if (count($team1StarterIds) !== $requiredStarters || count($team2StarterIds) !== $requiredStarters) {
+        return back()->with('error', "You must select exactly {$requiredStarters} starters for each team!");
+    }
+
+    // Validate that starters are from the roster
+    if (array_diff($team1StarterIds, $team1RosterIds) || array_diff($team2StarterIds, $team2RosterIds)) {
+        return back()->with('error', 'All starters must be selected from the team roster!');
+    }
+
+    // Validate that at least one referee is assigned
+    if (empty($game->referee)) {
+        return back()->with('error', 'You must assign at least one referee before starting the game!');
+    }
+
+    // Store combined roster/starter data
+    $team1Data = [
+        'roster' => $team1RosterIds,
+        'starters' => $team1StarterIds,
+        'all_players' => array_map(function($id) { return "player1_{$id}"; }, $team1RosterIds)
+    ];
+
+    $team2Data = [
+        'roster' => $team2RosterIds,
+        'starters' => $team2StarterIds, 
+        'all_players' => array_map(function($id) { return "player2_{$id}"; }, $team2RosterIds)
+    ];
+
+    // Update game status and store player selections
+    $game->update([
+        'status' => 'in_progress',
+        'started_at' => now(),
+        'team1_selected_players' => json_encode($team1Data),
+        'team2_selected_players' => json_encode($team2Data),
+    ]);
+
+    // Redirect to appropriate live scoresheet based on sport
+    if ($game->isVolleyball()) {
+        return redirect()->route('games.volleyball-live', $game)->with('success', 'Volleyball game started successfully!');
+    }
+    
+    return redirect()->route('games.live', $game)->with('success', 'Game started successfully!');
+}
 
     public function live(Game $game)
     {
