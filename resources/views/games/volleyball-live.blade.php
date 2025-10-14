@@ -1,8 +1,3 @@
-@extends('layouts.app')
-
-@section('title', 'Live Volleyball - ' . $game->team1->team_name . ' vs ' . $game->team2->team_name)
-
-@section('content')
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +11,6 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #1a1a1a;
@@ -25,6 +19,108 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+        }
+
+        /* Hamburger Menu Styles */
+        .menu-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10000;
+        }
+
+        .hamburger-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+            transition: all 0.3s;
+        }
+
+        .hamburger-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+        }
+
+        .hamburger-btn span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .hamburger-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(7px, 7px);
+        }
+
+        .hamburger-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        .menu-dropdown {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            background: #2d2d2d;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+            min-width: 240px;
+            border: 1px solid #444;
+        }
+
+        .menu-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 20px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.2s;
+            border-bottom: 1px solid #3d3d3d;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item:hover {
+            background: #3d3d3d;
+            padding-left: 25px;
+        }
+
+        .menu-item-icon {
+            font-size: 22px;
+            width: 28px;
+            text-align: center;
+        }
+
+        .menu-item-text {
+            font-size: 15px;
+            font-weight: 600;
         }
 
         /* Scoreboard */
@@ -551,6 +647,25 @@
     </style>
 </head>
 <body>
+    <!-- Hamburger Menu -->
+    <div class="menu-container">
+        <button class="hamburger-btn" id="hamburgerBtn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="menu-dropdown" id="menuDropdown">
+            <a href="/tournaments/{{ $game->bracket->tournament_id ?? '' }}" class="menu-item">
+                <span class="menu-item-icon">🏆</span>
+                <span class="menu-item-text">Back to Tournament</span>
+            </a>
+            <a href="/games/{{ $game->id }}/volleyball-scoresheet" class="menu-item">
+                <span class="menu-item-icon">📄</span>
+                <span class="menu-item-text">View Scoresheet</span>
+            </a>
+        </div>
+    </div>
+
     <!-- Instruction Banner -->
     <div class="instruction-banner" id="instructionBanner"></div>
 
@@ -697,28 +812,42 @@
         let scoreA = 0, scoreB = 0;
         let currentSet = 1;
         let setsA = 0, setsB = 0;
-        let serving = 'A'; // Team currently serving
+        let serving = 'A';
         let timeoutsA = 0, timeoutsB = 0;
         let substitutionsA = 0, substitutionsB = 0;
         let events = [];
         let eventCounter = 1;
-        
-        // Set scores tracking
+       
         let setScores = {
             A: [0, 0, 0, 0, 0],
             B: [0, 0, 0, 0, 0]
         };
 
-        // UI state
         let selectedAction = null;
         let selectingPlayer = false;
         let selectingTeam = false;
         let teamSelectCallback = null;
 
-        // Timeout timer
         let timeoutActive = false;
         let timeoutTime = 30;
         let timeoutInterval = null;
+
+        // Hamburger menu functionality
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const menuDropdown = document.getElementById('menuDropdown');
+
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            hamburgerBtn.classList.toggle('active');
+            menuDropdown.classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.menu-container')) {
+                hamburgerBtn.classList.remove('active');
+                menuDropdown.classList.remove('show');
+            }
+        });
 
         // Initialize
         function init() {
@@ -728,15 +857,12 @@
             setupEventListeners();
         }
 
-        // Render players
         function renderPlayers() {
             const playersAGrid = document.getElementById('playersA');
             const playersBGrid = document.getElementById('playersB');
-
             playersAGrid.innerHTML = '';
             playersBGrid.innerHTML = '';
 
-            // Get active players (first 6 for volleyball)
             const activePlayersA = gameData.team1.players.slice(0, 6);
             const activePlayersB = gameData.team2.players.slice(0, 6);
 
@@ -751,87 +877,66 @@
             });
         }
 
-        // Create player card
         function createPlayerCard(player, team) {
             const card = document.createElement('div');
             card.className = `player-card team-${team.toLowerCase()}`;
             card.dataset.team = team;
             card.dataset.number = player.number || '00';
             card.dataset.playerId = player.id;
-
             card.innerHTML = `
                 <div class="player-number">${player.number || '00'}</div>
                 <div class="player-position">${player.position || 'P'}</div>
             `;
-
             card.addEventListener('click', () => handlePlayerClick(team, player));
-
             return card;
         }
 
-        // Setup event listeners
         function setupEventListeners() {
-            // Action buttons
             document.querySelectorAll('.action-btn[data-action]').forEach(btn => {
                 btn.addEventListener('click', () => handleActionClick(btn.dataset.action));
             });
 
-            // Timeout button
             document.getElementById('timeoutBtn').addEventListener('click', handleTimeoutClick);
-
-            // Undo button
             document.getElementById('undoBtn').addEventListener('click', handleUndo);
-
-            // Team selection buttons
             document.getElementById('selectTeamA').addEventListener('click', () => handleTeamSelect('A'));
             document.getElementById('selectTeamB').addEventListener('click', () => handleTeamSelect('B'));
         }
 
-        // Handle action click
         function handleActionClick(action) {
-            // Deselect previous
             document.querySelectorAll('.action-btn').forEach(btn => btn.classList.remove('selected'));
-            
+           
             selectedAction = action;
-            
-            // Highlight button
+           
             event.target.classList.add('selected');
 
             if (action === 'error') {
-                // Errors need team selection first
                 selectingTeam = true;
                 teamSelectCallback = handleErrorTeamSelect;
                 showTeamSelectModal('Which team committed the error?');
             } else {
-                // Other actions need player selection
                 selectingPlayer = true;
                 document.querySelectorAll('.player-card').forEach(card => card.classList.add('selecting'));
                 showInstruction(`Select player for ${action.toUpperCase()}`);
             }
         }
 
-        // Handle player click
         function handlePlayerClick(team, player) {
             if (!selectingPlayer) return;
 
             const playerNumber = player.number || '00';
-            
+           
             if (selectedAction === 'kill' || selectedAction === 'ace' || selectedAction === 'block') {
-                // Scoring actions
                 handleScore(team, selectedAction, playerNumber);
             } else if (selectedAction === 'dig' || selectedAction === 'assist') {
-                // Non-scoring actions
                 logEvent(team, playerNumber, selectedAction.charAt(0).toUpperCase() + selectedAction.slice(1), 0);
             }
 
-            // Reset selection
             resetSelection();
         }
 
-        // Handle score
         function handleScore(team, action, playerNumber) {
             const actionLabel = action.charAt(0).toUpperCase() + action.slice(1);
-            
+           
             if (team === 'A') {
                 scoreA++;
                 updateScoreDisplay();
@@ -842,18 +947,15 @@
                 logEvent('B', playerNumber, actionLabel, 1);
             }
 
-            // Switch serving team if receiving team scores
             if (team !== serving) {
                 serving = team;
                 updateServingIndicator();
                 logEvent('GAME', 'SYSTEM', `Serve → Team ${team}`, 0);
             }
 
-            // Check for set win
             checkSetWin();
         }
 
-        // Check set win
         function checkSetWin() {
             const maxPoints = currentSet < 5 ? 25 : 15;
             const minLead = 2;
@@ -865,13 +967,10 @@
             }
         }
 
-        // Handle set win
         function handleSetWin(winner) {
-            // Save set scores
             setScores.A[currentSet - 1] = scoreA;
             setScores.B[currentSet - 1] = scoreB;
 
-            // Update sets won
             if (winner === 'A') {
                 setsA++;
             } else {
@@ -880,10 +979,8 @@
 
             updateScoreboard();
             updateSetScoresDisplay();
-
             logEvent('GAME', 'SYSTEM', `Set ${currentSet} Ended - Team ${winner} wins ${winner === 'A' ? scoreA : scoreB}-${winner === 'A' ? scoreB : scoreA}`, 0);
 
-            // Check if match is over (first to 3 sets)
             if (setsA === 3 || setsB === 3) {
                 setTimeout(() => showGameEndModal(), 1000);
             } else {
@@ -891,14 +988,12 @@
             }
         }
 
-        // Handle timeout click
         function handleTimeoutClick() {
             selectingTeam = true;
             teamSelectCallback = handleTimeoutTeamSelect;
             showTeamSelectModal('Which team is taking a timeout?');
         }
 
-        // Handle timeout team selection
         function handleTimeoutTeamSelect(team) {
             if (team === 'A' && timeoutsA >= 2) {
                 alert('Team A has no timeouts remaining');
@@ -920,11 +1015,9 @@
             startTimeoutTimer();
         }
 
-        // Handle error team selection
         function handleErrorTeamSelect(team) {
-            // Error gives point to opponent
             const opponent = team === 'A' ? 'B' : 'A';
-            
+           
             if (opponent === 'A') {
                 scoreA++;
             } else {
@@ -934,7 +1027,6 @@
             updateScoreDisplay();
             logEvent(team, 'TEAM', 'Error (Opponent scores)', 1);
 
-            // Switch serving if needed
             if (opponent !== serving) {
                 serving = opponent;
                 updateServingIndicator();
@@ -944,7 +1036,6 @@
             checkSetWin();
         }
 
-        // Start timeout timer
         function startTimeoutTimer() {
             timeoutActive = true;
             timeoutTime = 30;
@@ -954,14 +1045,12 @@
             timeoutInterval = setInterval(() => {
                 timeoutTime--;
                 updateTimeoutDisplay();
-
                 if (timeoutTime <= 0) {
                     endTimeout();
                 }
             }, 1000);
         }
 
-        // End timeout
         function endTimeout() {
             timeoutActive = false;
             clearInterval(timeoutInterval);
@@ -969,12 +1058,10 @@
             timeoutTime = 30;
         }
 
-        // Update timeout display
         function updateTimeoutDisplay() {
             document.getElementById('timeoutTime').textContent = timeoutTime;
         }
 
-        // Handle team select
         function handleTeamSelect(team) {
             closeTeamSelectModal();
             if (teamSelectCallback) {
@@ -984,20 +1071,17 @@
             selectingTeam = false;
         }
 
-        // Show team select modal
         function showTeamSelectModal(prompt) {
             document.getElementById('teamSelectPrompt').textContent = prompt;
             document.getElementById('teamSelectModal').classList.add('show');
         }
 
-        // Close team select modal
         function closeTeamSelectModal() {
             document.getElementById('teamSelectModal').classList.remove('show');
             selectingTeam = false;
             resetSelection();
         }
 
-        // Show set end modal
         function showSetEndModal() {
             document.getElementById('endedSetNumber').textContent = currentSet;
             document.getElementById('setEndTeamA').textContent = gameData.team1.name;
@@ -1010,10 +1094,9 @@
             document.getElementById('setEndModal').classList.add('show');
         }
 
-        // Start next set
         function startNextSet() {
             document.getElementById('setEndModal').classList.remove('show');
-            
+           
             currentSet++;
             scoreA = 0;
             scoreB = 0;
@@ -1022,29 +1105,26 @@
             substitutionsA = 0;
             substitutionsB = 0;
 
-            // Switch serving team
             serving = serving === 'A' ? 'B' : 'A';
 
             updateScoreboard();
             updateServingIndicator();
             updateSetScoresDisplay();
-
             logEvent('GAME', 'SYSTEM', `Set ${currentSet} Started`, 0);
         }
 
-        // Show game end modal
         function showGameEndModal() {
             const winner = setsA > setsB ? gameData.team1.name : gameData.team2.name;
             document.getElementById('winnerText').textContent = `${winner.toUpperCase()} WINS!`;
             document.getElementById('finalSetsA').textContent = setsA;
             document.getElementById('finalSetsB').textContent = setsB;
 
-            // Display all set scores
             let setScoresHtml = '';
             for (let i = 0; i < currentSet; i++) {
                 const scoreA = setScores.A[i];
                 const scoreB = setScores.B[i];
                 const wonClass = scoreA > scoreB ? 'won-a' : 'won-b';
+
                 setScoresHtml += `
                     <div style="display: flex; justify-content: space-between; padding: 10px; background: #3d3d3d; margin-bottom: 8px; border-radius: 6px;" class="${wonClass}">
                         <span>Set ${i + 1}:</span>
@@ -1052,22 +1132,19 @@
                     </div>
                 `;
             }
-            document.getElementById('finalSetScores').innerHTML = setScoresHtml;
 
+            document.getElementById('finalSetScores').innerHTML = setScoresHtml;
             document.getElementById('gameEndModal').classList.add('show');
         }
 
-        // Collect player statistics from game events
         function collectPlayerStats() {
             const playerStats = {};
 
-            // Helper to get player by number and team
             function findPlayerByNumber(playerNumber, team) {
                 const players = team === 'A' ? gameData.team1.players : gameData.team2.players;
                 return players.find(p => (p.number || '00').toString() === playerNumber.toString());
             }
 
-            // Initialize stats for all players
             [...gameData.team1.players].forEach(player => {
                 const key = `A_${player.id}`;
                 playerStats[key] = {
@@ -1102,21 +1179,17 @@
                 };
             });
 
-            // Process game events to calculate stats
             events.forEach(event => {
-                // Skip system/team events
                 if (event.player === 'TEAM' || event.player === 'SYSTEM') {
                     return;
                 }
 
-                // Find the player
                 const player = findPlayerByNumber(event.player, event.team);
                 if (!player) return;
 
                 const key = `${event.team}_${player.id}`;
                 if (!playerStats[key]) return;
 
-                // Process different action types
                 if (event.action === 'Kill') {
                     playerStats[key].kills++;
                     playerStats[key].attack_attempts++;
@@ -1136,14 +1209,12 @@
                 }
             });
 
-            // Convert to array
             return Object.values(playerStats);
         }
 
-        // Save game results
         function saveGameResults() {
             const playerStats = collectPlayerStats();
-            
+           
             const finalGameData = {
                 game_id: gameData.id,
                 team1_score: setsA,
@@ -1160,7 +1231,6 @@
                 player_stats: playerStats
             };
 
-            // Send to backend
             fetch(`/games/${gameData.id}/volleyball-complete`, {
                 method: 'POST',
                 headers: {
@@ -1180,7 +1250,6 @@
             });
         }
 
-        // Log event
         function logEvent(team, player, action, points) {
             const event = {
                 id: eventCounter++,
@@ -1191,12 +1260,10 @@
                 set: currentSet,
                 score: `${scoreA}-${scoreB}`
             };
-
             events.unshift(event);
             renderLog();
         }
 
-        // Render log
         function renderLog() {
             const logContent = document.getElementById('logContent');
             logContent.innerHTML = '';
@@ -1217,20 +1284,17 @@
             });
         }
 
-        // Handle undo
         function handleUndo() {
             if (events.length === 0) return;
 
             const lastEvent = events.shift();
 
-            // Revert score
             if (lastEvent.points > 0) {
                 if (lastEvent.team === 'A') {
                     scoreA = Math.max(0, scoreA - 1);
                 } else if (lastEvent.team === 'B') {
                     scoreB = Math.max(0, scoreB - 1);
                 } else if (lastEvent.action.includes('Error')) {
-                    // Revert error (opponent scored)
                     const errorTeam = lastEvent.team;
                     const opponent = errorTeam === 'A' ? 'B' : 'A';
                     if (opponent === 'A') {
@@ -1242,7 +1306,6 @@
                 updateScoreDisplay();
             }
 
-            // Revert timeouts
             if (lastEvent.action === 'Timeout') {
                 if (lastEvent.team === 'A') {
                     timeoutsA = Math.max(0, timeoutsA - 1);
@@ -1251,7 +1314,6 @@
                 }
             }
 
-            // Revert substitutions
             if (lastEvent.action === 'Substitution') {
                 if (lastEvent.team === 'A') {
                     substitutionsA = Math.max(0, substitutionsA - 1);
@@ -1264,7 +1326,6 @@
             renderLog();
         }
 
-        // Update scoreboard
         function updateScoreboard() {
             document.getElementById('scoreA').textContent = scoreA.toString().padStart(2, '0');
             document.getElementById('scoreB').textContent = scoreB.toString().padStart(2, '0');
@@ -1277,13 +1338,11 @@
             document.getElementById('substitutionsB').textContent = substitutionsB;
         }
 
-        // Update score display only
         function updateScoreDisplay() {
             document.getElementById('scoreA').textContent = scoreA.toString().padStart(2, '0');
             document.getElementById('scoreB').textContent = scoreB.toString().padStart(2, '0');
         }
 
-        // Update serving indicator
         function updateServingIndicator() {
             const servingA = document.getElementById('servingA');
             const servingB = document.getElementById('servingB');
@@ -1297,7 +1356,6 @@
             }
         }
 
-        // Update set scores display
         function updateSetScoresDisplay() {
             const display = document.getElementById('setScoresDisplay');
             display.innerHTML = '';
@@ -1306,7 +1364,7 @@
                 const scoreA = setScores.A[i];
                 const scoreB = setScores.B[i];
                 const wonClass = scoreA > scoreB ? 'won-a' : 'won-b';
-                
+               
                 const box = document.createElement('div');
                 box.className = `set-score-box ${wonClass}`;
                 box.textContent = `${scoreA}-${scoreB}`;
@@ -1314,20 +1372,17 @@
             }
         }
 
-        // Show instruction
         function showInstruction(message) {
             const banner = document.getElementById('instructionBanner');
             banner.textContent = message;
             banner.classList.add('show');
         }
 
-        // Hide instruction
         function hideInstruction() {
             const banner = document.getElementById('instructionBanner');
             banner.classList.remove('show');
         }
 
-        // Reset selection
         function resetSelection() {
             selectedAction = null;
             selectingPlayer = false;
@@ -1336,9 +1391,7 @@
             hideInstruction();
         }
 
-        // Initialize on load
         init();
     </script>
 </body>
 </html>
-@endsection

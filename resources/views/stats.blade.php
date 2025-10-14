@@ -594,14 +594,15 @@
                             @endforeach
                         </select>
 
-                        <select name="sport" class="filter-select" onchange="this.form.submit()">
-                            <option value="all">All Sports</option>
-                            @foreach($sports as $sport)
-                                <option value="{{ $sport }}" {{ request('sport') == $sport ? 'selected' : '' }}>
-                                    {{ $sport }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <select name="sport_id" class="filter-select" onchange="this.form.submit()">
+                                <option value="">All Sports</option>
+                                @foreach ($sports as $sport)
+                                    <option value="{{ $sport->sports_id }}"
+                                        {{ request('sport_id') == $sport->sports_id ? 'selected' : '' }}>
+                                        {{ $sport->sports_name }}
+                                    </option>
+                                @endforeach
+                            </select>
                     </form>
 
                     <div class="search-container">
