@@ -644,6 +644,41 @@
         .set-score-box.won-b {
             background: rgba(51, 51, 153, 0.3);
         }
+
+        /* Hotkeys Modal Styles */
+.hotkey-item {
+    background: #3d3d3d;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.hotkey-input {
+    background: #4d4d4d;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+    text-align: center;
+}
+
+.hotkey-input:hover {
+    background: #5d5d5d;
+    border-color: #4CAF50;
+}
+
+.hotkey-input.listening {
+    background: #FF9800;
+    border-color: #F57C00;
+    animation: pulse 1s infinite;
+}
+
+.current-key {
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    font-family: 'Courier New', monospace;
+}
     </style>
 </head>
 <body>
@@ -663,6 +698,10 @@
                 <span class="menu-item-icon">📄</span>
                 <span class="menu-item-text">View Scoresheet</span>
             </a>
+            <a href="#" class="menu-item" id="hotkeysBtn">
+            <span class="menu-item-icon">⌨️</span>
+            <span class="menu-item-text">Customize Hotkeys</span>
+        </a>
         </div>
     </div>
 
@@ -794,6 +833,78 @@
         </div>
     </div>
 
+    <!-- Hotkeys Modal -->
+<div class="modal" id="hotkeysModal">
+    <div class="modal-content">
+        <h2 class="modal-title">Customize Hotkeys</h2>
+        <p class="modal-subtitle">Click on an action and press a key to assign a hotkey. Press ESC to clear.</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div class="hotkey-item">
+                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Kill</div>
+                <div class="hotkey-input" data-action="kill">
+                    <span class="current-key" id="key-kill">K</span>
+                </div>
+            </div>
+            
+            <div class="hotkey-item">
+                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Ace</div>
+                <div class="hotkey-input" data-action="ace">
+                    <span class="current-key" id="key-ace">A</span>
+                </div>
+            </div>
+            
+            <div class="hotkey-item">
+                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Block</div>
+                <div class="hotkey-input" data-action="block">
+                    <span class="current-key" id="key-block">B</span>
+                </div>
+            </div>
+            
+            <div class="hotkey-item">
+                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Dig</div>
+                <div class="hotkey-input" data-action="dig">
+                    <span class="current-key" id="key-dig">D</span>
+                </div>
+            </div>
+            
+            <div class="hotkey-item">
+                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Assist</div>
+                <div class="hotkey-input" data-action="assist">
+                    <span class="current-key" id="key-assist">S</span>
+                </div>
+            </div>
+            
+            <div class="hotkey-item">
+                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Error</div>
+                <div class="hotkey-input" data-action="error">
+                    <span class="current-key" id="key-error">E</span>
+                </div>
+            </div>
+            
+            <div class="hotkey-item">
+                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Timeout</div>
+                <div class="hotkey-input" data-action="timeout">
+                    <span class="current-key" id="key-timeout">T</span>
+                </div>
+            </div>
+            
+            <div class="hotkey-item">
+                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Undo</div>
+                <div class="hotkey-input" data-action="undo">
+                    <span class="current-key" id="key-undo">Z</span>
+                </div>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+            <button class="modal-btn modal-btn-secondary" onclick="resetHotkeysToDefault()">Reset to Defaults</button>
+            <button class="modal-btn modal-btn-primary" onclick="saveHotkeysSettings()">Save Changes</button>
+            <button class="modal-btn modal-btn-secondary" onclick="closeHotkeysModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
     <script>
         // Game data from Laravel
         const gameData = {
@@ -855,7 +966,189 @@
             updateScoreboard();
             updateServingIndicator();
             setupEventListeners();
+             loadHotkeys();
         }
+
+        // Hotkeys functionality
+let hotkeys = {
+    'kill': 'K',
+    'ace': 'A',
+    'block': 'B',
+    'dig': 'D',
+    'assist': 'S',
+    'error': 'E',
+    'timeout': 'T',
+    'undo': 'Z'
+};
+
+const defaultHotkeys = { ...hotkeys };
+
+// Load saved hotkeys from localStorage
+function loadHotkeys() {
+    const saved = localStorage.getItem('volleyballHotkeys');
+    if (saved) {
+        hotkeys = JSON.parse(saved);
+    }
+    applyHotkeys();
+}
+
+// Save hotkeys to localStorage
+function saveHotkeys() {
+    localStorage.setItem('volleyballHotkeys', JSON.stringify(hotkeys));
+}
+
+// Apply hotkeys (global keyboard listener)
+function applyHotkeys() {
+    document.addEventListener('keydown', handleHotkeyPress);
+}
+
+// Handle hotkey press
+function handleHotkeyPress(e) {
+    // Ignore if typing in input fields or modal is open
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (document.getElementById('hotkeysModal').classList.contains('show')) return;
+    if (selectingPlayer || selectingTeam) return;
+
+    const key = e.key.toUpperCase();
+
+    // Find action for this key
+    for (const [action, hotkey] of Object.entries(hotkeys)) {
+        if (hotkey.toUpperCase() === key) {
+            e.preventDefault();
+            executeHotkeyAction(action);
+            break;
+        }
+    }
+}
+
+// Execute action based on hotkey
+function executeHotkeyAction(action) {
+    if (action === 'timeout') {
+        document.getElementById('timeoutBtn').click();
+    } else if (action === 'undo') {
+        document.getElementById('undoBtn').click();
+    } else {
+        const btn = document.querySelector(`[data-action="${action}"]`);
+        if (btn) btn.click();
+    }
+}
+
+// Open hotkeys modal
+function openHotkeysModal() {
+    document.getElementById('hotkeysModal').classList.add('show');
+    updateHotkeyDisplay();
+}
+
+// Close hotkeys modal
+function closeHotkeysModal() {
+    document.getElementById('hotkeysModal').classList.remove('show');
+    document.querySelectorAll('.hotkey-input').forEach(input => {
+        input.classList.remove('listening');
+    });
+}
+
+// Update hotkey display in modal
+function updateHotkeyDisplay() {
+    for (const [action, key] of Object.entries(hotkeys)) {
+        const element = document.getElementById(`key-${action}`);
+        if (element) {
+            element.textContent = key.toUpperCase();
+        }
+    }
+}
+
+// Setup hotkey input listeners
+function setupHotkeyInputs() {
+    const inputs = document.querySelectorAll('.hotkey-input');
+    let listeningInput = null;
+
+    inputs.forEach(input => {
+        input.addEventListener('click', function() {
+            inputs.forEach(i => i.classList.remove('listening'));
+            this.classList.add('listening');
+            listeningInput = this;
+            
+            const keyDisplay = this.querySelector('.current-key');
+            keyDisplay.textContent = 'Press a key...';
+        });
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (listeningInput && document.getElementById('hotkeysModal').classList.contains('show')) {
+            e.preventDefault();
+            
+            const action = listeningInput.dataset.action;
+            
+            if (e.key === 'Escape') {
+                hotkeys[action] = '';
+                listeningInput.querySelector('.current-key').textContent = 'NONE';
+            } else {
+                const newKey = e.key.toUpperCase();
+                hotkeys[action] = newKey;
+                listeningInput.querySelector('.current-key').textContent = newKey;
+            }
+            
+            listeningInput.classList.remove('listening');
+            listeningInput = null;
+        }
+    });
+}
+
+// Reset hotkeys to defaults
+function resetHotkeysToDefault() {
+    if (confirm('Reset all hotkeys to default values?')) {
+        hotkeys = { ...defaultHotkeys };
+        updateHotkeyDisplay();
+        saveHotkeys();
+        showNotification('Hotkeys reset to defaults');
+    }
+}
+
+// Save hotkeys settings
+function saveHotkeysSettings() {
+    saveHotkeys();
+    closeHotkeysModal();
+    showNotification('Hotkeys saved successfully');
+}
+
+// Show notification
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #4CAF50;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+        z-index: 99999;
+        animation: fadeIn 0.3s;
+    `;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        document.body.removeChild(notification);
+    }, 3000);
+}
+
+// Initialize hotkeys when menu is clicked
+document.addEventListener('DOMContentLoaded', function() {
+    const hotkeysBtn = document.getElementById('hotkeysBtn');
+    if (hotkeysBtn) {
+        hotkeysBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            hamburgerBtn.classList.remove('active');
+            menuDropdown.classList.remove('show');
+            openHotkeysModal();
+        });
+    }
+    
+    setupHotkeyInputs();
+    loadHotkeys();
+});
 
         function renderPlayers() {
             const playersAGrid = document.getElementById('playersA');

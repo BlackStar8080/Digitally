@@ -9,6 +9,8 @@ use App\Models\PlayerGameStat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tournament;
+use App\Models\VolleyballPlayerStat;
+use App\Models\VolleyballTallysheet;
 
 class GameController extends Controller
 {

@@ -1,9 +1,4 @@
-@extends('layouts.app')
-
-@section('title', 'Live Game - ' . $game->team1->team_name . ' vs ' . $game->team2->team_name)
-
-@section('content')
-    <!DOCTYPE html>
+<!DOCTYPE html>
     <html lang="en">
 
     <head>
@@ -87,6 +82,11 @@
                 display: none;
                 z-index: 1001;
                 border: 1px solid #444;
+                text-decoration: none;  /* ADD THIS LINE */
+            }
+
+            .dropdown-item:hover {
+                background: #4CAF50;
             }
 
             .dropdown-menu.show {
@@ -1725,6 +1725,9 @@
                 </div>
                 <!-- Dropdown Menu -->
                 <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="/tournaments/{{ $game->tournament_id }}" class="dropdown-item">
+                        🏆 Back to Tournament
+                    </a>
                     <button class="dropdown-item" id="postponeBtn">Postpone Game</button>
                     <button class="dropdown-item" id="tallysheetBtn">Tallysheet</button>
                     <button class="dropdown-item" id="hotkeysBtn">Customize Hotkeys</button>
@@ -4494,4 +4497,3 @@
     </body>
 
     </html>
-@endsection

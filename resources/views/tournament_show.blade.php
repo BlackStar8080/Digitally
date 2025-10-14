@@ -762,11 +762,13 @@
 
         /* Bracket styles (keeping existing functional styles) */
         .tournament-page .bracket-container {
+            padding: 40px 20px;
+            position: relative;
             overflow-x: auto;
-            padding: 20px;
-            /* Reduced from 40px 20px */
-            background: #f8f9fa;
-            border-radius: 12px;
+            overflow-y: hidden;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 16px;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .tournament-page .bracket-rounds {
@@ -788,96 +790,192 @@
         }
 
         .tournament-page .round-title {
-            text-align: center;
+            font-size: 1.2rem;
             font-weight: 700;
-            font-size: 16px;
-            margin-bottom: 30px;
-            color: var(--secondary-blue);
-            white-space: nowrap;
+            color: var(--primary-purple);
+            margin-bottom: 40px;
+            text-align: center;
+            padding: 12px 24px;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 4px 12px rgba(157, 78, 221, 0.15);
+            position: sticky;
+            top: 20px;
+            z-index: 10;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
         }
 
+        /* Games Container */
         .tournament-page .bracket-games {
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-around;
+            gap: 60px;
             position: relative;
-            gap: 20px;
-            /* Add this */
+            min-height: 100%;
         }
 
+        /* Enhanced Game Card */
         .tournament-page .bracket-game {
             background: white;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-            width: 200px;
-            min-height: 80px;
-            /* Add this */
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
+            border: 3px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 14px;
+            width: 300px;  /* Increased from 240px */
+            min-height: 110px;  /* Increased from 100px */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            /* Remove margin-bottom: 20px; - we're using gap instead */
+            z-index: 2;
+        }
+
+        /* Game Card Hover Effect */
+        .tournament-page .bracket-game:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(157, 78, 221, 0.25);
+            border-color: var(--primary-purple);
         }
 
 
 
         .tournament-page .bracket-game.completed {
             border-color: #28a745;
-            box-shadow: 0 2px 12px rgba(40, 167, 69, 0.2);
+            background: linear-gradient(135deg, #ffffff 0%, #f0fff4 100%);
+            box-shadow: 0 4px 20px rgba(40, 167, 69, 0.2);
         }
 
         .tournament-page .bracket-game.in-progress {
-            border-color: #ffc107;
-            box-shadow: 0 2px 12px rgba(255, 193, 7, 0.2);
+            border-color: #FF9800;
+            background: linear-gradient(135deg, #ffffff 0%, #fff8e1 100%);
+            box-shadow: 0 4px 20px rgba(255, 152, 0, 0.2);
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 4px 20px rgba(255, 152, 0, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 4px 30px rgba(255, 152, 0, 0.4);
+            }
+        }
+
+        .tournament-page .bracket-game.bye {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 3px dashed #2196F3;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+        }
+
+        .tournament-page .bracket-game.bye:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(33, 150, 243, 0.3);
         }
 
         .tournament-page .game-title {
             text-align: center;
-            font-size: 10px;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #666;
+            margin-bottom: 12px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .tournament-page .bracket-game.completed .game-title {
+            color: #28a745;
+            border-bottom-color: #28a745;
+        }
+
+        .tournament-page .bracket-game.in-progress .game-title {
+            color: #FF9800;
+            border-bottom-color: #FF9800;
         }
 
         .tournament-page .team-slot {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 8px;
-            border-bottom: 1px solid #eee;
-            min-height: 32px;
+            padding: 10px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            min-height: 42px;
             font-size: 14px;
+            transition: all 0.2s ease;
+            border-radius: 6px;
+            margin: 2px 0;
         }
 
         .tournament-page .team-slot:last-child {
             border-bottom: none;
         }
 
+        .tournament-page .team-slot:hover {
+            background: rgba(157, 78, 221, 0.05);
+            transform: translateX(3px);
+        }
+
         .tournament-page .team-slot.winner {
             font-weight: 700;
             color: #28a745;
-            background: rgba(40, 167, 69, 0.05);
-            border-radius: 4px;
-            margin: 1px 0;
+            background: linear-gradient(90deg, rgba(40, 167, 69, 0.15) 0%, rgba(40, 167, 69, 0.05) 100%);
+            border-left: 4px solid #28a745;
+            padding-left: 8px;
+            position: relative;
+        }
+
+        .tournament-page .team-slot.winner::before {
+            content: '👑';
+            position: absolute;
+            left: -20px;
+            font-size: 16px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-4px);
+            }
         }
 
         .tournament-page .team-name {
-            font-weight: 500;
+            font-weight: 600;
             flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 120px;
+            white-space: normal;  /* Changed from nowrap - allows wrapping */
+            overflow: visible;  /* Changed from hidden */
+            text-overflow: clip;  /* Changed from ellipsis */
+            max-width: none;  /* Removed max-width restriction */
+            color: #333;
+            line-height: 1.3;  /* Better line spacing for wrapped text */
+            word-break: break-word;  /* Break long words if needed */
+        }       
+
+        .tournament-page .team-slot.winner .team-name {
+            color: #28a745;
         }
 
         .tournament-page .team-score {
             font-weight: 700;
-            font-size: 14px;
-            color: var(--secondary-blue);
-            min-width: 20px;
+            font-size: 16px;
+            color: var(--primary-purple);
+            min-width: 30px;
             text-align: right;
+            font-family: 'Courier New', monospace;
+        }
+
+        .tournament-page .team-slot.winner .team-score {
+            color: #28a745;
+            font-size: 18px;
         }
 
         .tournament-page .bracket-game::after {
@@ -974,19 +1072,44 @@
         }
 
         .tournament-page .champion-banner {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            color: #000;
+            padding: 2.5rem;
+            border-radius: 16px;
             text-align: center;
-            margin: 2rem 0;
-            width: 100%;
+            margin: 3rem 0;
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.4);
+            position: relative;
+            overflow: hidden;
         }
 
-        .tournament-page .champion-title {
-            font-size: 20px;
+        .tournament-page .champion-banner::before {
+            content: '🏆';
+            position: absolute;
+            font-size: 8rem;
+            opacity: 0.1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .tournament-page .champion-banner p {
+            font-size: 1.5rem;
             font-weight: 700;
-            margin: 0 0 0.5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+
+
+
+        .tournament-page .champion-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0 0 1rem 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 1;
         }
 
         .tournament-page .empty-state {
@@ -1545,17 +1668,21 @@
         }
 
         .tournament-page .bracket-flex {
-            gap: 24px !important;
-            /* reduce horizontal gap to make layout flatter */
-            justify-content: flex-start !important;
-            /* move bracket to the left */
-            align-items: stretch !important;
+            display: flex;
+            gap: 80px;
+            justify-content: flex-start;
+            align-items: center;
+            min-width: fit-content;
+            padding: 20px;
         }
 
         /* narrower rounds + flatter vertical spacing */
         .tournament-page .bracket-round {
-            min-width: 140px !important;
-            align-items: flex-start !important;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            min-width: 240px;
         }
 
         .tournament-page .bracket-games {
@@ -1593,24 +1720,149 @@
             height: 100%;
             pointer-events: none;
             z-index: 1;
-            /* under the .bracket-game (which has z-index:2) */
         }
 
-        /* small responsive tweak */
-        @media (max-width: 992px) {
-            .tournament-page .bracket-flex {
-                gap: 16px !important;
-            }
+        .tournament-page .bracket-svg path {
+            stroke: #9e9e9e;
+            stroke-width: 3;
+            fill: none;
+            stroke-linecap: round;
+            transition: all 0.3s ease;
+        }
 
-            .tournament-page .bracket-game {
-                min-width: 120px !important;
-                width: 120px !important;
-            }
+        .tournament-page .bracket-svg path.winner-path {
+            stroke: #28a745;
+            stroke-width: 4;
+            filter: drop-shadow(0 2px 4px rgba(40, 167, 69, 0.3));
+        }
 
-            .tournament-page .bracket-games {
-                gap: 12px !important;
+        .tournament-page .bracket-svg path.in-progress-path {
+            stroke: #FF9800;
+            stroke-width: 4;
+            stroke-dasharray: 8, 4;
+            animation: dash 1s linear infinite;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -12;
             }
         }
+
+        @media (max-width: 1200px) {
+    .tournament-page .bracket-flex {
+        gap: 60px;
+    }
+    
+    .tournament-page .bracket-round {
+        min-width: 200px;
+    }
+    
+    .tournament-page .bracket-game {
+        width: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .tournament-page .bracket-container {
+        padding: 20px 10px;
+    }
+    
+    .tournament-page .bracket-flex {
+        gap: 40px;
+    }
+    
+    .tournament-page .bracket-round {
+        min-width: 180px;
+    }
+    
+    .tournament-page .bracket-game {
+        width: 180px;
+        padding: 12px;
+    }
+    
+    .tournament-page .round-title {
+        font-size: 1rem;
+        padding: 10px 16px;
+    }
+}
+
+.tournament-page .bracket-game.loading {
+    position: relative;
+}
+
+.tournament-page .bracket-game.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Add status indicator dots */
+.tournament-page .bracket-game::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #e0e0e0;
+}
+
+.tournament-page .bracket-game.completed::before {
+    background: #28a745;
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+}
+
+.tournament-page .bracket-game.in-progress::before {
+    background: #FF9800;
+    box-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.3);
+    }
+}
+
+/* Empty slot placeholder */
+.tournament-page .team-slot.tbd {
+    color: #999;
+    font-style: italic;
+    background: #f8f9fa;
+}
+
+.tournament-page .bracket-game.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
 
         /* Add these new styles for round-robin + playoff */
         .badge-group {
@@ -1868,13 +2120,44 @@
         }
 
         .bye-badge {
-            background: #2196F3;
+            background: linear-gradient(135deg, #2196F3, #1976D2);
             color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        /* Finals Special Styling */
+        .tournament-page .bracket-round:last-child .bracket-game {
+            border-width: 4px;
+            border-color: #FFD700;
+            background: linear-gradient(135deg, #ffffff 0%, #fffef7 100%);
+            box-shadow: 0 8px 40px rgba(255, 215, 0, 0.3);
+        }
+
+        .tournament-page .bracket-round:last-child .round-title {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            font-size: 1.4rem;
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .tournament-page .bracket-round:last-child .bracket-game:hover {
+            transform: translateY(-6px) scale(1.05);
+            box-shadow: 0 12px 50px rgba(255, 215, 0, 0.5);
+        }
+
+        /* Semifinals Styling */
+        .tournament-page .bracket-round:nth-last-child(2) .round-title {
+            background: linear-gradient(135deg, #e8eaf6, #c5cae9);
+            color: #3f51b5;
         }
 
         .sport-badge {
@@ -2720,41 +3003,42 @@
                                                     data-status="{{ $game->status }}"
                                                     data-round="{{ $game->round }}">
                                                     {{-- Add sport badge to game header --}}
-                                                        <div class="game-header {{ $game->status === 'completed' ? 'completed' : ($game->status === 'in_progress' ? 'in-progress' : 'upcoming') }}">
-                                                            <div class="game-league">
-                                                                {{ $tournament->name }}
-                                                                {{-- ADD THIS SPORT BADGE --}}
-                                                                @if($game->isVolleyball())
-                                                                    <span class="sport-badge volleyball">🏐 Volleyball</span>
-                                                                @elseif($game->isBasketball())
-                                                                    <span class="sport-badge basketball">🏀 Basketball</span>
-                                                                @endif
-                                                            </div>
-                                                            <div class="game-date">
-                                                                {{ $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('M j, Y') : 'Date TBD' }}
-                                                            </div>
-                                                            <h6 class="game-round">
-                                                                @if ($game->round == ($game->bracket ? $game->bracket->getTotalRounds() : 0))
-                                                                    🏆 Finals
-                                                                @elseif($game->round == ($game->bracket ? $game->bracket->getTotalRounds() - 1 : 0))
-                                                                    🥇 Semifinals
-                                                                @elseif($game->round == ($game->bracket ? $game->bracket->getTotalRounds() - 2 : 0))
-                                                                    🏅 Quarterfinals
-                                                                @else
-                                                                    Round {{ $game->round }}
-                                                                @endif
-                                                                - Game {{ $game->match_number }}
-                                                            </h6>
-                                                            <div class="game-status-badge">
-                                                                @if ($game->status === 'completed')
-                                                                    ✅ Completed
-                                                                @elseif($game->status === 'in_progress')
-                                                                    🔴 Live
-                                                                @else
-                                                                    {{ ucfirst(str_replace('-', ' ', $game->status)) }}
-                                                                @endif
-                                                            </div>
+                                                    <div
+                                                        class="game-header {{ $game->status === 'completed' ? 'completed' : ($game->status === 'in_progress' ? 'in-progress' : 'upcoming') }}">
+                                                        <div class="game-league">
+                                                            {{ $tournament->name }}
+                                                            {{-- ADD THIS SPORT BADGE --}}
+                                                            @if ($game->isVolleyball())
+                                                                <span class="sport-badge volleyball">🏐 Volleyball</span>
+                                                            @elseif($game->isBasketball())
+                                                                <span class="sport-badge basketball">🏀 Basketball</span>
+                                                            @endif
                                                         </div>
+                                                        <div class="game-date">
+                                                            {{ $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('M j, Y') : 'Date TBD' }}
+                                                        </div>
+                                                        <h6 class="game-round">
+                                                            @if ($game->round == ($game->bracket ? $game->bracket->getTotalRounds() : 0))
+                                                                🏆 Finals
+                                                            @elseif($game->round == ($game->bracket ? $game->bracket->getTotalRounds() - 1 : 0))
+                                                                🥇 Semifinals
+                                                            @elseif($game->round == ($game->bracket ? $game->bracket->getTotalRounds() - 2 : 0))
+                                                                🏅 Quarterfinals
+                                                            @else
+                                                                Round {{ $game->round }}
+                                                            @endif
+                                                            - Game {{ $game->match_number }}
+                                                        </h6>
+                                                        <div class="game-status-badge">
+                                                            @if ($game->status === 'completed')
+                                                                ✅ Completed
+                                                            @elseif($game->status === 'in_progress')
+                                                                🔴 Live
+                                                            @else
+                                                                {{ ucfirst(str_replace('-', ' ', $game->status)) }}
+                                                            @endif
+                                                        </div>
+                                                    </div>
 
                                                     <div class="teams-container">
                                                         @if ($game->isReady())
@@ -2830,45 +3114,52 @@
                                                     </div>
 
                                                     <div class="game-actions">
-    @if (!$game->isCompleted() && $game->isReady() && $game->status !== 'in_progress')
-        <a href="{{ route('games.prepare', $game->id) }}" class="start-game-btn">
-            <i class="bi bi-play-fill"></i> Start Game
-        </a>
-    @elseif($game->status === 'in_progress')
-        {{-- Route to correct sport live game --}}
-        @if($game->isVolleyball())
-            <a href="{{ route('games.volleyball-live', $game->id) }}" class="start-game-btn" style="background: #FF9800;">
-                <i class="bi bi-play-circle"></i> Resume Volleyball
-            </a>
-        @else
-            <a href="{{ route('games.live', $game->id) }}" class="start-game-btn" style="background: #FF9800;">
-                <i class="bi bi-play-circle"></i> Resume Basketball
-            </a>
-        @endif
-    @endif
+                                                        @if (!$game->isCompleted() && $game->isReady() && $game->status !== 'in_progress')
+                                                            <a href="{{ route('games.prepare', $game->id) }}"
+                                                                class="start-game-btn">
+                                                                <i class="bi bi-play-fill"></i> Start Game
+                                                            </a>
+                                                        @elseif($game->status === 'in_progress')
+                                                            {{-- Route to correct sport live game --}}
+                                                            @if ($game->isVolleyball())
+                                                                <a href="{{ route('games.volleyball-live', $game->id) }}"
+                                                                    class="start-game-btn" style="background: #FF9800;">
+                                                                    <i class="bi bi-play-circle"></i> Resume Volleyball
+                                                                </a>
+                                                            @else
+                                                                <a href="{{ route('games.live', $game->id) }}"
+                                                                    class="start-game-btn" style="background: #FF9800;">
+                                                                    <i class="bi bi-play-circle"></i> Resume Basketball
+                                                                </a>
+                                                            @endif
+                                                        @endif
 
-    {{-- Scoresheet button - route to correct sport --}}
-    @if($game->isVolleyball())
-        <a href="#" class="tally-sheet-btn" onclick="openVolleyballScoresheet({{ $game->id }})">
-            <i class="bi bi-clipboard-data"></i> Volleyball Sheet
-        </a>
-    @else
-        <a href="#" class="tally-sheet-btn" onclick="openTallySheet({{ $game->id }})">
-            <i class="bi bi-clipboard-data"></i> Basketball Sheet
-        </a>
-    @endif
+                                                        {{-- Scoresheet button - route to correct sport --}}
+                                                        @if ($game->isVolleyball())
+                                                            <a href="#" class="tally-sheet-btn"
+                                                                onclick="openVolleyballScoresheet({{ $game->id }})">
+                                                                <i class="bi bi-clipboard-data"></i> Volleyball Sheet
+                                                            </a>
+                                                        @else
+                                                            <a href="#" class="tally-sheet-btn"
+                                                                onclick="openTallySheet({{ $game->id }})">
+                                                                <i class="bi bi-clipboard-data"></i> Basketball Sheet
+                                                            </a>
+                                                        @endif
 
-    {{-- Box Score button - route to correct sport --}}
-    @if($game->isVolleyball())
-        <a href="{{ route('games.volleyball-box-score', $game->id) }}" class="box-score-btn">
-            <i class="bi bi-table"></i> Volleyball Stats
-        </a>
-    @else
-        <a href="{{ route('games.box-score', $game->id) }}" class="box-score-btn">
-            <i class="bi bi-table"></i> Basketball Stats
-        </a>
-    @endif
-</div>
+                                                        {{-- Box Score button - route to correct sport --}}
+                                                        @if ($game->isVolleyball())
+                                                            <a href="{{ route('games.volleyball-box-score', $game->id) }}"
+                                                                class="box-score-btn">
+                                                                <i class="bi bi-table"></i> Volleyball Stats
+                                                            </a>
+                                                        @else
+                                                            <a href="{{ route('games.box-score', $game->id) }}"
+                                                                class="box-score-btn">
+                                                                <i class="bi bi-table"></i> Basketball Stats
+                                                            </a>
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             @endif
                                         @endforeach
@@ -3376,21 +3667,21 @@
                 form.submit();
             }
 
-                    function openVolleyballScoresheet(gameId) {
-                    const url = `/games/${gameId}/volleyball-scoresheet`;
-                    
-                    const scoresheetWindow = window.open(
-                        url,
-                        'volleyball-scoresheet',
-                        'width=1200,height=900,scrollbars=yes,resizable=yes'
-                    );
+            function openVolleyballScoresheet(gameId) {
+                const url = `/games/${gameId}/volleyball-scoresheet`;
 
-                    if (scoresheetWindow) {
-                        scoresheetWindow.focus();
-                    } else {
-                        alert('Please allow popups for this site to view the scoresheet.');
-                    }
+                const scoresheetWindow = window.open(
+                    url,
+                    'volleyball-scoresheet',
+                    'width=1200,height=900,scrollbars=yes,resizable=yes'
+                );
+
+                if (scoresheetWindow) {
+                    scoresheetWindow.focus();
+                } else {
+                    alert('Please allow popups for this site to view the scoresheet.');
                 }
+            }
 
             // Enhanced filter functionality that works with selection
             const filterTabs = document.querySelectorAll('.filter-tab');
@@ -3809,87 +4100,196 @@
 
 @if (session('error'))
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const alert = document.createElement('div');
-            alert.className = 'alert alert-danger alert-dismissible fade show position-fixed';
-            alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-            alert.innerHTML =
-                '{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
-            document.body.appendChild(alert);
-            setTimeout(() => {
-                if (alert.parentNode) alert.remove();
-            }, 5000);
-        });
-        (function() {
-            function debounce(fn, wait = 80) {
-                let t;
-                return (...args) => {
-                    clearTimeout(t);
-                    t = setTimeout(() => fn(...args), wait);
-                };
-            }
+    document.addEventListener('DOMContentLoaded', function() {
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-danger alert-dismissible fade show position-fixed';
+        alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        alert.innerHTML =
+            '{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+        document.body.appendChild(alert);
+        setTimeout(() => {
+            if (alert.parentNode) alert.remove();
+        }, 5000);
+    });
+    
+    // ===== IMPROVED BRACKET VISUALIZATION SCRIPT =====
+    (function() {
+        'use strict';
 
-            function drawBracketConnectors() {
-                const container = document.querySelector('.bracket-container');
-                if (!container) return;
-                const svg = container.querySelector('.bracket-svg');
-                if (!svg) return;
+        // Utility: Debounce function
+        function debounce(fn, wait = 100) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => fn.apply(this, args), wait);
+            };
+        }
 
-                // size svg to container
-                const cRect = container.getBoundingClientRect();
-                svg.setAttribute('width', cRect.width);
-                svg.setAttribute('height', cRect.height);
-                svg.innerHTML = '';
+        // Main function to draw bracket connectors
+        function drawBracketConnectors() {
+            const container = document.querySelector('.bracket-container');
+            if (!container) return;
 
-                const rounds = Array.from(container.querySelectorAll('.bracket-round'));
-                rounds.forEach((roundEl, rIndex) => {
-                    const games = Array.from(roundEl.querySelectorAll('.bracket-game'));
-                    const nextRound = rounds[rIndex + 1];
-                    if (!nextRound) return;
-                    const nextGames = Array.from(nextRound.querySelectorAll('.bracket-game'));
+            const svg = container.querySelector('.bracket-svg');
+            if (!svg) return;
 
-                    games.forEach((gameEl, gIndex) => {
-                        const targetIndex = Math.floor(gIndex / 2);
-                        const targetEl = nextGames[targetIndex];
-                        if (!targetEl) return;
+            // Size SVG to match container
+            const containerRect = container.getBoundingClientRect();
+            svg.setAttribute('width', containerRect.width);
+            svg.setAttribute('height', containerRect.height);
+            svg.innerHTML = ''; // Clear existing paths
 
-                        const gRect = gameEl.getBoundingClientRect();
-                        const tRect = targetEl.getBoundingClientRect();
-                        const containerRect = container.getBoundingClientRect();
+            const rounds = Array.from(container.querySelectorAll('.bracket-round'));
+            
+            rounds.forEach((roundEl, roundIndex) => {
+                const currentGames = Array.from(roundEl.querySelectorAll('.bracket-game'));
+                const nextRound = rounds[roundIndex + 1];
+                
+                if (!nextRound) return; // No next round for finals
+                
+                const nextGames = Array.from(nextRound.querySelectorAll('.bracket-game'));
 
-                        // coordinates relative to container
-                        const startX = gRect.right - containerRect.left;
-                        const startY = gRect.top + gRect.height / 2 - containerRect.top;
-                        const endX = tRect.left - containerRect.left;
-                        const endY = tRect.top + tRect.height / 2 - containerRect.top;
+                currentGames.forEach((gameEl, gameIndex) => {
+                    const targetIndex = Math.floor(gameIndex / 2);
+                    const targetGame = nextGames[targetIndex];
+                    
+                    if (!targetGame) return;
 
-                        // draw a smooth cubic curve between centers
-                        const midX = startX + (endX - startX) / 2;
-                        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                        const d =
-                            `M ${startX} ${startY} C ${midX} ${startY} ${midX} ${endY} ${endX} ${endY}`;
-                        path.setAttribute('d', d);
-                        path.setAttribute('stroke', '#9e9e9e');
-                        path.setAttribute('stroke-width', '2');
-                        path.setAttribute('fill', 'none');
-                        path.setAttribute('stroke-linecap', 'round');
-                        svg.appendChild(path);
+                    // Get game rectangles
+                    const gameRect = gameEl.getBoundingClientRect();
+                    const targetRect = targetGame.getBoundingClientRect();
+
+                    // Calculate positions relative to container
+                    const startX = gameRect.right - containerRect.left;
+                    const startY = gameRect.top + gameRect.height / 2 - containerRect.top;
+                    const endX = targetRect.left - containerRect.left;
+                    const endY = targetRect.top + targetRect.height / 2 - containerRect.top;
+
+                    // Create smooth cubic bezier curve
+                    const midX = startX + (endX - startX) / 2;
+                    
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    const pathData = `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`;
+                    
+                    path.setAttribute('d', pathData);
+                    path.setAttribute('stroke', '#9e9e9e');
+                    path.setAttribute('stroke-width', '3');
+                    path.setAttribute('fill', 'none');
+                    path.setAttribute('stroke-linecap', 'round');
+                    
+                    // Add special styling based on game status
+                    const isCompleted = gameEl.classList.contains('completed');
+                    const isInProgress = gameEl.classList.contains('in-progress');
+                    
+                    if (isCompleted) {
+                        path.classList.add('winner-path');
+                        path.setAttribute('stroke', '#28a745');
+                        path.setAttribute('stroke-width', '4');
+                    } else if (isInProgress) {
+                        path.classList.add('in-progress-path');
+                        path.setAttribute('stroke', '#FF9800');
+                        path.setAttribute('stroke-width', '4');
+                    }
+                    
+                    svg.appendChild(path);
+                });
+            });
+        }
+
+        // Add winner path highlighting
+        function highlightWinnerPath() {
+            const games = document.querySelectorAll('.bracket-game.completed');
+            
+            games.forEach(game => {
+                const winnerId = game.dataset.winnerId;
+                if (!winnerId) return;
+                
+                // Find the winning team slot
+                const winnerSlot = game.querySelector('.team-slot.winner');
+                if (winnerSlot) {
+                    // Add visual feedback
+                    winnerSlot.style.animation = 'winner-glow 2s ease-in-out infinite';
+                }
+            });
+        }
+
+        // Add click handlers for games
+        function setupGameClickHandlers() {
+            const games = document.querySelectorAll('.bracket-game');
+            
+            games.forEach(game => {
+                if (!game.classList.contains('bye')) {
+                    game.style.cursor = 'pointer';
+                    
+                    game.addEventListener('click', function(e) {
+                        // Don't trigger if clicking on form elements
+                        if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') {
+                            return;
+                        }
+                        
+                        // Show game details
+                        console.log('Game clicked:', game.dataset);
                     });
-                });
-            }
+                }
+            });
+        }
 
-            window.addEventListener('load', drawBracketConnectors);
-            window.addEventListener('resize', debounce(drawBracketConnectors, 80));
-            // watch for DOM updates inside the bracket container (e.g., when matches are generated)
-            const bracketContainer = document.querySelector('.bracket-container');
-            if (bracketContainer) {
-                const mo = new MutationObserver(debounce(drawBracketConnectors, 80));
-                mo.observe(bracketContainer, {
-                    childList: true,
-                    subtree: true,
-                    attributes: true
-                });
-            }
-        })();
-    </script>
+        // Animate bracket on load
+        function animateBracketOnLoad() {
+            const games = document.querySelectorAll('.bracket-game');
+            
+            games.forEach((game, index) => {
+                game.style.opacity = '0';
+                game.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    game.style.transition = 'all 0.5s ease';
+                    game.style.opacity = '1';
+                    game.style.transform = 'translateY(0)';
+                }, index * 50);
+            });
+        }
+
+        // Initialize everything
+        function initializeBracket() {
+            console.log('Initializing improved bracket...');
+            
+            // Draw connectors
+            drawBracketConnectors();
+            
+            // Highlight winner paths
+            highlightWinnerPath();
+            
+            // Setup interactions
+            setupGameClickHandlers();
+            
+            // Animate on load
+            animateBracketOnLoad();
+        }
+
+        // Event listeners
+        window.addEventListener('load', initializeBracket);
+        window.addEventListener('resize', debounce(drawBracketConnectors, 150));
+        
+        // Watch for DOM changes (when bracket is generated/updated)
+        const bracketContainer = document.querySelector('.bracket-container');
+        if (bracketContainer) {
+            const observer = new MutationObserver(debounce(drawBracketConnectors, 200));
+            observer.observe(bracketContainer, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['class']
+            });
+        }
+
+        // Export functions for use in other scripts
+        window.bracketHelpers = {
+            redraw: drawBracketConnectors,
+            highlightWinners: highlightWinnerPath,
+            animate: animateBracketOnLoad
+        };
+
+    })();
+</script>
 @endif

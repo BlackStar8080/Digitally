@@ -35,6 +35,8 @@ Route::get('/games/{game}/basketball-scoresheet', [GameController::class, 'baske
 
 Route::get('/games/{game}/box-score', [GameController::class, 'boxScore'])->name('games.box-score');
 Route::post('/games/{game}/select-mvp', [GameController::class, 'selectMVP'])->name('games.select-mvp');
+// Add this with your other volleyball routes
+Route::post('/games/{game}/select-volleyball-mvp', [GameController::class, 'selectVolleyballMVP'])->name('games.select-volleyball-mvp');
 
 // Tournament Routes
 Route::get('/tournaments', [TournamentController::class, 'index'])->name('tournaments.index');

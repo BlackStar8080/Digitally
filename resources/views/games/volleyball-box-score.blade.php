@@ -4,71 +4,380 @@
 
 @push('styles')
 <style>
-    :root {
-        --primary-blue: #2C7CF9;
-        --success-color: #28a745;
-        --danger-color: #dc3545;
+    /* Toast Notification Styles */
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+    }
+
+    .toast-notification {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        min-width: 320px;
+        max-width: 400px;
+        opacity: 0;
+        transform: translateX(400px);
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        border-left: 4px solid #28a745;
+    }
+
+    .toast-notification.show {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .toast-notification.hide {
+        opacity: 0;
+        transform: translateX(400px);
+    }
+
+    .toast-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #28a745, #20c997);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .toast-content {
+        flex: 1;
+    }
+
+    .toast-title {
+        font-weight: 700;
+        color: #212529;
+        margin-bottom: 0.25rem;
+        font-size: 14px;
+    }
+
+    .toast-message {
+        color: #6c757d;
+        font-size: 13px;
+        margin: 0;
+    }
+
+    .toast-close {
+        background: none;
+        border: none;
+        color: #6c757d;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+    }
+
+    .toast-close:hover {
+        background: #f0f0f0;
+        color: #212529;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .fade-in-up {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.4s ease-in;
+    }
+
+    .box-score-page {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #f5f5f5;
+        min-height: 100vh;
+        padding: 2rem 0;
     }
 
     .box-score-container {
         max-width: 1400px;
-        margin: 2rem auto;
+        margin: 0 auto;
         padding: 0 1rem;
     }
 
-    .game-header-card {
-        background: linear-gradient(135deg, #4E56C0, #696FC7);
+    .game-title-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        background: linear-gradient(135deg, #2196F3, #1976D2, #0D47A1);
         color: white;
         padding: 2rem;
         border-radius: 16px;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 20px rgba(33, 150, 243, 0.2);
+        position: relative;
+        overflow: hidden;
     }
 
-    .game-title {
+    .game-title-header::before {
+        content: '🏐';
+        position: absolute;
+        right: 2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 4rem;
+        opacity: 0.2;
+    }
+
+    .game-title-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .main-content {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 1200px) {
+        .main-content {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* LEFT COLUMN - STATS */
+    .stats-column {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .team-section {
+        margin-bottom: 2rem;
+    }
+
+    .team-header {
         font-size: 1.5rem;
         font-weight: 700;
+        color: #333;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid #2196F3;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .team-header::before {
+        content: '🏐';
+        font-size: 1.5rem;
+    }
+
+    .team-stats-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .team-stats-table thead {
+        background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(25, 118, 210, 0.1));
+    }
+
+    .team-stats-table th {
+        padding: 0.75rem;
+        text-align: left;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #0D47A1;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #2196F3;
+    }
+
+    .team-stats-table th.stat-col {
+        text-align: center;
+        width: 50px;
+    }
+
+    .team-stats-table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .team-stats-table td.stat-col {
+        text-align: center;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .team-stats-table tbody tr {
+        transition: all 0.2s ease;
+    }
+
+    .team-stats-table tbody tr:hover {
+        background: rgba(33, 150, 243, 0.05);
+        transform: translateX(4px);
+    }
+
+    .player-name-col {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .player-number {
+        background: linear-gradient(135deg, #2196F3, #1976D2);
+        color: white;
+        min-width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 0 0.5rem;
+        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+    }
+
+    .position-badge {
+        background: rgba(33, 150, 243, 0.1);
+        color: #1976D2;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    /* RIGHT COLUMN - SCORE & MVP */
+    .score-mvp-column {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .score-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        animation: fadeInUp 0.6s ease-out 0.1s backwards;
+    }
+
+    .league-badge {
+        text-align: center;
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .league-badge::before {
+        content: '🏆';
+        font-size: 1.2rem;
+    }
+
+    .score-display {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
         margin-bottom: 1rem;
     }
 
-    .final-score {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 2rem;
-        margin: 1.5rem 0;
-    }
-
-    .team-score-section {
+    .team-score {
         text-align: center;
+        transition: all 0.3s ease;
     }
 
-    .team-name-large {
-        font-size: 1.2rem;
-        font-weight: 600;
+    .team-score:hover {
+        transform: scale(1.05);
+    }
+
+    .team-logo {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 0.5rem;
+        background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(25, 118, 210, 0.1));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+    }
+
+    .team-name {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #333;
         margin-bottom: 0.5rem;
     }
 
-    .sets-won {
-        font-size: 3rem;
+    .score-number {
+        font-size: 2.5rem;
         font-weight: 700;
-        font-family: 'Courier New', monospace;
+        background: linear-gradient(135deg, #2196F3, #1976D2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
-    .winner-badge {
-        background: var(--success-color);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-size: 0.9rem;
+    .vs-text {
+        font-size: 1.2rem;
+        color: #999;
         font-weight: 600;
-        display: inline-block;
-        margin-top: 0.5rem;
+    }
+
+    .final-badge {
+        text-align: center;
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        padding: 0.75rem;
+        border-radius: 8px;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
     }
 
     .set-scores-display {
         display: flex;
-        gap: 1rem;
+        gap: 0.5rem;
         justify-content: center;
         flex-wrap: wrap;
         margin-top: 1rem;
@@ -76,197 +385,425 @@
 
     .set-score-badge {
         background: rgba(255, 255, 255, 0.2);
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
-        font-size: 0.9rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        backdrop-filter: blur(10px);
     }
 
-    .stats-card {
+    /* MVP CARD */
+    .mvp-card {
+        background: linear-gradient(135deg, #2196F3 0%, #1976D2 50%, #0D47A1 100%);
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px rgba(33, 150, 243, 0.4);
+        color: white;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease-out 0.2s backwards;
+    }
+
+    .mvp-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+        animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .mvp-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .mvp-title {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        opacity: 0.9;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .mvp-title::before,
+    .mvp-title::after {
+        content: '⭐';
+        font-size: 1rem;
+    }
+
+    .mvp-player-photo {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 1rem;
+        border-radius: 50%;
+        border: 4px solid rgba(255,255,255,0.3);
+        background: rgba(255,255,255,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        font-weight: 700;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(10px);
+    }
+
+    .mvp-player-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .mvp-player-team {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+
+    .mvp-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-top: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .mvp-stat-item {
+        text-align: center;
+        background: rgba(255,255,255,0.15);
+        padding: 1rem;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+
+    .mvp-stat-item:hover {
+        background: rgba(255,255,255,0.25);
+        transform: translateY(-4px);
+    }
+
+    .mvp-stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .mvp-stat-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.9;
+    }
+
+    /* MVP SELECTION SECTION */
+    .mvp-selection-section {
         background: white;
         border-radius: 16px;
         padding: 2rem;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
         margin-bottom: 2rem;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        animation: fadeInUp 0.6s ease-out 0.3s backwards;
     }
 
-    .stats-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid #f0f0f0;
+    .mvp-selection-header {
+        text-align: center;
+        margin-bottom: 2rem;
     }
 
-    .stats-title {
-        font-size: 1.3rem;
+    .mvp-selection-title {
+        font-size: 1.5rem;
         font-weight: 700;
-        color: #2d2d2d;
+        color: #333;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
     }
 
-    .stats-table {
-        width: 100%;
-        border-collapse: collapse;
+    .mvp-selection-subtitle {
+        color: #666;
+        font-size: 0.95rem;
     }
 
-    .stats-table thead {
+    .mvp-candidates {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .mvp-candidate-card {
         background: #f8f9fa;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
     }
 
-    .stats-table th {
-        padding: 1rem 0.75rem;
-        text-align: left;
-        font-weight: 600;
+    .mvp-candidate-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #2196F3, #1976D2);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .mvp-candidate-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .mvp-candidate-card:hover {
+        border-color: #2196F3;
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(33, 150, 243, 0.2);
+    }
+
+    .mvp-candidate-card.selected {
+        border-color: #ffd700;
+        background: #fff9e6;
+        box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3);
+    }
+
+    .mvp-candidate-card.selected::before {
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+        transform: scaleX(1);
+    }
+
+    .candidate-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .candidate-number {
+        background: linear-gradient(135deg, #2196F3, #1976D2);
+        color: white;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.2rem;
+        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+    }
+
+    .candidate-info {
+        flex: 1;
+    }
+
+    .candidate-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 0.25rem;
+    }
+
+    .candidate-team {
         font-size: 0.85rem;
+        color: #666;
+    }
+
+    .candidate-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .candidate-stat {
+        text-align: center;
+        padding: 0.5rem;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+    }
+
+    .candidate-stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #2196F3, #1976D2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .candidate-stat-label {
+        font-size: 0.75rem;
         color: #666;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        margin-top: 0.25rem;
     }
 
-    .stats-table td {
-        padding: 1rem 0.75rem;
-        border-bottom: 1px solid #f0f0f0;
-    }
-
-    .stats-table tbody tr:hover {
-        background: #f8f9fa;
-    }
-
-    .player-name-cell {
-        font-weight: 600;
-    }
-
-    .player-number {
-        display: inline-block;
-        background: var(--primary-blue);
-        color: white;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        text-align: center;
-        line-height: 30px;
-        margin-right: 0.75rem;
-        font-weight: 700;
-        font-size: 0.85rem;
-    }
-
-    .stat-highlight {
-        font-weight: 700;
-        color: var(--primary-blue);
-    }
-
-    .mvp-row {
-        background: rgba(40, 167, 69, 0.08);
-        border-left: 4px solid var(--success-color);
-    }
-
-    .mvp-badge {
-        background: var(--success-color);
-        color: white;
-        padding: 0.25rem 0.75rem;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        margin-left: 0.5rem;
-    }
-
-    .mvp-select-btn {
-        background: var(--primary-blue);
-        color: white;
+    .select-mvp-btn {
+        background: linear-gradient(135deg, #ffd700, #ffed4e);
+        color: #000;
         border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-        font-size: 0.85rem;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1rem;
         cursor: pointer;
-        transition: all 0.3s;
+        transition: all 0.3s ease;
+        display: block;
+        margin: 0 auto;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
     }
 
-    .mvp-select-btn:hover {
-        background: #1565C0;
-        transform: translateY(-1px);
+    .select-mvp-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(255, 215, 0, 0.5);
     }
 
-    .action-buttons {
+    .select-mvp-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* BACK ACTIONS */
+    .back-actions {
         display: flex;
         gap: 1rem;
-        margin-top: 2rem;
+        justify-content: center;
+        padding: 2rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        animation: fadeInUp 0.6s ease-out 0.4s backwards;
     }
 
-    .btn-primary, .btn-secondary {
+    .action-btn {
         padding: 0.75rem 1.5rem;
         border-radius: 8px;
         font-weight: 600;
         text-decoration: none;
+        transition: all 0.3s ease;
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        transition: all 0.3s;
     }
 
     .btn-primary {
-        background: var(--primary-blue);
+        background: linear-gradient(135deg, #2196F3, #1976D2);
         color: white;
         border: none;
+        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
     }
 
     .btn-primary:hover {
-        background: #1565C0;
-        color: white;
+        background: linear-gradient(135deg, #1976D2, #0D47A1);
         transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(33, 150, 243, 0.4);
+        color: white;
     }
 
     .btn-secondary {
-        background: #6c757d;
-        color: white;
+        background: #e0e0e0;
+        color: #333;
         border: none;
     }
 
     .btn-secondary:hover {
-        background: #5a6268;
-        color: white;
+        background: #d0d0d0;
+        transform: translateY(-2px);
+        color: #333;
     }
 
-    .team-totals-row {
-        background: #f8f9fa;
-        font-weight: 700;
-        border-top: 2px solid #dee2e6;
+    .no-stats-message {
+        text-align: center;
+        padding: 3rem;
+        color: #666;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .game-title-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .score-mvp-column {
+            animation-delay: 0s;
+        }
+
+        .mvp-selection-section {
+            animation-delay: 0s;
+        }
+
+        .back-actions {
+            animation-delay: 0s;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .toast-container {
+            left: 10px;
+            right: 10px;
+        }
+
+        .toast-notification {
+            min-width: auto;
+            max-width: 100%;
+        }
     }
 </style>
 @endpush
 
 @section('content')
-<div class="box-score-container">
-    <!-- Game Header -->
-    <div class="game-header-card">
-        <div class="text-center">
-            <div class="game-title">
-                @if($game->bracket && $game->bracket->tournament)
-                    {{ $game->bracket->tournament->name }} - Volleyball
-                @else
-                    Volleyball Match
-                @endif
-            </div>
-            
-            <div class="final-score">
-                <div class="team-score-section">
-                    <div class="team-name-large">{{ $game->team1->team_name }}</div>
-                    <div class="sets-won">{{ $game->team1_score }}</div>
-                    @if($game->winner_id === $game->team1_id)
-                        <div class="winner-badge">🏆 WINNER</div>
-                    @endif
-                </div>
-                
-                <div style="font-size: 2rem; opacity: 0.7;">-</div>
-                
-                <div class="team-score-section">
-                    <div class="team-name-large">{{ $game->team2->team_name }}</div>
-                    <div class="sets-won">{{ $game->team2_score }}</div>
-                    @if($game->winner_id === $game->team2_id)
-                        <div class="winner-badge">🏆 WINNER</div>
-                    @endif
-                </div>
-            </div>
+<!-- Toast Notification -->
+<div class="toast-container">
+    <div class="toast-notification" id="successToast">
+        <div class="toast-icon">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <div class="toast-content">
+            <div class="toast-title">Success!</div>
+            <p class="toast-message" id="toastMessage">MVP has been selected successfully!</p>
+        </div>
+        <button class="toast-close" onclick="hideToast()">
+            <i class="bi bi-x"></i>
+        </button>
+    </div>
+</div>
 
+<div class="box-score-page">
+    <div class="box-score-container">
+        <!-- Game Title -->
+        <div class="game-title-header">
+            <h1>
+                {{ $game->bracket->tournament->name ?? 'Volleyball Game' }}
+                @if($game->round)
+                    - {{ $game->getDisplayName() }}
+                @endif
+            </h1>
             @if($game->volleyballTallysheet && $game->volleyballTallysheet->set_scores)
                 <div class="set-scores-display">
                     @foreach($game->volleyballTallysheet->set_scores as $setScore)
@@ -277,211 +814,333 @@
                 </div>
             @endif
         </div>
-    </div>
 
-    <!-- Team 1 Stats -->
-    <div class="stats-card">
-        <div class="stats-header">
-            <h3 class="stats-title">{{ $game->team1->team_name }} - Player Statistics</h3>
-        </div>
+        <!-- Main Two Column Layout -->
+        <div class="main-content">
+            <!-- LEFT COLUMN - STATISTICS -->
+            <div class="stats-column">
+                @if($team1Stats->count() > 0 || $team2Stats->count() > 0)
+                    <!-- Team 1 Stats -->
+                    <div class="team-section">
+                        <h2 class="team-header">{{ strtoupper($game->team1->team_name) }}</h2>
+                        @if($team1Stats->count() > 0)
+                            <table class="team-stats-table">
+                                <thead>
+                                    <tr>
+                                        <th>PLAYER</th>
+                                        <th class="stat-col">POSITION</th>
+                                        <th class="stat-col">KILLS</th>
+                                        <th class="stat-col">ACES</th>
+                                        <th class="stat-col">BLOCKS</th>
+                                        <th class="stat-col">DIGS</th>
+                                        <th class="stat-col">ASSISTS</th>
+                                        <th class="stat-col">ERRORS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($team1Stats as $stat)
+                                        <tr>
+                                            <td>
+                                                <div class="player-name-col">
+                                                    <div class="player-number">{{ $stat->player->number ?? '0' }}</div>
+                                                    <span>{{ $stat->player->name }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="stat-col">
+                                                <span class="position-badge">{{ $stat->player->position ?? 'N/A' }}</span>
+                                            </td>
+                                            <td class="stat-col">{{ $stat->kills }}</td>
+                                            <td class="stat-col">{{ $stat->aces }}</td>
+                                            <td class="stat-col">{{ $stat->blocks }}</td>
+                                            <td class="stat-col">{{ $stat->digs }}</td>
+                                            <td class="stat-col">{{ $stat->assists }}</td>
+                                            <td class="stat-col">{{ $stat->errors }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <p class="text-muted text-center py-3">No statistics recorded</p>
+                        @endif
+                    </div>
 
-        <div class="table-responsive">
-            <table class="stats-table">
-                <thead>
-                    <tr>
-                        <th>Player</th>
-                        <th>K</th>
-                        <th>A</th>
-                        <th>B</th>
-                        <th>D</th>
-                        <th>AS</th>
-                        <th>E</th>
-                        <th>Total Pts</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($team1Stats as $stat)
-                        <tr class="{{ $stat->is_mvp ? 'mvp-row' : '' }}">
-                            <td class="player-name-cell">
-                                <span class="player-number">{{ $stat->player->number ?? '00' }}</span>
-                                {{ $stat->player->name }}
-                                @if($stat->is_mvp)
-                                    <span class="mvp-badge">MVP</span>
-                                @endif
-                            </td>
-                            <td class="stat-highlight">{{ $stat->kills }}</td>
-                            <td>{{ $stat->aces }}</td>
-                            <td>{{ $stat->blocks }}</td>
-                            <td>{{ $stat->digs }}</td>
-                            <td>{{ $stat->assists }}</td>
-                            <td style="color: var(--danger-color);">{{ $stat->errors }}</td>
-                            <td class="stat-highlight">{{ $stat->getTotalPoints() }}</td>
-                            <td>
-                                @if(!$mvpSelected && !$stat->is_mvp)
-                                    <button class="mvp-select-btn" onclick="selectMVP({{ $stat->id }})">
-                                        Select as MVP
-                                    </button>
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="9" class="text-center" style="padding: 2rem;">
-                                No statistics available
-                            </td>
-                        </tr>
-                    @endforelse
+                    <!-- Team 2 Stats -->
+                    <div class="team-section">
+                        <h2 class="team-header">{{ strtoupper($game->team2->team_name) }}</h2>
+                        @if($team2Stats->count() > 0)
+                            <table class="team-stats-table">
+                                <thead>
+                                    <tr>
+                                        <th>PLAYER</th>
+                                        <th class="stat-col">POSITION</th>
+                                        <th class="stat-col">KILLS</th>
+                                        <th class="stat-col">ACES</th>
+                                        <th class="stat-col">BLOCKS</th>
+                                        <th class="stat-col">DIGS</th>
+                                        <th class="stat-col">ASSISTS</th>
+                                        <th class="stat-col">ERRORS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($team2Stats as $stat)
+                                        <tr>
+                                            <td>
+                                                <div class="player-name-col">
+                                                    <div class="player-number">{{ $stat->player->number ?? '0' }}</div>
+                                                    <span>{{ $stat->player->name }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="stat-col">
+                                                <span class="position-badge">{{ $stat->player->position ?? 'N/A' }}</span>
+                                            </td>
+                                            <td class="stat-col">{{ $stat->kills }}</td>
+                                            <td class="stat-col">{{ $stat->aces }}</td>
+                                            <td class="stat-col">{{ $stat->blocks }}</td>
+                                            <td class="stat-col">{{ $stat->digs }}</td>
+                                            <td class="stat-col">{{ $stat->assists }}</td>
+                                            <td class="stat-col">{{ $stat->errors }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <p class="text-muted text-center py-3">No statistics recorded</p>
+                        @endif
+                    </div>
+                @else
+                    <div class="no-stats-message">
+                        <p>No player statistics available for this game.</p>
+                    </div>
+                @endif
+            </div>
+
+            <!-- RIGHT COLUMN - SCORE & MVP -->
+            <div class="score-mvp-column">
+                <!-- Final Score Card -->
+                <div class="score-card">
+                    <div class="league-badge">
+                        {{ $game->bracket->tournament->name ?? 'Volleyball Tournament' }}
+                    </div>
                     
-                    @if($team1Stats->count() > 0)
-                        <tr class="team-totals-row">
-                            <td>TEAM TOTALS</td>
-                            <td class="stat-highlight">{{ $team1Stats->sum('kills') }}</td>
-                            <td>{{ $team1Stats->sum('aces') }}</td>
-                            <td>{{ $team1Stats->sum('blocks') }}</td>
-                            <td>{{ $team1Stats->sum('digs') }}</td>
-                            <td>{{ $team1Stats->sum('assists') }}</td>
-                            <td style="color: var(--danger-color);">{{ $team1Stats->sum('errors') }}</td>
-                            <td class="stat-highlight">{{ $team1Stats->sum(function($stat) { return $stat->getTotalPoints(); }) }}</td>
-                            <td></td>
-                        </tr>
-                    @endif
-                </tbody>
-            </table>
-        </div>
-
-        <div style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
-            <small style="color: #666;">
-                <strong>Legend:</strong> K = Kills, A = Aces, B = Blocks, D = Digs, AS = Assists, E = Errors, Total Pts = Kills + Aces + Blocks
-            </small>
-        </div>
-    </div>
-
-    <!-- Team 2 Stats -->
-    <div class="stats-card">
-        <div class="stats-header">
-            <h3 class="stats-title">{{ $game->team2->team_name }} - Player Statistics</h3>
-        </div>
-
-        <div class="table-responsive">
-            <table class="stats-table">
-                <thead>
-                    <tr>
-                        <th>Player</th>
-                        <th>K</th>
-                        <th>A</th>
-                        <th>B</th>
-                        <th>D</th>
-                        <th>AS</th>
-                        <th>E</th>
-                        <th>Total Pts</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($team2Stats as $stat)
-                        <tr class="{{ $stat->is_mvp ? 'mvp-row' : '' }}">
-                            <td class="player-name-cell">
-                                <span class="player-number">{{ $stat->player->number ?? '00' }}</span>
-                                {{ $stat->player->name }}
-                                @if($stat->is_mvp)
-                                    <span class="mvp-badge">MVP</span>
-                                @endif
-                            </td>
-                            <td class="stat-highlight">{{ $stat->kills }}</td>
-                            <td>{{ $stat->aces }}</td>
-                            <td>{{ $stat->blocks }}</td>
-                            <td>{{ $stat->digs }}</td>
-                            <td>{{ $stat->assists }}</td>
-                            <td style="color: var(--danger-color);">{{ $stat->errors }}</td>
-                            <td class="stat-highlight">{{ $stat->getTotalPoints() }}</td>
-                            <td>
-                                @if(!$mvpSelected && !$stat->is_mvp)
-                                    <button class="mvp-select-btn" onclick="selectMVP({{ $stat->id }})">
-                                        Select as MVP
-                                    </button>
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="9" class="text-center" style="padding: 2rem;">
-                                No statistics available
-                            </td>
-                        </tr>
-                    @endforelse
+                    <div class="score-display">
+                        <div class="team-score">
+                            <div class="team-logo">🏐</div>
+                            <div class="team-name">{{ $game->team1->team_name }}</div>
+                            <div class="score-number">{{ $game->team1_score ?? 0 }}</div>
+                        </div>
+                        
+                        <div class="vs-text">VS</div>
+                        
+                        <div class="team-score">
+                            <div class="team-logo">🏐</div>
+                            <div class="team-name">{{ $game->team2->team_name }}</div>
+                            <div class="score-number">{{ $game->team2_score ?? 0 }}</div>
+                        </div>
+                    </div>
                     
-                    @if($team2Stats->count() > 0)
-                        <tr class="team-totals-row">
-                            <td>TEAM TOTALS</td>
-                            <td class="stat-highlight">{{ $team2Stats->sum('kills') }}</td>
-                            <td>{{ $team2Stats->sum('aces') }}</td>
-                            <td>{{ $team2Stats->sum('blocks') }}</td>
-                            <td>{{ $team2Stats->sum('digs') }}</td>
-                            <td>{{ $team2Stats->sum('assists') }}</td>
-                            <td style="color: var(--danger-color);">{{ $team2Stats->sum('errors') }}</td>
-                            <td class="stat-highlight">{{ $team2Stats->sum(function($stat) { return $stat->getTotalPoints(); }) }}</td>
-                            <td></td>
-                        </tr>
-                    @endif
-                </tbody>
-            </table>
+                    <div class="final-badge">FINAL</div>
+                </div>
+
+                <!-- MVP Card -->
+                @php
+                    $mvp = $game->volleyballPlayerStats()->where('is_mvp', true)->first();
+                @endphp
+                @if($mvp)
+                <div class="mvp-card">
+                    <div class="mvp-header">
+                        <div class="mvp-title">Player of the Game</div>
+                        <div class="mvp-player-photo">#{{ $mvp->player->number ?? '1' }}</div>
+                        <div class="mvp-player-name">{{ strtoupper($mvp->player->name) }}</div>
+                        <div class="mvp-player-team">{{ $mvp->team->team_name }}</div>
+                    </div>
+                    
+                    <div class="mvp-stats-grid">
+                        <div class="mvp-stat-item">
+                            <div class="mvp-stat-value">{{ $mvp->kills }}</div>
+                            <div class="mvp-stat-label">Kills</div>
+                        </div>
+                        <div class="mvp-stat-item">
+                            <div class="mvp-stat-value">{{ $mvp->aces }}</div>
+                            <div class="mvp-stat-label">Aces</div>
+                        </div>
+                        <div class="mvp-stat-item">
+                            <div class="mvp-stat-value">{{ $mvp->blocks }}</div>
+                            <div class="mvp-stat-label">Blocks</div>
+                        </div>
+                        <div class="mvp-stat-item">
+                            <div class="mvp-stat-value">{{ $mvp->digs }}</div>
+                            <div class="mvp-stat-label">Digs</div>
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </div>
         </div>
 
-        <div style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
-            <small style="color: #666;">
-                <strong>Legend:</strong> K = Kills, A = Aces, B = Blocks, D = Digs, AS = Assists, E = Errors, Total Pts = Kills + Aces + Blocks
-            </small>
-        </div>
-    </div>
+        <!-- MVP Selection Section (if not selected) -->
+        @if(!$mvpSelected && ($team1Stats->count() > 0 || $team2Stats->count() > 0))
+            <div class="mvp-selection-section">
+                <div class="mvp-selection-header">
+                    <h2 class="mvp-selection-title">
+                        <i class="bi bi-star-fill" style="color: #ffd700;"></i>
+                        Select Match MVP
+                    </h2>
+                    <p class="mvp-selection-subtitle">Click on a player to select them as the Most Valuable Player of this match</p>
+                </div>
 
-    <!-- Action Buttons -->
-    <div class="action-buttons">
-        <a href="{{ route('games.index') }}" class="btn-secondary">
-            <i class="bi bi-arrow-left"></i>
-            Back to Games
-        </a>
-        <a href="{{ route('games.volleyball-scoresheet', $game) }}" class="btn-primary" target="_blank">
-            <i class="bi bi-file-earmark-text"></i>
-            View Scoresheet
-        </a>
-        @if($game->bracket && $game->bracket->tournament)
-            <a href="{{ route('tournaments.show', $game->bracket->tournament->id) }}" class="btn-primary">
-                <i class="bi bi-trophy"></i>
-                View Tournament
-            </a>
+                <div class="mvp-candidates" id="mvpCandidates">
+                    @foreach($team1Stats->merge($team2Stats)->sortByDesc('kills')->take(6) as $stat)
+                        <div class="mvp-candidate-card" data-stat-id="{{ $stat->id }}" onclick="selectMVPCandidate({{ $stat->id }})">
+                            <div class="candidate-header">
+                                <div class="candidate-number">{{ $stat->player->number ?? '0' }}</div>
+                                <div class="candidate-info">
+                                    <div class="candidate-name">{{ $stat->player->name }}</div>
+                                    <div class="candidate-team">{{ $stat->team->team_name }}</div>
+                                </div>
+                            </div>
+                            <div class="candidate-stats">
+                                <div class="candidate-stat">
+                                    <div class="candidate-stat-value">{{ $stat->kills }}</div>
+                                    <div class="candidate-stat-label">Kills</div>
+                                </div>
+                                <div class="candidate-stat">
+                                    <div class="candidate-stat-value">{{ $stat->aces }}</div>
+                                    <div class="candidate-stat-label">Aces</div>
+                                </div>
+                                <div class="candidate-stat">
+                                    <div class="candidate-stat-value">{{ $stat->blocks }}</div>
+                                    <div class="candidate-stat-label">Blocks</div>
+                                </div>
+                                <div class="candidate-stat">
+                                    <div class="candidate-stat-value">{{ $stat->digs }}</div>
+                                    <div class="candidate-stat-label">Digs</div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <button class="select-mvp-btn" id="confirmMVPBtn" onclick="confirmMVP()" disabled>
+                    <i class="bi bi-star-fill"></i>
+                    Confirm MVP Selection
+                </button>
+            </div>
         @endif
+
+        <!-- Back Actions -->
+        <div class="back-actions">
+            @if($game->bracket && $game->bracket->tournament)
+                <a href="{{ route('tournaments.show', $game->bracket->tournament->id) }}" class="action-btn btn-primary">
+                    <i class="bi bi-trophy"></i>
+                    Back to Tournament
+                </a>
+            @endif
+            <a href="{{ route('games.index') }}" class="action-btn btn-secondary">
+                <i class="bi bi-list"></i>
+                All Games
+            </a>
+            <a href="{{ route('games.volleyball-scoresheet', $game) }}" class="action-btn btn-secondary">
+                <i class="bi bi-clipboard-data"></i>
+                View Scoresheet
+            </a>
+        </div>
     </div>
 </div>
 
 <script>
-function selectMVP(statId) {
-    if (!confirm('Select this player as the game MVP?')) {
+// Toast Notification Functions
+function showToast(message) {
+    const toast = document.getElementById('successToast');
+    const toastMessage = document.getElementById('toastMessage');
+    
+    toastMessage.textContent = message;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        hideToast();
+    }, 4000);
+}
+
+function hideToast() {
+    const toast = document.getElementById('successToast');
+    toast.classList.remove('show');
+    toast.classList.add('hide');
+    
+    setTimeout(() => {
+        toast.classList.remove('hide');
+    }, 400);
+}
+
+let selectedMVPStatId = null;
+
+function selectMVPCandidate(statId) {
+    document.querySelectorAll('.mvp-candidate-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+
+    const selectedCard = document.querySelector(`[data-stat-id="${statId}"]`);
+    if (selectedCard) {
+        selectedCard.classList.add('selected');
+    }
+
+    selectedMVPStatId = statId;
+    document.getElementById('confirmMVPBtn').disabled = false;
+}
+
+function confirmMVP() {
+    if (!selectedMVPStatId) {
+        alert('Please select a player first');
         return;
     }
 
-    fetch(`/games/{{ $game->id }}/select-volleyball-mvp`, {
+    const btn = document.getElementById('confirmMVPBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Saving...';
+
+    let csrfToken = '';
+    const metaTag = document.querySelector('meta[name="csrf-token"]');
+    if (metaTag) {
+        csrfToken = metaTag.getAttribute('content');
+    } else {
+        csrfToken = '{{ csrf_token() }}';
+    }
+
+    fetch('/games/{{ $game->id }}/select-volleyball-mvp', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
         },
         body: JSON.stringify({
-            player_stat_id: statId
+            player_stat_id: selectedMVPStatId
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
-            alert('MVP selected successfully!');
-            location.reload();
+            showToast('🏐 MVP has been selected successfully!');
+            btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> MVP Selected!';
+            btn.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+            
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
         } else {
-            alert('Error: ' + data.message);
+            throw new Error(data.message || 'Failed to select MVP');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Failed to select MVP. Please try again.');
+        alert('An error occurred while selecting MVP: ' + error.message);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-star-fill"></i> Confirm MVP Selection';
+        btn.style.background = 'linear-gradient(135deg, #ffd700, #ffed4e)';
     });
 }
 </script>
