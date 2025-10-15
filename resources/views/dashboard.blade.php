@@ -775,40 +775,63 @@
                                 </button>
 
                                 <div class="mvp-carousel-container">
-                                    @foreach ($mvps as $mvpIndex => $mvpStat)
-                                        @php $mvpPlayer = $mvpStat->player; @endphp
-                                        <div class="mvp-slide {{ $mvpIndex === 0 ? 'active' : '' }}"
-                                            data-index="{{ $mvpIndex }}">
-                                            <div class="mvp-avatar">
-                                                {{ strtoupper(substr($mvpPlayer->name, 0, 2)) }}
-                                            </div>
-                                            <div class="mvp-name">{{ $mvpPlayer->name }}</div>
-                                            <div class="mvp-team">{{ $mvpPlayer->team->team_name ?? 'N/A' }}</div>
-                                            <div class="mvp-game-info">
-                                                {{ $mvpStat->game->team1->team_name ?? 'TBD' }} vs
-                                                {{ $mvpStat->game->team2->team_name ?? 'TBD' }}
-                                            </div>
+                                    @foreach ($mvps as $mvpIndex => $mvpData)
+    @php 
+        $mvpPlayer = $mvpData['player'];
+        $mvpStat = $mvpData['stats'];
+        $isVolleyball = $mvpData['type'] === 'volleyball';
+    @endphp
+    <div class="mvp-slide {{ $mvpIndex === 0 ? 'active' : '' }}"
+        data-index="{{ $mvpIndex }}">
+        <div class="mvp-avatar">
+            {{ strtoupper(substr($mvpPlayer->name, 0, 2)) }}
+        </div>
+        <div class="mvp-name">{{ $mvpPlayer->name }}</div>
+        <div class="mvp-team">{{ $mvpPlayer->team->team_name ?? 'N/A' }}</div>
+        <div class="mvp-game-info">
+            {{ $mvpData['game']->team1->team_name ?? 'TBD' }} vs
+            {{ $mvpData['game']->team2->team_name ?? 'TBD' }}
+        </div>
 
-                                            <div class="mvp-stats">
-                                                <div class="mvp-stat">
-                                                    <div class="stat-value">{{ $mvpStat->points }}</div>
-                                                    <div class="stat-label">Points</div>
-                                                </div>
-                                                <div class="mvp-stat">
-                                                    <div class="stat-value">{{ $mvpStat->rebounds }}</div>
-                                                    <div class="stat-label">Rebounds</div>
-                                                </div>
-                                                <div class="mvp-stat">
-                                                    <div class="stat-value">{{ $mvpStat->assists }}</div>
-                                                    <div class="stat-label">Assists</div>
-                                                </div>
-                                                <div class="mvp-stat">
-                                                    <div class="stat-value">{{ $mvpStat->steals }}</div>
-                                                    <div class="stat-label">Steals</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
+        <div class="mvp-stats">
+            @if($isVolleyball)
+                <div class="mvp-stat">
+                    <div class="stat-value">{{ $mvpStat->kills }}</div>
+                    <div class="stat-label">Kills</div>
+                </div>
+                <div class="mvp-stat">
+                    <div class="stat-value">{{ $mvpStat->aces }}</div>
+                    <div class="stat-label">Aces</div>
+                </div>
+                <div class="mvp-stat">
+                    <div class="stat-value">{{ $mvpStat->blocks }}</div>
+                    <div class="stat-label">Blocks</div>
+                </div>
+                <div class="mvp-stat">
+                    <div class="stat-value">{{ $mvpStat->assists }}</div>
+                    <div class="stat-label">Assists</div>
+                </div>
+            @else
+                <div class="mvp-stat">
+                    <div class="stat-value">{{ $mvpStat->points }}</div>
+                    <div class="stat-label">Points</div>
+                </div>
+                <div class="mvp-stat">
+                    <div class="stat-value">{{ $mvpStat->rebounds }}</div>
+                    <div class="stat-label">Rebounds</div>
+                </div>
+                <div class="mvp-stat">
+                    <div class="stat-value">{{ $mvpStat->assists }}</div>
+                    <div class="stat-label">Assists</div>
+                </div>
+                <div class="mvp-stat">
+                    <div class="stat-value">{{ $mvpStat->steals }}</div>
+                    <div class="stat-label">Steals</div>
+                </div>
+            @endif
+        </div>
+    </div>
+@endforeach
                                 </div>
 
                                 <button class="carousel-btn next" onclick="nextMVP('{{ $tournament->id }}')">

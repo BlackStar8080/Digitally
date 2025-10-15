@@ -817,18 +817,15 @@
         }
 
         /* Enhanced Game Card */
-        .tournament-page .bracket-game {
-            background: white;
-            border: 3px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 14px;
-            width: 300px;  /* Increased from 240px */
-            min-height: 110px;  /* Increased from 100px */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            z-index: 2;
-        }
+       .tournament-page .bracket-game {
+        min-width: 220px !important;  /* Increased from 140px */
+        width: 220px !important;      /* Increased from 140px */
+        min-height: 80px !important;  /* Increased from 64px */
+        padding: 10px !important;     /* Increased from 8px */
+        box-sizing: border-box;
+        z-index: 2;
+        align-items: flex-start !important;
+    }
 
         /* Game Card Hover Effect */
         .tournament-page .bracket-game:hover {
@@ -1678,12 +1675,12 @@
 
         /* narrower rounds + flatter vertical spacing */
         .tournament-page .bracket-round {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            min-width: 240px;
-        }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    min-width: 280px;  /* Increased from 240px to accommodate wider boxes */
+}
 
         .tournament-page .bracket-games {
             gap: 18px !important;

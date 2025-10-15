@@ -41,4 +41,28 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+     public function tallysheets()
+    {
+        return $this->hasMany(Tallysheet::class);
+    }
+
+    /**
+     * Get all volleyball tallysheets submitted by this user
+     */
+    public function volleyballTallysheets()
+    {
+        return $this->hasMany(VolleyballTallysheet::class);
+    }
+
+    /**
+     * Get all tallysheets (both basketball and volleyball) submitted by this user
+     */
+    public function allTallysheets()
+    {
+        $basketball = $this->tallysheets()->with('game.bracket.tournament')->get();
+        $volleyball = $this->volleyballTallysheets()->with('game.bracket.tournament')->get();
+        
+        return $basketball->merge($volleyball);
+    }
 }

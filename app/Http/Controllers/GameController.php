@@ -283,6 +283,9 @@ class GameController extends Controller
     /**
  * Save tallysheet data when completing a game
  */
+/**
+ * Save tallysheet data when completing a game
+ */
 private function saveTallysheet(Game $game, array $gameData)
 {
     try {
@@ -296,6 +299,7 @@ private function saveTallysheet(Game $game, array $gameData)
         Tallysheet::updateOrCreate(
             ['game_id' => $game->id],
             [
+                'user_id' => auth()->id(), // ✅ Save the logged-in user
                 'team1_score' => $gameData['team1_score'],
                 'team2_score' => $gameData['team2_score'],
                 'team1_fouls' => $gameData['team1_fouls'] ?? 0,
@@ -309,7 +313,7 @@ private function saveTallysheet(Game $game, array $gameData)
             ]
         );
 
-        \Log::info("Tallysheet saved for game {$game->id}");
+        \Log::info("Tallysheet saved for game {$game->id} by user " . auth()->id());
         
     } catch (\Exception $e) {
         \Log::error("Failed to save tallysheet for game {$game->id}", [
@@ -1021,6 +1025,9 @@ private function saveVolleyballPlayerStats(Game $game, array $playerStatsData)
 /**
  * Save volleyball tallysheet
  */
+/**
+ * Save volleyball tallysheet
+ */
 private function saveVolleyballTallysheet(Game $game, array $gameData)
 {
     try {
@@ -1031,6 +1038,7 @@ private function saveVolleyballTallysheet(Game $game, array $gameData)
         VolleyballTallysheet::updateOrCreate(
             ['game_id' => $game->id],
             [
+                'user_id' => auth()->id(), // ✅ Save the logged-in user
                 'team1_sets_won' => $gameData['team1_score'],
                 'team2_sets_won' => $gameData['team2_score'],
                 'set_scores' => $gameData['set_scores'],
@@ -1039,7 +1047,7 @@ private function saveVolleyballTallysheet(Game $game, array $gameData)
             ]
         );
 
-        \Log::info("Volleyball tallysheet saved for game {$game->id}");
+        \Log::info("Volleyball tallysheet saved for game {$game->id} by user " . auth()->id());
         
     } catch (\Exception $e) {
         \Log::error("Failed to save volleyball tallysheet for game {$game->id}", [

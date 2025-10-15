@@ -131,15 +131,65 @@ class PlayersController extends Controller
     }
 
     public function stats(Request $request)
-    {
-        // Base query with player stats averages
+{
+    // Determine sport type from filter or default to basketball
+    $sportId = $request->filled('sport_id') && $request->sport_id !== 'all' 
+        ? $request->sport_id 
+        : null;
+    
+    $sport = null;
+    $isVolleyball = false;
+    
+    if ($sportId) {
+        $sport = Sport::find($sportId);
+        $isVolleyball = $sport && strtolower($sport->sports_name) === 'volleyball';
+    }
+
+    if ($isVolleyball) {
+        // VOLLEYBALL STATS QUERY
+        $query = Player::with(['team', 'sport', 'volleyballGameStats'])
+            ->leftJoin('volleyball_player_stats', 'players.id', '=', 'volleyball_player_stats.player_id')
+            ->selectRaw('players.id, players.name, players.team_id, players.sport_id, players.number, players.position, players.created_at, players.updated_at')
+            ->selectRaw('ROUND(AVG(volleyball_player_stats.kills), 1) as avg_kills')
+            ->selectRaw('ROUND(AVG(volleyball_player_stats.aces), 1) as avg_aces')
+            ->selectRaw('ROUND(AVG(volleyball_player_stats.blocks), 1) as avg_blocks')
+            ->selectRaw('ROUND(AVG(volleyball_player_stats.digs), 1) as avg_digs')
+            ->selectRaw('ROUND(AVG(volleyball_player_stats.assists), 1) as avg_assists')
+            ->selectRaw('ROUND(AVG(volleyball_player_stats.errors), 1) as avg_errors')
+            ->selectRaw('COUNT(volleyball_player_stats.id) as games_played')
+            ->groupBy('players.id', 'players.name', 'players.team_id', 'players.sport_id', 'players.number', 'players.position', 'players.created_at', 'players.updated_at')
+            ->having('games_played', '>', 0);
+
+        // Apply filters
+        if ($request->filled('team_id') && $request->team_id !== 'all') {
+            $query->where('players.team_id', $request->team_id);
+        }
+
+        if ($sportId) {
+            $query->where('players.sport_id', $sportId);
+        }
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('players.name', 'like', "%{$search}%")
+                  ->orWhere('players.position', 'like', "%{$search}%");
+            });
+        }
+
+        // Order by average kills descending
+        $playerStats = $query->orderByDesc('avg_kills')->paginate(15)->withQueryString();
+        
+    } else {
+        // BASKETBALL STATS QUERY (Original)
         $query = Player::with(['team', 'sport', 'gameStats'])
             ->leftJoin('player_game_stats', 'players.id', '=', 'player_game_stats.player_id')
             ->selectRaw('players.id, players.name, players.team_id, players.sport_id, players.number, players.position, players.created_at, players.updated_at')
             ->selectRaw('ROUND(AVG(player_game_stats.points), 1) as avg_points')
             ->selectRaw('ROUND(AVG(player_game_stats.assists), 1) as avg_assists')
             ->selectRaw('ROUND(AVG(player_game_stats.rebounds), 1) as avg_rebounds')
-            ->selectRaw('ROUND(AVG(player_game_stats.steals), 1) as avg_blocks')
+            ->selectRaw('ROUND(AVG(player_game_stats.steals), 1) as avg_steals')
             ->selectRaw('ROUND(AVG(player_game_stats.fouls), 1) as avg_fouls')
             ->selectRaw('COUNT(player_game_stats.id) as games_played')
             ->groupBy('players.id', 'players.name', 'players.team_id', 'players.sport_id', 'players.number', 'players.position', 'players.created_at', 'players.updated_at')
@@ -150,8 +200,8 @@ class PlayersController extends Controller
             $query->where('players.team_id', $request->team_id);
         }
 
-        if ($request->filled('sport_id') && $request->sport_id !== 'all') {
-            $query->where('players.sport_id', $request->sport_id);
+        if ($sportId) {
+            $query->where('players.sport_id', $sportId);
         }
 
         // Search functionality
@@ -165,11 +215,12 @@ class PlayersController extends Controller
 
         // Order by average points descending
         $playerStats = $query->orderByDesc('avg_points')->paginate(15)->withQueryString();
-
-        // Get filter options
-        $teams = Team::all();
-        $sports = Sport::all();
-
-        return view('stats', compact('playerStats', 'teams', 'sports'));
     }
+
+    // Get filter options
+    $teams = Team::all();
+    $sports = Sport::all();
+
+    return view('stats', compact('playerStats', 'teams', 'sports', 'isVolleyball'));
+}
 }

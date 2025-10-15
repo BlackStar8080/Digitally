@@ -90,18 +90,39 @@ class Team extends Model
     /**
      * Get team's record (wins, losses).
      */
-    public function getRecord()
-    {
-        $wins = $this->gamesWon()->where('status', 'completed')->count();
-        $totalGames = $this->getAllGames()->where('status', 'completed')->count();
-        $losses = $totalGames - $wins;
-
-        return [
-            'wins' => $wins,
-            'losses' => $losses,
-            'total' => $totalGames,
-        ];
+    /**
+ * Get team's record (wins, losses).
+ */
+public function getRecord()
+{
+    // Get all completed games for this team
+    $completedGames = Game::where(function($query) {
+            $query->where('team1_id', $this->id)
+                  ->orWhere('team2_id', $this->id);
+        })
+        ->where('status', 'completed')
+        ->get();
+    
+    $wins = 0;
+    $losses = 0;
+    
+    foreach ($completedGames as $game) {
+        if ($game->winner_id === $this->id) {
+            $wins++;
+        } else {
+            // Only count as loss if there was a winner and it wasn't this team
+            if ($game->winner_id !== null) {
+                $losses++;
+            }
+        }
     }
+
+    return [
+        'wins' => $wins,
+        'losses' => $losses,
+        'total' => $completedGames->count(),
+    ];
+}
 
     /**
      * Check if team is eliminated from tournament.

@@ -11,6 +11,7 @@ class VolleyballTallysheet extends Model
 
     protected $fillable = [
         'game_id',
+        'user_id', // Added
         'team1_sets_won',
         'team2_sets_won',
         'set_scores',
@@ -40,6 +41,14 @@ class VolleyballTallysheet extends Model
     public function game()
     {
         return $this->belongsTo(Game::class);
+    }
+
+    /**
+     * Get the user (scorekeeper) who submitted this tallysheet
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     /**

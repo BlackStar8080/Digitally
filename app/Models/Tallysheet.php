@@ -11,6 +11,7 @@ class Tallysheet extends Model
 
     protected $fillable = [
         'game_id',
+        'user_id', // Added
         'team1_score',
         'team2_score',
         'team1_fouls',
@@ -39,6 +40,14 @@ class Tallysheet extends Model
     public function game()
     {
         return $this->belongsTo(Game::class);
+    }
+
+    /**
+     * Get the user (scorekeeper) who submitted this tallysheet
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     /**

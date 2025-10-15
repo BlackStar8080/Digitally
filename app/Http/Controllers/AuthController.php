@@ -8,11 +8,6 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    // Show the login form
-    public function showLoginForm()
-    {
-        return view('auth.login');
-    }
 
     // Handle login
     public function login(Request $request)
@@ -32,11 +27,6 @@ class AuthController extends Controller
         ])->with('form_type', 'login'); // ✅ Added for modal
     }
 
-    // Show the register form
-    public function showRegisterForm()
-    {
-        return view('auth.register');
-    }
 
     // Handle registration
     public function register(Request $request)
@@ -88,6 +78,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('landing'); // ✅ Changed to landing page since using modal
+        return redirect()->route('landing'); 
     }
 }

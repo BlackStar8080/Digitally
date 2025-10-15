@@ -33,4 +33,10 @@ class Player extends Model
     {
         return $this->hasMany(PlayerGameStat::class);
     }
+
+    // ADD THIS
+    public function volleyballGameStats()
+    {
+        return $this->hasMany(VolleyballPlayerStat::class);
+    }
 }

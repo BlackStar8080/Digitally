@@ -97,20 +97,65 @@ class DashboardController extends Controller
         return collect();
     }
 
-    // Get the 5 most recent MVPs from completed games in this tournament
-    $mvpStats = PlayerGameStat::with(['player.team', 'game'])
-        ->where('is_mvp', true)
-        ->whereHas('game.bracket', function($query) use ($tournamentId) {
-            $query->where('tournament_id', $tournamentId);
-        })
-        ->whereHas('game', function($query) {
-            $query->where('status', 'completed');
-        })
-        ->orderBy('updated_at', 'desc')
-        ->limit(5)
-        ->get();
+    // Determine sport type
+    $sportName = strtolower($tournament->sport->sports_name ?? '');
+    $isVolleyball = $sportName === 'volleyball';
 
-    return $mvpStats;
+    if ($isVolleyball) {
+        // Get volleyball MVPs
+        $mvpStats = \App\Models\VolleyballPlayerStat::with(['player.team', 'game'])
+            ->where('is_mvp', true)
+            ->whereHas('game.bracket', function($query) use ($tournamentId) {
+                $query->where('tournament_id', $tournamentId);
+            })
+            ->whereHas('game', function($query) {
+                $query->where('status', 'completed');
+            })
+            ->orderBy('updated_at', 'desc')
+            ->limit(5)
+            ->get();
+
+        // Transform volleyball stats to have consistent structure
+        return $mvpStats->map(function($stat) {
+            return [
+                'player' => $stat->player,
+                'game' => $stat->game,
+                'points' => $stat->kills ?? 0,  // Use kills as main stat
+                'rebounds' => $stat->blocks ?? 0,
+                'assists' => $stat->assists ?? 0,
+                'steals' => $stat->aces ?? 0,
+                'type' => 'volleyball',
+                'stats' => $stat // Keep original stats
+            ];
+        });
+    } else {
+        // Get basketball MVPs
+        $mvpStats = PlayerGameStat::with(['player.team', 'game'])
+            ->where('is_mvp', true)
+            ->whereHas('game.bracket', function($query) use ($tournamentId) {
+                $query->where('tournament_id', $tournamentId);
+            })
+            ->whereHas('game', function($query) {
+                $query->where('status', 'completed');
+            })
+            ->orderBy('updated_at', 'desc')
+            ->limit(5)
+            ->get();
+
+        // Transform basketball stats to have consistent structure
+        return $mvpStats->map(function($stat) {
+            return [
+                'player' => $stat->player,
+                'game' => $stat->game,
+                'points' => $stat->points ?? 0,
+                'rebounds' => $stat->rebounds ?? 0,
+                'assists' => $stat->assists ?? 0,
+                'steals' => $stat->steals ?? 0,
+                'type' => 'basketball',
+                'stats' => $stat
+            ];
+        });
+    }
 }
 
     private function getRecentGames($tournamentId)

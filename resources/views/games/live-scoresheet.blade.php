@@ -2245,32 +2245,80 @@
 
             // UPDATED: Modified handleQuarterEnd to ensure proper game completion
             function handleQuarterEnd() {
-                // Calculate current quarter score before ending
-                if (currentQuarter <= 4) {
-                    const startScore = currentQuarter === 1 ? 0 : quarterStartScores.teamA[currentQuarter - 1];
-                    periodScores.teamA[currentQuarter - 1] = scoreA - startScore;
-                    const startScoreB = currentQuarter === 1 ? 0 : quarterStartScores.teamB[currentQuarter - 1];
-                    periodScores.teamB[currentQuarter - 1] = scoreB - startScoreB;
-                }
+    // Calculate current quarter score before ending
+    if (currentQuarter <= 4) {
+        const startScore = currentQuarter === 1 ? 0 : quarterStartScores.teamA[currentQuarter - 1];
+        periodScores.teamA[currentQuarter - 1] = scoreA - startScore;
+        const startScoreB = currentQuarter === 1 ? 0 : quarterStartScores.teamB[currentQuarter - 1];
+        periodScores.teamB[currentQuarter - 1] = scoreB - startScoreB;
+    }
 
-                // Pause the timer
-                if (isRunning) {
-                    clearInterval(interval);
-                    isRunning = false;
-                    playPauseBtn.textContent = "▶";
-                }
+    // Pause the timer
+    if (isRunning) {
+        clearInterval(interval);
+        isRunning = false;
+        playPauseBtn.textContent = "▶";
+    }
 
-                // Log quarter end event
-                logEvent('GAME', 'SYSTEM', `Quarter ${currentQuarter} Ended`, 0);
+    // Log quarter end event
+    logEvent('GAME', 'SYSTEM', `Quarter ${currentQuarter} Ended`, 0);
 
-                if (currentQuarter < maxQuarters) {
-                    showQuarterEndModal();
-                } else {
-                    // Game is complete - log final event and show end modal
-                    logEvent('GAME', 'SYSTEM', 'Game Completed', 0);
-                    showGameEndModal();
-                }
-            }
+    if (currentQuarter < maxQuarters) {
+        showQuarterEndModal();
+    } else if (currentQuarter === maxQuarters && scoreA === scoreB) {
+        // ✅ NEW: Check for tie after 4th quarter
+        showOvertimeModal();
+    } else {
+        // Game is complete - log final event and show end modal
+        logEvent('GAME', 'SYSTEM', 'Game Completed', 0);
+        showGameEndModal();
+    }
+}
+
+function showOvertimeModal() {
+    const modal = document.getElementById('quarterModal');
+    const title = document.getElementById('quarterTitle');
+    const info = document.querySelector('.quarter-info');
+    const teamA = document.getElementById('modalTeamA');
+    const teamB = document.getElementById('modalTeamB');
+    const scoreAElement = document.getElementById('modalScoreA');
+    const scoreBElement = document.getElementById('modalScoreB');
+    const nextBtn = document.getElementById('nextQuarterBtn');
+
+    // Update modal content for overtime
+    title.textContent = 'GAME TIED!';
+    title.style.color = '#FF9800';
+    info.textContent = 'Going to Overtime - 2 Minutes';
+
+    teamA.textContent = gameData.team1.name;
+    teamB.textContent = gameData.team2.name;
+    scoreAElement.textContent = scoreA.toString().padStart(2, '0');
+    scoreBElement.textContent = scoreB.toString().padStart(2, '0');
+
+    nextBtn.textContent = 'Start Overtime';
+    nextBtn.style.display = 'inline-block';
+    nextBtn.onclick = () => {
+        modal.style.display = 'none';
+        startOvertime();
+    };
+
+    modal.style.display = 'flex';
+}
+
+function startOvertime() {
+    currentQuarter++; // This will be 5 (OT1), 6 (OT2), etc.
+    maxQuarters++; // Increase max quarters to allow overtime
+    time = 120; // 2 minutes = 120 seconds
+    updateTimer();
+    
+    // Update period display to show "OT"
+    if (periodDisplay) {
+        const overtimeNumber = currentQuarter - 4; // OT1, OT2, OT3, etc.
+        periodDisplay.textContent = `OT${overtimeNumber}`;
+    }
+
+    logEvent('GAME', 'SYSTEM', `Overtime ${currentQuarter - 4} Started`, 0);
+}
 
             function showQuarterEndModal() {
                 const modal = document.getElementById('quarterModal');
@@ -2373,7 +2421,12 @@
 
             function updatePeriodDisplay() {
                 if (periodDisplay) {
-                    periodDisplay.textContent = `Q${currentQuarter}`;
+                    if (currentQuarter <= 4) {
+                        periodDisplay.textContent = `Q${currentQuarter}`;
+                    } else {
+                        const overtimeNumber = currentQuarter - 4;
+                        periodDisplay.textContent = `OT${overtimeNumber}`;
+                    }
                 }
             }
 
