@@ -1,6 +1,5 @@
 <!doctype html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,295 +10,23 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         @page {
             size: 8.5in 13in portrait;
-            margin: 0.15in;
+            margin: 0.25in;
         }
-
         body {
             font-family: Arial, sans-serif;
-            font-size: 7px;
-            background: #f0f0f0;
-            padding: 5px;
-            line-height: 1.1;
+            font-size: 9px;
+            background: white;
+            padding: 10px;
         }
-
         .sheet {
-            width: 8.2in;
-            height: 12.7in;
+            width: 8in;
             background: white;
-            padding: 0.15in;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 3px solid #000;
+            padding: 12px;
             margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
         }
-
-        .header {
-            text-align: center;
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            padding: 4px;
-            border: 2px solid #000;
-            margin-bottom: 3px;
-            position: relative;
-            border-radius: 3px;
-        }
-
-        .header h1 {
-            font-size: 16px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            color: #8B4513;
-            margin: 0;
-            line-height: 1;
-        }
-
-        .header p {
-            font-size: 7px;
-            color: #8B4513;
-            margin: 1px 0 0 0;
-            font-weight: 600;
-        }
-
-        .logo {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            top: 50%;
-            transform: translateY(-50%);
-            border: 2px solid #000;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #8B4513;
-            font-size: 10px;
-        }
-
-        .logo-left {
-            left: 10px;
-        }
-
-        .logo-right {
-            right: 10px;
-        }
-
-        .meta-section {
-            margin-bottom: 3px;
-        }
-
-        .meta-row {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 2px;
-            font-size: 6.5px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 2px;
-            background: #f8f9fa;
-            padding: 1px 4px;
-            border-radius: 2px;
-            border: 1px solid #dee2e6;
-        }
-
-        .meta-item strong {
-            font-size: 6.5px;
-            color: #495057;
-        }
-
-        .meta-value {
-            border-bottom: 1px solid #000;
-            min-width: 50px;
-            padding: 0 3px;
-            font-size: 6.5px;
-            font-weight: 600;
-            background: white;
-        }
-
-        .main-layout {
-            display: grid;
-            grid-template-columns: 2.9in 1fr;
-            gap: 4px;
-            margin-bottom: 3px;
-            flex: 1;
-            min-height: 0;
-        }
-
-        .teams-section {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-            min-height: 0;
-        }
-
-        .teams-section .box {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
-            overflow: hidden;
-        }
-
-        .box {
-            border: 2px solid #000;
-            padding: 3px;
-            background: white;
-            border-radius: 3px;
-        }
-
-        .box-header {
-            font-weight: bold;
-            font-size: 7.5px;
-            margin-bottom: 2px;
-            padding: 2px;
-            border-bottom: 2px solid #000;
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            border-radius: 2px;
-            text-align: center;
-            color: #8B4513;
-            line-height: 1;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 5.5px;
-        }
-
-        td,
-        th {
-            border: 1px solid #000;
-            padding: 0.5px 1px;
-            text-align: center;
-            line-height: 1;
-        }
-
-        .players-table {
-            flex: 1;
-            min-height: 0;
-        }
-
-        .players-table td {
-            height: 11px;
-            padding: 0.5px 2px;
-        }
-
-        .players-table td:nth-child(2) {
-            text-align: left;
-            font-size: 6px;
-            padding-left: 3px;
-        }
-
-        .players-table th {
-            background: #e9ecef;
-            font-weight: 700;
-            padding: 2px 1px;
-            font-size: 5.5px;
-        }
-
-        .timeout-grid {
-            display: inline-grid;
-            grid-template-columns: repeat(3, 11px);
-            gap: 1px;
-            vertical-align: middle;
-        }
-
-        .foul-grid {
-            display: inline-grid;
-            grid-template-columns: repeat(4, 10px);
-            gap: 1px;
-            vertical-align: middle;
-        }
-
-        .timeout-box,
-        .foul-box {
-            width: 10px;
-            height: 9px;
-            border: 1px solid #000;
-            display: inline-block;
-            text-align: center;
-            line-height: 9px;
-            font-size: 6px;
-            background: white;
-            font-weight: bold;
-            color: #28a745;
-        }
-
-        .running-score-table {
-            font-size: 5px;
-            border-collapse: collapse;
-            width: 100%;
-            text-align: center;
-        }
-
-        .running-score-table td,
-        .running-score-table th {
-            padding: 0;
-            height: 8.5px;
-            vertical-align: middle;
-            font-size: 5px;
-            line-height: 1;
-        }
-
-        .running-score-table th {
-            font-size: 6px;
-            font-weight: bold;
-            padding: 8px 0;
-            background: #e9ecef;
-        }
-
-        .running-score-table td:nth-child(2),
-        .running-score-table td:nth-child(6),
-        .running-score-table td:nth-child(10),
-        .running-score-table td:nth-child(14) {
-            background: #fff8dc;
-        }
-
-        .running-score-table td:nth-child(4),
-        .running-score-table td:nth-child(8),
-        .running-score-table td:nth-child(12),
-        .running-score-table td:nth-child(16) {
-            background: #f0f8ff;
-        }
-
-        .running-score-container {
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
-            overflow: hidden;
-        }
-
-        .running-score-container table {
-            flex: 1;
-            min-height: 0;
-        }
-
-        .period-labels {
-            display: flex;
-            gap: 3px;
-            align-items: center;
-            margin-bottom: 2px;
-            font-size: 6px;
-            padding: 1px;
-            background: #f8f9fa;
-            border-radius: 2px;
-        }
-
-        .bottom-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4px;
-        }
-
         .download-buttons {
             position: fixed;
             top: 15px;
@@ -308,7 +35,6 @@
             gap: 8px;
             z-index: 1000;
         }
-
         .btn {
             padding: 10px 20px;
             border: none;
@@ -323,197 +49,300 @@
             gap: 6px;
             transition: all 0.3s ease;
         }
-
         .btn-success {
-            background: linear-gradient(135deg, #28a745, #20c997);
+            background: #28a745;
             color: white;
         }
-
         .btn-success:hover {
-            background: linear-gradient(135deg, #218838, #1aa179);
+            background: #218838;
             transform: translateY(-2px);
         }
-
         .btn-primary {
-            background: linear-gradient(135deg, #007bff, #0056b3);
+            background: #007bff;
             color: white;
         }
-
         .btn-primary:hover {
-            background: linear-gradient(135deg, #0069d9, #004085);
+            background: #0069d9;
             transform: translateY(-2px);
         }
-
-        .team-fouls-section {
-            font-size: 6px;
-            margin-top: 2px;
-            padding: 2px;
-            background: #f8f9fa;
-            border-radius: 2px;
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            position: relative;
         }
-
-        .fouls-row {
+        .header h1 {
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 4px;
+            margin: 5px 0;
+        }
+        .logo {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            top: 5px;
+            font-size: 35px;
+        }
+        .logo-left { left: 20px; }
+        .logo-right { right: 20px; }
+        
+        .meta-section {
+            border: 2px solid #000;
+            padding: 8px;
+            margin-bottom: 10px;
+            font-size: 9px;
+        }
+        .meta-row {
             display: flex;
-            gap: 3px;
+            gap: 15px;
+            margin-bottom: 5px;
+            flex-wrap: wrap;
+        }
+        .meta-item {
+            display: flex;
+            gap: 5px;
             align-items: center;
-            margin-top: 1px;
         }
-
-        .fouls-row span {
-            font-size: 5.5px;
-            min-width: 14px;
-        }
-
-        .coach-section {
-            margin-top: 2px;
-            font-size: 6px;
-            padding: 2px;
-            background: #fff3cd;
-            border-radius: 2px;
-            border: 1px solid #ffc107;
-        }
-
-        .scores-table {
-            font-size: 6px;
-            margin-bottom: 3px;
-        }
-
-        .scores-table td {
-            padding: 1px 3px;
-            font-size: 6px;
-        }
-
-        .scores-table tr:last-child {
-            background: #fffacd;
+        .meta-label {
             font-weight: bold;
-            border-top: 2px solid #000;
         }
-
-        .winner-section {
-            padding: 2px;
-            border-top: 2px solid #000;
-            margin: 3px 0;
-            font-size: 6px;
-            background: #d4edda;
-            border-radius: 2px;
+        .meta-value {
+            border-bottom: 1px solid #000;
+            min-width: 80px;
+            padding: 0 5px;
         }
-
-        .best-player-section {
-            padding: 3px;
-            border-top: 2px solid #000;
-            margin-top: 3px;
-            background: #fff3cd;
-            border-radius: 2px;
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 3.5in 4.2in;
+            gap: 10px;
+            margin-bottom: 10px;
         }
-
-        .best-player-section>div:first-child {
+        
+        .team-box {
+            border: 2px solid #000;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        .team-header {
             font-weight: bold;
-            margin-bottom: 2px;
-            font-size: 6px;
-            color: #856404;
+            font-size: 10px;
+            padding-bottom: 5px;
+            margin-bottom: 8px;
+            border-bottom: 2px solid #000;
         }
-
+        
+        .timeout-section {
+            margin-bottom: 8px;
+            font-size: 8px;
+        }
+        .timeout-grid {
+            display: inline-grid;
+            grid-template-columns: repeat(3, 18px);
+            gap: 3px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .timeout-box {
+            width: 18px;
+            height: 18px;
+            border: 1px solid #000;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        .circle-box {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #000;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .foul-section {
+            margin-bottom: 8px;
+            font-size: 8px;
+        }
+        .foul-row {
+            margin-bottom: 5px;
+        }
+        .foul-boxes {
+            display: inline-flex;
+            gap: 2px;
+            margin: 0 5px;
+        }
+        .square-box {
+            width: 16px;
+            height: 16px;
+            border: 1px solid #000;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8px;
+            margin-bottom: 8px;
+        }
+        td, th {
+            border: 1px solid #000;
+            padding: 3px 2px;
+            text-align: center;
+        }
+        th {
+            background: #f0f0f0;
+            font-weight: bold;
+            font-size: 7px;
+        }
+        .player-name {
+            text-align: left !important;
+            padding-left: 5px !important;
+        }
+        
+        .coach-field {
+            margin-top: 5px;
+            font-size: 8px;
+            display: flex;
+            gap: 5px;
+        }
+        .coach-label {
+            font-weight: bold;
+            min-width: 80px;
+        }
+        .coach-value {
+            border-bottom: 1px solid #000;
+            flex: 1;
+            padding: 0 5px;
+        }
+        
+        .running-score-box {
+            border: 2px solid #000;
+            padding: 8px;
+        }
+        .running-score-header {
+            font-weight: bold;
+            font-size: 10px;
+            text-align: center;
+            padding-bottom: 5px;
+            margin-bottom: 8px;
+            border-bottom: 2px solid #000;
+        }
+        .running-score-table {
+            font-size: 7px;
+        }
+        .running-score-table td {
+            padding: 1px;
+            height: 13px;
+        }
+        .running-score-table th {
+            font-size: 8px;
+            font-weight: bold;
+            padding: 5px 0;
+        }
+        
+        .bottom-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            border: 2px solid #000;
+            padding: 10px;
+        }
+        
+        .officials-section {
+            font-size: 8px;
+        }
+        .official-field {
+            margin-bottom: 8px;
+            display: flex;
+            gap: 5px;
+        }
+        .official-label {
+            font-weight: bold;
+            min-width: 120px;
+        }
+        .official-value {
+            border-bottom: 1px solid #000;
+            flex: 1;
+            padding: 0 5px;
+        }
+        .referee-section {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 2px solid #000;
+        }
+        
+        .scores-section {
+            font-size: 8px;
+        }
+        .period-score {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 5px;
+            align-items: center;
+        }
+        .period-label {
+            font-weight: bold;
+            min-width: 60px;
+        }
+        .final-score {
+            border-top: 2px solid #000;
+            padding-top: 8px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .winner-field {
+            margin-bottom: 8px;
+            display: flex;
+            gap: 5px;
+        }
+        .best-player {
+            border-top: 1px solid #000;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        .best-player-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
         .best-player-stats {
-            font-size: 5.5px;
-            line-height: 1.4;
-        }
-
-        .officials-content {
-            font-size: 6px;
+            font-size: 7px;
             line-height: 1.6;
         }
-
-        .officials-content>div {
-            padding: 1px 0;
-            border-bottom: 1px dashed #dee2e6;
-        }
-
-        .officials-content>div:last-child {
-            border-bottom: none;
-        }
-
-        .referee-section {
-            margin-top: 4px;
-            padding-top: 4px;
-            border-top: 2px solid #000;
-            background: #e7f3ff;
-            padding: 3px;
-            border-radius: 2px;
-        }
-
-        .referee-section>div {
-            font-size: 6px;
-        }
-
+        
         @media print {
             body {
                 background: white;
                 padding: 0;
-                margin: 0;
             }
-
             .sheet {
+                border: none;
                 box-shadow: none;
-                margin: 0;
-                padding: 0.15in;
-                width: 100%;
-                height: 100%;
-                page-break-after: avoid;
-                page-break-inside: avoid;
             }
-
             .download-buttons {
                 display: none !important;
             }
-
-            * {
-                page-break-inside: avoid;
-            }
-
-            .box,
-            .teams-section,
-            .main-layout,
-            .bottom-section,
-            table {
-                page-break-inside: avoid;
-                break-inside: avoid;
-            }
         }
-
-        @media print {
-  * {
-    page-break-inside: avoid;
-  }
-  
-  .box,
-  .teams-section,
-  .main-layout,
-  .bottom-section,
-  table {
-    page-break-inside: avoid;
-    break-inside: avoid;
-  }
-}
-
-@page { 
-    size: 8.5in 13in portrait; 
-    margin: 0.1in;  /* Even smaller margins */
-}
-
-.sheet {
-    height: 12.8in;  /* Slightly larger */
-}
     </style>
 </head>
-
 <body>
-
     <div class="download-buttons">
         <a href="{{ route('pdf.basketball.scoresheet.download', $game->id) }}" class="btn btn-success">
-            📥 Download
+            Download
         </a>
         <a href="{{ route('pdf.basketball.scoresheet.view', $game->id) }}" class="btn btn-primary" target="_blank">
-            👁️ View
+            View
         </a>
     </div>
 
@@ -522,7 +351,6 @@
         <div class="header">
             <div class="logo logo-left">🏀</div>
             <h1>PADAYON CUP</h1>
-            <p>Basketball Scoresheet</p>
             <div class="logo logo-right">🏆</div>
         </div>
 
@@ -530,65 +358,64 @@
         <div class="meta-section">
             <div class="meta-row">
                 <div class="meta-item">
-                    <strong>Team A:</strong>
+                    <span class="meta-label">Team A</span>
                     <span class="meta-value">{{ $game->team1->team_name }}</span>
                 </div>
                 <div class="meta-item">
-                    <strong>Team B:</strong>
+                    <span class="meta-label">Team B</span>
                     <span class="meta-value">{{ $game->team2->team_name }}</span>
                 </div>
-                <div class="meta-item">
-                    <strong>Competition:</strong>
-                    <span class="meta-value">{{ $game->bracket->tournament->name ?? '26 ABOVE' }}</span>
-                </div>
             </div>
-
             <div class="meta-row">
                 <div class="meta-item">
-                    <strong>Date:</strong>
-                    <span
-                        class="meta-value">{{ $game->started_at ? $game->started_at->format('m/d/Y') : date('m/d/Y') }}</span>
+                    <span class="meta-label">Competition</span>
+                    <span class="meta-value">{{ $game->bracket->tournament->name ?? '26 ABOVE' }}</span>
                 </div>
                 <div class="meta-item">
-                    <strong>Time:</strong>
+                    <span class="meta-label">Date</span>
+                    <span class="meta-value">{{ $game->started_at ? $game->started_at->format('m/d/Y') : date('m/d/Y') }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Time</span>
                     <span class="meta-value">{{ $game->started_at ? $game->started_at->format('H:i') : '__:__' }}</span>
                 </div>
+            </div>
+            <div class="meta-row">
                 <div class="meta-item">
-                    <strong>Game No.:</strong>
+                    <span class="meta-label">Game No.</span>
                     <span class="meta-value">{{ $game->id }}</span>
                 </div>
                 <div class="meta-item">
-                    <strong>Place:</strong>
+                    <span class="meta-label">Place</span>
                     <span class="meta-value">CASINGLOT COURT</span>
                 </div>
             </div>
-
             <div class="meta-row">
                 <div class="meta-item">
-                    <strong>Referee:</strong>
+                    <span class="meta-label">Referee</span>
                     <span class="meta-value">{{ $game->referee ?? '________' }}</span>
                 </div>
                 <div class="meta-item">
-                    <strong>Umpire 1:</strong>
+                    <span class="meta-label">Umpire 1</span>
                     <span class="meta-value">{{ $game->assistant_referee_1 ?? '________' }}</span>
                 </div>
                 <div class="meta-item">
-                    <strong>Umpire 2:</strong>
+                    <span class="meta-label">Umpire 2</span>
                     <span class="meta-value">{{ $game->assistant_referee_2 ?? '________' }}</span>
                 </div>
             </div>
         </div>
 
-        <!-- Main Content -->
+        <!-- Main Layout -->
         <div class="main-layout">
             <!-- Left: Teams -->
-            <div class="teams-section">
+            <div>
                 <!-- Team A -->
-                <div class="box">
-                    <div class="box-header">TEAM A: {{ strtoupper($game->team1->team_name) }}</div>
-
-                    <div class="period-labels">
-                        <strong>Timeouts:</strong>
+                <div class="team-box">
+                    <div class="team-header">Team A {{ strtoupper($game->team1->team_name) }}</div>
+                    
+                    <div class="timeout-section">
+                        <strong>Time-outs</strong>
                         <div class="timeout-grid">
                             @php $team1Timeouts = $liveData['team1_timeouts'] ?? 0; @endphp
                             @for ($i = 0; $i < 2; $i++)
@@ -603,69 +430,67 @@
                             @endfor
                         </div>
                     </div>
-
-                    @php
-                        $team1PeriodFouls = [1 => 0, 2 => 0, 3 => 0, 4 => 0];
-                        if (isset($liveData['events']) && is_array($liveData['events'])) {
-                            foreach ($liveData['events'] as $event) {
-                                if (
-                                    $event['team'] === 'A' &&
-                                    isset($event['action']) &&
-                                    str_contains($event['action'], 'Foul')
-                                ) {
-                                    if (isset($event['period'])) {
-                                        $period = (int) filter_var($event['period'], FILTER_SANITIZE_NUMBER_INT);
-                                        if ($period >= 1 && $period <= 4) {
-                                            $team1PeriodFouls[$period]++;
+                    
+                    <div class="foul-section">
+                        @php
+                            $team1PeriodFouls = [1 => 0, 2 => 0, 3 => 0, 4 => 0];
+                            if (isset($liveData['events']) && is_array($liveData['events'])) {
+                                foreach ($liveData['events'] as $event) {
+                                    if ($event['team'] === 'A' && isset($event['action']) && str_contains($event['action'], 'Foul')) {
+                                        if (isset($event['period'])) {
+                                            $period = (int) filter_var($event['period'], FILTER_SANITIZE_NUMBER_INT);
+                                            if ($period >= 1 && $period <= 4) {
+                                                $team1PeriodFouls[$period]++;
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                    @endphp
-
-                    <div class="team-fouls-section">
-                        <strong>Team Fouls:</strong>
-                        <div class="fouls-row">
-                            <span>Q1</span>
-                            <div class="foul-grid">
+                        @endphp
+                        <div class="foul-row">
+                            <strong>Period</strong>
+                            <span class="circle-box">①</span>
+                            <div class="foul-boxes">
                                 @for ($i = 0; $i < 4; $i++)
-                                    <div class="foul-box">{{ $team1PeriodFouls[1] > $i ? '/' : '' }}</div>
+                                    <span class="square-box">{{ $team1PeriodFouls[1] > $i ? '/' : '' }}</span>
                                 @endfor
                             </div>
-                            <span>Q2</span>
-                            <div class="foul-grid">
+                            <span class="circle-box">②</span>
+                            <div class="foul-boxes">
                                 @for ($i = 0; $i < 4; $i++)
-                                    <div class="foul-box">{{ $team1PeriodFouls[2] > $i ? '/' : '' }}</div>
+                                    <span class="square-box">{{ $team1PeriodFouls[2] > $i ? '/' : '' }}</span>
                                 @endfor
                             </div>
                         </div>
-                        <div class="fouls-row">
-                            <span>Q3</span>
-                            <div class="foul-grid">
+                        <div class="foul-row">
+                            <strong>Period</strong>
+                            <span class="circle-box">③</span>
+                            <div class="foul-boxes">
                                 @for ($i = 0; $i < 4; $i++)
-                                    <div class="foul-box">{{ $team1PeriodFouls[3] > $i ? '/' : '' }}</div>
+                                    <span class="square-box">{{ $team1PeriodFouls[3] > $i ? '/' : '' }}</span>
                                 @endfor
                             </div>
-                            <span>Q4</span>
-                            <div class="foul-grid">
+                            <span class="circle-box">④</span>
+                            <div class="foul-boxes">
                                 @for ($i = 0; $i < 4; $i++)
-                                    <div class="foul-box">{{ $team1PeriodFouls[4] > $i ? '/' : '' }}</div>
+                                    <span class="square-box">{{ $team1PeriodFouls[4] > $i ? '/' : '' }}</span>
                                 @endfor
                             </div>
                         </div>
+                        <div style="margin-top: 5px;"><strong>Extra periods</strong></div>
                     </div>
 
-                    <table class="players-table">
+                    <table>
                         <thead>
                             <tr>
-                                <th style="width:14px;">Ln</th>
-                                <th>Player Name</th>
-                                <th style="width:16px;">No</th>
-                                <th style="width:9px;">①</th>
-                                <th style="width:9px;">②</th>
-                                <th style="width:9px;">③</th>
-                                <th style="width:9px;">④</th>
+                                <th style="width: 30px;">License<br>no.</th>
+                                <th>Players</th>
+                                <th style="width: 30px;">No.</th>
+                                <th style="width: 40px;">Player<br>in</th>
+                                <th style="width: 18px;">1</th>
+                                <th style="width: 18px;">2</th>
+                                <th style="width: 18px;">3</th>
+                                <th style="width: 18px;">4</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -673,12 +498,7 @@
                                 $team1FoulCounts = [];
                                 if (isset($liveData['events'])) {
                                     foreach ($liveData['events'] as $event) {
-                                        if (
-                                            $event['team'] === 'A' &&
-                                            isset($event['player']) &&
-                                            $event['player'] !== 'TEAM' &&
-                                            $event['player'] !== 'SYSTEM'
-                                        ) {
+                                        if ($event['team'] === 'A' && isset($event['player']) && $event['player'] !== 'TEAM' && $event['player'] !== 'SYSTEM') {
                                             if (str_contains($event['action'], 'Foul')) {
                                                 $playerNum = $event['player'];
                                                 $team1FoulCounts[$playerNum] = ($team1FoulCounts[$playerNum] ?? 0) + 1;
@@ -690,8 +510,9 @@
                             @foreach ($team1Players as $index => $player)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
-                                    <td style="text-align: left;">{{ $player->name }}</td>
+                                    <td class="player-name">{{ $player->name }}</td>
                                     <td><strong>{{ $player->number ?? '00' }}</strong></td>
+                                    <td></td>
                                     @php $fouls = $team1FoulCounts[$player->number] ?? 0; @endphp
                                     <td>{{ $fouls >= 1 ? '/' : '' }}</td>
                                     <td>{{ $fouls >= 2 ? '/' : '' }}</td>
@@ -699,9 +520,10 @@
                                     <td>{{ $fouls >= 4 ? '/' : '' }}</td>
                                 </tr>
                             @endforeach
-                            @for ($i = count($team1Players); $i < 10; $i++)
+                            @for ($i = count($team1Players); $i < 15; $i++)
                                 <tr>
                                     <td>{{ $i + 1 }}</td>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -713,17 +535,22 @@
                         </tbody>
                     </table>
 
-                    <div class="coach-section">
-                        <strong>Coach:</strong> {{ $game->team1->coach_name ?? '____________' }}
+                    <div class="coach-field">
+                        <span class="coach-label">Coach</span>
+                        <span class="coach-value">{{ $game->team1->coach_name ?? '____________' }}</span>
+                    </div>
+                    <div class="coach-field">
+                        <span class="coach-label">Assistant Coach</span>
+                        <span class="coach-value">____________</span>
                     </div>
                 </div>
 
                 <!-- Team B -->
-                <div class="box">
-                    <div class="box-header">TEAM B: {{ strtoupper($game->team2->team_name) }}</div>
-
-                    <div class="period-labels">
-                        <strong>Timeouts:</strong>
+                <div class="team-box">
+                    <div class="team-header">Team B {{ strtoupper($game->team2->team_name) }}</div>
+                    
+                    <div class="timeout-section">
+                        <strong>Time-outs</strong>
                         <div class="timeout-grid">
                             @php $team2Timeouts = $liveData['team2_timeouts'] ?? 0; @endphp
                             @for ($i = 0; $i < 2; $i++)
@@ -738,69 +565,67 @@
                             @endfor
                         </div>
                     </div>
-
-                    @php
-                        $team2PeriodFouls = [1 => 0, 2 => 0, 3 => 0, 4 => 0];
-                        if (isset($liveData['events']) && is_array($liveData['events'])) {
-                            foreach ($liveData['events'] as $event) {
-                                if (
-                                    $event['team'] === 'B' &&
-                                    isset($event['action']) &&
-                                    str_contains($event['action'], 'Foul')
-                                ) {
-                                    if (isset($event['period'])) {
-                                        $period = (int) filter_var($event['period'], FILTER_SANITIZE_NUMBER_INT);
-                                        if ($period >= 1 && $period <= 4) {
-                                            $team2PeriodFouls[$period]++;
+                    
+                    <div class="foul-section">
+                        @php
+                            $team2PeriodFouls = [1 => 0, 2 => 0, 3 => 0, 4 => 0];
+                            if (isset($liveData['events']) && is_array($liveData['events'])) {
+                                foreach ($liveData['events'] as $event) {
+                                    if ($event['team'] === 'B' && isset($event['action']) && str_contains($event['action'], 'Foul')) {
+                                        if (isset($event['period'])) {
+                                            $period = (int) filter_var($event['period'], FILTER_SANITIZE_NUMBER_INT);
+                                            if ($period >= 1 && $period <= 4) {
+                                                $team2PeriodFouls[$period]++;
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                    @endphp
-
-                    <div class="team-fouls-section">
-                        <strong>Team Fouls:</strong>
-                        <div class="fouls-row">
-                            <span>Q1</span>
-                            <div class="foul-grid">
+                        @endphp
+                        <div class="foul-row">
+                            <strong>Period</strong>
+                            <span class="circle-box">①</span>
+                            <div class="foul-boxes">
                                 @for ($i = 0; $i < 4; $i++)
-                                    <div class="foul-box">{{ $team2PeriodFouls[1] > $i ? '/' : '' }}</div>
+                                    <span class="square-box">{{ $team2PeriodFouls[1] > $i ? '/' : '' }}</span>
                                 @endfor
                             </div>
-                            <span>Q2</span>
-                            <div class="foul-grid">
+                            <span class="circle-box">②</span>
+                            <div class="foul-boxes">
                                 @for ($i = 0; $i < 4; $i++)
-                                    <div class="foul-box">{{ $team2PeriodFouls[2] > $i ? '/' : '' }}</div>
+                                    <span class="square-box">{{ $team2PeriodFouls[2] > $i ? '/' : '' }}</span>
                                 @endfor
                             </div>
                         </div>
-                        <div class="fouls-row">
-                            <span>Q3</span>
-                            <div class="foul-grid">
+                        <div class="foul-row">
+                            <strong>Period</strong>
+                            <span class="circle-box">③</span>
+                            <div class="foul-boxes">
                                 @for ($i = 0; $i < 4; $i++)
-                                    <div class="foul-box">{{ $team2PeriodFouls[3] > $i ? '/' : '' }}</div>
+                                    <span class="square-box">{{ $team2PeriodFouls[3] > $i ? '/' : '' }}</span>
                                 @endfor
                             </div>
-                            <span>Q4</span>
-                            <div class="foul-grid">
+                            <span class="circle-box">④</span>
+                            <div class="foul-boxes">
                                 @for ($i = 0; $i < 4; $i++)
-                                    <div class="foul-box">{{ $team2PeriodFouls[4] > $i ? '/' : '' }}</div>
+                                    <span class="square-box">{{ $team2PeriodFouls[4] > $i ? '/' : '' }}</span>
                                 @endfor
                             </div>
                         </div>
+                        <div style="margin-top: 5px;"><strong>Extra periods</strong></div>
                     </div>
 
-                    <table class="players-table">
+                    <table>
                         <thead>
                             <tr>
-                                <th style="width:14px;">Ln</th>
-                                <th>Player Name</th>
-                                <th style="width:16px;">No</th>
-                                <th style="width:9px;">①</th>
-                                <th style="width:9px;">②</th>
-                                <th style="width:9px;">③</th>
-                                <th style="width:9px;">④</th>
+                                <th style="width: 30px;">License<br>no.</th>
+                                <th>Players</th>
+                                <th style="width: 30px;">No.</th>
+                                <th style="width: 40px;">Player<br>in</th>
+                                <th style="width: 18px;">1</th>
+                                <th style="width: 18px;">2</th>
+                                <th style="width: 18px;">3</th>
+                                <th style="width: 18px;">4</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -808,12 +633,7 @@
                                 $team2FoulCounts = [];
                                 if (isset($liveData['events'])) {
                                     foreach ($liveData['events'] as $event) {
-                                        if (
-                                            $event['team'] === 'B' &&
-                                            isset($event['player']) &&
-                                            $event['player'] !== 'TEAM' &&
-                                            $event['player'] !== 'SYSTEM'
-                                        ) {
+                                        if ($event['team'] === 'B' && isset($event['player']) && $event['player'] !== 'TEAM' && $event['player'] !== 'SYSTEM') {
                                             if (str_contains($event['action'], 'Foul')) {
                                                 $playerNum = $event['player'];
                                                 $team2FoulCounts[$playerNum] = ($team2FoulCounts[$playerNum] ?? 0) + 1;
@@ -825,8 +645,9 @@
                             @foreach ($team2Players as $index => $player)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
-                                    <td style="text-align: left;">{{ $player->name }}</td>
+                                    <td class="player-name">{{ $player->name }}</td>
                                     <td><strong>{{ $player->number ?? '00' }}</strong></td>
+                                    <td></td>
                                     @php $fouls = $team2FoulCounts[$player->number] ?? 0; @endphp
                                     <td>{{ $fouls >= 1 ? '/' : '' }}</td>
                                     <td>{{ $fouls >= 2 ? '/' : '' }}</td>
@@ -834,9 +655,10 @@
                                     <td>{{ $fouls >= 4 ? '/' : '' }}</td>
                                 </tr>
                             @endforeach
-                            @for ($i = count($team2Players); $i < 10; $i++)
+                            @for ($i = count($team2Players); $i < 15; $i++)
                                 <tr>
                                     <td>{{ $i + 1 }}</td>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -848,15 +670,20 @@
                         </tbody>
                     </table>
 
-                    <div class="coach-section">
-                        <strong>Coach:</strong> {{ $game->team2->coach_name ?? '____________' }}
+                    <div class="coach-field">
+                        <span class="coach-label">Coach</span>
+                        <span class="coach-value">{{ $game->team2->coach_name ?? '____________' }}</span>
+                    </div>
+                    <div class="coach-field">
+                        <span class="coach-label">Assistant Coach</span>
+                        <span class="coach-value">____________</span>
                     </div>
                 </div>
             </div>
 
             <!-- Right: Running Score -->
-            <div class="box running-score-container">
-                <div class="box-header">RUNNING SCORE</div>
+            <div class="running-score-box">
+                <div class="running-score-header">RUNNING SCORE</div>
                 <table class="running-score-table">
                     <thead>
                         <tr>
@@ -911,83 +738,102 @@
 
         <!-- Bottom Section -->
         <div class="bottom-section">
-            <!-- Scores Summary -->
-            <div class="box">
-                <div class="box-header">SCORES</div>
-                @php
-                    $periodScores = $liveData['period_scores'] ?? ['team1' => [0, 0, 0, 0], 'team2' => [0, 0, 0, 0]];
-                @endphp
-                <table class="scores-table">
-                    <tr>
-                        <td style="text-align: left; font-weight: bold;">Q1</td>
-                        <td><strong>A:</strong> {{ $periodScores['team1'][0] ?? 0 }}</td>
-                        <td><strong>B:</strong> {{ $periodScores['team2'][0] ?? 0 }}</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: left; font-weight: bold;">Q2</td>
-                        <td><strong>A:</strong> {{ $periodScores['team1'][1] ?? 0 }}</td>
-                        <td><strong>B:</strong> {{ $periodScores['team2'][1] ?? 0 }}</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: left; font-weight: bold;">Q3</td>
-                        <td><strong>A:</strong> {{ $periodScores['team1'][2] ?? 0 }}</td>
-                        <td><strong>B:</strong> {{ $periodScores['team2'][2] ?? 0 }}</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: left; font-weight: bold;">Q4</td>
-                        <td><strong>A:</strong> {{ $periodScores['team1'][3] ?? 0 }}</td>
-                        <td><strong>B:</strong> {{ $periodScores['team2'][3] ?? 0 }}</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: left; font-weight: bold; font-size: 7px;">FINAL</td>
-                        <td style="font-weight: bold; font-size: 7.5px;">{{ $liveData['team1_score'] ?? 0 }}</td>
-                        <td style="font-weight: bold; font-size: 7.5px;">{{ $liveData['team2_score'] ?? 0 }}</td>
-                    </tr>
-                </table>
-                <div class="winner-section">
-                    <strong>🏆 Winner:</strong>
-                    @if (isset($liveData['team1_score']) && isset($liveData['team2_score']))
-                        @if ($liveData['team1_score'] > $liveData['team2_score'])
-                            {{ $game->team1->team_name }}
-                        @elseif($liveData['team2_score'] > $liveData['team1_score'])
-                            {{ $game->team2->team_name }}
-                        @else
-                            TIE
-                        @endif
-                    @else
-                        __________
-                    @endif
+            <div class="officials-section">
+                <div class="official-field">
+                    <span class="official-label">Scorekeeper</span>
+                    <span class="official-value">___________</span>
                 </div>
-
-                <div class="best-player-section">
-                    <div>⭐ BEST PLAYER: __________</div>
-                    <div class="best-player-stats">
-                        <div><strong>Pts:</strong> __ <strong>Ast:</strong> __ <strong>Reb:</strong> __</div>
-                        <div><strong>Blk:</strong> __ <strong>Stl:</strong> __ <strong>Fls:</strong> __</div>
+                <div class="official-field">
+                    <span class="official-label">Assistant Scorekeeper</span>
+                    <span class="official-value">___________</span>
+                </div>
+                <div class="official-field">
+                    <span class="official-label">Timekeeper</span>
+                    <span class="official-value">___________</span>
+                </div>
+                <div class="official-field">
+                    <span class="official-label">24" operator</span>
+                    <span class="official-value">___________</span>
+                </div>
+                
+                <div class="referee-section">
+                    <div class="official-field">
+                        <span class="official-label">Referee</span>
+                        <span class="official-value">{{ $game->referee ?? '___________' }}</span>
+                    </div>
+                    <div class="official-field">
+                        <span class="official-label">Umpire 1</span>
+                        <span class="official-value">{{ $game->assistant_referee_1 ?? '___________' }}</span>
+                    </div>
+                    <div class="official-field">
+                        <span class="official-label">Umpire 2</span>
+                        <span class="official-value">{{ $game->assistant_referee_2 ?? '___________' }}</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Officials -->
-            <div class="box">
-                <div class="box-header">OFFICIALS</div>
-                <div class="officials-content">
-                    <div><strong>Scorekeeper:</strong> ___________</div>
-                    <div><strong>Asst. Scorekeeper:</strong> ___________</div>
-                    <div><strong>Timekeeper:</strong> ___________</div>
-                    <div><strong>24-Sec Operator:</strong> ___________</div>
+            <div class="scores-section">
+                @php
+                    $periodScores = $liveData['period_scores'] ?? ['team1' => [0, 0, 0, 0], 'team2' => [0, 0, 0, 0]];
+                @endphp
+                
+                <div class="period-score">
+                    <span class="period-label">Period ①</span>
+                    <span>A {{ $periodScores['team1'][0] ?? 0 }}</span>
+                    <span>B {{ $periodScores['team2'][0] ?? 0 }}</span>
+                </div>
+                <div class="period-score">
+                    <span class="period-label">Period ②</span>
+                    <span>A {{ $periodScores['team1'][1] ?? 0 }}</span>
+                    <span>B {{ $periodScores['team2'][1] ?? 0 }}</span>
+                </div>
+                <div class="period-score">
+                    <span class="period-label">Period ③</span>
+                    <span>A {{ $periodScores['team1'][2] ?? 0 }}</span>
+                    <span>B {{ $periodScores['team2'][2] ?? 0 }}</span>
+                </div>
+                <div class="period-score">
+                    <span class="period-label">Period ④</span>
+                    <span>A  {{ $periodScores['team1'][3] ?? 0 }}</span>
+                    <span>B {{ $periodScores['team2'][3] ?? 0 }}</span>
+                </div>
+                <div class="period-score">
+                    <span class="period-label">Extra periods</span>
+                    <span>A ____</span>
+                    <span>B ____</span>
                 </div>
 
-                <div class="referee-section">
-                    <div><strong>Referee:</strong> {{ $game->referee ?? '___________' }}</div>
-                    <div style="margin-top: 2px;"><strong>Umpire 1:</strong>
-                        {{ $game->assistant_referee_1 ?? '___________' }}</div>
-                    <div style="margin-top: 2px;"><strong>Umpire 2:</strong>
-                        {{ $game->assistant_referee_2 ?? '___________' }}</div>
+                <div class="final-score">
+                    <div style="margin-bottom: 5px;">
+                        Final Score: Team A {{ $liveData['team1_score'] ?? 0 }} - Team B {{ $liveData['team2_score'] ?? 0 }}
+                    </div>
+                </div>
+
+                <div class="winner-field">
+                    <span class="official-label">Name of winning team</span>
+                    <span class="official-value">
+                        @if (isset($liveData['team1_score']) && isset($liveData['team2_score']))
+                            @if ($liveData['team1_score'] > $liveData['team2_score'])
+                                {{ $game->team1->team_name }}
+                            @elseif($liveData['team2_score'] > $liveData['team1_score'])
+                                {{ $game->team2->team_name }}
+                            @else
+                                TIE
+                            @endif
+                        @else
+                            __________
+                        @endif
+                    </span>
+                </div>
+
+                <div class="best-player">
+                    <div class="best-player-title">BEST PLAYER: ___________________</div>
+                    <div class="best-player-stats">
+                        <div>Score: ____ Assist: ____ Rebound: ____ Blocks: ____ Steal: ____</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </body>
-
 </html>

@@ -252,6 +252,34 @@ class GameController extends Controller
         ));
     }
 
+    /**
+ * Update game schedule
+ */
+public function updateSchedule(Request $request, Game $game)
+{
+    $validated = $request->validate([
+        'scheduled_at' => 'required|date|after_or_equal:today',
+    ]);
+
+    try {
+        $game->update([
+            'scheduled_at' => $validated['scheduled_at']
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Game schedule updated successfully!',
+            'scheduled_at' => $game->scheduled_at->format('M j, Y g:i A'),
+            'scheduled_at_iso' => $game->scheduled_at->toIso8601String(),
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to update schedule: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
     // NEW TALLYSHEET METHODS
     public function tallysheet(Game $game, Request $request)
     {

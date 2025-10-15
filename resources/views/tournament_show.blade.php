@@ -817,15 +817,19 @@
         }
 
         /* Enhanced Game Card */
-       .tournament-page .bracket-game {
-        min-width: 220px !important;  /* Increased from 140px */
-        width: 220px !important;      /* Increased from 140px */
-        min-height: 80px !important;  /* Increased from 64px */
-        padding: 10px !important;     /* Increased from 8px */
-        box-sizing: border-box;
-        z-index: 2;
-        align-items: flex-start !important;
-    }
+        .tournament-page .bracket-game {
+            min-width: 220px !important;
+            /* Increased from 140px */
+            width: 220px !important;
+            /* Increased from 140px */
+            min-height: 80px !important;
+            /* Increased from 64px */
+            padding: 10px !important;
+            /* Increased from 8px */
+            box-sizing: border-box;
+            z-index: 2;
+            align-items: flex-start !important;
+        }
 
         /* Game Card Hover Effect */
         .tournament-page .bracket-game:hover {
@@ -948,14 +952,14 @@
         .tournament-page .team-name {
             font-weight: 600;
             flex: 1;
-            white-space: normal;  /* Changed from nowrap - allows wrapping */
-            overflow: visible;  /* Changed from hidden */
-            text-overflow: clip;  /* Changed from ellipsis */
-            max-width: none;  /* Removed max-width restriction */
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            max-width: none;
             color: #333;
-            line-height: 1.3;  /* Better line spacing for wrapped text */
-            word-break: break-word;  /* Break long words if needed */
-        }       
+            line-height: 1.3;
+            word-break: break-word;
+        }
 
         .tournament-page .team-slot.winner .team-name {
             color: #28a745;
@@ -1666,7 +1670,8 @@
 
         .tournament-page .bracket-flex {
             display: flex;
-            gap: 80px;
+            gap: 60px;
+            /* Reduce from 80px if needed */
             justify-content: flex-start;
             align-items: center;
             min-width: fit-content;
@@ -1675,12 +1680,13 @@
 
         /* narrower rounds + flatter vertical spacing */
         .tournament-page .bracket-round {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    min-width: 280px;  /* Increased from 240px to accommodate wider boxes */
-}
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            min-width: 280px;
+            /* Increased from 240px to accommodate wider boxes */
+        }
 
         .tournament-page .bracket-games {
             gap: 18px !important;
@@ -1747,119 +1753,132 @@
         }
 
         @media (max-width: 1200px) {
-    .tournament-page .bracket-flex {
-        gap: 60px;
-    }
-    
-    .tournament-page .bracket-round {
-        min-width: 200px;
-    }
-    
-    .tournament-page .bracket-game {
-        width: 200px;
-    }
-}
+            .tournament-page .bracket-flex {
+                gap: 60px;
+            }
 
-@media (max-width: 768px) {
-    .tournament-page .bracket-container {
-        padding: 20px 10px;
-    }
-    
-    .tournament-page .bracket-flex {
-        gap: 40px;
-    }
-    
-    .tournament-page .bracket-round {
-        min-width: 180px;
-    }
-    
-    .tournament-page .bracket-game {
-        width: 180px;
-        padding: 12px;
-    }
-    
-    .tournament-page .round-title {
-        font-size: 1rem;
-        padding: 10px 16px;
-    }
-}
+            .tournament-page .bracket-round {
+                min-width: 200px;
+            }
 
-.tournament-page .bracket-game.loading {
-    position: relative;
-}
+            .tournament-page .bracket-game {
+                width: 200px;
+            }
+        }
 
-.tournament-page .bracket-game.loading::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
-    animation: loading 1.5s infinite;
-}
+        @media (max-width: 768px) {
+            .tournament-page .bracket-container {
+                padding: 20px 10px;
+            }
 
-@keyframes loading {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
+            .tournament-page .bracket-flex {
+                gap: 40px;
+            }
 
-/* Add status indicator dots */
-.tournament-page .bracket-game::before {
-    content: '';
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #e0e0e0;
-}
+            .tournament-page .bracket-round {
+                min-width: 180px;
+            }
 
-.tournament-page .bracket-game.completed::before {
-    background: #28a745;
-    box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
-}
+            .tournament-page .bracket-game {
+                width: 180px;
+                padding: 12px;
+            }
 
-.tournament-page .bracket-game.in-progress::before {
-    background: #FF9800;
-    box-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
-    animation: pulse 1.5s infinite;
-}
+            .tournament-page .round-title {
+                font-size: 1rem;
+                padding: 10px 16px;
+            }
+        }
 
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-    50% {
-        opacity: 0.6;
-        transform: scale(1.3);
-    }
-}
+        .tournament-page .bracket-game.loading {
+            position: relative;
+        }
 
-/* Empty slot placeholder */
-.tournament-page .team-slot.tbd {
-    color: #999;
-    font-style: italic;
-    background: #f8f9fa;
-}
+        .tournament-page .bracket-game.loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+            animation: loading 1.5s infinite;
+        }
 
-.tournament-page .bracket-game.loading::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
-    animation: loading 1.5s infinite;
-}
+        @keyframes loading {
+            0% {
+                transform: translateX(-100%);
+            }
 
-@keyframes loading {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Add status indicator dots */
+        .tournament-page .bracket-game::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #e0e0e0;
+        }
+
+        .tournament-page .bracket-game.completed::before {
+            background: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+        }
+
+        .tournament-page .bracket-game.in-progress::before {
+            background: #FF9800;
+            box-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: scale(1.3);
+            }
+        }
+
+        /* Empty slot placeholder */
+        .tournament-page .team-slot.tbd {
+            color: #999;
+            font-style: italic;
+            background: #f8f9fa;
+        }
+
+        .tournament-page .bracket-game.loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
 
         /* Add these new styles for round-robin + playoff */
         .badge-group {
@@ -2177,6 +2196,28 @@
             color: #2196F3;
             border: 1px solid rgba(33, 150, 243, 0.3);
         }
+
+        .edit-schedule-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.edit-schedule-btn:hover {
+    background: #5a6268;
+    color: white;
+    transform: translateY(-1px);
+}
     </style>
 @endpush
 
@@ -2944,7 +2985,11 @@
                                                         style="background: linear-gradient(135deg, #2196F3, #1976D2);">
                                                         <div class="game-league">{{ $tournament->name }}</div>
                                                         <div class="game-date">
-                                                            {{ $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('M j, Y') : 'Date TBD' }}
+                                                            @if($game->scheduled_at)
+                                                                {{ $game->scheduled_at->format('M j, Y g:i A') }}
+                                                            @else
+                                                                {{ $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('M j, Y') : 'Date TBD' }}
+                                                            @endif
                                                         </div>
                                                         <h6 class="game-round">
                                                             @if ($game->round == $bracket->getTotalRounds())
@@ -3005,14 +3050,13 @@
                                                         <div class="game-league">
                                                             {{ $tournament->name }}
                                                             {{-- ADD THIS SPORT BADGE --}}
-                                                            @if ($game->isVolleyball())
-                                                                <span class="sport-badge volleyball">🏐 Volleyball</span>
-                                                            @elseif($game->isBasketball())
-                                                                <span class="sport-badge basketball">🏀 Basketball</span>
-                                                            @endif
                                                         </div>
                                                         <div class="game-date">
-                                                            {{ $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('M j, Y') : 'Date TBD' }}
+                                                            @if($game->scheduled_at)
+                                                                {{ $game->scheduled_at->format('M j, Y g:i A') }}
+                                                            @else
+                                                                {{ $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('M j, Y') : 'Date TBD' }}
+                                                            @endif
                                                         </div>
                                                         <h6 class="game-round">
                                                             @if ($game->round == ($game->bracket ? $game->bracket->getTotalRounds() : 0))
@@ -3066,24 +3110,7 @@
                                                                         {{ $game->team2_score ?? '-' }}</div>
                                                                 </div>
 
-                                                                @if (!$game->isCompleted())
-                                                                    <form action="{{ route('games.update', $game) }}"
-                                                                        method="POST" class="score-input-form">
-                                                                        @csrf
-                                                                        @method('PATCH')
-                                                                        <input type="number" name="team1_score"
-                                                                            placeholder="{{ $game->team1->team_name }}"
-                                                                            min="0" required>
-                                                                        <span class="vs-text">-</span>
-                                                                        <input type="number" name="team2_score"
-                                                                            placeholder="{{ $game->team2->team_name }}"
-                                                                            min="0" required>
-                                                                        <button type="submit"
-                                                                            class="btn btn-primary btn-sm">
-                                                                            <i class="bi bi-check2"></i> Update
-                                                                        </button>
-                                                                    </form>
-                                                                @endif
+
                                                             </div>
                                                         @else
                                                             <div class="team-matchup">
@@ -3111,52 +3138,66 @@
                                                     </div>
 
                                                     <div class="game-actions">
-                                                        @if (!$game->isCompleted() && $game->isReady() && $game->status !== 'in_progress')
-                                                            <a href="{{ route('games.prepare', $game->id) }}"
-                                                                class="start-game-btn">
-                                                                <i class="bi bi-play-fill"></i> Start Game
-                                                            </a>
-                                                        @elseif($game->status === 'in_progress')
-                                                            {{-- Route to correct sport live game --}}
-                                                            @if ($game->isVolleyball())
-                                                                <a href="{{ route('games.volleyball-live', $game->id) }}"
-                                                                    class="start-game-btn" style="background: #FF9800;">
-                                                                    <i class="bi bi-play-circle"></i> Resume Volleyball
-                                                                </a>
-                                                            @else
-                                                                <a href="{{ route('games.live', $game->id) }}"
-                                                                    class="start-game-btn" style="background: #FF9800;">
-                                                                    <i class="bi bi-play-circle"></i> Resume Basketball
-                                                                </a>
-                                                            @endif
-                                                        @endif
+    {{-- Schedule Edit Button - Show for all games --}}
+    <button type="button" 
+            class="btn btn-sm btn-outline-primary edit-schedule-btn"
+            onclick="openEditScheduleModal(
+                {{ $game->id }}, 
+                '{{ addslashes($game->getDisplayName()) }}', 
+                '{{ addslashes($game->team1 ? $game->team1->team_name : 'TBD') }}', 
+                '{{ addslashes($game->team2 ? $game->team2->team_name : 'TBD') }}', 
+                '{{ $game->scheduled_at ? $game->scheduled_at->format('Y-m-d\TH:i') : '' }}'
+            )">
+        <i class="bi bi-calendar-event"></i> 
+        {{ $game->scheduled_at ? 'Edit' : 'Set' }} Schedule
+    </button>
 
-                                                        {{-- Scoresheet button - route to correct sport --}}
-                                                        @if ($game->isVolleyball())
-                                                            <a href="#" class="tally-sheet-btn"
-                                                                onclick="openVolleyballScoresheet({{ $game->id }})">
-                                                                <i class="bi bi-clipboard-data"></i> Volleyball Sheet
-                                                            </a>
-                                                        @else
-                                                            <a href="#" class="tally-sheet-btn"
-                                                                onclick="openTallySheet({{ $game->id }})">
-                                                                <i class="bi bi-clipboard-data"></i> Basketball Sheet
-                                                            </a>
-                                                        @endif
+    @if (!$game->isCompleted() && $game->isReady() && $game->status !== 'in_progress')
+        <a href="{{ route('games.prepare', $game->id) }}"
+            class="start-game-btn">
+            <i class="bi bi-play-fill"></i> Start Game
+        </a>
+    @elseif($game->status === 'in_progress')
+        {{-- Route to correct sport live game --}}
+        @if ($game->isVolleyball())
+            <a href="{{ route('games.volleyball-live', $game->id) }}"
+                class="start-game-btn" style="background: #FF9800;">
+                <i class="bi bi-play-circle"></i> Resume Volleyball
+            </a>
+        @else
+            <a href="{{ route('games.live', $game->id) }}"
+                class="start-game-btn" style="background: #FF9800;">
+                <i class="bi bi-play-circle"></i> Resume Basketball
+            </a>
+        @endif
+    @endif
 
-                                                        {{-- Box Score button - route to correct sport --}}
-                                                        @if ($game->isVolleyball())
-                                                            <a href="{{ route('games.volleyball-box-score', $game->id) }}"
-                                                                class="box-score-btn">
-                                                                <i class="bi bi-table"></i> Volleyball Stats
-                                                            </a>
-                                                        @else
-                                                            <a href="{{ route('games.box-score', $game->id) }}"
-                                                                class="box-score-btn">
-                                                                <i class="bi bi-table"></i> Basketball Stats
-                                                            </a>
-                                                        @endif
-                                                    </div>
+    {{-- Scoresheet button - route to correct sport --}}
+    @if ($game->isVolleyball())
+        <a href="#" class="tally-sheet-btn"
+            onclick="openVolleyballScoresheet({{ $game->id }})">
+            <i class="bi bi-clipboard-data"></i> Volleyball Sheet
+        </a>
+    @else
+        <a href="#" class="tally-sheet-btn"
+            onclick="openTallySheet({{ $game->id }})">
+            <i class="bi bi-clipboard-data"></i> Basketball Sheet
+        </a>
+    @endif
+
+    {{-- Box Score button - route to correct sport --}}
+    @if ($game->isVolleyball())
+        <a href="{{ route('games.volleyball-box-score', $game->id) }}"
+            class="box-score-btn">
+            <i class="bi bi-table"></i> Volleyball Stats
+        </a>
+    @else
+        <a href="{{ route('games.box-score', $game->id) }}"
+            class="box-score-btn">
+            <i class="bi bi-table"></i> Basketball Stats
+        </a>
+    @endif
+</div>
                                                 </div>
                                             @endif
                                         @endforeach
@@ -3476,12 +3517,185 @@
         </div>
     </div>
 
+    <!-- Schedule Edit Modal -->
+<div class="modal fade" id="editScheduleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content tournament-page">
+            <form id="scheduleForm" onsubmit="return handleScheduleSubmit(event)">
+                @csrf
+                @method('PATCH')
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-calendar-event"></i>
+                        Edit Game Schedule
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Game Details</label>
+                        <div class="alert alert-info">
+                            <div id="gameDetailsDisplay">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="scheduleDateTime" class="form-label">Schedule Date & Time</label>
+                        <input type="datetime-local" 
+                               class="form-control" 
+                               id="scheduleDateTime" 
+                               name="scheduled_at" 
+                               required>
+                        <small class="text-muted">Select the date and time for this game</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="saveScheduleBtn">
+                        <i class="bi bi-check2"></i> Save Schedule
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 
-<!-- JavaScript -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 <script>
+    let currentScheduleGameId = null;
+let scheduleModalInstance = null;
+
+// Open modal function (called by onclick)
+function openEditScheduleModal(gameId, gameTitle, team1, team2, scheduledAt) {
+    console.log('Opening modal for game:', gameId);
+    
+    currentScheduleGameId = gameId;
+    
+    // Update game details
+    const detailsDiv = document.getElementById('gameDetailsDisplay');
+    detailsDiv.innerHTML = `
+        <strong>${gameTitle}</strong><br>
+        <small class="text-muted">${team1} vs ${team2}</small>
+    `;
+    
+    // Set datetime input
+    const scheduleInput = document.getElementById('scheduleDateTime');
+    if (scheduledAt && scheduledAt !== '') {
+        scheduleInput.value = scheduledAt;
+    } else {
+        // Set to current date/time if no schedule exists
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        scheduleInput.value = now.toISOString().slice(0, 16);
+    }
+    
+    // Set minimum date to today
+    const minDate = new Date();
+    minDate.setMinutes(minDate.getMinutes() - minDate.getTimezoneOffset());
+    scheduleInput.setAttribute('min', minDate.toISOString().slice(0, 16));
+    
+    // Show modal
+    if (scheduleModalInstance) {
+        scheduleModalInstance.show();
+        console.log('Modal shown successfully');
+    } else {
+        // Try to initialize modal now if not done yet
+        const modalElement = document.getElementById('editScheduleModal');
+        if (modalElement) {
+            scheduleModalInstance = new bootstrap.Modal(modalElement);
+            scheduleModalInstance.show();
+            console.log('Modal initialized and shown');
+        } else {
+            console.error('Modal element not found');
+            alert('Error: Modal not found. Please refresh the page.');
+        }
+    }
+}
+
+// Handle form submission
+function handleScheduleSubmit(event) {
+    event.preventDefault();
+    console.log('Submitting schedule for game:', currentScheduleGameId);
+    
+    if (!currentScheduleGameId) {
+        alert('Error: No game selected');
+        return false;
+    }
+    
+    const saveBtn = document.getElementById('saveScheduleBtn');
+    const originalText = saveBtn.innerHTML;
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+    
+    const formData = new FormData(document.getElementById('scheduleForm'));
+    
+    // Get CSRF token
+    const csrfToken = document.querySelector('input[name="_token"]').value;
+    
+    fetch(`/games/${currentScheduleGameId}/update-schedule`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json',
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Response:', data);
+        
+        if (data.success) {
+            // Show success message
+            showScheduleAlert('success', data.message);
+            
+            // Hide modal
+            if (scheduleModalInstance) {
+                scheduleModalInstance.hide();
+            }
+            
+            // Reload page after 1.5 seconds
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            showScheduleAlert('error', data.message || 'Failed to update schedule');
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = originalText;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showScheduleAlert('error', 'An error occurred while updating the schedule');
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = originalText;
+    });
+    
+    return false;
+}
+
+// Show alert message
+function showScheduleAlert(type, message) {
+    const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+    const alert = document.createElement('div');
+    alert.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+    alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    alert.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alert);
+    
+    setTimeout(() => {
+        if (alert.parentNode) {
+            alert.remove();
+        }
+    }, 5000);
+}
     document.addEventListener('DOMContentLoaded', function() {
         console.log('Script loaded successfully');
         let handlersAttached = false;
@@ -4097,196 +4311,249 @@
 
 @if (session('error'))
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const alert = document.createElement('div');
-        alert.className = 'alert alert-danger alert-dismissible fade show position-fixed';
-        alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-        alert.innerHTML =
-            '{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
-        document.body.appendChild(alert);
-        setTimeout(() => {
-            if (alert.parentNode) alert.remove();
-        }, 5000);
-    });
-    
-    // ===== IMPROVED BRACKET VISUALIZATION SCRIPT =====
-    (function() {
-        'use strict';
+        document.addEventListener('DOMContentLoaded', function() {
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-danger alert-dismissible fade show position-fixed';
+            alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            alert.innerHTML =
+                '{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+            document.body.appendChild(alert);
+            setTimeout(() => {
+                if (alert.parentNode) alert.remove();
+            }, 5000);
+        });
 
-        // Utility: Debounce function
-        function debounce(fn, wait = 100) {
-            let timeout;
-            return function(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => fn.apply(this, args), wait);
-            };
-        }
+        // ===== IMPROVED BRACKET VISUALIZATION SCRIPT =====
+        (function() {
+            'use strict';
 
-        // Main function to draw bracket connectors
-        function drawBracketConnectors() {
-            const container = document.querySelector('.bracket-container');
-            if (!container) return;
+            // Utility: Debounce function
+            function debounce(fn, wait = 100) {
+                let timeout;
+                return function(...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => fn.apply(this, args), wait);
+                };
+            }
 
-            const svg = container.querySelector('.bracket-svg');
-            if (!svg) return;
+            // Main function to draw bracket connectors
+            function drawBracketConnectors() {
+                const container = document.querySelector('.bracket-container');
+                if (!container) return;
 
-            // Size SVG to match container
-            const containerRect = container.getBoundingClientRect();
-            svg.setAttribute('width', containerRect.width);
-            svg.setAttribute('height', containerRect.height);
-            svg.innerHTML = ''; // Clear existing paths
+                const svg = container.querySelector('.bracket-svg');
+                if (!svg) return;
 
-            const rounds = Array.from(container.querySelectorAll('.bracket-round'));
-            
-            rounds.forEach((roundEl, roundIndex) => {
-                const currentGames = Array.from(roundEl.querySelectorAll('.bracket-game'));
-                const nextRound = rounds[roundIndex + 1];
-                
-                if (!nextRound) return; // No next round for finals
-                
-                const nextGames = Array.from(nextRound.querySelectorAll('.bracket-game'));
+                // Size SVG to match container
+                const containerRect = container.getBoundingClientRect();
+                svg.setAttribute('width', containerRect.width);
+                svg.setAttribute('height', containerRect.height);
+                svg.innerHTML = ''; // Clear existing paths
 
-                currentGames.forEach((gameEl, gameIndex) => {
-                    const targetIndex = Math.floor(gameIndex / 2);
-                    const targetGame = nextGames[targetIndex];
-                    
-                    if (!targetGame) return;
+                const rounds = Array.from(container.querySelectorAll('.bracket-round'));
 
-                    // Get game rectangles
-                    const gameRect = gameEl.getBoundingClientRect();
-                    const targetRect = targetGame.getBoundingClientRect();
+                rounds.forEach((roundEl, roundIndex) => {
+                    const currentGames = Array.from(roundEl.querySelectorAll('.bracket-game'));
+                    const nextRound = rounds[roundIndex + 1];
 
-                    // Calculate positions relative to container
-                    const startX = gameRect.right - containerRect.left;
-                    const startY = gameRect.top + gameRect.height / 2 - containerRect.top;
-                    const endX = targetRect.left - containerRect.left;
-                    const endY = targetRect.top + targetRect.height / 2 - containerRect.top;
+                    if (!nextRound) return; // No next round for finals
 
-                    // Create smooth cubic bezier curve
-                    const midX = startX + (endX - startX) / 2;
-                    
-                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                    const pathData = `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`;
-                    
-                    path.setAttribute('d', pathData);
-                    path.setAttribute('stroke', '#9e9e9e');
-                    path.setAttribute('stroke-width', '3');
-                    path.setAttribute('fill', 'none');
-                    path.setAttribute('stroke-linecap', 'round');
-                    
-                    // Add special styling based on game status
-                    const isCompleted = gameEl.classList.contains('completed');
-                    const isInProgress = gameEl.classList.contains('in-progress');
-                    
-                    if (isCompleted) {
-                        path.classList.add('winner-path');
-                        path.setAttribute('stroke', '#28a745');
-                        path.setAttribute('stroke-width', '4');
-                    } else if (isInProgress) {
-                        path.classList.add('in-progress-path');
-                        path.setAttribute('stroke', '#FF9800');
-                        path.setAttribute('stroke-width', '4');
-                    }
-                    
-                    svg.appendChild(path);
-                });
-            });
-        }
+                    const nextGames = Array.from(nextRound.querySelectorAll('.bracket-game'));
 
-        // Add winner path highlighting
-        function highlightWinnerPath() {
-            const games = document.querySelectorAll('.bracket-game.completed');
-            
-            games.forEach(game => {
-                const winnerId = game.dataset.winnerId;
-                if (!winnerId) return;
-                
-                // Find the winning team slot
-                const winnerSlot = game.querySelector('.team-slot.winner');
-                if (winnerSlot) {
-                    // Add visual feedback
-                    winnerSlot.style.animation = 'winner-glow 2s ease-in-out infinite';
-                }
-            });
-        }
+                    currentGames.forEach((gameEl, gameIndex) => {
+                        const targetIndex = Math.floor(gameIndex / 2);
+                        const targetGame = nextGames[targetIndex];
 
-        // Add click handlers for games
-        function setupGameClickHandlers() {
-            const games = document.querySelectorAll('.bracket-game');
-            
-            games.forEach(game => {
-                if (!game.classList.contains('bye')) {
-                    game.style.cursor = 'pointer';
-                    
-                    game.addEventListener('click', function(e) {
-                        // Don't trigger if clicking on form elements
-                        if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') {
-                            return;
+                        if (!targetGame) return;
+
+                        // Get game rectangles
+                        const gameRect = gameEl.getBoundingClientRect();
+                        const targetRect = targetGame.getBoundingClientRect();
+
+                        // Calculate positions relative to container
+                        const startX = gameRect.right - containerRect.left;
+                        const startY = gameRect.top + gameRect.height / 2 - containerRect.top;
+                        const endX = targetRect.left - containerRect.left;
+                        const endY = targetRect.top + targetRect.height / 2 - containerRect.top;
+
+                        // Create smooth cubic bezier curve
+                        const midX = startX + (endX - startX) / 2;
+
+                        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        const pathData =
+                            `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`;
+
+                        path.setAttribute('d', pathData);
+                        path.setAttribute('stroke', '#9e9e9e');
+                        path.setAttribute('stroke-width', '3');
+                        path.setAttribute('fill', 'none');
+                        path.setAttribute('stroke-linecap', 'round');
+
+                        // Add special styling based on game status
+                        const isCompleted = gameEl.classList.contains('completed');
+                        const isInProgress = gameEl.classList.contains('in-progress');
+
+                        if (isCompleted) {
+                            path.classList.add('winner-path');
+                            path.setAttribute('stroke', '#28a745');
+                            path.setAttribute('stroke-width', '4');
+                        } else if (isInProgress) {
+                            path.classList.add('in-progress-path');
+                            path.setAttribute('stroke', '#FF9800');
+                            path.setAttribute('stroke-width', '4');
                         }
-                        
-                        // Show game details
-                        console.log('Game clicked:', game.dataset);
+
+                        svg.appendChild(path);
                     });
-                }
-            });
+                });
+            }
+
+            // Add winner path highlighting
+            function highlightWinnerPath() {
+                const games = document.querySelectorAll('.bracket-game.completed');
+
+                games.forEach(game => {
+                    const winnerId = game.dataset.winnerId;
+                    if (!winnerId) return;
+
+                    // Find the winning team slot
+                    const winnerSlot = game.querySelector('.team-slot.winner');
+                    if (winnerSlot) {
+                        // Add visual feedback
+                        winnerSlot.style.animation = 'winner-glow 2s ease-in-out infinite';
+                    }
+                });
+            }
+
+            // Add click handlers for games
+            function setupGameClickHandlers() {
+                const games = document.querySelectorAll('.bracket-game');
+
+                games.forEach(game => {
+                    if (!game.classList.contains('bye')) {
+                        game.style.cursor = 'pointer';
+
+                        game.addEventListener('click', function(e) {
+                            // Don't trigger if clicking on form elements
+                            if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') {
+                                return;
+                            }
+
+                            // Show game details
+                            console.log('Game clicked:', game.dataset);
+                        });
+                    }
+                });
+            }
+
+            // Animate bracket on load
+            function animateBracketOnLoad() {
+                const games = document.querySelectorAll('.bracket-game');
+
+                games.forEach((game, index) => {
+                    game.style.opacity = '0';
+                    game.style.transform = 'translateY(20px)';
+
+                    setTimeout(() => {
+                        game.style.transition = 'all 0.5s ease';
+                        game.style.opacity = '1';
+                        game.style.transform = 'translateY(0)';
+                    }, index * 50);
+                });
+            }
+
+            // Initialize everything
+            function initializeBracket() {
+                console.log('Initializing improved bracket...');
+
+                // Draw connectors
+                drawBracketConnectors();
+
+                // Highlight winner paths
+                highlightWinnerPath();
+
+                // Setup interactions
+                setupGameClickHandlers();
+
+                // Animate on load
+                animateBracketOnLoad();
+            }
+
+            // Event listeners
+            window.addEventListener('load', initializeBracket);
+            window.addEventListener('resize', debounce(drawBracketConnectors, 150));
+
+            // Watch for DOM changes (when bracket is generated/updated)
+            const bracketContainer = document.querySelector('.bracket-container');
+            if (bracketContainer) {
+                const observer = new MutationObserver(debounce(drawBracketConnectors, 200));
+                observer.observe(bracketContainer, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true,
+                    attributeFilter: ['class']
+                });
+            }
+
+            // Export functions for use in other scripts
+            window.bracketHelpers = {
+                redraw: drawBracketConnectors,
+                highlightWinners: highlightWinnerPath,
+                animate: animateBracketOnLoad
+            };
+
+        })();
+
+        // ===== SCHEDULE EDITING FUNCTIONALITY =====
+document.addEventListener('DOMContentLoaded', function() {
+    const scheduleModal = new bootstrap.Modal(document.getElementById('editScheduleModal'));
+    const scheduleForm = document.getElementById('scheduleForm');
+    let currentGameId = null;
+
+    // Handle schedule edit button clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.edit-schedule-btn')) {
+            const btn = e.target.closest('.edit-schedule-btn');
+            currentGameId = btn.dataset.gameId;
+            
+            // Populate modal
+            const gameDetails = `
+                <strong>${btn.dataset.gameTitle}</strong><br>
+                <small class="text-muted">
+                    ${btn.dataset.team1} vs ${btn.dataset.team2}
+                </small>
+            `;
+            document.getElementById('gameDetailsDisplay').innerHTML = gameDetails;
+            
+            // Set current schedule if exists
+            const scheduledAt = btn.dataset.scheduled;
+            if (scheduledAt) {
+                document.getElementById('scheduleDateTime').value = scheduledAt;
+            } else {
+                // Set minimum to current date/time
+                const now = new Date();
+                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                document.getElementById('scheduleDateTime').value = now.toISOString().slice(0, 16);
+            }
+            
+            scheduleModal.show();
         }
+    });
 
-        // Animate bracket on load
-        function animateBracketOnLoad() {
-            const games = document.querySelectorAll('.bracket-game');
-            
-            games.forEach((game, index) => {
-                game.style.opacity = '0';
-                game.style.transform = 'translateY(20px)';
-                
-                setTimeout(() => {
-                    game.style.transition = 'all 0.5s ease';
-                    game.style.opacity = '1';
-                    game.style.transform = 'translateY(0)';
-                }, index * 50);
-            });
-        }
+  // ===== SCHEDULE EDITING - SIMPLE VERSION =====
+let currentScheduleGameId = null;
+let scheduleModalInstance = null;
 
-        // Initialize everything
-        function initializeBracket() {
-            console.log('Initializing improved bracket...');
-            
-            // Draw connectors
-            drawBracketConnectors();
-            
-            // Highlight winner paths
-            highlightWinnerPath();
-            
-            // Setup interactions
-            setupGameClickHandlers();
-            
-            // Animate on load
-            animateBracketOnLoad();
-        }
-
-        // Event listeners
-        window.addEventListener('load', initializeBracket);
-        window.addEventListener('resize', debounce(drawBracketConnectors, 150));
-        
-        // Watch for DOM changes (when bracket is generated/updated)
-        const bracketContainer = document.querySelector('.bracket-container');
-        if (bracketContainer) {
-            const observer = new MutationObserver(debounce(drawBracketConnectors, 200));
-            observer.observe(bracketContainer, {
-                childList: true,
-                subtree: true,
-                attributes: true,
-                attributeFilter: ['class']
-            });
-        }
-
-        // Export functions for use in other scripts
-        window.bracketHelpers = {
-            redraw: drawBracketConnectors,
-            highlightWinners: highlightWinnerPath,
-            animate: animateBracketOnLoad
-        };
-
-    })();
-</script>
+// Initialize modal when page loads
+window.addEventListener('DOMContentLoaded', function() {
+    console.log('Initializing schedule modal...');
+    const modalElement = document.getElementById('editScheduleModal');
+    if (modalElement) {
+        scheduleModalInstance = new bootstrap.Modal(modalElement);
+        console.log('Schedule modal ready!');
+    } else {
+        console.error('Modal element not found!');
+    }
+});
+    </script>
 @endif

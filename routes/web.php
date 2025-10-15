@@ -64,6 +64,9 @@ Route::get('/prepare', [GameController::class, 'index'])->name('games.prepare.in
 Route::get('/games/{game}/live', [GameController::class, 'live'])->name('games.live');
 Route::get('/games/{game}/tallysheet', [GameController::class, 'tallysheet'])->name('games.tallysheet');
 
+// Add this with your other Game Routes
+Route::patch('/games/{game}/update-schedule', [GameController::class, 'updateSchedule'])->name('games.update-schedule');
+
 // Volleyball Game Routes
 Route::get('/games/{game}/volleyball-live', [GameController::class, 'volleyballLive'])->name('games.volleyball-live');
 Route::post('/games/{game}/volleyball-complete', [GameController::class, 'completeVolleyballGame'])->name('games.volleyball-complete');
@@ -116,6 +119,7 @@ Route::delete('/teams/{team}', [TeamsController::class, 'destroy'])->name('teams
 // Other Routes
 
 Route::get('/teams-stats', function() { return 'Teams & Player Stats'; })->name('teams.stats');
+
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
