@@ -13,7 +13,7 @@ class PdfController extends Controller
      */
     public function basketballScoresheet($gameId)
     {
-        // Get your game data
+        // Get game data
         $game = Game::with(['team1', 'team2', 'bracket.tournament'])->findOrFail($gameId);
         
         // Get team players
@@ -32,30 +32,47 @@ class PdfController extends Controller
                 'team2' => [0, 0, 0, 0]
             ]
         ];
-        
-        // Load the view
+
+        /**
+         * ✅ MAIN FIX
+         * - Forces DomPDF to embed DejaVu Sans (full Unicode)
+         * - Enables HTML5 and PHP parsing
+         * - Enables UTF-8 encoding so ✓ and / render properly
+         */
         $pdf = Pdf::loadView('games.basketball-scoresheet', compact(
             'game', 
             'team1Players', 
             'team2Players', 
             'liveData'
-        ));
-        
-        // Set paper size
-        $pdf->setPaper('letter', 'portrait');
-        
-        // Generate filename
+        ))->setOptions([
+            'defaultFont' => 'DejaVu Sans',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true,
+            'isPhpEnabled' => true,
+            'dpi' => 150,
+            'enable_font_subsetting' => true,
+        ]);
+
+        // ✅ Ensure UTF-8 encoding for the output
+        $pdf->getDomPDF()->getOptions()->set('isUnicodeEnabled', true);
+
+        // ✅ Set larger paper (your layout fits better in legal)
+        $pdf->setPaper('legal', 'portrait');
+
+        // ✅ Generate filename
         $filename = sprintf(
             'basketball-scoresheet-%s-vs-%s-game%d.pdf',
             str_replace(' ', '-', strtolower($game->team1->team_name)),
             str_replace(' ', '-', strtolower($game->team2->team_name)),
             $game->id
         );
-        
-        // Download the PDF
+
+        // ✅ Force re-encode HTML output to UTF-8
+        $pdf->getDomPDF()->loadHtml(mb_convert_encoding($pdf->getDomPDF()->outputHtml(), 'HTML-ENTITIES', 'UTF-8'));
+
         return $pdf->download($filename);
     }
-    
+
     /**
      * Stream basketball scoresheet (view in browser)
      */
@@ -76,28 +93,24 @@ class PdfController extends Controller
                 'team2' => [0, 0, 0, 0]
             ]
         ];
-        
+
         $pdf = Pdf::loadView('games.basketball-scoresheet', compact(
             'game', 
             'team1Players', 
             'team2Players', 
             'liveData'
-        ));
-        
-        $pdf->setPaper('letter', 'portrait');
-        
-        // Stream instead of download
+        ))->setOptions([
+            'defaultFont' => 'DejaVu Sans',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true,
+            'isPhpEnabled' => true,
+            'dpi' => 150,
+            'enable_font_subsetting' => true,
+        ]);
+
+        $pdf->getDomPDF()->getOptions()->set('isUnicodeEnabled', true);
+        $pdf->setPaper('legal', 'portrait');
+
         return $pdf->stream('basketball-scoresheet-game-' . $game->id . '.pdf');
-    }
-    
-    // You can add more PDF methods here in the future
-    // Example: volleyball scoresheet, tournament bracket, etc.
-    
-    /**
-     * Example: Tournament bracket PDF (for future use)
-     */
-    public function tournamentBracket($tournamentId)
-    {
-        // Implementation here
     }
 }

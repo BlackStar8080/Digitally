@@ -85,19 +85,11 @@ Route::resource('/players', PlayersController::class);
 
 
 
-// PDF Routes
-Route::prefix('pdf')->name('pdf.')->group(function () {
-    // Basketball scoresheet
-    Route::get('/basketball-scoresheet/{game}/download', [PdfController::class, 'basketballScoresheet'])
-        ->name('basketball.scoresheet.download');
+Route::get('/pdf/basketball-scoresheet/{game}/download', [PdfController::class, 'basketballScoresheet'])
+    ->name('pdf.basketball.scoresheet.download');
     
-    Route::get('/basketball-scoresheet/{game}/view', [PdfController::class, 'viewBasketballScoresheet'])
-        ->name('basketball.scoresheet.view');
-    
-    // Add more PDF routes here as needed
-    // Route::get('/tournament-bracket/{tournament}', [PdfController::class, 'tournamentBracket'])
-    //     ->name('tournament.bracket');
-});
+Route::get('/pdf/basketball-scoresheet/{game}/view', [PdfController::class, 'viewBasketballScoresheet'])
+    ->name('pdf.basketball.scoresheet.view');
 
 
 // Landing page route (should be first)
