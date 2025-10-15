@@ -1330,7 +1330,7 @@
                         <tr>
                             <td>{{ $game->completed_at ? \Carbon\Carbon::parse($game->completed_at)->format('M j') : 'N/A' }}
                             </td>
-                            <td>{{ $game->bracket->tournament->sport }}</td>
+                            <td>{{ $game->bracket->tournament->sport_name }}</td>
                             <td>
                                 @if ($game->winner_id === $game->team1_id)
                                     <span class="winner">{{ $game->team1->team_name }}</span> vs

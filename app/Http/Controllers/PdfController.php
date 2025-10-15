@@ -13,37 +13,89 @@ class PdfController extends Controller
      */
     public function basketballScoresheet($gameId)
     {
-        // Get game data
-        $game = Game::with(['team1', 'team2', 'bracket.tournament'])->findOrFail($gameId);
+        $game = Game::with([
+            'team1.players', 
+            'team2.players', 
+            'bracket.tournament',
+            'tallysheet',
+            'playerStats.player'  // ✅ ADD THIS - Load player stats with player info
+        ])->findOrFail($gameId);
         
-        // Get team players
-        $team1Players = $game->team1->players()->orderBy('number')->get();
-        $team2Players = $game->team2->players()->orderBy('number')->get();
+        $team1Data = json_decode($game->team1_selected_players, true) ?? [];
+        $team2Data = json_decode($game->team2_selected_players, true) ?? [];
         
-        // Get live data
-        $liveData = [
-            'team1_score' => $game->team1_score ?? 0,
-            'team2_score' => $game->team2_score ?? 0,
-            'team1_timeouts' => $game->team1_timeouts ?? 0,
-            'team2_timeouts' => $game->team2_timeouts ?? 0,
-            'events' => $game->events ?? [],
-            'period_scores' => $game->period_scores ?? [
-                'team1' => [0, 0, 0, 0], 
-                'team2' => [0, 0, 0, 0]
-            ]
-        ];
+        $team1RosterIds = $team1Data['roster'] ?? [];
+        $team2RosterIds = $team2Data['roster'] ?? [];
 
-        /**
-         * ✅ MAIN FIX
-         * - Forces DomPDF to embed DejaVu Sans (full Unicode)
-         * - Enables HTML5 and PHP parsing
-         * - Enables UTF-8 encoding so ✓ and / render properly
-         */
+        $team1Players = $game->team1->players->filter(function($player) use ($team1RosterIds) {
+            return in_array($player->id, $team1RosterIds);
+        })->sortBy('number');
+        
+        $team2Players = $game->team2->players->filter(function($player) use ($team2RosterIds) {
+            return in_array($player->id, $team2RosterIds);
+        })->sortBy('number');
+        
+        $liveData = [];
+        
+        if ($game->tallysheet) {
+            $liveData = [
+                'team1_score' => $game->tallysheet->team1_score ?? 0,
+                'team2_score' => $game->tallysheet->team2_score ?? 0,
+                'team1_fouls' => $game->tallysheet->team1_fouls ?? 0,
+                'team2_fouls' => $game->tallysheet->team2_fouls ?? 0,
+                'team1_timeouts' => $game->tallysheet->team1_timeouts ?? 0,
+                'team2_timeouts' => $game->tallysheet->team2_timeouts ?? 0,
+                'events' => $game->tallysheet->game_events ?? [],
+                'period_scores' => $game->tallysheet->period_scores ?? [
+                    'team1' => [0, 0, 0, 0], 
+                    'team2' => [0, 0, 0, 0]
+                ]
+            ];
+        } else {
+            $liveData = [
+                'team1_score' => $game->team1_score ?? 0,
+                'team2_score' => $game->team2_score ?? 0,
+                'team1_fouls' => $game->getTeam1Fouls(),
+                'team2_fouls' => $game->getTeam2Fouls(),
+                'team1_timeouts' => $game->getTeam1Timeouts(),
+                'team2_timeouts' => $game->getTeam2Timeouts(),
+                'events' => $game->getGameEvents(),
+                'period_scores' => $game->getPeriodScores()
+            ];
+        }
+
+        // ✅ GET MVP/BEST PLAYER DATA
+        $mvpPlayer = $game->playerStats()
+            ->where('is_mvp', true)
+            ->with('player')
+            ->first();
+
+        // Convert images to base64 for PDF
+        $logoLeft = '';
+        $logoRight = '';
+        
+        $leftPath = public_path('images/logo/tagoloan-flag.png');
+        $rightPath = public_path('images/logo/mayor-logo.png');
+        
+        if (file_exists($leftPath)) {
+            $logoLeft = base64_encode(file_get_contents($leftPath));
+        }
+        
+        if (file_exists($rightPath)) {
+            $logoRight = base64_encode(file_get_contents($rightPath));
+        }
+
+        $isPdf = true;
+
         $pdf = Pdf::loadView('games.basketball-scoresheet', compact(
             'game', 
             'team1Players', 
             'team2Players', 
-            'liveData'
+            'liveData',
+            'isPdf',
+            'logoLeft',
+            'logoRight',
+            'mvpPlayer'  // ✅ ADD THIS
         ))->setOptions([
             'defaultFont' => 'DejaVu Sans',
             'isHtml5ParserEnabled' => true,
@@ -53,22 +105,15 @@ class PdfController extends Controller
             'enable_font_subsetting' => true,
         ]);
 
-        // ✅ Ensure UTF-8 encoding for the output
         $pdf->getDomPDF()->getOptions()->set('isUnicodeEnabled', true);
-
-        // ✅ Set larger paper (your layout fits better in legal)
         $pdf->setPaper('legal', 'portrait');
 
-        // ✅ Generate filename
         $filename = sprintf(
             'basketball-scoresheet-%s-vs-%s-game%d.pdf',
             str_replace(' ', '-', strtolower($game->team1->team_name)),
             str_replace(' ', '-', strtolower($game->team2->team_name)),
             $game->id
         );
-
-        // ✅ Force re-encode HTML output to UTF-8
-        $pdf->getDomPDF()->loadHtml(mb_convert_encoding($pdf->getDomPDF()->outputHtml(), 'HTML-ENTITIES', 'UTF-8'));
 
         return $pdf->download($filename);
     }
@@ -78,27 +123,89 @@ class PdfController extends Controller
      */
     public function viewBasketballScoresheet($gameId)
     {
-        $game = Game::with(['team1', 'team2', 'bracket.tournament'])->findOrFail($gameId);
-        $team1Players = $game->team1->players()->orderBy('number')->get();
-        $team2Players = $game->team2->players()->orderBy('number')->get();
+        $game = Game::with([
+            'team1.players', 
+            'team2.players', 
+            'bracket.tournament',
+            'tallysheet',
+            'playerStats.player'  // ✅ ADD THIS
+        ])->findOrFail($gameId);
         
-        $liveData = [
-            'team1_score' => $game->team1_score ?? 0,
-            'team2_score' => $game->team2_score ?? 0,
-            'team1_timeouts' => $game->team1_timeouts ?? 0,
-            'team2_timeouts' => $game->team2_timeouts ?? 0,
-            'events' => $game->events ?? [],
-            'period_scores' => $game->period_scores ?? [
-                'team1' => [0, 0, 0, 0], 
-                'team2' => [0, 0, 0, 0]
-            ]
-        ];
+        $team1Data = json_decode($game->team1_selected_players, true) ?? [];
+        $team2Data = json_decode($game->team2_selected_players, true) ?? [];
+        
+        $team1RosterIds = $team1Data['roster'] ?? [];
+        $team2RosterIds = $team2Data['roster'] ?? [];
+
+        $team1Players = $game->team1->players->filter(function($player) use ($team1RosterIds) {
+            return in_array($player->id, $team1RosterIds);
+        })->sortBy('number');
+        
+        $team2Players = $game->team2->players->filter(function($player) use ($team2RosterIds) {
+            return in_array($player->id, $team2RosterIds);
+        })->sortBy('number');
+        
+        $liveData = [];
+        
+        if ($game->tallysheet) {
+            $liveData = [
+                'team1_score' => $game->tallysheet->team1_score ?? 0,
+                'team2_score' => $game->tallysheet->team2_score ?? 0,
+                'team1_fouls' => $game->tallysheet->team1_fouls ?? 0,
+                'team2_fouls' => $game->tallysheet->team2_fouls ?? 0,
+                'team1_timeouts' => $game->tallysheet->team1_timeouts ?? 0,
+                'team2_timeouts' => $game->tallysheet->team2_timeouts ?? 0,
+                'events' => $game->tallysheet->game_events ?? [],
+                'period_scores' => $game->tallysheet->period_scores ?? [
+                    'team1' => [0, 0, 0, 0], 
+                    'team2' => [0, 0, 0, 0]
+                ]
+            ];
+        } else {
+            $liveData = [
+                'team1_score' => $game->team1_score ?? 0,
+                'team2_score' => $game->team2_score ?? 0,
+                'team1_fouls' => $game->getTeam1Fouls(),
+                'team2_fouls' => $game->getTeam2Fouls(),
+                'team1_timeouts' => $game->getTeam1Timeouts(),
+                'team2_timeouts' => $game->getTeam2Timeouts(),
+                'events' => $game->getGameEvents(),
+                'period_scores' => $game->getPeriodScores()
+            ];
+        }
+
+        // ✅ GET MVP/BEST PLAYER DATA
+        $mvpPlayer = $game->playerStats()
+            ->where('is_mvp', true)
+            ->with('player')
+            ->first();
+
+        // Convert images to base64
+        $logoLeft = '';
+        $logoRight = '';
+        
+        $leftPath = public_path('images/logo/tagoloan-flag.png');
+        $rightPath = public_path('images/logo/mayor-logo.png');
+        
+        if (file_exists($leftPath)) {
+            $logoLeft = base64_encode(file_get_contents($leftPath));
+        }
+        
+        if (file_exists($rightPath)) {
+            $logoRight = base64_encode(file_get_contents($rightPath));
+        }
+
+        $isPdf = true;
 
         $pdf = Pdf::loadView('games.basketball-scoresheet', compact(
             'game', 
             'team1Players', 
             'team2Players', 
-            'liveData'
+            'liveData',
+            'isPdf',
+            'logoLeft',
+            'logoRight',
+            'mvpPlayer'  // ✅ ADD THIS
         ))->setOptions([
             'defaultFont' => 'DejaVu Sans',
             'isHtml5ParserEnabled' => true,

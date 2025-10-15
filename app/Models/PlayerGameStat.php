@@ -21,9 +21,10 @@ class PlayerGameStat extends Model
         'two_points_attempted',
         'three_points_made',
         'three_points_attempted',
-        'assists',      // ADD THIS
-    'steals',       // ADD THIS
-    'rebounds', 
+        'assists',
+        'steals',
+        'rebounds',
+        'blocks',      // ✅ ADD THIS
         'is_mvp',
     ];
 
@@ -81,7 +82,12 @@ class PlayerGameStat extends Model
      */
     public function getMVPScore()
     {
-        // Simple formula: points are weighted highest, fouls are negative
-        return ($this->points * 2) - ($this->fouls * 3);
+        // Enhanced formula including all stats
+        return ($this->points * 2) 
+             + ($this->assists * 1.5) 
+             + ($this->rebounds * 1.2) 
+             + ($this->steals * 2) 
+             + ($this->blocks * 2) 
+             - ($this->fouls * 3);
     }
 }

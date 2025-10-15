@@ -649,9 +649,10 @@ private function savePlayerStats(Game $game, array $playerStatsData)
                     'two_points_attempted' => intval($playerData['two_points_attempted'] ?? 0),
                     'three_points_made' => intval($playerData['three_points_made'] ?? 0),
                     'three_points_attempted' => intval($playerData['three_points_attempted'] ?? 0),
-                    'assists' => intval($playerData['assists'] ?? 0),     // ADD THIS
-                    'steals' => intval($playerData['steals'] ?? 0),       // ADD THIS
-                    'rebounds' => intval($playerData['rebounds'] ?? 0),   // ADD THIS
+                    'assists' => intval($playerData['assists'] ?? 0),
+                    'steals' => intval($playerData['steals'] ?? 0),
+                    'rebounds' => intval($playerData['rebounds'] ?? 0),
+                    'blocks' => intval($playerData['blocks'] ?? 0),  // ✅ ADD THIS
                 ]
             );
 
