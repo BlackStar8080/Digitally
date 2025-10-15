@@ -29,6 +29,264 @@
             z-index: 10000;
         }
 
+        /* Team Jerseys Display */
+.team-jerseys {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    min-width: 160px;
+    justify-content: center;
+}
+
+.team-section.right .team-jerseys {
+    order: -1; /* Place jerseys before score for right team */
+}
+
+.jersey-badge {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #2d2d2d, #3d3d3d);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: white;
+    border: 2px solid #444;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.jersey-badge:hover {
+    transform: scale(1.1);
+    border-color: #4CAF50;
+}
+
+.jersey-badge.team-a {
+    background: linear-gradient(135deg, #c33, #a22);
+    border-color: #c33;
+}
+
+.jersey-badge.team-b {
+    background: linear-gradient(135deg, #339, #227);
+    border-color: #339;
+}
+
+.jersey-badge.active-player {
+    box-shadow: 0 0 12px rgba(76, 175, 80, 0.6);
+    border-color: #4CAF50;
+    animation: activeGlow 2s infinite;
+}
+
+@keyframes activeGlow {
+    0%, 100% {
+        box-shadow: 0 0 12px rgba(76, 175, 80, 0.6);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(76, 175, 80, 0.9);
+    }
+}
+
+.jersey-badge .player-number {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* Substitution Modal Styles */
+.substitution-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.substitution-content {
+    background: #2d2d2d;
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 1000px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.sub-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.sub-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: white;
+}
+
+.sub-close {
+    background: #666;
+    border: none;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.sub-close:hover {
+    background: #777;
+}
+
+.sub-instructions {
+    background: rgba(76, 175, 80, 0.1);
+    border: 2px solid #4CAF50;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 25px;
+    text-align: center;
+    color: #ddd;
+    font-size: 15px;
+}
+
+.sub-teams {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.sub-team-section {
+    background: #3d3d3d;
+    padding: 25px;
+    border-radius: 12px;
+}
+
+.sub-team-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
+    color: white;
+}
+
+.sub-team-a .sub-team-title {
+    background: linear-gradient(135deg, #c33, #a22);
+}
+
+.sub-team-b .sub-team-title {
+    background: linear-gradient(135deg, #339, #227);
+}
+
+.sub-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ccc;
+    margin: 20px 0 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sub-players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.sub-player-card {
+    background: #4d4d4d;
+    padding: 16px 12px;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+}
+
+.sub-player-card:hover {
+    background: #5d5d5d;
+    transform: translateY(-2px);
+}
+
+.sub-player-card.active-player {
+    border-color: #4CAF50;
+    box-shadow: 0 0 12px rgba(76, 175, 80, 0.3);
+}
+
+.sub-player-card.bench-player {
+    border-color: #FF9800;
+    box-shadow: 0 0 12px rgba(255, 152, 0, 0.2);
+}
+
+.sub-player-card.dragging {
+    opacity: 0.6;
+    transform: scale(0.95) rotate(5deg);
+}
+
+.sub-player-card.drag-over {
+    background: #6d6d6d;
+    border-color: #4CAF50;
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+}
+
+.sub-player-number {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 4px;
+}
+
+.sub-player-position {
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 4px;
+}
+
+.sub-player-status {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-top: 6px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.sub-player-status.active {
+    background: #4CAF50;
+    color: white;
+}
+
+.sub-player-status.bench {
+    background: #FF9800;
+    color: white;
+}
+
+/* Add substitution button style */
+.btn-substitution {
+    background: linear-gradient(135deg, #795548 0%, #5D4037 100%);
+}
+
         .hamburger-btn {
             background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             border: none;
@@ -709,45 +967,53 @@
     <div class="instruction-banner" id="instructionBanner"></div>
 
     <!-- Scoreboard -->
-    <div class="scoreboard">
-        <!-- Team A -->
-        <div class="team-section left">
-            <div class="team-info">
-                <div class="team-name" id="teamAName">{{ strtoupper($game->team1->team_name) }}</div>
-                <div class="team-stats">
-                    <span>T.O: <span id="timeoutsA">0</span>/2</span>
-                    <span>SUB: <span id="substitutionsA">0</span>/6</span>
-                </div>
+<div class="scoreboard">
+    <!-- Team A Section -->
+    <div class="team-section left">
+        <div class="team-info">
+            <div class="team-name" id="teamAName">{{ strtoupper($game->team1->team_name) }}</div>
+            <div class="team-stats">
+                <span>T.O: <span id="timeoutsA">0</span>/2</span>
+                <span>SUB: <span id="substitutionsA">0</span>/6</span>
             </div>
-            <div class="score-display" id="scoreA">00</div>
-            <div class="serving-indicator" id="servingA" style="display: none;"></div>
         </div>
-
-        <!-- Center Panel -->
-        <div class="center-panel">
-            <div class="set-display">SET <span id="currentSet">1</span></div>
-            <div class="sets-won">
-                <span class="sets-score" id="setsA">0</span>
-                <span style="color: #666;">-</span>
-                <span class="sets-score" id="setsB">0</span>
-            </div>
-            <div class="set-scores" id="setScoresDisplay"></div>
-            <div class="timeout-timer" id="timeoutTimer">TIMEOUT: <span id="timeoutTime">30</span>s</div>
+        <!-- Team A Player Jerseys -->
+        <div class="team-jerseys" id="teamAJerseys">
+            <!-- Will be populated by JavaScript -->
         </div>
+        <div class="score-display" id="scoreA">00</div>
+        <div class="serving-indicator" id="servingA" style="display: none;"></div>
+    </div>
 
-        <!-- Team B -->
-        <div class="team-section right">
-            <div class="serving-indicator" id="servingB" style="display: none;"></div>
-            <div class="score-display" id="scoreB">00</div>
-            <div class="team-info">
-                <div class="team-name" id="teamBName">{{ strtoupper($game->team2->team_name) }}</div>
-                <div class="team-stats">
-                    <span>T.O: <span id="timeoutsB">0</span>/2</span>
-                    <span>SUB: <span id="substitutionsB">0</span>/6</span>
-                </div>
+    <!-- Center Panel -->
+    <div class="center-panel">
+        <div class="set-display">SET <span id="currentSet">1</span></div>
+        <div class="sets-won">
+            <span class="sets-score" id="setsA">0</span>
+            <span style="color: #666;">-</span>
+            <span class="sets-score" id="setsB">0</span>
+        </div>
+        <div class="set-scores" id="setScoresDisplay"></div>
+        <div class="timeout-timer" id="timeoutTimer">TIMEOUT: <span id="timeoutTime">30</span>s</div>
+    </div>
+
+    <!-- Team B Section -->
+    <div class="team-section right">
+        <div class="serving-indicator" id="servingB" style="display: none;"></div>
+        <div class="score-display" id="scoreB">00</div>
+        <!-- Team B Player Jerseys -->
+        <div class="team-jerseys" id="teamBJerseys">
+            <!-- Will be populated by JavaScript -->
+        </div>
+        <div class="team-info">
+            <div class="team-name" id="teamBName">{{ strtoupper($game->team2->team_name) }}</div>
+            <div class="team-stats">
+                <span>T.O: <span id="timeoutsB">0</span>/2</span>
+                <span>SUB: <span id="substitutionsB">0</span>/6</span>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Main Content -->
     <div class="container">
@@ -771,17 +1037,16 @@
     </div>
 
     <!-- Action Buttons -->
-    <div class="actions-section">
-        <div class="actions-grid">
-            <button class="action-btn btn-kill" data-action="kill">Kill</button>
-            <button class="action-btn btn-ace" data-action="ace">Ace</button>
-            <button class="action-btn btn-block" data-action="block">Block</button>
-            <button class="action-btn btn-dig" data-action="dig">Dig</button>
-            <button class="action-btn btn-assist" data-action="assist">Assist</button>
-            <button class="action-btn btn-error" data-action="error">Error</button>
-            <button class="action-btn btn-timeout" id="timeoutBtn">Timeout</button>
-            <button class="action-btn btn-undo" id="undoBtn">↶ Undo</button>
-        </div>
+    <div class="actions-grid">
+        <button class="action-btn btn-kill" data-action="kill">Kill</button>
+        <button class="action-btn btn-ace" data-action="ace">Ace</button>
+        <button class="action-btn btn-block" data-action="block">Block</button>
+        <button class="action-btn btn-dig" data-action="dig">Dig</button>
+        <button class="action-btn btn-assist" data-action="assist">Assist</button>
+        <button class="action-btn btn-error" data-action="error">Error</button>
+        <button class="action-btn btn-timeout" id="timeoutBtn">Timeout</button>
+        <button class="action-btn btn-substitution" id="substitutionBtn">Substitution</button>
+        <button class="action-btn btn-undo" id="undoBtn">↶ Undo</button>
     </div>
 
     <!-- Team Selection Modal -->
@@ -905,6 +1170,44 @@
     </div>
 </div>
 
+<!-- Substitution Modal -->
+<div class="substitution-modal" id="substitutionModal">
+    <div class="substitution-content">
+        <div class="sub-header">
+            <div class="sub-title">Player Substitutions</div>
+            <button class="sub-close" id="subClose">&times;</button>
+        </div>
+
+        <div class="sub-instructions">
+            Drag a bench player onto an active player to make a substitution
+        </div>
+
+        <div class="sub-teams">
+            <!-- Team A Substitutions -->
+            <div class="sub-team-section sub-team-a">
+                <div class="sub-team-title">{{ strtoupper($game->team1->team_name) }}</div>
+
+                <div class="sub-section-title">Active Players (On Court)</div>
+                <div class="sub-players-grid" id="activePlayersA"></div>
+
+                <div class="sub-section-title">Bench Players</div>
+                <div class="sub-players-grid" id="benchPlayersA"></div>
+            </div>
+
+            <!-- Team B Substitutions -->
+            <div class="sub-team-section sub-team-b">
+                <div class="sub-team-title">{{ strtoupper($game->team2->team_name) }}</div>
+
+                <div class="sub-section-title">Active Players (On Court)</div>
+                <div class="sub-players-grid" id="activePlayersB"></div>
+
+                <div class="sub-section-title">Bench Players</div>
+                <div class="sub-players-grid" id="benchPlayersB"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
     <script>
         // Game data from Laravel
         const gameData = {
@@ -960,13 +1263,320 @@
             }
         });
 
+        // Player roster management
+let activePlayers = {
+    A: [],
+    B: []
+};
+
+let benchPlayers = {
+    A: [],
+    B: []
+};
+
+// Initialize player rosters from game data
+function initializePlayerRosters() {
+    // Team A - first 6 players are active (starters)
+    activePlayers.A = gameData.team1.players.slice(0, 6);
+    benchPlayers.A = gameData.team1.players.slice(6);
+
+    // Team B - first 6 players are active (starters)
+    activePlayers.B = gameData.team2.players.slice(0, 6);
+    benchPlayers.B = gameData.team2.players.slice(6);
+
+    console.log('Initialized rosters:', { activePlayers, benchPlayers });
+    
+    // Render jerseys in scoreboard
+    renderTeamJerseys();
+}
+
+// Render team jerseys in scoreboard
+function renderTeamJerseys() {
+    const teamAJerseys = document.getElementById('teamAJerseys');
+    const teamBJerseys = document.getElementById('teamBJerseys');
+
+    teamAJerseys.innerHTML = '';
+    teamBJerseys.innerHTML = '';
+
+    // Render Team A jerseys
+    activePlayers.A.forEach(player => {
+        const badge = createJerseyBadge(player, 'A');
+        teamAJerseys.appendChild(badge);
+    });
+
+    // Render Team B jerseys
+    activePlayers.B.forEach(player => {
+        const badge = createJerseyBadge(player, 'B');
+        teamBJerseys.appendChild(badge);
+    });
+}
+
+// Create jersey badge
+function createJerseyBadge(player, team) {
+    const badge = document.createElement('div');
+    badge.className = `jersey-badge team-${team.toLowerCase()} active-player`;
+    badge.dataset.playerId = player.id;
+    badge.dataset.team = team;
+    badge.title = player.name || `#${player.number}`;
+    
+    badge.innerHTML = `<span class="player-number">${player.number || '00'}</span>`;
+    
+    return badge;
+}
+
+// Substitution Modal Functions
+const substitutionModal = document.getElementById('substitutionModal');
+const subCloseBtn = document.getElementById('subClose');
+const substitutionBtn = document.getElementById('substitutionBtn');
+
+// Open substitution modal
+function openSubstitutionModal() {
+    substitutionModal.style.display = 'flex';
+    renderSubstitutionPlayers();
+}
+
+// Close substitution modal
+function closeSubstitutionModal() {
+    substitutionModal.style.display = 'none';
+}
+
+// Render players in substitution modal
+function renderSubstitutionPlayers() {
+    const activePlayersA = document.getElementById('activePlayersA');
+    const benchPlayersA = document.getElementById('benchPlayersA');
+    const activePlayersB = document.getElementById('activePlayersB');
+    const benchPlayersB = document.getElementById('benchPlayersB');
+
+    // Clear existing
+    activePlayersA.innerHTML = '';
+    benchPlayersA.innerHTML = '';
+    activePlayersB.innerHTML = '';
+    benchPlayersB.innerHTML = '';
+
+    // Render Team A
+    activePlayers.A.forEach(player => {
+        activePlayersA.appendChild(createSubPlayerCard(player, 'A', true));
+    });
+    benchPlayers.A.forEach(player => {
+        benchPlayersA.appendChild(createSubPlayerCard(player, 'A', false));
+    });
+
+    // Render Team B
+    activePlayers.B.forEach(player => {
+        activePlayersB.appendChild(createSubPlayerCard(player, 'B', true));
+    });
+    benchPlayers.B.forEach(player => {
+        benchPlayersB.appendChild(createSubPlayerCard(player, 'B', false));
+    });
+}
+
+// Create substitution player card
+function createSubPlayerCard(player, team, isActive) {
+    const card = document.createElement('div');
+    card.className = `sub-player-card ${isActive ? 'active-player' : 'bench-player'}`;
+    card.draggable = true;
+    card.dataset.team = team;
+    card.dataset.number = player.number || '00';
+    card.dataset.playerId = player.id;
+    card.dataset.isActive = isActive;
+
+    card.innerHTML = `
+        <div class="sub-player-number">${player.number || '00'}</div>
+        <div class="sub-player-position">${player.position || 'P'}</div>
+        <div class="sub-player-status ${isActive ? 'active' : 'bench'}">${isActive ? 'On Court' : 'Bench'}</div>
+    `;
+
+    // Drag events
+    card.addEventListener('dragstart', handleDragStart);
+    card.addEventListener('dragend', handleDragEnd);
+    card.addEventListener('dragover', handleDragOver);
+    card.addEventListener('drop', handleDrop);
+    card.addEventListener('dragenter', handleDragEnter);
+    card.addEventListener('dragleave', handleDragLeave);
+
+    return card;
+}
+
+// Drag and Drop Handlers
+let draggedElement = null;
+
+function handleDragStart(e) {
+    draggedElement = e.target;
+    e.target.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleDragEnd(e) {
+    e.target.classList.remove('dragging');
+    document.querySelectorAll('.sub-player-card').forEach(card => {
+        card.classList.remove('drag-over');
+    });
+    draggedElement = null;
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    return false;
+}
+
+function handleDragEnter(e) {
+    e.preventDefault();
+    const target = e.target.closest('.sub-player-card');
+    if (target && canDropOn(draggedElement, target)) {
+        target.classList.add('drag-over');
+    }
+}
+
+function handleDragLeave(e) {
+    const target = e.target.closest('.sub-player-card');
+    if (target && !target.contains(e.relatedTarget)) {
+        target.classList.remove('drag-over');
+    }
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const dropTarget = e.target.closest('.sub-player-card');
+    if (dropTarget) {
+        dropTarget.classList.remove('drag-over');
+        
+        if (draggedElement && draggedElement !== dropTarget && canDropOn(draggedElement, dropTarget)) {
+            makeSubstitution(draggedElement, dropTarget);
+        }
+    }
+    return false;
+}
+
+// Check if can drop
+function canDropOn(source, target) {
+    if (!source || !target || source === target) return false;
+
+    const sourceCard = source.closest('.sub-player-card');
+    const targetCard = target.closest('.sub-player-card');
+    
+    if (!sourceCard || !targetCard) return false;
+
+    const sourceTeam = sourceCard.dataset.team;
+    const targetTeam = targetCard.dataset.team;
+    const sourceActive = sourceCard.dataset.isActive === 'true';
+    const targetActive = targetCard.dataset.isActive === 'true';
+
+    // Same team, bench to active only
+    return sourceTeam === targetTeam && !sourceActive && targetActive;
+}
+
+// Make substitution
+function makeSubstitution(benchCard, activeCard) {
+    const team = benchCard.dataset.team;
+    const benchPlayerId = benchCard.dataset.playerId;
+    const activePlayerId = activeCard.dataset.playerId;
+
+    // Find players
+    const benchPlayerIndex = benchPlayers[team].findIndex(p => p.id.toString() === benchPlayerId);
+    const activePlayerIndex = activePlayers[team].findIndex(p => p.id.toString() === activePlayerId);
+
+    if (benchPlayerIndex === -1 || activePlayerIndex === -1) {
+        console.error('Players not found');
+        return;
+    }
+
+    // Swap players
+    const benchPlayer = benchPlayers[team][benchPlayerIndex];
+    const activePlayer = activePlayers[team][activePlayerIndex];
+
+    benchPlayers[team][benchPlayerIndex] = activePlayer;
+    activePlayers[team][activePlayerIndex] = benchPlayer;
+
+    // Update substitution count
+    if (team === 'A') {
+        substitutionsA++;
+        document.getElementById('substitutionsA').textContent = substitutionsA;
+    } else {
+        substitutionsB++;
+        document.getElementById('substitutionsB').textContent = substitutionsB;
+    }
+
+    // Log event
+    logEvent(team, `${activePlayer.number}→${benchPlayer.number}`, 'Substitution', 0);
+
+    // Update displays
+    renderSubstitutionPlayers();
+    renderTeamJerseys();
+    updateMainRoster();
+
+    // Show success message
+    showSubstitutionSuccess(team, activePlayer.number, benchPlayer.number);
+}
+
+// Update main roster display
+function updateMainRoster() {
+    const playersAGrid = document.getElementById('playersA');
+    const playersBGrid = document.getElementById('playersB');
+    
+    playersAGrid.innerHTML = '';
+    playersBGrid.innerHTML = '';
+
+    activePlayers.A.forEach(player => {
+        playersAGrid.appendChild(createPlayerCard(player, 'A'));
+    });
+
+    activePlayers.B.forEach(player => {
+        playersBGrid.appendChild(createPlayerCard(player, 'B'));
+    });
+}
+
+// Show substitution success
+function showSubstitutionSuccess(team, outNumber, inNumber) {
+    const message = document.createElement('div');
+    message.style.cssText = `
+        position: fixed;
+        top: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #4CAF50;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-weight: bold;
+        z-index: 10000;
+        animation: fadeIn 0.3s;
+    `;
+    message.textContent = `Team ${team}: Player #${outNumber} → #${inNumber}`;
+    document.body.appendChild(message);
+
+    setTimeout(() => {
+        document.body.removeChild(message);
+    }, 3000);
+}
+
+// Event Listeners
+if (substitutionBtn) {
+    substitutionBtn.addEventListener('click', openSubstitutionModal);
+}
+
+if (subCloseBtn) {
+    subCloseBtn.addEventListener('click', closeSubstitutionModal);
+}
+
+substitutionModal.addEventListener('click', (e) => {
+    if (e.target === substitutionModal) {
+        closeSubstitutionModal();
+    }
+});
+
+// Update the init function to call initializePlayerRosters
+
         // Initialize
         function init() {
+            initializePlayerRosters(); // Add this line
             renderPlayers();
             updateScoreboard();
             updateServingIndicator();
             setupEventListeners();
-             loadHotkeys();
+            loadHotkeys();
         }
 
         // Hotkeys functionality

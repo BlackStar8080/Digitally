@@ -171,7 +171,24 @@ class GameController extends Controller
         'team2_selected_players' => json_encode($team2Data),
     ]);
 
-    // Redirect to appropriate live scoresheet based on sport
+    // Return JSON response for AJAX requests (volleyball)
+    if ($request->ajax() || $request->expectsJson()) {
+        if ($game->isVolleyball()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Volleyball game started successfully!',
+                'redirect_url' => route('games.volleyball-live', $game)
+            ]);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Game started successfully!',
+            'redirect_url' => route('games.live', $game)
+        ]);
+    }
+    
+    // Regular redirect for non-AJAX requests (basketball)
     if ($game->isVolleyball()) {
         return redirect()->route('games.volleyball-live', $game)->with('success', 'Volleyball game started successfully!');
     }

@@ -1585,17 +1585,25 @@ document.getElementById('startGameForm').addEventListener('submit', function(e) 
     const gameId = {{ $game->id }};
     
     @if($game->isVolleyball())
+        // For volleyball, use AJAX
         fetch(`/games/${gameId}/start-live`, {
             method: 'POST',
             body: formData,
             headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
-                window.location.href = `/games/${gameId}/volleyball-live`;
+                window.location.href = data.redirect_url;
             } else {
                 alert(data.message || 'Failed to start game');
             }
@@ -1605,6 +1613,7 @@ document.getElementById('startGameForm').addEventListener('submit', function(e) 
             alert('Failed to start game. Please try again.');
         });
     @else
+        // For basketball, submit normally
         this.submit();
     @endif
 });
