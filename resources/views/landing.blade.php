@@ -9,7 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
-        :root {
+:root {
     --primary-purple: #9d4edd;
     --secondary-purple: #7c3aed;
     --accent-purple: #5f2da8;
@@ -23,6 +23,7 @@
     --shadow-sm: 0 2px 8px rgba(157, 78, 221, 0.08);
     --shadow-md: 0 4px 16px rgba(157, 78, 221, 0.12);
     --shadow-lg: 0 8px 32px rgba(157, 78, 221, 0.16);
+    --success-green: #10b981;
 }
 
 /* Smooth Animations */
@@ -1419,7 +1420,7 @@ html {
     <section class="hero-section">
         <div class="hero-header">
             <h1 class="hero-title">DigiTally</h1>
-            <p class="hero-subtitle">Digital Score And Stats For Local Leagues yeahh</p>
+            <p class="hero-subtitle">Digital Score And Stats For Local Leagues</p>
         </div>
     </section>
 
