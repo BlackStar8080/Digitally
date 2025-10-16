@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Team;
 use App\Models\Tournament;
 use App\Models\Sport;
+use App\Models\Game; // Add this: Import the Game model (adjust namespace if needed)
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // Optional: If using auth for user-specific logic
 
 class TeamsController extends Controller
 {
@@ -27,7 +29,19 @@ class TeamsController extends Controller
         $tournaments = Tournament::orderBy('name')->get();
         $sports = Sport::all();
 
-        return view('teams', compact('teams', 'tournaments', 'sports'));
+        // 🔧 NEW: Fetch $game variable (customize this query based on your app logic)
+        // Assuming $game is context-specific, e.g., the latest active game, or tied to the user/team.
+        // If it's per-team or user-specific, adjust accordingly. For now, fetching the first active game as example.
+        // Replace with your actual logic (e.g., Game::where('status', 'active')->first() or based on auth user).
+        $game = Game::first(); // Or: Game::find(session('current_game_id')); 
+        // If tied to user: $game = Auth::check() && !session('is_guest') ? Game::where('user_id', Auth::id())->first() : null;
+
+        // If no game found, set to null to avoid issues in the view
+        if (!$game) {
+            $game = null;
+        }
+
+        return view('teams', compact('teams', 'tournaments', 'sports', 'game'));
     }
 
     // Store new team
@@ -55,6 +69,10 @@ class TeamsController extends Controller
     public function show($id)
     {
         $team = Team::with(['players', 'sport'])->findOrFail($id);
+
+        // 🔧 OPTIONAL: If show() also uses teams.blade or needs $game, add similar logic here
+        // $game = Game::first(); // etc.
+        // return view('team_show', compact('team', 'game'));
 
         return view('team_show', compact('team'));
     }
