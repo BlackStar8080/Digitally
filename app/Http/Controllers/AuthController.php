@@ -80,4 +80,14 @@ class AuthController extends Controller
 
         return redirect()->route('landing'); 
     }
+
+    public function guestLogin(Request $request)
+{
+    // Set a session flag for guest user
+    session(['is_guest' => true]);
+    session(['guest_name' => 'Guest User']);
+    
+    // Redirect to a guest dashboard or main system page
+    return redirect()->route('dashboard')->with('success', 'Browsing as Guest');
+}
 }

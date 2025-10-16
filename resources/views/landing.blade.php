@@ -950,6 +950,49 @@
             background: linear-gradient(to right, #f0f0f0 4%, #e0e0e0 25%, #f0f0f0 36%);
             background-size: 1000px 100%;
         }
+
+        .guest-login-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--light-blue);
+            text-align: center;
+        }
+
+        .guest-login-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .guest-login-btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: white;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .guest-login-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .guest-login-btn i {
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
@@ -1015,6 +1058,13 @@
                                     required pattern="^[a-zA-Z0-9]+$" title="No special characters allowed">
                                 <button type="submit" class="form-submit-button">Login</button>
                             </form>
+                            <div class="guest-login-section">
+                                <p class="guest-login-text">Don't have an account?</p>
+                                <button type="button" class="guest-login-btn" onclick="continueAsGuest()">
+                                    <i class="bi bi-person"></i>
+                                    Continue as Guest
+                                </button>
+                            </div>
                         </div>
                         <!-- Register Tab -->
                         <div id="registerTab" class="tab-content" style="display: none;">
@@ -1431,6 +1481,22 @@
                 }
             });
         });
+
+        function continueAsGuest() {
+    // Create a form and submit it
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{{ route("guest.login") }}';
+    
+    const csrfToken = document.createElement('input');
+    csrfToken.type = 'hidden';
+    csrfToken.name = '_token';
+    csrfToken.value = '{{ csrf_token() }}';
+    form.appendChild(csrfToken);
+    
+    document.body.appendChild(form);
+    form.submit();
+}
     </script>
 </body>
 </html>

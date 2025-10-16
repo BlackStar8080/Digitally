@@ -142,3 +142,5 @@ use App\Http\Controllers\ActivityLogController;
 Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
 
 Route::get('/check-player', [App\Http\Controllers\PlayersController::class, 'checkPlayer'])->name('check.player');
+
+Route::post('/guest-login', [AuthController::class, 'guestLogin'])->name('guest.login');
