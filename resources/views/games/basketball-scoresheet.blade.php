@@ -723,51 +723,56 @@
 
                             <!-- Best Player Section (under winning team) -->
                             <!-- Best Player Section (under winning team) -->
-<div class="best-player-section">
-    @if(isset($mvpPlayer) && $mvpPlayer)
-        {{-- MVP has been selected --}}
-        <div style="margin-bottom: 3px;">
-            <strong>BEST PLAYER:</strong> 
-            <span style="text-decoration: underline;">
-                {{ $mvpPlayer->player->name ?? 'Unknown Player' }} 
-                (#{{ $mvpPlayer->player->number ?? '00' }})
-            </span>
-        </div>
-        <table style="width: 100%; border: none;">
-            <tr>
-                <td style="border: none; text-align: left; padding: 2px;">
-                    <strong>Score:</strong> <u>{{ $mvpPlayer->points ?? 0 }}</u>
-                </td>
-                <td style="border: none; text-align: left; padding: 2px;">
-                    <strong>Assist:</strong> <u>{{ $mvpPlayer->assists ?? 0 }}</u>
-                </td>
-                <td style="border: none; text-align: left; padding: 2px;">
-                    <strong>Rebound:</strong> <u>{{ $mvpPlayer->rebounds ?? 0 }}</u>
-                </td>
-                <td style="border: none; text-align: left; padding: 2px;">
-                    <strong>Blocks:</strong> <u>{{ $mvpPlayer->blocks ?? 0 }}</u>
-                </td>
-                <td style="border: none; text-align: left; padding: 2px;">
-                    <strong>Steal:</strong> <u>{{ $mvpPlayer->steals ?? 0 }}</u>
-                </td>
-            </tr>
-        </table>
-    @else
-        {{-- No MVP selected yet - show blank lines --}}
-        <div style="margin-bottom: 3px;">
-            <strong>BEST PLAYER:</strong> ___________________________________
-        </div>
-        <table style="width: 100%; border: none;">
-            <tr>
-                <td style="border: none; text-align: left; padding: 2px;"><strong>Score:</strong> _____</td>
-                <td style="border: none; text-align: left; padding: 2px;"><strong>Assist:</strong> _____</td>
-                <td style="border: none; text-align: left; padding: 2px;"><strong>Rebound:</strong> _____</td>
-                <td style="border: none; text-align: left; padding: 2px;"><strong>Blocks:</strong> _____</td>
-                <td style="border: none; text-align: left; padding: 2px;"><strong>Steal:</strong> _____</td>
-            </tr>
-        </table>
-    @endif
-</div>
+                            <div class="best-player-section">
+                                @if (isset($mvpPlayer) && $mvpPlayer)
+                                    {{-- MVP has been selected --}}
+                                    <div style="margin-bottom: 3px;">
+                                        <strong>BEST PLAYER:</strong>
+                                        <span style="text-decoration: underline;">
+                                            {{ $mvpPlayer->player->name ?? 'Unknown Player' }}
+                                            (#{{ $mvpPlayer->player->number ?? '00' }})
+                                        </span>
+                                    </div>
+                                    <table style="width: 100%; border: none;">
+                                        <tr>
+                                            <td style="border: none; text-align: left; padding: 2px;">
+                                                <strong>Score:</strong> <u>{{ $mvpPlayer->points ?? 0 }}</u>
+                                            </td>
+                                            <td style="border: none; text-align: left; padding: 2px;">
+                                                <strong>Assist:</strong> <u>{{ $mvpPlayer->assists ?? 0 }}</u>
+                                            </td>
+                                            <td style="border: none; text-align: left; padding: 2px;">
+                                                <strong>Rebound:</strong> <u>{{ $mvpPlayer->rebounds ?? 0 }}</u>
+                                            </td>
+                                            <td style="border: none; text-align: left; padding: 2px;">
+                                                <strong>Blocks:</strong> <u>{{ $mvpPlayer->blocks ?? 0 }}</u>
+                                            </td>
+                                            <td style="border: none; text-align: left; padding: 2px;">
+                                                <strong>Steal:</strong> <u>{{ $mvpPlayer->steals ?? 0 }}</u>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                @else
+                                    {{-- No MVP selected yet - show blank lines --}}
+                                    <div style="margin-bottom: 3px;">
+                                        <strong>BEST PLAYER:</strong> ___________________________________
+                                    </div>
+                                    <table style="width: 100%; border: none;">
+                                        <tr>
+                                            <td style="border: none; text-align: left; padding: 2px;">
+                                                <strong>Score:</strong> _____</td>
+                                            <td style="border: none; text-align: left; padding: 2px;">
+                                                <strong>Assist:</strong> _____</td>
+                                            <td style="border: none; text-align: left; padding: 2px;">
+                                                <strong>Rebound:</strong> _____</td>
+                                            <td style="border: none; text-align: left; padding: 2px;">
+                                                <strong>Blocks:</strong> _____</td>
+                                            <td style="border: none; text-align: left; padding: 2px;">
+                                                <strong>Steal:</strong> _____</td>
+                                        </tr>
+                                    </table>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </td>

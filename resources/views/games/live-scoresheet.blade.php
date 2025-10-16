@@ -656,6 +656,11 @@
                 color: white;
             }
 
+            .blocks{
+                background: linear-gradient(135deg, #9E9E9E 0%, #616161 100%);
+                color: white;
+            }
+
             .three-points {
                 background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
                 color: white;
@@ -1783,17 +1788,18 @@
         <div class="container">
             <!-- Player Roster -->
             <div class="roster-section">
-                <div class="roster-header">
-                    <div class="team-tab team-a active" data-team="A">{{ substr($game->team1->team_name, 0, 1) }}</div>
-                    <div class="team-tab team-b" data-team="B">{{ substr($game->team2->team_name, 0, 1) }}</div>
-                </div>
-                <div class="players-grid" id="playersGrid">
-                    <!-- Team A -->
-                    <div></div>
-                    <!-- Team B -->
-                    <div></div>
-                </div>
+            <div class="roster-header">
+                <div class="team-tab team-a active" data-team="A">A</div>
+                <div class="team-tab team-b" data-team="B">B</div>
             </div>
+            <div class="players-grid" id="playersGrid">
+                <!-- Team A -->
+                <div></div>
+                <!-- Team B -->
+                <div></div>
+            </div>
+        </div>
+
 
             <!-- Event Log -->
             <div class="log-section">
@@ -1808,6 +1814,7 @@
                 <button class="action-btn two-points" data-action="2 Points" data-points="2">2 Points</button>
                 <button class="action-btn three-points" data-action="3 Points" data-points="3">3 Points</button>
                 <button class="action-btn assist" data-action="Assist">Assist</button>
+                <button class="action-btn blocks" data-action="blocks">Block</button>
                 <div class="foul-buttons-row">
                     <button class="action-btn steal" data-action="Steal">Steal</button>
                     <button class="action-btn rebound" data-action="Rebound">Rebound</button>
@@ -2688,7 +2695,8 @@ function startOvertime() {
                         three_points_attempted: 0,
                         assists: 0, // ADD THIS
                         steals: 0, // ADD THIS
-                        rebounds: 0 // ADD THIS
+                        rebounds: 0, // ADD THIS
+                        blocks: 0 // ADD THIS
                     };
                 });
 
@@ -2707,7 +2715,8 @@ function startOvertime() {
                         three_points_attempted: 0,
                         assists: 0, // ADD THIS
                         steals: 0, // ADD THIS
-                        rebounds: 0 // ADD THIS
+                        rebounds: 0, // ADD THIS
+                        blocks: 0 // ADD THIS
                     };
                 });
 
@@ -2773,6 +2782,12 @@ function startOvertime() {
                     if (event.action === 'Rebound') {
                         playerStats[key].rebounds++;
                         console.log(`Rebound recorded for player ${player.id}`);
+                    }
+
+                    // ADD: Process rebounds
+                    if (event.action === 'block') {
+                        playerStats[key].block++;
+                        console.log(`block recorded for player ${player.id}`);
                     }
 
                     console.log(`Updated stats for player ${player.id}:`, playerStats[key]);
@@ -4356,6 +4371,9 @@ function startOvertime() {
                     case 'Rebound':
                         document.querySelector('[data-action="Rebound"]').click();
                         break;
+                    case 'blocks':
+                        document.querySelector('[data-action="blocks"]').click();
+                        break;    
                     case 'Foul':
                         document.querySelector('[data-action="Foul"]').click();
                         break;

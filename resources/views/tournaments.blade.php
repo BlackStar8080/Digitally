@@ -783,7 +783,6 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('edit_division').value = tournament.division || '';
             document.getElementById('edit_date').value = tournament.start_date || '';
             document.getElementById('edit_sport').value = tournament.sport_id || '';
-            document.getElementById('edit_bracket_type').value = tournament.bracket_type || '';
 
             const modal = new bootstrap.Modal(document.getElementById('editTournamentModal'));
             modal.show();

@@ -937,6 +937,21 @@
     font-size: 16px;
     font-family: 'Courier New', monospace;
 }
+
+/* Settings Input Styles */
+.settings-input {
+    background: #4d4d4d;
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    font-size: 16px;
+    width: 100%;
+}
+
+.team-jerseys {
+    display: none !important;
+}
     </style>
 </head>
 <body>
@@ -960,6 +975,10 @@
             <span class="menu-item-icon">⌨️</span>
             <span class="menu-item-text">Customize Hotkeys</span>
         </a>
+        <a href="#" class="menu-item" id="gameSettingsBtn">
+            <span class="menu-item-icon">⚙️</span>
+            <span class="menu-item-text">Game Settings</span>
+        </a>
         </div>
     </div>
 
@@ -973,8 +992,8 @@
         <div class="team-info">
             <div class="team-name" id="teamAName">{{ strtoupper($game->team1->team_name) }}</div>
             <div class="team-stats">
-                <span>T.O: <span id="timeoutsA">0</span>/2</span>
-                <span>SUB: <span id="substitutionsA">0</span>/6</span>
+                <span>T.O: <span id="timeoutsA">0</span>/<span id="maxTimeoutsA">2</span></span>
+                <span>SUB: <span id="substitutionsA">0</span>/<span id="maxSubstitutionsA">6</span></span>
             </div>
         </div>
         <!-- Team A Player Jerseys -->
@@ -1008,8 +1027,8 @@
         <div class="team-info">
             <div class="team-name" id="teamBName">{{ strtoupper($game->team2->team_name) }}</div>
             <div class="team-stats">
-                <span>T.O: <span id="timeoutsB">0</span>/2</span>
-                <span>SUB: <span id="substitutionsB">0</span>/6</span>
+                <span>T.O: <span id="timeoutsB">0</span>/<span id="maxTimeoutsB">2</span></span>
+                <span>SUB: <span id="substitutionsB">0</span>/<span id="maxSubstitutionsB">6</span></span>
             </div>
         </div>
     </div>
@@ -1170,6 +1189,42 @@
     </div>
 </div>
 
+<!-- Game Settings Modal -->
+<div class="modal" id="gameSettingsModal">
+    <div class="modal-content">
+        <h2 class="modal-title">Game Settings</h2>
+        <p class="modal-subtitle">Customize limits per set per team</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0;">
+            <div class="settings-item">
+                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team A Max Timeouts</div>
+                <input type="number" min="0" class="settings-input" id="maxTimeoutsAInput">
+            </div>
+            
+            <div class="settings-item">
+                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team B Max Timeouts</div>
+                <input type="number" min="0" class="settings-input" id="maxTimeoutsBInput">
+            </div>
+            
+            <div class="settings-item">
+                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team A Max Substitutions</div>
+                <input type="number" min="0" class="settings-input" id="maxSubstitutionsAInput">
+            </div>
+            
+            <div class="settings-item">
+                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team B Max Substitutions</div>
+                <input type="number" min="0" class="settings-input" id="maxSubstitutionsBInput">
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+            <button class="modal-btn modal-btn-secondary" onclick="resetSettingsToDefault()">Reset to Defaults</button>
+            <button class="modal-btn modal-btn-primary" onclick="saveGameSettings()">Save Changes</button>
+            <button class="modal-btn modal-btn-secondary" onclick="closeGameSettingsModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
 <!-- Substitution Modal -->
 <div class="substitution-modal" id="substitutionModal">
     <div class="substitution-content">
@@ -1245,6 +1300,12 @@
         let timeoutActive = false;
         let timeoutTime = 30;
         let timeoutInterval = null;
+
+        // Game settings limits
+        let maxTimeoutsA = 2;
+        let maxTimeoutsB = 2;
+        let maxSubstitutionsA = 6;
+        let maxSubstitutionsB = 6;
 
         // Hamburger menu functionality
         const hamburgerBtn = document.getElementById('hamburgerBtn');
@@ -1474,6 +1535,14 @@ function makeSubstitution(benchCard, activeCard) {
     const benchPlayerId = benchCard.dataset.playerId;
     const activePlayerId = activeCard.dataset.playerId;
 
+    if (team === 'A' && substitutionsA >= maxSubstitutionsA) {
+        alert('Team A has no more substitutions remaining this set');
+        return;
+    } else if (team === 'B' && substitutionsB >= maxSubstitutionsB) {
+        alert('Team B has no more substitutions remaining this set');
+        return;
+    }
+
     // Find players
     const benchPlayerIndex = benchPlayers[team].findIndex(p => p.id.toString() === benchPlayerId);
     const activePlayerIndex = activePlayers[team].findIndex(p => p.id.toString() === activePlayerId);
@@ -1577,6 +1646,7 @@ substitutionModal.addEventListener('click', (e) => {
             updateServingIndicator();
             setupEventListeners();
             loadHotkeys();
+            loadGameSettings();
         }
 
         // Hotkeys functionality
@@ -1721,6 +1791,71 @@ function saveHotkeysSettings() {
     showNotification('Hotkeys saved successfully');
 }
 
+// Load game settings from localStorage
+function loadGameSettings() {
+    const saved = localStorage.getItem('volleyballSettings');
+    if (saved) {
+        const settings = JSON.parse(saved);
+        maxTimeoutsA = settings.maxTimeoutsA || 2;
+        maxTimeoutsB = settings.maxTimeoutsB || 2;
+        maxSubstitutionsA = settings.maxSubstitutionsA || 6;
+        maxSubstitutionsB = settings.maxSubstitutionsB || 6;
+    }
+    updateSettingsDisplay();
+}
+
+// Save game settings to localStorage
+function saveGameSettings() {
+    maxTimeoutsA = parseInt(document.getElementById('maxTimeoutsAInput').value) || 2;
+    maxTimeoutsB = parseInt(document.getElementById('maxTimeoutsBInput').value) || 2;
+    maxSubstitutionsA = parseInt(document.getElementById('maxSubstitutionsAInput').value) || 6;
+    maxSubstitutionsB = parseInt(document.getElementById('maxSubstitutionsBInput').value) || 6;
+
+    localStorage.setItem('volleyballSettings', JSON.stringify({
+        maxTimeoutsA,
+        maxTimeoutsB,
+        maxSubstitutionsA,
+        maxSubstitutionsB
+    }));
+    updateSettingsDisplay();
+    closeGameSettingsModal();
+    showNotification('Settings saved successfully');
+}
+
+// Open game settings modal
+function openGameSettingsModal() {
+    document.getElementById('maxTimeoutsAInput').value = maxTimeoutsA;
+    document.getElementById('maxTimeoutsBInput').value = maxTimeoutsB;
+    document.getElementById('maxSubstitutionsAInput').value = maxSubstitutionsA;
+    document.getElementById('maxSubstitutionsBInput').value = maxSubstitutionsB;
+    document.getElementById('gameSettingsModal').classList.add('show');
+}
+
+// Close game settings modal
+function closeGameSettingsModal() {
+    document.getElementById('gameSettingsModal').classList.remove('show');
+}
+
+// Reset settings to defaults
+function resetSettingsToDefault() {
+    if (confirm('Reset all settings to default values?')) {
+        maxTimeoutsA = 2;
+        maxTimeoutsB = 2;
+        maxSubstitutionsA = 6;
+        maxSubstitutionsB = 6;
+        openGameSettingsModal(); // Update inputs
+        saveGameSettings();
+    }
+}
+
+// Update settings display in scoreboard
+function updateSettingsDisplay() {
+    document.getElementById('maxTimeoutsA').textContent = maxTimeoutsA;
+    document.getElementById('maxTimeoutsB').textContent = maxTimeoutsB;
+    document.getElementById('maxSubstitutionsA').textContent = maxSubstitutionsA;
+    document.getElementById('maxSubstitutionsB').textContent = maxSubstitutionsB;
+}
+
 // Show notification
 function showNotification(message) {
     const notification = document.createElement('div');
@@ -1744,7 +1879,7 @@ function showNotification(message) {
     }, 3000);
 }
 
-// Initialize hotkeys when menu is clicked
+// Initialize hotkeys and settings when menu is clicked
 document.addEventListener('DOMContentLoaded', function() {
     const hotkeysBtn = document.getElementById('hotkeysBtn');
     if (hotkeysBtn) {
@@ -1753,6 +1888,16 @@ document.addEventListener('DOMContentLoaded', function() {
             hamburgerBtn.classList.remove('active');
             menuDropdown.classList.remove('show');
             openHotkeysModal();
+        });
+    }
+    
+    const gameSettingsBtn = document.getElementById('gameSettingsBtn');
+    if (gameSettingsBtn) {
+        gameSettingsBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            hamburgerBtn.classList.remove('active');
+            menuDropdown.classList.remove('show');
+            openGameSettingsModal();
         });
     }
     
@@ -1898,11 +2043,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function handleTimeoutTeamSelect(team) {
-            if (team === 'A' && timeoutsA >= 2) {
+            if (team === 'A' && timeoutsA >= maxTimeoutsA) {
                 alert('Team A has no timeouts remaining');
                 return;
             }
-            if (team === 'B' && timeoutsB >= 2) {
+            if (team === 'B' && timeoutsB >= maxTimeoutsB) {
                 alert('Team B has no timeouts remaining');
                 return;
             }
@@ -2239,6 +2384,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('timeoutsB').textContent = timeoutsB;
             document.getElementById('substitutionsA').textContent = substitutionsA;
             document.getElementById('substitutionsB').textContent = substitutionsB;
+            updateSettingsDisplay();
         }
 
         function updateScoreDisplay() {

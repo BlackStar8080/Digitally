@@ -929,7 +929,7 @@
             position: relative;
         }
 
-       
+
 
         @keyframes bounce {
 
@@ -2212,6 +2212,54 @@
             color: white;
             transform: translateY(-1px);
         }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            /* Two columns */
+            grid-template-rows: repeat(2, auto);
+            /* Two rows */
+            gap: 0.5rem;
+            /* Space between buttons */
+            justify-items: stretch;
+            align-items: stretch;
+        }
+
+        .button-grid .btn {
+            width: 150px;
+            /* Fixed minimum width to accommodate text */
+            min-width: 150px;
+            /* Ensures button doesn't shrink below this */
+            text-align: left;
+            /* Keep text aligned left */
+            white-space: nowrap;
+            /* Prevent text from wrapping */
+            overflow: visible;
+            /* Allow text to be fully visible */
+            text-overflow: clip;
+            /* No ellipsis, let text extend if needed */
+            padding: 0.375rem 0.75rem;
+            /* Standard button padding */
+            font-size: 0.9rem;
+            /* Slightly smaller font to fit */
+            display: flex;
+            /* Flexbox for icon + text alignment */
+            align-items: center;
+            /* Vertical center icon and text */
+            justify-content: flex-start;
+            /* Left-align content */
+            gap: 0.25rem;
+            /* Small gap between icon and text */
+        }
+
+        /* Ensure icons don't cause issues */
+        .button-grid .btn i {
+            flex-shrink: 0;
+            /* Icons won't shrink */
+            width: 16px;
+            /* Fixed icon width */
+            text-align: center;
+        }
     </style>
 @endpush
 
@@ -2253,24 +2301,24 @@
                                 @endif
                             </p>
                         </div>
-                        <div class="col-md-6">
-                            <h5 class="section-title">Quick Actions</h5>
-                            @if ($tournament->teams->count() >= 3)
-                                @if ($tournament->brackets->isEmpty())
+                        @if ($tournament->brackets->isEmpty())
+                            <div class="col-md-6">
+                                <h5 class="section-title">Quick Actions</h5>
+                                @if ($tournament->teams->count() >= 3)
                                     <button class="btn btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#createBracketModal">
                                         <i class="bi bi-diagram-3"></i>
                                         Create Bracket
                                     </button>
+                                @else
+                                    <p class="text-muted">
+                                        <i class="bi bi-info-circle"></i>
+                                        Add at least 3 teams to create a bracket ({{ $tournament->teams->count() }}/3 teams
+                                        registered)
+                                    </p>
                                 @endif
-                            @else
-                                <p class="text-muted">
-                                    <i class="bi bi-info-circle"></i>
-                                    Add at least 3 teams to create a bracket ({{ $tournament->teams->count() }}/3 teams
-                                    registered)
-                                </p>
-                            @endif
-                        </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
 
@@ -2821,6 +2869,10 @@
                                 @endif
                             @else
                                 <!-- SINGLE ELIMINATION TOURNAMENT -->
+                                <a href="{{ route('tournament.bracket.pdf', $tournament->id) }}" class="btn btn-primary"
+                                    target="_blank">
+                                    <i class="fas fa-print"></i> Print Bracket
+                                </a>
 
                                 <!-- Keep your existing bracket display code exactly as it is -->
                                 <div class="bracket-container"
@@ -2953,14 +3005,6 @@
                                                 <i class="bi bi-list"></i>
                                                 All Games
                                             </button>
-                                            <button class="filter-btn" data-filter="upcoming">
-                                                <i class="bi bi-clock"></i>
-                                                Upcoming
-                                            </button>
-                                            <button class="filter-btn" data-filter="in-progress">
-                                                <i class="bi bi-play-circle"></i>
-                                                In Progress
-                                            </button>
                                             <button class="filter-btn" data-filter="completed">
                                                 <i class="bi bi-check-circle"></i>
                                                 Completed
@@ -3043,7 +3087,6 @@
                                                         class="game-header {{ $game->status === 'completed' ? 'completed' : ($game->status === 'in_progress' ? 'in-progress' : 'upcoming') }}">
                                                         <div class="game-league">
                                                             {{ $tournament->name }}
-                                                            {{-- ADD THIS SPORT BADGE --}}
                                                         </div>
                                                         <div class="game-date">
                                                             @if ($game->scheduled_at)
@@ -3131,64 +3174,72 @@
                                                         @endif
                                                     </div>
 
-                                                    <div class="game-actions">
-                                                        {{-- Schedule Edit Button - Show for all games --}}
-                                                        <button type="button"
-                                                            class="btn btn-sm btn-outline-primary edit-schedule-btn"
-                                                            onclick="openEditScheduleModal(
-                {{ $game->id }}, 
-                '{{ addslashes($game->getDisplayName()) }}', 
-                '{{ addslashes($game->team1 ? $game->team1->team_name : 'TBD') }}', 
-                '{{ addslashes($game->team2 ? $game->team2->team_name : 'TBD') }}', 
-                '{{ $game->scheduled_at ? $game->scheduled_at->format('Y-m-d\TH:i') : '' }}'
-            )">
-                                                            <i class="bi bi-calendar-event"></i>
-                                                            {{ $game->scheduled_at ? 'Edit' : 'Set' }} Schedule
-                                                        </button>
+                                                    <div class="game-actions button-grid">
+                                                        @if (!$game->isCompleted())
+                                                            <button class="edit-schedule-btn btn btn-primary"
+                                                                data-game-id="{{ $game->id }}"
+                                                                data-game-title="{{ addslashes($game->getDisplayName()) }}"
+                                                                data-team1="{{ addslashes($game->team1 ? $game->team1->team_name : 'TBD') }}"
+                                                                data-team2="{{ addslashes($game->team2 ? $game->team2->team_name : 'TBD') }}"
+                                                                data-scheduled="{{ $game->scheduled_at ? $game->scheduled_at->format('Y-m-d\TH:i') : '' }}"
+                                                                onclick="openEditScheduleModal(
+                                                                    '{{ $game->id }}', 
+                                                                    '{{ addslashes($game->getDisplayName()) }}', 
+                                                                    '{{ addslashes($game->team1 ? $game->team1->team_name : 'TBD') }}', 
+                                                                    '{{ addslashes($game->team2 ? $game->team2->team_name : 'TBD') }}', 
+                                                                    '{{ $game->scheduled_at ? $game->scheduled_at->format('Y-m-d\TH:i') : '' }}'
+                                                                )">
+                                                                <i class="bi bi-calendar-event"></i>
+                                                                {{ $game->scheduled_at ? 'Edit' : 'Set' }} Schedule
+                                                            </button>
+                                                        @endif
 
                                                         @if (!$game->isCompleted() && $game->isReady() && $game->status !== 'in_progress')
                                                             <a href="{{ route('games.prepare', $game->id) }}"
-                                                                class="start-game-btn">
+                                                                class="start-game-btn btn btn-success">
                                                                 <i class="bi bi-play-fill"></i> Start Game
                                                             </a>
                                                         @elseif($game->status === 'in_progress')
-                                                            {{-- Route to correct sport live game --}}
                                                             @if ($game->isVolleyball())
                                                                 <a href="{{ route('games.volleyball-live', $game->id) }}"
-                                                                    class="start-game-btn" style="background: #FF9800;">
-                                                                    <i class="bi bi-play-circle"></i> Resume Volleyball
+                                                                    class="start-game-btn btn btn-warning">
+                                                                    <i class="bi bi-play-circle"></i> Resume Game
                                                                 </a>
                                                             @else
                                                                 <a href="{{ route('games.live', $game->id) }}"
-                                                                    class="start-game-btn" style="background: #FF9800;">
-                                                                    <i class="bi bi-play-circle"></i> Resume Basketball
+                                                                    class="start-game-btn btn btn-warning">
+                                                                    <i class="bi bi-play-circle"></i> Resume Game
                                                                 </a>
                                                             @endif
                                                         @endif
 
-                                                        {{-- Scoresheet button - route to correct sport --}}
-                                                        @if ($game->isVolleyball())
-                                                            <a href="#" class="tally-sheet-btn"
-                                                                onclick="openVolleyballScoresheet({{ $game->id }})">
-                                                                <i class="bi bi-clipboard-data"></i> Volleyball Sheet
-                                                            </a>
-                                                        @else
-                                                            <a href="#" class="tally-sheet-btn"
-                                                                onclick="openTallySheet({{ $game->id }})">
-                                                                <i class="bi bi-clipboard-data"></i> Basketball Sheet
-                                                            </a>
-                                                        @endif
+                                                       @if ($game->isVolleyball())
+    <a href="javascript:void(0);" 
+       class="tally-sheet-btn btn btn-info"
+       onclick="openTallySheet({{ $game->id }}, 'volleyball')">
+        <i class="bi bi-clipboard-data"></i> Tallysheet
+    </a>
+@else
+    <a href="javascript:void(0);" 
+       class="tally-sheet-btn btn btn-info"
+       onclick="openTallySheet({{ $game->id }}, 'basketball')">
+        <i class="bi bi-clipboard-data"></i> Tallysheet
+    </a>
+@endif
 
-                                                        {{-- Box Score button - route to correct sport --}}
+
+
+
+
                                                         @if ($game->isVolleyball())
                                                             <a href="{{ route('games.volleyball-box-score', $game->id) }}"
-                                                                class="box-score-btn">
-                                                                <i class="bi bi-table"></i> Volleyball Stats
+                                                                class="box-score-btn btn btn-info">
+                                                                <i class="bi bi-table"></i> Box Score
                                                             </a>
                                                         @else
                                                             <a href="{{ route('games.box-score', $game->id) }}"
-                                                                class="box-score-btn">
-                                                                <i class="bi bi-table"></i> Basketball Stats
+                                                                class="box-score-btn btn btn-info">
+                                                                <i class="bi bi-table"></i> Box Score
                                                             </a>
                                                         @endif
                                                     </div>
@@ -3869,21 +3920,6 @@
                 form.submit();
             }
 
-            function openVolleyballScoresheet(gameId) {
-                const url = `/games/${gameId}/volleyball-scoresheet`;
-
-                const scoresheetWindow = window.open(
-                    url,
-                    'volleyball-scoresheet',
-                    'width=1200,height=900,scrollbars=yes,resizable=yes'
-                );
-
-                if (scoresheetWindow) {
-                    scoresheetWindow.focus();
-                } else {
-                    alert('Please allow popups for this site to view the scoresheet.');
-                }
-            }
 
             // Enhanced filter functionality that works with selection
             const filterTabs = document.querySelectorAll('.filter-tab');
@@ -4004,22 +4040,51 @@
 
     });
 
-    function openTallySheet(gameId) {
-        // Open the basketball scoresheet in a new window
-        const url = `/games/${gameId}/basketball-scoresheet`;
+    function openTallySheet(gameId, sport) {
+  let url;
+  if (sport === 'volleyball') {
+    url = `/games/${gameId}/volleyball-scoresheet`;
+  } else {
+    url = `/games/${gameId}/basketball-scoresheet`;
+  }
 
-        const tallysheeetWindow = window.open(
+  const tallysheeetWindow = window.open(
+    url,
+    'scoresheet',
+    'width=1200,height=900,scrollbars=yes,resizable=yes'
+  );
+
+  if (tallysheeetWindow) {
+    tallysheeetWindow.focus();
+  } else {
+    alert('Please allow popups for this site to view the tallysheet.');
+  }
+}
+
+    
+
+    function openVolleyballScoresheet(gameId) {
+            // Build the URL for the PDF version
+            const url = `/games/${gameId}/volleyball-scoresheet-pdf`;
+
+
+            // Open in a new tab or window (like basketball)
+            const scoresheetWindow = window.open(
             url,
-            'scoresheet',
+            'volleyball_scoresheet',
             'width=1200,height=900,scrollbars=yes,resizable=yes'
-        );
+            );
 
-        if (tallysheeetWindow) {
-            tallysheeetWindow.focus();
-        } else {
-            alert('Please allow popups for this site to view the tallysheet.');
-        }
-    }
+
+            if (scoresheetWindow) {
+            scoresheetWindow.focus();
+            } else {
+            alert('Please allow popups for this site to view the volleyball scoresheet.');
+            }
+            }
+            
+
+            
 
     // Drag and Drop Bracket Customizer Functions
     let draggedTeamData = null;

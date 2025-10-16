@@ -82,6 +82,11 @@ class GameController extends Controller
                 'team2_timeouts' => $tallysheet->team2_timeouts,
                 'period_scores' => $tallysheet->period_scores,
                 'events' => $tallysheet->game_events,
+
+                            $mvpPlayer = $game->playerStats()
+                ->where('is_mvp', true)
+                ->with('player')
+                ->first()
             ];
         }
     }
@@ -106,7 +111,8 @@ class GameController extends Controller
         'game',
         'team1Players',
         'team2Players',
-        'liveData'
+        'liveData',
+        'mvpPlayer'
     ));
 }
 

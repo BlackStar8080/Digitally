@@ -118,6 +118,16 @@ class PdfController extends Controller
         return $pdf->download($filename);
     }
 
+    public function downloadBracketPdf($id)
+{
+    $tournament = Tournament::with('rounds.games.teams')->findOrFail($id);
+
+    $pdf = Pdf::loadView('pdf.bracket', compact('tournament'))
+              ->setPaper('a4', 'landscape');
+
+    return $pdf->download("{$tournament->name}_bracket.pdf");
+}
+
     /**
      * Stream basketball scoresheet (view in browser)
      */
@@ -220,4 +230,71 @@ class PdfController extends Controller
 
         return $pdf->stream('basketball-scoresheet-game-' . $game->id . '.pdf');
     }
+
+    /**
+ * Stream volleyball scoresheet (view in browser)
+ */
+public function viewVolleyballScoresheet($gameId)
+{
+    $game = \App\Models\Game::with([
+        'team1.players',
+        'team2.players',
+        'bracket.tournament',
+        'volleyballTallysheet',
+        'volleyballPlayerStats.player'
+    ])->findOrFail($gameId);
+
+    $team1Data = json_decode($game->team1_selected_players, true) ?? [];
+    $team2Data = json_decode($game->team2_selected_players, true) ?? [];
+
+    $team1RosterIds = $team1Data['roster'] ?? [];
+    $team2RosterIds = $team2Data['roster'] ?? [];
+
+    $team1Players = $game->team1->players->filter(fn($p) => in_array($p->id, $team1RosterIds))->sortBy('number');
+    $team2Players = $game->team2->players->filter(fn($p) => in_array($p->id, $team2RosterIds))->sortBy('number');
+
+    // Load saved tallysheet data
+    $liveData = [];
+    if ($game->volleyballTallysheet) {
+        $liveData = [
+            'team1_sets_won' => $game->volleyballTallysheet->team1_sets_won ?? 0,
+            'team2_sets_won' => $game->volleyballTallysheet->team2_sets_won ?? 0,
+            'set_scores' => $game->volleyballTallysheet->set_scores ?? [],
+            'events' => $game->volleyballTallysheet->game_events ?? [],
+            'running_scores' => $game->volleyballTallysheet->running_scores ?? [],
+        ];
+    }
+
+    // Convert logos to base64 if needed
+    $logoLeft = '';
+    $logoRight = '';
+    $leftPath = public_path('images/logo/tagoloan-flag.png');
+    $rightPath = public_path('images/logo/mayor-logo.png');
+    if (file_exists($leftPath)) $logoLeft = base64_encode(file_get_contents($leftPath));
+    if (file_exists($rightPath)) $logoRight = base64_encode(file_get_contents($rightPath));
+
+    $isPdf = true;
+
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('games.volleyball-scoresheet', compact(
+        'game',
+        'team1Players',
+        'team2Players',
+        'liveData',
+        'isPdf',
+        'logoLeft',
+        'logoRight'
+    ))->setOptions([
+        'defaultFont' => 'DejaVu Sans',
+        'isHtml5ParserEnabled' => true,
+        'isRemoteEnabled' => true,
+        'dpi' => 150,
+        'enable_font_subsetting' => true,
+    ]);
+
+    $pdf->getDomPDF()->getOptions()->set('isUnicodeEnabled', true);
+    $pdf->setPaper('legal', 'landscape'); // ✅ Long bondpaper, landscape
+
+    return $pdf->stream('volleyball-scoresheet-game-' . $game->id . '.pdf');
+}
+
 }

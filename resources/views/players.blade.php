@@ -811,9 +811,12 @@
                                     <select name="team_id" id="playerTeam" class="form-select" required>
                                         <option value="">Select team</option>
                                         @foreach ($teams as $team)
-                                            <option value="{{ $team->id }}">{{ $team->team_name }}</option>
+                                            <option value="{{ $team->id }}" data-sport="{{ $team->sport_id }}">
+                                                {{ $team->team_name }}
+                                            </option>
                                         @endforeach
                                     </select>
+
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Jersey Number</label>
@@ -828,6 +831,7 @@
                                         <option value="">Select sport</option>
                                         @foreach ($sports as $sport)
                                             <option value="{{ $sport->sports_id }}">{{ $sport->sports_name }}</option>
+
                                         @endforeach
                                     </select>
                                 </div>
@@ -857,6 +861,62 @@
 
 @section('scripts')
     <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const teamSelect = document.getElementById('playerTeam');
+            const sportSelect = document.getElementById('sportSelect');
+
+            teamSelect.addEventListener('change', function() {
+                const selectedOption = teamSelect.options[teamSelect.selectedIndex];
+                const sportId = selectedOption.getAttribute('data-sport');
+
+                if (sportId) {
+                    sportSelect.value = sportId; // auto-select the correct sport
+                } else {
+                    sportSelect.value = ''; // reset if none
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+    const teamSelect = document.getElementById('playerTeam');
+    const sportSelect = document.getElementById('sportSelect');
+    const positionSelect = document.getElementById('positionSelect');
+
+    // Define positions by sport name or sport_id
+    const positionsBySport = {
+        basketball: ["Point Guard", "Shooting Guard", "Small Forward", "Power Forward", "Center"],
+        volleyball: ["Setter", "Libero", "Outside Hitter", "Middle Blocker", "Opposite Hitter"],
+        football: ["Goalkeeper", "Defender", "Midfielder", "Forward"],
+    };
+
+    // Update sport automatically when team is chosen
+    teamSelect.addEventListener('change', function() {
+        const selectedOption = teamSelect.options[teamSelect.selectedIndex];
+        const sportId = selectedOption.getAttribute('data-sport');
+        sportSelect.value = sportId || '';
+        updatePositions();
+    });
+
+    // Also update when user changes sport manually
+    sportSelect.addEventListener('change', updatePositions);
+
+    function updatePositions() {
+        const selectedSportText = sportSelect.options[sportSelect.selectedIndex]?.text?.toLowerCase() || '';
+        const positions = positionsBySport[selectedSportText] || [];
+
+        // Clear current options
+        positionSelect.innerHTML = '<option value="">Select position</option>';
+
+        // Populate new ones
+        positions.forEach(pos => {
+            const opt = document.createElement('option');
+            opt.value = pos;
+            opt.textContent = pos;
+            positionSelect.appendChild(opt);
+        });
+    }
+});
         // Toast Notification Functions
         function showToast(message) {
             const toast = document.getElementById('successToast');

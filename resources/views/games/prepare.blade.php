@@ -189,6 +189,7 @@ body {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     overflow: hidden;
     animation: fadeInUp 0.6s ease-out 0.1s backwards;
+    
 }
 
 /* Improved Tab Navigation */
@@ -781,41 +782,22 @@ body {
         justify-content: center;
     }
 }
+
+.content-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    animation: fadeInUp 0.6s ease-out 0.1s backwards;
+    margin-top: 80px; /* ✅ Pushes it down below navbar */
+}
+
 </style>
 @endpush
 
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="game-preparation">
-    <!-- Game Header -->
-    <div class="game-header">
-        <div class="header-content">
-            <div class="teams-display">
-                <div class="team-section">
-                    <div class="team-name">{{ $game->team1->team_name }}</div>
-                    <div class="team-record">Home Team</div>
-                </div>
-
-                <div class="vs-section">
-                    <div class="game-time">VS</div>
-                    <div class="game-status">{{ ucfirst($game->status) }}</div>
-                </div>
-
-                <div class="team-section">
-                    <div class="team-name">{{ $game->team2->team_name }}</div>
-                    <div class="team-record">Away Team</div>
-                </div>
-            </div>
-
-            <div class="header-actions">
-                <a href="{{ route('dashboard') }}" class="back-btn">
-                    <i class="bi bi-arrow-left"></i>
-                    Back to Dashboard
-                </a>
-            </div>
-        </div>
-    </div>
-
     <!-- Main Content -->
     <div class="main-content">
         <div class="content-card">
