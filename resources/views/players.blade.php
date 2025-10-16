@@ -674,11 +674,13 @@
 
                         <div class="actions-group">
                             <div class="search-container">
-                                <input type="text" class="search-input" placeholder="Search players..." id="searchInput">
+                                <input type="text" class="search-input" placeholder="Search players..." id="searchInput" name="search" value="{{ request('search') }}">
                                 <button class="search-btn" type="button">
                                     <i class="bi bi-search"></i>
                                 </button>
                             </div>
+
+
                             <button class="add-btn" type="button" onclick="openModal()">
                                 <i class="bi bi-plus-circle"></i>
                                 Add Player
@@ -769,9 +771,10 @@
 
     @if ($players->total() > 15)
         <div style="margin-top: 20px; text-align: center;">
-            {{ $players->links('pagination::bootstrap-5') }}
+            {{ $players->appends(request()->query())->links('pagination::bootstrap-5') }}
         </div>
     @endif
+
 
     <!-- Player Modal -->
     <div class="modal fade" id="playerModal" tabindex="-1" aria-labelledby="playerModalLabel" aria-hidden="true">
@@ -801,10 +804,13 @@
                             <div style="flex:1; min-width: 0;">
                                 <div class="form-group">
                                     <label class="form-label">Player Name</label>
-                                    <input type="text" name="name" id="playerName" class="form-control"
-                                        value="{{ old('name') }}" required pattern="^[a-zA-Z0-9\s]+$"
-                                        title="Only letters, numbers, and spaces are allowed."
-                                        placeholder="Enter player name">
+                                   <input type="text" name="name" id="playerName" class="form-control"
+                                    value="{{ old('name') }}" required
+                                    placeholder="Enter player name"
+                                    maxlength="255"
+                                    pattern="^[a-zA-Z0-9\s]+$"
+                                    title="Only letters, numbers, and spaces are allowed.">
+
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Team</label>
@@ -857,10 +863,67 @@
             </div>
         </div>
     </div>
+
+    
 @endsection
 
 @section('scripts')
     <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+    const playerNameInput = document.getElementById('playerName');
+
+    if (playerNameInput) {
+        playerNameInput.addEventListener('input', function () {
+            // Remove special characters in real-time
+            this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
+        });
+    }
+});
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const playerTable = document.getElementById('playerTable');
+
+    let typingTimer;
+    const delay = 400; // milliseconds before triggering search
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+            performSearch(this.value);
+        }, delay);
+    });
+
+    function performSearch(searchTerm) {
+        const url = new URL("{{ route('players.index') }}", window.location.origin);
+        url.searchParams.set('search', searchTerm);
+
+        // Keep other filters (team, sport, position)
+        const teamSelect = document.querySelector('select[name="team_id"]');
+        const sportSelect = document.querySelector('select[name="sport_id"]');
+        const positionSelect = document.querySelector('select[name="position"]');
+
+        if (teamSelect && teamSelect.value) url.searchParams.set('team_id', teamSelect.value);
+        if (sportSelect && sportSelect.value) url.searchParams.set('sport_id', sportSelect.value);
+        if (positionSelect && positionSelect.value) url.searchParams.set('position', positionSelect.value);
+
+        fetch(url)
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newTableBody = doc.querySelector('#playerTable');
+
+                if (newTableBody) {
+                    playerTable.innerHTML = newTableBody.innerHTML;
+                }
+            })
+            .catch(err => console.error('Search failed:', err));
+    }
+});
+
 
         document.addEventListener('DOMContentLoaded', function() {
             const teamSelect = document.getElementById('playerTeam');
@@ -1043,5 +1106,87 @@
                 bsPlayerModal.show();
             @endif
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+    const playerNameInput = document.getElementById('playerName');
+    const teamSelect = document.getElementById('playerTeam');
+
+    if (playerNameInput && teamSelect) {
+        playerNameInput.addEventListener('blur', async function() {
+            const name = playerNameInput.value.trim();
+            const teamId = teamSelect.value;
+
+            if (name && teamId) {
+                const response = await fetch(`/check-player?name=${encodeURIComponent(name)}&team_id=${teamId}`);
+                const data = await response.json();
+
+                if (data.exists) {
+                    alert(`⚠️ Player "${name}" already exists in this team.`);
+                    playerNameInput.focus();
+                }
+            }
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const playerNameInput = document.getElementById('playerName');
+    const teamSelect = document.getElementById('playerTeam');
+    const saveButton = document.querySelector('#playerForm button[type="submit"]');
+
+    if (playerNameInput && teamSelect && saveButton) {
+        playerNameInput.addEventListener('input', async function () {
+            const name = playerNameInput.value.trim();
+            const teamId = teamSelect.value;
+
+            // Skip if no team selected or name empty
+            if (!name || !teamId) {
+                saveButton.disabled = false;
+                return;
+            }
+
+            try {
+                const response = await fetch(`/check-player?name=${encodeURIComponent(name)}&team_id=${teamId}`);
+                const data = await response.json();
+
+                if (data.exists) {
+                    playerNameInput.style.borderColor = '#dc3545';
+                    playerNameInput.style.boxShadow = '0 0 4px rgba(220,53,69,0.6)';
+                    saveButton.disabled = true;
+
+                    showDuplicateWarning(`⚠️ Player "${name}" already exists in this team.`);
+                } else {
+                    playerNameInput.style.borderColor = '';
+                    playerNameInput.style.boxShadow = '';
+                    saveButton.disabled = false;
+                    hideDuplicateWarning();
+                }
+            } catch (error) {
+                console.error('Error checking player:', error);
+            }
+        });
+    }
+
+    // 🔔 UI feedback for duplicate warning
+    function showDuplicateWarning(message) {
+        let warningDiv = document.getElementById('duplicateWarning');
+        if (!warningDiv) {
+            warningDiv = document.createElement('div');
+            warningDiv.id = 'duplicateWarning';
+            warningDiv.style.color = '#dc3545';
+            warningDiv.style.fontSize = '13px';
+            warningDiv.style.marginTop = '6px';
+            playerNameInput.insertAdjacentElement('afterend', warningDiv);
+        }
+        warningDiv.textContent = message;
+    }
+
+    function hideDuplicateWarning() {
+        const warningDiv = document.getElementById('duplicateWarning');
+        if (warningDiv) warningDiv.remove();
+    }
+});
+
+
     </script>
 @endsection

@@ -1621,6 +1621,33 @@ function showSubstitutionSuccess(team, outNumber, inNumber) {
     }, 3000);
 }
 
+function getWinningScore(setNumber) {
+  return setNumber === 5 ? 15 : 25;
+}
+
+function endSet() {
+  // Save current set scores
+  setScores.A[currentSet - 1] = scoreA;
+  setScores.B[currentSet - 1] = scoreB;
+
+  // Only increment sets if neither team has already won 3
+  if (setsA < 3 && setsB < 3) {
+    if (scoreA > scoreB) setsA++;
+    else setsB++;
+  }
+
+  // Show modal, check for game end
+  if (setsA === 3 || setsB === 3) {
+    showGameEndModal();
+  } else {
+    currentSet++;
+    resetScoresForNextSet();
+  }
+}
+
+
+
+
 // Event Listeners
 if (substitutionBtn) {
     substitutionBtn.addEventListener('click', openSubstitutionModal);

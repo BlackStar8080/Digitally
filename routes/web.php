@@ -16,42 +16,49 @@ use App\Http\Controllers\PdfController;
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
 */
-
-
-
 
 // Authentication Routes
 Route::post('/admin/login', [AuthController::class, 'login'])->name('login');
 Route::post('/admin/register', [AuthController::class, 'register'])->name('register');
 
 Route::middleware(['auth'])->group(function () {
-    // ... your other routes ...
-    
     Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
 });
+
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
 Route::post('/games/{game}/complete', [GameController::class, 'completeGame'])->name('games.complete');
 
+// Basketball Scoresheet Routes
 Route::get('/games/{game}/basketball-scoresheet', [GameController::class, 'basketballScoresheet'])->name('games.basketball-scoresheet');
+Route::get('/pdf/basketball-scoresheet/{game}/download', [PdfController::class, 'basketballScoresheet'])
+    ->name('pdf.basketball.scoresheet.download');
+Route::get('/pdf/basketball-scoresheet/{game}/view', [PdfController::class, 'viewBasketballScoresheet'])
+    ->name('pdf.basketball.scoresheet.view');
 
+// Box Score Routes
 Route::get('/games/{game}/box-score', [GameController::class, 'boxScore'])->name('games.box-score');
 Route::post('/games/{game}/select-mvp', [GameController::class, 'selectMVP'])->name('games.select-mvp');
-// Add this with your other volleyball routes
+
+// Volleyball MVP Route
 Route::post('/games/{game}/select-volleyball-mvp', [GameController::class, 'selectVolleyballMVP'])->name('games.select-volleyball-mvp');
 
+// Tournament PDF
 Route::get('/tournament/{id}/bracket/pdf', [TournamentController::class, 'downloadBracketPdf'])
      ->name('tournament.bracket.pdf');
 
-Route::get('/games/{gameId}/volleyball-scoresheet-pdf', [PdfController::class, 'viewVolleyballScoresheet'])
+// ✅ UPDATED VOLLEYBALL SCORESHEET ROUTES (Fixed)
+// Browser view with download button
+Route::get('/games/{game}/volleyball-scoresheet', [GameController::class, 'volleyballScoresheet'])
+    ->name('games.volleyball-scoresheet');
+
+// PDF download route (called by download button)
+Route::get('/games/{game}/volleyball-scoresheet/download', [PdfController::class, 'volleyballScoresheet'])
     ->name('pdf.volleyball-scoresheet');
 
-
+// PDF view in browser (if needed - optional)
+Route::get('/games/{game}/volleyball-scoresheet/preview', [PdfController::class, 'viewVolleyballScoresheet'])
+    ->name('pdf.volleyball-scoresheet.view');
 
 // Tournament Routes
 Route::get('/tournaments', [TournamentController::class, 'index'])->name('tournaments.index');
@@ -63,10 +70,12 @@ Route::delete('/tournaments/{tournament}', [TournamentController::class, 'destro
 // Bracket Routes
 Route::post('/tournaments/{tournament}/brackets', [BracketController::class, 'store'])->name('brackets.store');
 Route::post('/brackets/{bracket}/generate', [BracketController::class, 'generate'])->name('brackets.generate');
+Route::post('/brackets/{bracket}/save-custom', [BracketController::class, 'saveCustomBracket'])->name('brackets.save-custom');
 
 // Team Assignment Routes
 Route::post('/tournaments/{tournament}/teams', [BracketController::class, 'assignTeam'])->name('tournaments.assign-team');
 Route::delete('/tournaments/{tournament}/teams/{team}', [BracketController::class, 'removeTeam'])->name('tournaments.remove-team');
+Route::post('/tournaments/{tournament}/assign-teams', [TournamentController::class, 'assignTeams'])->name('tournaments.assign-teams');
 
 // Game Routes
 Route::post('/games', [GameController::class, 'store'])->name('games.store');
@@ -75,19 +84,14 @@ Route::get('/games/{game}/prepare', [GameController::class, 'prepare'])->name('g
 Route::post('/games/{game}/officials', [GameController::class, 'updateOfficials'])->name('games.update-officials');
 Route::post('/games/{game}/start-live', [GameController::class, 'startLive'])->name('games.start-live');
 Route::get('/prepare', [GameController::class, 'index'])->name('games.prepare.index');
-// Add this line with your other game routes
 Route::get('/games/{game}/live', [GameController::class, 'live'])->name('games.live');
 Route::get('/games/{game}/tallysheet', [GameController::class, 'tallysheet'])->name('games.tallysheet');
-
-// Add this with your other Game Routes
 Route::patch('/games/{game}/update-schedule', [GameController::class, 'updateSchedule'])->name('games.update-schedule');
 
 // Volleyball Game Routes
 Route::get('/games/{game}/volleyball-live', [GameController::class, 'volleyballLive'])->name('games.volleyball-live');
 Route::post('/games/{game}/volleyball-complete', [GameController::class, 'completeVolleyballGame'])->name('games.volleyball-complete');
-Route::get('/games/{game}/volleyball-scoresheet', [GameController::class, 'volleyballScoresheet'])->name('games.volleyball-scoresheet');
 Route::get('/games/{game}/volleyball-box-score', [GameController::class, 'volleyballBoxScore'])->name('games.volleyball-box-score');
-Route::post('/games/{game}/select-volleyball-mvp', [GameController::class, 'selectVolleyballMVP'])->name('games.select-volleyball-mvp');
 
 // Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -98,16 +102,7 @@ Route::post('/players', [PlayersController::class, 'store'])->name('players.stor
 Route::get('/stats', [PlayersController::class, 'stats'])->name('players.stats');
 Route::resource('/players', PlayersController::class);
 
-
-
-Route::get('/pdf/basketball-scoresheet/{game}/download', [PdfController::class, 'basketballScoresheet'])
-    ->name('pdf.basketball.scoresheet.download');
-    
-Route::get('/pdf/basketball-scoresheet/{game}/view', [PdfController::class, 'viewBasketballScoresheet'])
-    ->name('pdf.basketball.scoresheet.view');
-
-
-// Landing page route (should be first)
+// Landing page route
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 
 // API route for live scores
@@ -123,10 +118,8 @@ Route::get('/teams/{id}', [TeamsController::class, 'show'])->name('teams.show');
 Route::put('/teams/{team}', [TeamsController::class, 'update'])->name('teams.update');
 Route::delete('/teams/{team}', [TeamsController::class, 'destroy'])->name('teams.destroy');
 
-// Other Routes
-
+// Teams Stats
 Route::get('/teams-stats', function() { return 'Teams & Player Stats'; })->name('teams.stats');
-
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
@@ -143,10 +136,8 @@ Route::post('/logout', function () {
     return redirect('/');
 })->name('logout');
 
+// Activity Logs
 use App\Http\Controllers\ActivityLogController;
 Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
 
-Route::post('/brackets/{bracket}/save-custom', [BracketController::class, 'saveCustomBracket'])->name('brackets.save-custom');
-
-// Add this route to your web.php or routes file
-Route::post('/tournaments/{tournament}/assign-teams', [TournamentController::class, 'assignTeams'])->name('tournaments.assign-teams');
+Route::get('/check-player', [App\Http\Controllers\PlayersController::class, 'checkPlayer'])->name('check.player');

@@ -11,114 +11,119 @@ use Illuminate\Validation\Rule;
 class PlayersController extends Controller
 {
     public function index(Request $request)
-    {
-        $query = Player::with(['team', 'sport']);
+{
+    $query = Player::with(['team', 'sport']);
 
-        // 🔍 Apply filters
-        if ($request->filled('team_id') && $request->team_id !== 'all') {
-            $query->where('team_id', $request->team_id);
-        }
+    // 🔍 Filters
+    if ($request->filled('team_id') && $request->team_id !== 'all') {
+        $query->where('team_id', $request->team_id);
+    }
 
-        if ($request->filled('sport_id') && $request->sport_id !== 'all') {
-            $query->where('sport_id', $request->sport_id);
-        }
+    if ($request->filled('sport_id') && $request->sport_id !== 'all') {
+        $query->where('sport_id', $request->sport_id);
+    }
 
-        if ($request->filled('position') && $request->position !== 'all') {
-            $query->where('position', $request->position);
-        }
+    if ($request->filled('position') && $request->position !== 'all') {
+        $query->where('position', $request->position);
+    }
 
-        // ✅ Real database search (not just client-side)
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
+    // ✅ Sanitize and validate search input
+    if ($request->filled('search')) {
+        $search = preg_replace('/[^a-zA-Z0-9\s]/', '', $request->search); // removes special chars
+
+        // ignore search if it's empty after removing special chars
+        if (!empty(trim($search))) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('position', 'like', "%{$search}%")
-                  ->orWhereHas('team', fn($team) => $team->where('team_name', 'like', "%{$search}%"))
-                  ->orWhereHas('sport', fn($sport) => $sport->where('sports_name', 'like', "%{$search}%"));
+                  ->orWhereHas('team', fn($team) =>
+                      $team->where('team_name', 'like', "%{$search}%")
+                  )
+                  ->orWhereHas('sport', fn($sport) =>
+                      $sport->where('sports_name', 'like', "%{$search}%")
+                  );
             });
         }
-
-        // ✅ Paginate and keep query params
-        $players = $query->orderBy('name')->paginate(15)->withQueryString();
-
-        $teams = Team::all();
-        $sports = Sport::all();
-        $positions = Player::select('position')->whereNotNull('position')->distinct()->pluck('position');
-
-        return view('players', compact('players', 'teams', 'sports', 'positions'));
     }
+
+    $players = $query->orderBy('name')->paginate(15)->withQueryString();
+
+    $teams = Team::all();
+    $sports = Sport::all();
+    $positions = Player::select('position')
+        ->whereNotNull('position')
+        ->distinct()
+        ->pluck('position');
+
+    return view('players', compact('players', 'teams', 'sports', 'positions'));
+}
+
+
 
     // Store new player
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => [
-                'required', 'string', 'max:255',
-                Rule::unique('players')->where(fn($query) => $query->where('team_id', $request->team_id)),
-            ],
-            'team_id'   => 'required|exists:teams,id',
-            'sport_id'  => 'required|exists:sports,sports_id',
-            'number'    => 'nullable|integer',
-            'position'  => 'nullable|string|max:50',
-            'birthday'  => 'required|date',
-        ], [
-            'name.unique' => 'This player already exists in the selected team.',
-        ]);
+{
+    $validated = $request->validate([
+        'name' => [
+            'required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s]+$/',
+            Rule::unique('players', 'name')->where(function ($query) use ($request) {
+                return $query->where('team_id', $request->team_id);
+            }),
+        ],
+        'team_id'   => 'required|exists:teams,id',
+        'sport_id'  => 'required|exists:sports,sports_id',
+        'number'    => 'nullable|integer',
+        'position'  => 'nullable|string|max:50|regex:/^[a-zA-Z0-9\s]+$/',
+        'birthday'  => 'required|date',
+    ], [
+        'name.unique' => 'This player already exists in the selected team.',
+        'name.regex' => 'Player name can only contain letters, numbers, and spaces.',
+        'position.regex' => 'Position name can only contain letters, numbers, and spaces.',
+    ]);
 
-        // Compute age from birthday
-        $birthday = $request->input('birthday');
-        $age = null;
-        if ($birthday) {
-            $age = \Carbon\Carbon::parse($birthday)->age;
-        }
+    // Compute age from birthday
+    $birthday = $request->input('birthday');
+    $age = $birthday ? \Carbon\Carbon::parse($birthday)->age : null;
 
-        $validated['age'] = $age;
+    $validated['age'] = $age;
 
-        Player::create($validated);
+    Player::create($validated);
 
-        // ✨ Enhanced success message with emoji
-        return redirect()->route('players.index')
-            ->with('success', '🎉 Player has been successfully added!');
-    }
-
-    public function edit(Player $player)
-    {
-        return redirect()->route('players.index');
-    }
+    return redirect()->route('players.index')
+        ->with('success', '🎉 Player has been successfully added!');
+}
 
     public function update(Request $request, Player $player)
-    {
-        $validated = $request->validate([
-            'name' => [
-                'required', 'string', 'max:255',
-                Rule::unique('players')->where(fn($query) => 
-                    $query->where('team_id', $request->team_id)->where('id', '!=', $player->id)
-                ),
-            ],
-            'team_id'   => 'required|exists:teams,id',
-            'sport_id'  => 'required|exists:sports,sports_id',
-            'number'    => 'nullable|integer',
-            'position'  => 'nullable|string|max:50',
-            'birthday'  => 'required|date',
-        ], [
-            'name.unique' => 'This player already exists in the selected team.',
-        ]);
+{
+    $validated = $request->validate([
+        'name' => [
+            'required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s]+$/',
+            Rule::unique('players', 'name')->where(function ($query) use ($request, $player) {
+                return $query->where('team_id', $request->team_id)
+                             ->where('id', '!=', $player->id);
+            }),
+        ],
+        'team_id'   => 'required|exists:teams,id',
+        'sport_id'  => 'required|exists:sports,sports_id',
+        'number'    => 'nullable|integer',
+        'position'  => 'nullable|string|max:50|regex:/^[a-zA-Z0-9\s]+$/',
+        'birthday'  => 'required|date',
+    ], [
+        'name.unique' => 'This player already exists in the selected team.',
+        'name.regex' => 'Player name can only contain letters, numbers, and spaces.',
+        'position.regex' => 'Position name can only contain letters, numbers, and spaces.',
+    ]);
 
-        // Compute age from birthday
-        $birthday = $request->input('birthday');
-        $age = null;
-        if ($birthday) {
-            $age = \Carbon\Carbon::parse($birthday)->age;
-        }
+    $birthday = $request->input('birthday');
+    $age = $birthday ? \Carbon\Carbon::parse($birthday)->age : null;
 
-        $validated['age'] = $age;
+    $validated['age'] = $age;
 
-        $player->update($validated);
+    $player->update($validated);
 
-        // ✨ Enhanced success message with emoji
-        return redirect()->route('players.index')
-            ->with('success', '✅ Player has been successfully updated!');
-    }
+    return redirect()->route('players.index')
+        ->with('success', '✅ Player has been successfully updated!');
+}
 
     public function destroy(Player $player)
     {
@@ -129,6 +134,19 @@ class PlayersController extends Controller
         return redirect()->route('players.index')
             ->with('success', '🗑️ ' . $playerName . ' has been successfully deleted!');
     }
+
+    public function checkPlayer(Request $request)
+{
+    $name = preg_replace('/[^a-zA-Z0-9\s]/', '', $request->name); // remove special chars
+    $teamId = $request->team_id;
+
+    $exists = Player::where('team_id', $teamId)
+        ->whereRaw('LOWER(name) = ?', [strtolower($name)])
+        ->exists();
+
+    return response()->json(['exists' => $exists]);
+}
+
 
     public function stats(Request $request)
 {

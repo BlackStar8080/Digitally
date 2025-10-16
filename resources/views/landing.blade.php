@@ -1,24 +1,27 @@
 {{-- resources/views/landing.blade.php --}}
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DigiTally: Digital Score And Stats For Local Leagues</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css"
-        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
         :root {
             --primary-blue: #7b2cbf;
-            --secondary-blue: #9d4edd;7b2cbf
-            --light-blue: #ffffff;
+            --secondary-blue: #9d4edd;
+            --light-blue: #f8f9fa;
             --border-color: #dee2e6;
             --text-dark: #212529;
             --text-muted: #6c757d;
-            --table-header: #b8d1f6;
-            --hover-blue: #eef4ff;
+            --table-header: #e0aaff;
+            --hover-blue: #f3e8ff;
+            --success-green: #10b981;
+            --shadow-sm: 0 2px 8px rgba(123, 44, 191, 0.08);
+            --shadow-md: 0 4px 16px rgba(123, 44, 191, 0.12);
+            --shadow-lg: 0 8px 32px rgba(123, 44, 191, 0.16);
         }
 
         * {
@@ -28,21 +31,24 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: var(--text-dark);
-            background: var(--light-blue);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eaf6 100%);
+            min-height: 100vh;
         }
 
-        /* Header Navigation */
+        /* Header Navigation - Enhanced */
         .header {
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
-            color: white;
+            background: white;
+            color: var(--text-dark);
             padding: 1rem 0;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-sm);
+            border-bottom: 1px solid rgba(123, 44, 191, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         .header-container {
@@ -56,179 +62,246 @@
 
         .logo {
             font-size: 28px;
-            font-weight: 700;
+            font-weight: 800;
             display: flex;
             align-items: center;
             gap: 10px;
             text-decoration: none;
-            color: white;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .nav-menu {
             display: flex;
             list-style: none;
-            gap: 2rem;
+            gap: 0.5rem;
             align-items: center;
         }
 
         .nav-menu a {
-            color: white;
+            color: var(--text-dark);
             text-decoration: none;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 8px;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 10px;
             transition: all 0.3s ease;
+            font-size: 15px;
         }
 
         .nav-menu a:hover,
         .nav-menu a.active {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--hover-blue);
+            color: var(--primary-blue);
         }
 
         .admin-btn {
-            background: white;
-            color: var(--primary-blue);
-            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: white;
+            padding: 12px 24px;
             border: none;
-            border-radius: 8px;
-            font-weight: 600;
+            border-radius: 10px;
+            font-weight: 700;
             text-decoration: none;
             transition: all 0.3s ease;
             cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            font-size: 14px;
         }
 
         .admin-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
-            color: var(--primary-blue);
+            box-shadow: var(--shadow-md);
+            color: white;
         }
 
-        /* Hero Section */
+        /* Hero Section - Enhanced */
         .hero-section {
             background: white;
             margin: 2rem auto;
             max-width: 1200px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
             overflow: hidden;
+            position: relative;
         }
 
         .hero-header {
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
             color: white;
-            padding: 2rem;
+            padding: 4rem 2rem;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.3;
         }
 
         .hero-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+            letter-spacing: -1px;
         }
 
         .hero-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
+            font-size: 1.25rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            font-weight: 500;
         }
 
-        /* Live Games Section */
+        /* Live Games Section - Enhanced */
         .live-games {
             padding: 2rem;
+        }
+
+        .games-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            width: 100%;
+        }
+
+        .card-like {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(123, 44, 191, 0.08);
         }
 
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
             padding-bottom: 1rem;
             border-bottom: 2px solid var(--light-blue);
         }
 
         .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-size: 1.75rem;
+            font-weight: 800;
             color: var(--text-dark);
             display: flex;
             align-items: center;
-            gap: 10px;
-            justify-content: center;
-            text-align: center;
+            gap: 12px;
         }
 
         .live-indicator {
             background: #dc3545;
             color: white;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
             animation: pulse 2s infinite;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
         }
 
         @keyframes pulse {
-            0% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.7;
-            }
-
-            100% {
-                opacity: 1;
-            }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
         }
 
         .games-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, 350px);
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 1.5rem;
             justify-content: center;
-            max-width: 1200px; /* Limits to 3 cards max per row */
+            max-width: 1200px;
             margin: 0 auto;
         }
 
         .game-card {
-            background: var(--light-blue);
-            border-radius: 12px;
-            padding: 1.5rem;
+            background: white;
+            border-radius: 16px;
+            padding: 1.75rem;
             transition: all 0.3s ease;
-            border: 2px solid transparent;
+            border: 2px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-blue));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
         }
 
         .game-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(44, 124, 249, 0.15);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
             border-color: var(--secondary-blue);
+        }
+
+        .game-card:hover::before {
+            transform: scaleX(1);
         }
 
         .game-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
         }
 
         .sport-tag {
-            background: var(--primary-blue);
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
             color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
+            padding: 6px 14px;
+            border-radius: 14px;
             font-size: 0.8rem;
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: 0.3px;
         }
 
         .game-status {
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-muted);
+            font-size: 0.9rem;
         }
 
         .teams-matchup {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
+            padding: 1rem 0;
+            background: var(--light-blue);
+            border-radius: 12px;
         }
 
         .team {
@@ -237,22 +310,29 @@
         }
 
         .team-name {
-            font-weight: 700;
+            font-weight: 800;
             font-size: 1.1rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
         }
 
         .team-score {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: var(--primary-blue);
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .vs-divider {
             margin: 0 1.5rem;
-            font-weight: 700;
-            font-size: 1.2rem;
+            font-weight: 800;
+            font-size: 1.1rem;
             color: var(--text-muted);
+            background: white;
+            padding: 0.5rem;
+            border-radius: 8px;
         }
 
         .game-details {
@@ -260,19 +340,139 @@
             justify-content: space-between;
             align-items: center;
             padding-top: 1rem;
-            border-top: 1px solid rgba(222, 226, 230, 0.5);
-            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.85rem;
             color: var(--text-muted);
+            font-weight: 600;
         }
 
-        /* Tournaments Section */
+        /* Tournament Tabs - Enhanced */
+        .tournament-tabs-carousel {
+            margin-bottom: 2rem;
+        }
+
+        .tournament-tab {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 260px;
+            max-width: 340px;
+            width: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex: 0 0 auto;
+            overflow: hidden;
+        }
+
+        .tournament-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tournament-tab:hover {
+            border-color: var(--secondary-blue);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .tournament-tab.active {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: white;
+            border-color: var(--primary-blue);
+            box-shadow: var(--shadow-md);
+        }
+
+        .tournament-tab.active::before {
+            opacity: 1;
+        }
+
+        .tab-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab-name {
+            font-weight: 800;
+            font-size: 1.05rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .tab-meta {
+            font-size: 0.8rem;
+            opacity: 0.85;
+            font-weight: 600;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #dc3545;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            margin-left: 8px;
+        }
+
+        .tournament-tab.active .live-dot {
+            background: white;
+        }
+
+        /* Custom Carousel Arrows - Enhanced */
+        .custom-arrow-btn {
+            background: white;
+            border: 2px solid var(--border-color);
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-blue);
+            font-size: 24px;
+            font-weight: 800;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 30;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .custom-arrow-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+            box-shadow: var(--shadow-md);
+        }
+
+        .carousel-control-prev.custom-arrow-btn { left: -60px; }
+        .carousel-control-next.custom-arrow-btn { right: -60px; }
+
+        /* Tournaments Section - Enhanced */
         .tournaments-section {
             background: white;
             margin: 2rem auto;
             max-width: 1200px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            padding: 2.5rem;
+            border: 1px solid rgba(123, 44, 191, 0.08);
         }
 
         .tournaments-grid {
@@ -284,141 +484,196 @@
 
         .tournament-card {
             border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.5rem;
+            border-radius: 16px;
+            padding: 1.75rem;
             background: white;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tournament-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-blue));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
         }
 
         .tournament-card:hover {
             border-color: var(--secondary-blue);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(66, 133, 244, 0.1);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .tournament-card:hover::before {
+            transform: scaleX(1);
         }
 
         .tournament-header {
             display: flex;
             justify-content: space-between;
             align-items: start;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
         }
 
         .tournament-name {
-            font-weight: 700;
-            font-size: 1.2rem;
+            font-weight: 800;
+            font-size: 1.25rem;
             color: var(--text-dark);
         }
 
         .tournament-status {
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 14px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
         }
 
         .status-active {
             background: #e0aaff;
-            color: white;
+            color: var(--primary-blue);
         }
 
         .status-upcoming {
-            background: #ffc107;
-            color: var(--text-dark);
+            background: #fef3c7;
+            color: #92400e;
         }
 
         .status-completed {
-            background: var(--text-muted);
-            color: white;
+            background: #e5e7eb;
+            color: var(--text-muted);
         }
 
         .tournament-details {
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
         }
 
         .tournament-details p {
-            margin: 0.25rem 0;
+            margin: 0.5rem 0;
             color: var(--text-muted);
             font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .view-tournament-btn {
             width: 100%;
-            background: var(--primary-blue);
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
             color: white;
             border: none;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: 600;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
             display: block;
             text-align: center;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
         }
 
         .view-tournament-btn:hover {
-            background: var(--secondary-blue);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
             color: white;
             text-decoration: none;
         }
 
-        /* Recent Results */
+        /* Recent Results - Enhanced */
         .recent-results {
             background: white;
             margin: 2rem auto;
             max-width: 1200px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            padding: 2.5rem;
+            border: 1px solid rgba(123, 44, 191, 0.08);
         }
 
         .results-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             margin-top: 1rem;
+            overflow: hidden;
+            border-radius: 12px;
         }
 
         .results-table th {
             background: var(--table-header);
-            color: var(--text-dark);
-            font-weight: 600;
-            padding: 12px;
+            color: var(--primary-blue);
+            font-weight: 800;
+            padding: 14px 16px;
             text-align: left;
+            font-size: 0.9rem;
+            letter-spacing: 0.3px;
+        }
+
+        .results-table th:first-child {
+            border-top-left-radius: 12px;
+        }
+
+        .results-table th:last-child {
+            border-top-right-radius: 12px;
         }
 
         .results-table td {
-            padding: 12px;
+            padding: 14px 16px;
             border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            font-size: 0.9rem;
         }
 
         .results-table tr:hover {
             background: var(--hover-blue);
         }
 
+        .results-table tr:last-child td {
+            border-bottom: none;
+        }
+
         .winner {
-            font-weight: 700;
+            font-weight: 800;
             color: var(--primary-blue);
         }
 
         .empty-state {
             text-align: center;
-            padding: 3rem;
+            padding: 4rem 2rem;
             color: var(--text-muted);
         }
 
         .empty-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.3;
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.2;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        /* Footer */
+        .empty-state strong {
+            display: block;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        /* Footer - Enhanced */
         .footer {
-            background: var(--text-dark);
+            background: linear-gradient(135deg, var(--text-dark) 0%, #1a1a1a 100%);
             color: white;
-            padding: 2rem 0 1rem;
-            margin-top: 3rem;
+            padding: 3rem 0 1.5rem;
+            margin-top: 4rem;
         }
 
         .footer-container {
@@ -428,25 +683,33 @@
             text-align: center;
         }
 
-        .footer-content {
+        .footer-title {
+            font-size: 1.75rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin-bottom: 1rem;
         }
 
-        .footer-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-blue);
-            margin-bottom: 0.5rem;
+        .footer-content p {
+            opacity: 0.8;
+            margin: 0.5rem 0;
+            font-weight: 500;
         }
 
-        /* Mobile Menu */
-        .mobile-menu {
-            display: none;
-            cursor: pointer;
-            font-size: 1.5rem;
+        .footer-bottom {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* New Modal Design - Inspired by Your Original */
+        .footer-bottom p {
+            opacity: 0.6;
+            font-size: 0.9rem;
+        }
+
+        /* Modal - Enhanced */
         .login-modal .modal-dialog {
             max-width: 450px;
             margin: 2rem auto;
@@ -454,21 +717,16 @@
 
         .login-modal .modal-content {
             border: none;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
             background: white;
             overflow: hidden;
         }
 
-        .login-modal .modal-body {
-            padding: 0;
-        }
-
-        /* Modal Header with Image */
         .modal-header-image {
             width: 100%;
             height: 200px;
-            background: linear-gradient(135deg, #9d4edd,#7b2cbf);
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
             display: flex;
             align-items: center;
             justify-content: center;
@@ -482,121 +740,103 @@
             object-fit: cover;
         }
 
-        /* Close Button */
         .modal-close-btn {
             position: absolute;
             top: 15px;
             right: 15px;
-            background: rgba(255, 255, 255, 0.9);
+            background: white;
             border: none;
-            width: 35px;
-            height: 35px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 18px;
-            color: #333;
+            font-size: 20px;
+            color: var(--text-dark);
             transition: all 0.3s ease;
             z-index: 10;
+            box-shadow: var(--shadow-sm);
         }
 
         .modal-close-btn:hover {
-            background: white;
-            transform: scale(1.1);
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: var(--shadow-md);
         }
 
-        /* Tab Buttons */
         .tab-buttons {
             display: flex;
-            background: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
+            background: var(--light-blue);
         }
 
         .tab-button {
             flex: 1;
-            padding: 16px 24px;
-            background: #f8f9fa;
+            padding: 18px 24px;
+            background: transparent;
             border: none;
-            color: #6c757d;
-            font-weight: 600;
+            color: var(--text-muted);
+            font-weight: 700;
             font-size: 14px;
             cursor: pointer;
             text-align: center;
             border-bottom: 3px solid transparent;
             transition: all 0.3s ease;
+            letter-spacing: 0.5px;
         }
 
         .tab-button.active {
             background: white;
-            color: #007bff;
-            border-bottom: 3px solid #007bff;
+            color: var(--primary-blue);
+            border-bottom: 3px solid var(--primary-blue);
         }
 
         .tab-button:hover:not(.active) {
-            background: #e9ecef;
-            color: #495057;
+            background: rgba(123, 44, 191, 0.05);
+            color: var(--primary-blue);
         }
 
-        /* Form Container */
         .form-container {
-            padding: 32px;
+            padding: 2rem;
             background: white;
-            min-height: 300px;
         }
 
-        .form-container form {
-            width: 100%;
-        }
-
-        /* Form Inputs */
         .form-input {
             width: 100%;
             padding: 14px 16px;
             margin-bottom: 18px;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
             font-size: 14px;
             font-family: inherit;
             transition: all 0.3s ease;
             background: white;
+            font-weight: 600;
         }
 
         .form-input:focus {
             outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 4px rgba(123, 44, 191, 0.1);
         }
 
-        .form-input::placeholder {
-            color: #6c757d;
-            font-weight: 500;
-        }
-
-        /* Submit Button */
         .form-submit-button {
             width: 100%;
             padding: 14px 24px;
-            background: linear-gradient(135deg,  #9d4edd,#7b2cbf);
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 15px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .form-submit-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-        }
-
-        .form-submit-button:active {
-            transform: translateY(0);
+            box-shadow: var(--shadow-md);
         }
 
         .form-submit-button:disabled {
@@ -605,51 +845,39 @@
             transform: none;
         }
 
-        /* Error Styling */
-        .error-list {
-            margin-bottom: 20px;
-        }
-
         .error-list ul {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f1aeb5;
-            border-radius: 8px;
-            padding: 12px 16px;
-            margin: 0;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #fca5a5;
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin: 0 0 20px 0;
             list-style: none;
         }
 
         .error-list li {
-            margin: 6px 0;
+            margin: 8px 0;
             font-size: 13px;
+            font-weight: 600;
             position: relative;
-            padding-left: 20px;
+            padding-left: 24px;
         }
 
         .error-list li::before {
-            content: "•";
+            content: "⚠";
             position: absolute;
             left: 0;
         }
 
-        /* Tab Content */
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
         /* Responsive */
+        @media (max-width: 992px) {
+            .carousel-control-prev.custom-arrow-btn { left: -40px; }
+            .carousel-control-next.custom-arrow-btn { right: -40px; }
+        }
+
         @media (max-width: 768px) {
             .nav-menu {
                 display: none;
-            }
-
-            .mobile-menu {
-                display: block;
             }
 
             .header-container {
@@ -658,13 +886,18 @@
 
             .hero-section,
             .tournaments-section,
-            .recent-results {
+            .recent-results,
+            .card-like {
                 margin: 1rem;
-                padding: 1rem;
+                padding: 1.5rem;
             }
 
             .hero-title {
                 font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
             }
 
             .games-grid,
@@ -672,319 +905,53 @@
                 grid-template-columns: 1fr;
             }
 
-            .teams-matchup {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .vs-divider {
-                margin: 0;
+            .section-title {
+                font-size: 1.35rem;
             }
 
             .results-table {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
             }
 
             .results-table th,
             .results-table td {
-                padding: 8px;
-            }
-
-            /* Mobile Responsive */
-            .login-modal .modal-dialog {
-                margin: 1rem;
-                max-width: calc(100vw - 2rem);
-            }
-
-            .modal-header-image {
-                height: 160px;
-            }
-
-            .form-container {
-                padding: 24px 20px;
-            }
-
-            .tab-button {
-                padding: 14px 16px;
-                font-size: 13px;
-            }
-
-            .form-input {
-                padding: 12px 14px;
-                margin-bottom: 16px;
-            }
-
-            .form-submit-button {
-                padding: 12px 20px;
-                font-size: 14px;
+                padding: 10px;
             }
         }
 
-        .view-all-btn {
-            background: var(--primary-blue);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.3s ease;
-        }
-
-        .view-all-btn:hover {
-            background: var(--secondary-blue);
-            color: white;
-            text-decoration: none;
-            transform: translateY(-1px);
-        }
-
-        /* Tournament Tabs */
-        .tournament-tabs {
-            display: flex;
-            flex-wrap: nowrap;
-            gap: 1rem;
-            align-items: center;
-            justify-content: center; /* center the row within its container */
-            margin: 0 auto 1.5rem auto; /* center block and spacing below */
-            padding-bottom: 0;
-            overflow-x: auto; /* allow horizontal scroll */
-            -webkit-overflow-scrolling: touch;
-            width: calc(100% - 2rem);
-            max-width: 980px; /* limit width so tabs appear centered on large screens */
-            padding: 0.5rem 1rem;
-            scroll-snap-type: x mandatory; /* enable snap to center */
-        }
-
-        /* Games container that wraps the tournament tabs and games carousels */
-        .games-container {
-            max-width: 1200px; /* match other sections */
-            margin: 2rem auto; /* same vertical spacing as other sections */
-            padding: 0 2rem; /* same horizontal padding as header/sections */
-            width: 100%;
-        }
-
-        /* Card-like styling for the games container */
-        .card-like {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem; /* match other section padding */
-            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
-            border: 1px solid rgba(0,0,0,0.04);
-        }
-
-        .card-like .section-header {
-            padding-bottom: 0.75rem;
-            margin-bottom: 0.75rem;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-
-        /* Carousel for tournament tabs */
-        .tournament-tabs-carousel .carousel-inner {
-            padding: 0.5rem 0;
-        }
-
-        .tournament-tabs-carousel .carousel-item .tournament-tab {
-            flex: 0 0 30%;
-            max-width: 30%;
-            min-width: 220px;
-        }
-
-        /* Custom arrow buttons for tournament tabs */
-        .custom-arrow-btn {
-            background: transparent;
-            border: none;
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary-blue);
-            font-size: 30px;
-            font-weight: 800;
-            text-shadow: none;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 30;
-            cursor: pointer;
-        }
-
-        .custom-arrow-btn:focus {
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(125,44,191,0.12);
-            border-radius: 50%;
-        }
-
-        .custom-arrow-btn .custom-arrow {
-            display: inline-block;
-            line-height: 1;
-        }
-
-        /* Position arrows outside the tab area on desktop to avoid overlap */
-        .carousel-control-prev.custom-arrow-btn { left: -60px; }
-        .carousel-control-next.custom-arrow-btn { right: -60px; }
-
-        /* Hover/focus effect */
-        .custom-arrow-btn:hover .custom-arrow,
-        .custom-arrow-btn:focus .custom-arrow {
-            color: var(--secondary-blue);
-            transform: scale(1.05);
-        }
-
-        /* Medium screens: bring arrows slightly closer but still outside */
-        @media (max-width: 992px) {
-            .carousel-control-prev.custom-arrow-btn { left: -40px; }
-            .carousel-control-next.custom-arrow-btn { right: -40px; }
-        }
-
-        /* Small screens: place arrows inside but offset from tabs and give white circular background */
         @media (max-width: 576px) {
-            .carousel-control-prev.custom-arrow-btn { left: 8px; }
-            .carousel-control-next.custom-arrow-btn { right: 8px; }
-            .custom-arrow-btn {
+            .carousel-control-prev.custom-arrow-btn { 
+                left: 8px;
                 width: 40px;
                 height: 40px;
-                font-size: 22px;
-                background: white;
-                border-radius: 50%;
-                box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-                color: var(--primary-blue);
+                font-size: 20px;
+            }
+            .carousel-control-next.custom-arrow-btn { 
+                right: 8px;
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
             }
         }
 
-        @media (max-width: 992px) {
-            .tournament-tabs-carousel .carousel-item .tournament-tab {
-                flex: 0 0 45%;
-                max-width: 45%;
-            }
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
         }
 
-        @media (max-width: 576px) {
-            .tournament-tabs-carousel .carousel-item .tournament-tab {
-                flex: 0 0 90%;
-                max-width: 90%;
-                margin: 0 auto;
-            }
+        /* Loading animation */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
         }
 
-        .tournament-tab {
-            background: white;
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 0.85rem 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 260px; /* slightly smaller for better fit */
-            max-width: 340px;
-            width: 100%;
-            position: relative;
-            display: flex;
-            justify-content: center; /* center content inside each tab */
-            align-items: center;
-            text-align: center;
-            flex: 0 0 auto; /* prevent shrinking/growing */
-            scroll-snap-align: center; /* snap this tab to center */
-        }
-
-        .tournament-tab:hover {
-            border-color: var(--secondary-blue);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(66, 133, 244, 0.1);
-        }
-
-        .tournament-tab.active {
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
-            color: white;
-            border-color: var(--primary-blue);
-        }
-
-        .tab-info {
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* center tab text */
-        }
-
-        .tab-name {
-            font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .tab-meta {
-            font-size: 0.8rem;
-            opacity: 0.7;
-        }
-
-        .live-dot {
-            width: 8px;
-            height: 8px;
-            background: #dc3545;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        .tournament-tab.active .live-dot {
-            background: white;
-        }
-
-        /* Tournament Games Content */
-        .tournament-games-content {
-            display: none;
-        }
-
-        .tournament-games-content.active {
-            display: block;
-        }
-
-        .show-more-container {
-            text-align: center;
-            margin-top: 2rem;
-        }
-
-        .show-more-btn {
-            background: white;
-            color: var(--primary-blue);
-            border: 2px solid var(--primary-blue);
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .show-more-btn:hover {
-            background: var(--primary-blue);
-            color: white;
-            text-decoration: none;
-            transform: translateY(-1px);
-        }
-
-        /* Mobile responsive for tournament tabs */
-        @media (max-width: 768px) {
-            .tournament-tabs {
-                /* keep horizontal scrolling on mobile for quick swipe between tournaments */
-                flex-direction: row;
-                gap: 0.75rem;
-                padding: 0.5rem 0.25rem;
-                width: 100%;
-                max-width: 100%;
-            }
-
-            .tournament-tab {
-                min-width: 220px;
-                max-width: 300px;
-                width: auto;
-            }
+        .loading {
+            animation: shimmer 2s infinite;
+            background: linear-gradient(to right, #f0f0f0 4%, #e0e0e0 25%, #f0f0f0 36%);
+            background-size: 1000px 100%;
         }
     </style>
 </head>
-
 <body>
     <!-- Header -->
     <header class="header">
@@ -1011,26 +978,21 @@
         </div>
     </header>
 
-    <!-- New Modern Modal Design -->
+    <!-- Modal -->
     <div class="modal fade login-modal" id="loginModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body">
-                    <!-- Header with Sports Image -->
                     <div class="modal-header-image">
                         <img src="{{ asset('images/f05945b3f8021150c0a3403a1cd2a004.png') }}" alt="Sports" />
                         <button type="button" class="modal-close-btn" data-bs-dismiss="modal" aria-label="Close">
                             <i class="bi bi-x"></i>
                         </button>
                     </div>
-
-                    <!-- Tab Buttons -->
                     <div class="tab-buttons">
                         <button class="tab-button active" onclick="switchTab('login', event)">LOGIN</button>
                         <button class="tab-button" onclick="switchTab('register', event)">REGISTER</button>
                     </div>
-
-                    <!-- Form Container -->
                     <div class="form-container">
                         <!-- Login Tab -->
                         <div id="loginTab" class="tab-content active">
@@ -1043,7 +1005,6 @@
                                     </ul>
                                 </div>
                             @endif
-
                             <form action="{{ route('login') }}" method="POST" id="loginForm">
                                 @csrf
                                 <input type="hidden" name="form_type" value="login">
@@ -1055,9 +1016,8 @@
                                 <button type="submit" class="form-submit-button">Login</button>
                             </form>
                         </div>
-
                         <!-- Register Tab -->
-                        <div id="registerTab" class="tab-content">
+                        <div id="registerTab" class="tab-content" style="display: none;">
                             @if ($errors->any() && session('form_type') === 'register')
                                 <div class="error-list">
                                     <ul>
@@ -1067,7 +1027,6 @@
                                     </ul>
                                 </div>
                             @endif
-
                             <form action="{{ route('register') }}" method="POST" id="registerForm">
                                 @csrf
                                 <input type="hidden" name="form_type" value="register">
@@ -1095,19 +1054,17 @@
     <section class="hero-section">
         <div class="hero-header">
             <h1 class="hero-title">DigiTally</h1>
-            <p class="hero-subtitle">Digital Score And Stats For Local Leagues yeah</p>
+            <p class="hero-subtitle">Digital Score And Stats For Local Leagues</p>
         </div>
     </section>
 
     <!-- Live Games -->
     <section class="live-games" id="games">
-        <!-- Tournament Tabs always at the top of games section -->
         @php
             $liveCount = $tournamentGames->sum(function ($t) {
                 return $t->games->where('status', 'in-progress')->count();
             });
         @endphp
-
         <div class="games-container card-like">
             <div class="section-header">
                 <h2 class="section-title" style="width: 100%; text-align: left;">
@@ -1121,121 +1078,116 @@
             @if ($tournamentGames->count() > 0)
                 <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 2rem;">
                     <div id="tournamentTabsCarousel" class="carousel slide tournament-tabs-carousel" data-bs-interval="false">
-                            <div class="carousel-inner">
-                                @foreach ($tournamentGames->chunk(3) as $chunkIndex => $tournamentsChunk)
-                                    <div class="carousel-item {{ $chunkIndex === 0 ? 'active' : '' }}">
-                                        <div class="d-flex justify-content-center gap-3">
-                                            @foreach ($tournamentsChunk as $index => $tournament)
-                                                <button class="tournament-tab {{ $chunkIndex === 0 && $index === 0 ? 'active' : '' }}"
-                                                    onclick="switchTournament('{{ $tournament->id }}', this)"
-                                                    data-tournament-id="{{ $tournament->id }}">
-                                                    <div class="tab-info">
-                                                        <span class="tab-name">{{ $tournament->name }}</span>
-                                                        <span class="tab-meta">{{ $tournament->sport_name }} • {{ $tournament->games->count() }} Games</span>
-                                                    </div>
-                                                    @if ($tournament->games->where('status', 'in-progress')->count() > 0)
-                                                        <span class="live-dot"></span>
-                                                    @endif
-                                                </button>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            <button class="carousel-control-prev custom-arrow-btn" type="button" data-bs-target="#tournamentTabsCarousel" data-bs-slide="prev" aria-label="Previous tournaments">
-                                <span class="custom-arrow">&lt;</span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next custom-arrow-btn" type="button" data-bs-target="#tournamentTabsCarousel" data-bs-slide="next" aria-label="Next tournaments">
-                                <span class="custom-arrow">&gt;</span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
-                        </div>
-            </div>
-            <hr style="margin-bottom:2rem;">
-            <!-- Tournament Games Content -->
-            @foreach ($tournamentGames as $index => $tournament)
-                <div class="tournament-games-content {{ $index === 0 ? 'active' : '' }}"
-                    data-tournament-id="{{ $tournament->id }}">
-                    @if ($tournament->games->count() > 0)
-                        <div id="tournamentGamesCarousel-{{ $tournament->id }}" class="carousel slide games-carousel" data-bs-interval="false">
-                            <div class="carousel-inner">
-                                @foreach ($tournament->games->chunk(3) as $chunkIndex => $gamesChunk)
-                                    <div class="carousel-item {{ $chunkIndex === 0 ? 'active' : '' }}">
-                                        <div class="d-flex justify-content-center gap-3 align-items-stretch">
-                                            @foreach ($gamesChunk as $game)
-                                                <div class="game-card" data-game-id="{{ $game->id }}">
-                                                    <div class="game-info">
-                                                        <span class="sport-tag">{{ $tournament->sport_name }}</span>
-                                                        <span class="game-status">
-                                                            @if ($game->status === 'completed')
-                                                                Final
-                                                            @elseif($game->status === 'in-progress')
-                                                                <span class="live-indicator">LIVE</span>
-                                                                @if ($tournament->sport_name === 'Basketball')
-                                                                    Q{{ $game->current_quarter ?? 1 }} -
-                                                                    {{ $game->time_remaining ?? '12:00' }}
-                                                                @else
-                                                                    Set {{ $game->current_set ?? 1 }}
-                                                                @endif
-                                                            @elseif($game->scheduled_at)
-                                                                {{ \Carbon\Carbon::parse($game->scheduled_at)->format('M j, g:i A') }}
-                                                            @else
-                                                                Round {{ $game->round }}
-                                                            @endif
-                                                        </span>
-                                                    </div>
-                                                    <div class="teams-matchup">
-                                                        <div class="team">
-                                                            <div class="team-name">{{ $game->team1->team_name ?? 'TBD' }}</div>
-                                                            <div class="team-score">{{ $game->team1_score ?? '--' }}</div>
-                                                        </div>
-                                                        <div class="vs-divider">VS</div>
-                                                        <div class="team">
-                                                            <div class="team-name">{{ $game->team2->team_name ?? 'TBD' }}</div>
-                                                            <div class="team-score">{{ $game->team2_score ?? '--' }}</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="game-details">
-                                                        <span>Round {{ $game->round }} • Match
-                                                            {{ $game->match_number ?? 'TBD' }}</span>
-                                                        @if ($game->completed_at)
-                                                            <span>{{ \Carbon\Carbon::parse($game->completed_at)->format('M j, g:i A') }}</span>
-                                                        @elseif($game->scheduled_at)
-                                                            <span>{{ \Carbon\Carbon::parse($game->scheduled_at)->format('M j, g:i A') }}</span>
-                                                        @else
-                                                            <span>Time: TBD</span>
-                                                        @endif
-                                                    </div>
+                        <div class="carousel-inner">
+                            @foreach ($tournamentGames->chunk(3) as $chunkIndex => $tournamentsChunk)
+                                <div class="carousel-item {{ $chunkIndex === 0 ? 'active' : '' }}">
+                                    <div class="d-flex justify-content-center gap-3">
+                                        @foreach ($tournamentsChunk as $index => $tournament)
+                                            <button class="tournament-tab {{ $chunkIndex === 0 && $index === 0 ? 'active' : '' }}"
+                                                onclick="switchTournament('{{ $tournament->id }}', this)"
+                                                data-tournament-id="{{ $tournament->id }}">
+                                                <div class="tab-info">
+                                                    <span class="tab-name">{{ $tournament->name }}</span>
+                                                    <span class="tab-meta">{{ $tournament->sport_name }} • {{ $tournament->games->count() }} Games</span>
                                                 </div>
-                                            @endforeach
-                                        </div>
+                                                @if ($tournament->games->where('status', 'in-progress')->count() > 0)
+                                                    <span class="live-dot"></span>
+                                                @endif
+                                            </button>
+                                        @endforeach
                                     </div>
-                                @endforeach
-                            </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        <button class="carousel-control-prev custom-arrow-btn" type="button" data-bs-target="#tournamentTabsCarousel" data-bs-slide="prev" aria-label="Previous tournaments">
+                            <span class="custom-arrow">&lt;</span>
+                        </button>
+                        <button class="carousel-control-next custom-arrow-btn" type="button" data-bs-target="#tournamentTabsCarousel" data-bs-slide="next" aria-label="Next tournaments">
+                            <span class="custom-arrow">&gt;</span>
+                        </button>
+                    </div>
+                </div>
 
-                            <button class="carousel-control-prev" type="button" data-bs-target="#tournamentGamesCarousel-{{ $tournament->id }}" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#tournamentGamesCarousel-{{ $tournament->id }}" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
-                        </div>
-                    @else
-                        <div class="empty-state">
-                            <div class="empty-icon">
-                                <i class="bi bi-calendar-x"></i>
+                <hr style="margin-bottom:2rem;">
+
+                <!-- Tournament Games Content -->
+                @foreach ($tournamentGames as $index => $tournament)
+                    <div class="tournament-games-content {{ $index === 0 ? 'active' : '' }}" style="display: {{ $index === 0 ? 'block' : 'none' }};"
+                        data-tournament-id="{{ $tournament->id }}">
+                        @if ($tournament->games->count() > 0)
+                            <div id="tournamentGamesCarousel-{{ $tournament->id }}" class="carousel slide games-carousel" data-bs-interval="false">
+                                <div class="carousel-inner">
+                                    @foreach ($tournament->games->chunk(3) as $chunkIndex => $gamesChunk)
+                                        <div class="carousel-item {{ $chunkIndex === 0 ? 'active' : '' }}">
+                                            <div class="games-grid">
+                                                @foreach ($gamesChunk as $game)
+                                                    <div class="game-card" data-game-id="{{ $game->id }}">
+                                                        <div class="game-info">
+                                                            <span class="sport-tag">{{ $tournament->sport_name }}</span>
+                                                            <span class="game-status">
+                                                                @if ($game->status === 'completed')
+                                                                    Final
+                                                                @elseif($game->status === 'in-progress')
+                                                                    <span class="live-indicator">LIVE</span>
+                                                                    @if ($tournament->sport_name === 'Basketball')
+                                                                        Q{{ $game->current_quarter ?? 1 }} - {{ $game->time_remaining ?? '12:00' }}
+                                                                    @else
+                                                                        Set {{ $game->current_set ?? 1 }}
+                                                                    @endif
+                                                                @elseif($game->scheduled_at)
+                                                                    {{ \Carbon\Carbon::parse($game->scheduled_at)->format('M j, g:i A') }}
+                                                                @else
+                                                                    Round {{ $game->round }}
+                                                                @endif
+                                                            </span>
+                                                        </div>
+                                                        <div class="teams-matchup">
+                                                            <div class="team">
+                                                                <div class="team-name">{{ $game->team1->team_name ?? 'TBD' }}</div>
+                                                                <div class="team-score">{{ $game->team1_score ?? '--' }}</div>
+                                                            </div>
+                                                            <div class="vs-divider">VS</div>
+                                                            <div class="team">
+                                                                <div class="team-name">{{ $game->team2->team_name ?? 'TBD' }}</div>
+                                                                <div class="team-score">{{ $game->team2_score ?? '--' }}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="game-details">
+                                                            <span>Round {{ $game->round }} • Match {{ $game->match_number ?? 'TBD' }}</span>
+                                                            @if ($game->completed_at)
+                                                                <span>{{ \Carbon\Carbon::parse($game->completed_at)->format('M j, g:i A') }}</span>
+                                                            @elseif($game->scheduled_at)
+                                                                <span>{{ \Carbon\Carbon::parse($game->scheduled_at)->format('M j, g:i A') }}</span>
+                                                            @else
+                                                                <span>Time: TBD</span>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @if ($tournament->games->count() > 3)
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#tournamentGamesCarousel-{{ $tournament->id }}" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#tournamentGamesCarousel-{{ $tournament->id }}" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    </button>
+                                @endif
                             </div>
-                            <p><strong>No games scheduled</strong></p>
-                            <p>Games will appear here when the bracket is generated.</p>
-                        </div>
-                    @endif
-                </div>
-            @endforeach
-                </div>
+                        @else
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <i class="bi bi-calendar-x"></i>
+                                </div>
+                                <p><strong>No games scheduled</strong></p>
+                                <p>Games will appear here when the bracket is generated.</p>
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
             @else
                 <div class="empty-state" style="padding:2rem;">
                     <div class="empty-icon">
@@ -1245,7 +1197,7 @@
                     <p>Check back later for upcoming matches.</p>
                 </div>
             @endif
-        </div> {{-- end .games-container --}}
+        </div>
     </section>
 
     <!-- Active Tournaments -->
@@ -1261,8 +1213,7 @@
                 <div class="tournament-card">
                     <div class="tournament-header">
                         <div class="tournament-name">{{ $tournament->name }}</div>
-                        <span
-                            class="tournament-status 
+                        <span class="tournament-status
                             @if ($tournament->brackets->where('status', 'active')->count() > 0) status-active
                             @elseif($tournament->start_date && \Carbon\Carbon::parse($tournament->start_date)->isFuture())
                                 status-upcoming
@@ -1328,16 +1279,13 @@
                 <tbody>
                     @foreach ($recentResults as $game)
                         <tr>
-                            <td>{{ $game->completed_at ? \Carbon\Carbon::parse($game->completed_at)->format('M j') : 'N/A' }}
-                            </td>
+                            <td>{{ $game->completed_at ? \Carbon\Carbon::parse($game->completed_at)->format('M j') : 'N/A' }}</td>
                             <td>{{ $game->bracket->tournament->sport_name }}</td>
                             <td>
                                 @if ($game->winner_id === $game->team1_id)
-                                    <span class="winner">{{ $game->team1->team_name }}</span> vs
-                                    {{ $game->team2->team_name }}
+                                    <span class="winner">{{ $game->team1->team_name }}</span> vs {{ $game->team2->team_name }}
                                 @else
-                                    {{ $game->team1->team_name }} vs <span
-                                        class="winner">{{ $game->team2->team_name }}</span>
+                                    {{ $game->team1->team_name }} vs <span class="winner">{{ $game->team2->team_name }}</span>
                                 @endif
                             </td>
                             <td>{{ $game->team1_score ?? 0 }} - {{ $game->team2_score ?? 0 }}</td>
@@ -1371,24 +1319,18 @@
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-
     <script>
-        // Tab switching functionality - Your Original Logic
         function switchTab(tabName, event) {
-            // Update tab buttons
             const tabButtons = document.querySelectorAll('.tab-button');
             tabButtons.forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
 
-            // Update tab content
             const tabContents = document.querySelectorAll('.tab-content');
-            tabContents.forEach(content => content.classList.remove('active'));
-            document.getElementById(tabName + 'Tab').classList.add('active');
+            tabContents.forEach(content => content.style.display = 'none');
+            document.getElementById(tabName + 'Tab').style.display = 'block';
         }
 
-        // Your Original Login Form Validation
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             const email = this.email.value;
             const password = this.password.value;
@@ -1401,13 +1343,11 @@
                 return false;
             }
 
-            // Add loading state
             const submitBtn = this.querySelector('.form-submit-button');
             const originalText = submitBtn.textContent;
             submitBtn.disabled = true;
             submitBtn.textContent = 'LOGGING IN...';
 
-            // Reset button if needed (fallback)
             setTimeout(() => {
                 if (submitBtn.disabled) {
                     submitBtn.disabled = false;
@@ -1416,13 +1356,11 @@
             }, 5000);
         });
 
-        // Your Original Register Form Validation
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             const name = this.name.value;
             const email = this.email.value;
             const password = this.password.value;
             const confirmPassword = this.password_confirmation.value;
-
             const namePattern = /^[a-zA-Z0-9 ]+$/;
             const emailPattern = /^[a-zA-Z0-9@.]+$/;
             const passwordPattern = /^[a-zA-Z0-9]+$/;
@@ -1434,13 +1372,11 @@
                 return false;
             }
 
-            // Add loading state
             const submitBtn = this.querySelector('.form-submit-button');
             const originalText = submitBtn.textContent;
             submitBtn.disabled = true;
             submitBtn.textContent = 'REGISTERING...';
 
-            // Reset button if needed (fallback)
             setTimeout(() => {
                 if (submitBtn.disabled) {
                     submitBtn.disabled = false;
@@ -1449,94 +1385,52 @@
             }, 5000);
         });
 
-        // Auto-focus first input when modal opens
         document.getElementById('loginModal').addEventListener('shown.bs.modal', function() {
-            const activeTab = document.querySelector('.tab-content.active');
+            const activeTab = document.querySelector('.tab-content[style*="block"]') || document.querySelector('.tab-content');
             const firstInput = activeTab.querySelector('.form-input');
-            if (firstInput) {
-                firstInput.focus();
-            }
+            if (firstInput) firstInput.focus();
         });
 
-        // Open modal and switch to appropriate tab if there are validation errors
         @if ($errors->any())
             document.addEventListener('DOMContentLoaded', function() {
                 const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
                 loginModal.show();
-
                 @if (session('form_type') === 'register')
-                    // Switch to register tab if register form had errors
                     setTimeout(() => {
                         const registerTabBtn = document.querySelectorAll('.tab-button')[1];
                         const loginTabBtn = document.querySelectorAll('.tab-button')[0];
-
                         loginTabBtn.classList.remove('active');
                         registerTabBtn.classList.add('active');
-
-                        document.getElementById('loginTab').classList.remove('active');
-                        document.getElementById('registerTab').classList.add('active');
+                        document.getElementById('loginTab').style.display = 'none';
+                        document.getElementById('registerTab').style.display = 'block';
                     }, 100);
                 @endif
             });
         @endif
 
-        // Auto-refresh live scores every 30 seconds
-        function refreshLiveScores() {
-            fetch('{{ route('api.live-scores') }}')
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(game => {
-                        const gameCard = document.querySelector(`[data-game-id="${game.id}"]`);
-                        if (gameCard) {
-                            // Update scores
-                            const team1Score = gameCard.querySelector('.team:first-child .team-score');
-                            const team2Score = gameCard.querySelector('.team:last-child .team-score');
-                            const gameStatus = gameCard.querySelector('.game-status');
+        function switchTournament(tournamentId, clickedTab) {
+            const allTabs = document.querySelectorAll('.tournament-tab');
+            allTabs.forEach(tab => tab.classList.remove('active'));
+            clickedTab.classList.add('active');
 
-                            if (team1Score) team1Score.textContent = game.team1.score;
-                            if (team2Score) team2Score.textContent = game.team2.score;
-                            if (gameStatus) gameStatus.textContent = game.status;
-                        }
-                    });
-                })
-                .catch(error => console.log('Error fetching live scores:', error));
+            const allContent = document.querySelectorAll('.tournament-games-content');
+            allContent.forEach(content => content.style.display = 'none');
+
+            const targetContent = document.querySelector(`[data-tournament-id="${tournamentId}"].tournament-games-content`);
+            if (targetContent) {
+                targetContent.style.display = 'block';
+            }
         }
 
-        // Start auto-refresh if there are live games
-        @if ($liveGames->where('status', 'in-progress')->count() > 0)
-            setInterval(refreshLiveScores, 30000);
-        @endif
-
-        // Smooth scrolling for navigation
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             });
         });
-
-        function switchTournament(tournamentId, clickedTab) {
-            // Update tab buttons
-            const allTabs = document.querySelectorAll('.tournament-tab');
-            allTabs.forEach(tab => tab.classList.remove('active'));
-            clickedTab.classList.add('active');
-
-            // Update tournament content
-            const allContent = document.querySelectorAll('.tournament-games-content');
-            allContent.forEach(content => content.classList.remove('active'));
-
-            const targetContent = document.querySelector(`[data-tournament-id="${tournamentId}"].tournament-games-content`);
-            if (targetContent) {
-                targetContent.classList.add('active');
-            }
-        }
     </script>
 </body>
-
 </html>

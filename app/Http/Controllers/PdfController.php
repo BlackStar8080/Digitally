@@ -128,9 +128,7 @@ class PdfController extends Controller
     return $pdf->download("{$tournament->name}_bracket.pdf");
 }
 
-    /**
-     * Stream basketball scoresheet (view in browser)
-     */
+
     public function viewBasketballScoresheet($gameId)
     {
         $game = Game::with([
@@ -234,7 +232,10 @@ class PdfController extends Controller
     /**
  * Stream volleyball scoresheet (view in browser)
  */
-public function viewVolleyballScoresheet($gameId)
+/**
+ * Download volleyball scoresheet as PDF
+ */
+public function volleyballScoresheet($gameId)
 {
     $game = \App\Models\Game::with([
         'team1.players',
@@ -259,42 +260,100 @@ public function viewVolleyballScoresheet($gameId)
         $liveData = [
             'team1_sets_won' => $game->volleyballTallysheet->team1_sets_won ?? 0,
             'team2_sets_won' => $game->volleyballTallysheet->team2_sets_won ?? 0,
+            'team1_score' => $game->volleyballTallysheet->team1_sets_won ?? 0,
+            'team2_score' => $game->volleyballTallysheet->team2_sets_won ?? 0,
             'set_scores' => $game->volleyballTallysheet->set_scores ?? [],
             'events' => $game->volleyballTallysheet->game_events ?? [],
             'running_scores' => $game->volleyballTallysheet->running_scores ?? [],
+            'team1_timeouts' => $game->volleyballTallysheet->team1_timeouts ?? 0,
+            'team2_timeouts' => $game->volleyballTallysheet->team2_timeouts ?? 0,
+            'team1_substitutions' => $game->volleyballTallysheet->team1_substitutions ?? 0,
+            'team2_substitutions' => $game->volleyballTallysheet->team2_substitutions ?? 0,
+            'best_player_id' => $game->volleyballTallysheet->best_player_id ?? null,
+            'best_player_stats' => $game->volleyballTallysheet->best_player_stats ?? [],
+            'initial_server' => $game->volleyballTallysheet->initial_server ?? null,
         ];
     }
 
-    // Convert logos to base64 if needed
-    $logoLeft = '';
-    $logoRight = '';
-    $leftPath = public_path('images/logo/tagoloan-flag.png');
-    $rightPath = public_path('images/logo/mayor-logo.png');
-    if (file_exists($leftPath)) $logoLeft = base64_encode(file_get_contents($leftPath));
-    if (file_exists($rightPath)) $logoRight = base64_encode(file_get_contents($rightPath));
-
-    $isPdf = true;
+    $isPdf = true; // ✅ Flag to hide download button in PDF
 
     $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('games.volleyball-scoresheet', compact(
         'game',
         'team1Players',
         'team2Players',
         'liveData',
-        'isPdf',
-        'logoLeft',
-        'logoRight'
+        'isPdf' // ✅ Pass the flag
     ))->setOptions([
         'defaultFont' => 'DejaVu Sans',
         'isHtml5ParserEnabled' => true,
-        'isRemoteEnabled' => true,
-        'dpi' => 150,
+        'isRemoteEnabled' => false,
+        'dpi' => 96,
         'enable_font_subsetting' => true,
     ]);
 
-    $pdf->getDomPDF()->getOptions()->set('isUnicodeEnabled', true);
-    $pdf->setPaper('legal', 'landscape'); // ✅ Long bondpaper, landscape
+    $pdf->setPaper('legal', 'landscape');
 
-    return $pdf->stream('volleyball-scoresheet-game-' . $game->id . '.pdf');
+    $filename = sprintf(
+        'volleyball-scoresheet-%s-vs-%s-game%d.pdf',
+        str_replace(' ', '-', strtolower($game->team1->team_name)),
+        str_replace(' ', '-', strtolower($game->team2->team_name)),
+        $game->id
+    );
+
+    return $pdf->download($filename);
+}
+
+/**
+ * View volleyball scoresheet in browser (with download button)
+ */
+public function viewVolleyballScoresheet($gameId)
+{
+    $game = \App\Models\Game::with([
+        'team1.players',
+        'team2.players',
+        'bracket.tournament',
+        'volleyballTallysheet',
+        'volleyballPlayerStats.player'
+    ])->findOrFail($gameId);
+
+    $team1Data = json_decode($game->team1_selected_players, true) ?? [];
+    $team2Data = json_decode($game->team2_selected_players, true) ?? [];
+
+    $team1RosterIds = $team1Data['roster'] ?? [];
+    $team2RosterIds = $team2Data['roster'] ?? [];
+
+    $team1Players = $game->team1->players->filter(fn($p) => in_array($p->id, $team1RosterIds))->sortBy('number');
+    $team2Players = $game->team2->players->filter(fn($p) => in_array($p->id, $team2RosterIds))->sortBy('number');
+
+    $liveData = [];
+    if ($game->volleyballTallysheet) {
+        $liveData = [
+            'team1_sets_won' => $game->volleyballTallysheet->team1_sets_won ?? 0,
+            'team2_sets_won' => $game->volleyballTallysheet->team2_sets_won ?? 0,
+            'team1_score' => $game->volleyballTallysheet->team1_sets_won ?? 0,
+            'team2_score' => $game->volleyballTallysheet->team2_sets_won ?? 0,
+            'set_scores' => $game->volleyballTallysheet->set_scores ?? [],
+            'events' => $game->volleyballTallysheet->game_events ?? [],
+            'running_scores' => $game->volleyballTallysheet->running_scores ?? [],
+            'team1_timeouts' => $game->volleyballTallysheet->team1_timeouts ?? 0,
+            'team2_timeouts' => $game->volleyballTallysheet->team2_timeouts ?? 0,
+            'team1_substitutions' => $game->volleyballTallysheet->team1_substitutions ?? 0,
+            'team2_substitutions' => $game->volleyballTallysheet->team2_substitutions ?? 0,
+            'best_player_id' => $game->volleyballTallysheet->best_player_id ?? null,
+            'best_player_stats' => $game->volleyballTallysheet->best_player_stats ?? [],
+            'initial_server' => $game->volleyballTallysheet->initial_server ?? null,
+        ];
+    }
+
+    $isPdf = false; // ✅ Show download button in browser view
+
+    return view('games.volleyball-scoresheet', compact(
+        'game',
+        'team1Players',
+        'team2Players',
+        'liveData',
+        'isPdf' // ✅ Pass the flag
+    ));
 }
 
 }
