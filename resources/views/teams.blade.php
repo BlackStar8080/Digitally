@@ -4,8 +4,6 @@
 
 @push('styles')
 <style>
-/* [Previous CSS styles remain the same - keeping all existing styles] */
-/* Toast Notification Styles */
 .toast-container {
     position: fixed;
     top: 20px;
@@ -591,8 +589,7 @@ body {
         <div class="page-card">
             <div class="page-header">
                 <h1 class="page-title">Teams Management</h1>
-            </div>
-            
+            </div>          
             <div class="page-content">
                 <div class="controls-section">
                     <div class="filters-group">
@@ -611,20 +608,25 @@ body {
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>
-                        @if(!session('is_guest'))
+                        @if(!session('is_guest') && isset($game) && $game)
                             @if ($game->isVolleyball())
                                 <a href="javascript:void(0);" 
-                                class="tally-sheet-btn btn btn-info"
-                                onclick="openTallySheet({{ $game->id }}, 'volleyball')">
+                                   class="tally-sheet-btn btn btn-info"
+                                   onclick="openTallySheet({{ $game->id }}, 'volleyball')">
                                     <i class="bi bi-clipboard-data"></i> Tallysheet
                                 </a>
                             @else
                                 <a href="javascript:void(0);" 
-                                class="tally-sheet-btn btn btn-info"
-                                onclick="openTallySheet({{ $game->id }}, 'basketball')">
+                                   class="tally-sheet-btn btn btn-info"
+                                   onclick="openTallySheet({{ $game->id }}, 'basketball')">
                                     <i class="bi bi-clipboard-data"></i> Tallysheet
                                 </a>
                             @endif
+                        @endif
+                        @if(!session('is_guest'))
+                            <button class="add-btn" data-bs-toggle="modal" data-bs-target="#addTeamModal">
+                                <i class="bi bi-plus-circle me-2"></i>Add Team
+                            </button>
                         @endif
                     </div>
                 </div>
@@ -713,20 +715,20 @@ body {
                     </div>
                     
                     <div class="mb-3">
-    <label for="sport" class="form-label">Sport</label>
-    <select class="form-control @error('sport_id') is-invalid @enderror" 
-            id="sport" name="sport_id" required>
-        <option value="">Select Sport</option>
-        @foreach ($sports as $sport)
-            <option value="{{ $sport->sports_id }}" {{ old('sport_id') == $sport->sports_id ? 'selected' : '' }}>
-                {{ $sport->sports_name }}
-            </option>
-        @endforeach
-    </select>
-    @error('sport_id')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
+                        <label for="sport" class="form-label">Sport</label>
+                        <select class="form-control @error('sport_id') is-invalid @enderror" 
+                                id="sport" name="sport_id" required>
+                            <option value="">Select Sport</option>
+                            @foreach ($sports as $sport)
+                                <option value="{{ $sport->sports_id }}" {{ old('sport_id') == $sport->sports_id ? 'selected' : '' }}>
+                                    {{ $sport->sports_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('sport_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -869,6 +871,7 @@ function hideToast() {
     const searchInput = document.getElementById('searchTeams');
     const sportFilter = document.getElementById('sportFilter');
     const teams = @json($teams);
+    const isGuest = @json(session('is_guest', false));
 
     function renderTeams(list) {
         if (!Array.isArray(list) || list.length === 0) {
@@ -897,18 +900,24 @@ function hideToast() {
                 logoHtml = escapeHtml(String((team.team_name || '').charAt(0) || '').toUpperCase());
             }
 
+            // Team actions for non-guests
+            let actionsHtml = '';
+            if (!isGuest) {
+                actionsHtml = `
+                    <div class="team-actions">
+                        <button class="btn-card-action btn-card-edit" onclick="openEditModal(${team.id}, event)" title="Edit Team">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button class="btn-card-action btn-card-delete" onclick="deleteTeam(${team.id}, '${escapeHtml(team.team_name)}', event)" title="Delete Team">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </div>
+                `;
+            }
+
             return `
                 <div class="team-card fade-in-card" style="animation-delay: ${index * 0.05}s">
-                    @if(!session('is_guest'))
-                        <div class="team-actions">
-                            <button class="btn-card-action btn-card-edit" onclick="openEditModal({{ $team->id }}, event)" title="Edit Team">
-                                <i class="bi bi-pencil-fill"></i>
-                            </button>
-                            <button class="btn-card-action btn-card-delete" onclick="deleteTeam({{ $team->id }}, '{{ addslashes($team->team_name) }}', event)" title="Delete Team">
-                                <i class="bi bi-trash-fill"></i>
-                            </button>
-                        </div>
-                    @endif
+                    ${actionsHtml}
                     <a href="/teams/${team.id}" style="text-decoration: none; color: inherit; display: block;">
                         <div class="team-header">
                             <div class="team-logo">

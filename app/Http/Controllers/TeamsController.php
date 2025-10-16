@@ -5,13 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Team;
 use App\Models\Tournament;
 use App\Models\Sport;
-use App\Models\Game; // Ensure Game model is imported
+use App\Models\Game;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class TeamsController extends Controller
 {
-    // ✅ Show all teams with wins & losses included
     public function index()
     {
         $teams = Team::with(['tournament', 'sport'])
@@ -19,7 +18,6 @@ class TeamsController extends Controller
             ->orderBy('team_name')
             ->get()
             ->map(function ($team) {
-                // 🧠 Use the getRecord() method from Team model
                 $record = $team->getRecord();
                 $team->wins = $record['wins'] ?? 0;
                 $team->losses = $record['losses'] ?? 0;
@@ -29,45 +27,47 @@ class TeamsController extends Controller
         $tournaments = Tournament::orderBy('name')->get();
         $sports = Sport::all();
 
-        // 🔧 Fetch $game for tallysheet (customize based on your logic)
-        $game = session('is_guest') ? null : Game::first(); // Example: null for guests, first game for users
-        // Alternative: $game = Auth::check() ? Game::where('user_id', Auth::id())->first() : null;
-        // Or: $game = Game::where('status', 'active')->first();
+        // Customize this based on how games are selected
+        $game = session('is_guest') ? null : Game::first();
+        // Alternatives:
+        // $game = Auth::check() ? Game::where('user_id', Auth::id())->first() : null;
+        // $game = Game::where('status', 'active')->first();
+        // $game = Game::find(session('current_game_id'));
 
         return view('teams', compact('teams', 'tournaments', 'sports', 'game'));
     }
 
-    // Store new team
     public function store(Request $request)
     {
         $validated = $request->validate([
             'team_name'     => 'required|string|max:255|unique:teams,team_name',
             'coach_name'    => 'nullable|string|max:255',
-            'contact'       => 'nullable|string|max:255',
+            'contact'       => 'nullable|string|max:255', // Changed to string to match form input
             'address'       => 'nullable|string|max:255',
             'sport_id'      => 'required|exists:sports,sports_id',
             'tournament_id' => 'nullable|exists:tournaments,id',
+            'logo'          => 'nullable|image|max:2048', // Added for logo upload
         ], [
             'team_name.unique' => 'This team name is already registered.',
         ]);
 
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('team_logos', 'public');
+            $validated['logo'] = $path;
+        }
+
         Team::create($validated);
 
-        // ✨ Enhanced success message with emoji
         return redirect()->route('teams.index')
             ->with('success', '🎉 Team has been successfully added!');
     }
 
-    // Show single team
     public function show($id)
     {
         $team = Team::with(['players', 'sport'])->findOrFail($id);
-
-        // 🔧 If team_show.blade.php needs $game or other vars, add them here
         return view('team_show', compact('team'));
     }
 
-    // Update team
     public function update(Request $request, Team $team)
     {
         $validated = $request->validate([
@@ -77,22 +77,25 @@ class TeamsController extends Controller
             'address'       => 'nullable|string|max:255',
             'sport_id'      => 'required|exists:sports,sports_id',
             'tournament_id' => 'nullable|exists:tournaments,id',
+            'logo'          => 'nullable|image|max:2048',
         ]);
+
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('team_logos', 'public');
+            $validated['logo'] = $path;
+        }
 
         $team->update($validated);
 
-        // ✨ Enhanced success message with emoji
         return redirect()->route('teams.index')
             ->with('success', '✅ Team has been successfully updated!');
     }
 
-    // Delete team
     public function destroy(Team $team)
     {
-        $teamName = $team->team_name; // Store name before deletion
+        $teamName = $team->team_name;
         $team->delete();
         
-        // ✨ Enhanced success message with emoji
         return redirect()->route('teams.index')
             ->with('success', '🗑️ ' . $teamName . ' has been successfully deleted!');
     }
