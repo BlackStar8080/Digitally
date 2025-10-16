@@ -2869,10 +2869,12 @@
                                 @endif
                             @else
                                 <!-- SINGLE ELIMINATION TOURNAMENT -->
-                                <a href="{{ route('tournament.bracket.pdf', $tournament->id) }}" class="btn btn-primary"
-                                    target="_blank">
-                                    <i class="fas fa-print"></i> Print Bracket
-                                </a>
+                                    <!-- Add this in resources/views/tournaments/show.blade.php, e.g., above <div class="bracket-container"> -->
+                                    <div class="d-flex justify-content-end mb-3">
+                                        <a href="{{ route('tournaments.bracket.pdf', $tournament) }}" class="btn btn-primary">
+                                            <i class="bi bi-download"></i> Download Bracket PDF
+                                        </a>
+                                    </div>
 
                                 <!-- Keep your existing bracket display code exactly as it is -->
                                 <div class="bracket-container"

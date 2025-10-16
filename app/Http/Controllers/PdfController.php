@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Game;
-
+use App\Models\Tournament;
 class PdfController extends Controller
 {
     /**
      * Download basketball scoresheet as PDF
      */
+
+    
     public function basketballScoresheet($gameId)
     {
         $game = Game::with([
@@ -118,15 +120,6 @@ class PdfController extends Controller
         return $pdf->download($filename);
     }
 
-    public function downloadBracketPdf($id)
-{
-    $tournament = Tournament::with('rounds.games.teams')->findOrFail($id);
-
-    $pdf = Pdf::loadView('pdf.bracket', compact('tournament'))
-              ->setPaper('a4', 'landscape');
-
-    return $pdf->download("{$tournament->name}_bracket.pdf");
-}
 
 
     public function viewBasketballScoresheet($gameId)
@@ -355,5 +348,79 @@ public function viewVolleyballScoresheet($gameId)
         'isPdf' // ✅ Pass the flag
     ));
 }
+
+
+public function downloadBracketPdf($id)
+{
+    // Load tournament with brackets, games, and teams
+    $tournament = Tournament::with(['brackets.games.team1', 'brackets.games.team2'])->findOrFail($id);
+    $brackets = $tournament->brackets;
+
+    // Add logos like in basketball scoresheet
+    $logoLeft = '';
+    $logoRight = '';
+    $leftPath = public_path('images/logo/tagoloan-flag.png');
+    $rightPath = public_path('images/logo/mayor-logo.png');
+    
+    if (file_exists($leftPath)) {
+        $logoLeft = base64_encode(file_get_contents($leftPath));
+    }
+    if (file_exists($rightPath)) {
+        $logoRight = base64_encode(file_get_contents($rightPath));
+    }
+
+    // If no games, populate with sample data for an 8-team single-elimination bracket
+    if ($brackets->isEmpty() || $brackets->first()->games->isEmpty()) {
+        $sampleTeams = [
+            ['id' => 1, 'team_name' => 'Team A'],
+            ['id' => 2, 'team_name' => 'Team B'],
+            ['id' => 3, 'team_name' => 'Team C'],
+            ['id' => 4, 'team_name' => 'Team D'],
+            ['id' => 5, 'team_name' => 'Team E'],
+            ['id' => 6, 'team_name' => 'Team F'],
+            ['id' => 7, 'team_name' => 'Team G'],
+            ['id' => 8, 'team_name' => 'Team H'],
+        ];
+
+        $sampleGames = [
+            ['round' => 1, 'team1_id' => 1, 'team2_id' => 2, 'team1_score' => 75, 'team2_score' => 60, 'winner_id' => 1],
+            ['round' => 1, 'team1_id' => 3, 'team2_id' => 4, 'team1_score' => 82, 'team2_score' => 78, 'winner_id' => 3],
+            ['round' => 1, 'team1_id' => 5, 'team2_id' => 6, 'team1_score' => 65, 'team2_score' => 70, 'winner_id' => 6],
+            ['round' => 1, 'team1_id' => 7, 'team2_id' => 8, 'team1_score' => 55, 'team2_score' => 58, 'winner_id' => 8],
+            ['round' => 2, 'team1_id' => 1, 'team2_id' => 3, 'team1_score' => 68, 'team2_score' => 62, 'winner_id' => 1],
+            ['round' => 2, 'team1_id' => 6, 'team2_id' => 8, 'team1_score' => 72, 'team2_score' => 70, 'winner_id' => 6],
+            ['round' => 3, 'team1_id' => 1, 'team2_id' => 6, 'team1_score' => 80, 'team2_score' => 75, 'winner_id' => 1],
+        ];
+
+        $brackets = collect([$tournament->brackets->first() ?? new \App\Models\Bracket(['name' => 'Main Bracket', 'tournament_id' => $id])]);
+        $brackets->first()->games = collect($sampleGames)->map(function ($game) use ($sampleTeams) {
+            return (object) array_merge($game, [
+                'team1' => (object) $sampleTeams[array_search($game['team1_id'], array_column($sampleTeams, 'id'))],
+                'team2' => (object) $sampleTeams[array_search($game['team2_id'], array_column($sampleTeams, 'id'))],
+                'status' => 'completed',
+                'is_bye' => false,
+            ]);
+        });
+    }
+
+    // Generate PDF
+    $pdf = Pdf::loadView('brackets.printable', compact('tournament', 'brackets', 'logoLeft', 'logoRight'))
+        ->setOptions([
+            'defaultFont' => 'DejaVu Sans',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true,
+            'isPhpEnabled' => true,
+            'dpi' => 96,
+            'enable_font_subsetting' => true,
+        ])
+        ->setPaper('a3', 'landscape');
+
+    $pdf->getDomPDF()->getOptions()->set('isUnicodeEnabled', true);
+
+    return $pdf->download("{$tournament->name}_bracket.pdf");
+}
+
+
+
 
 }

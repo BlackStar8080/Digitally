@@ -8,7 +8,7 @@
     <style>
         @page {
             size: 14in 8.5in;
-            margin: 0.25in;
+            margin: 0.2in; /* Reduced margin to save space */
         }
         
         * {
@@ -19,8 +19,8 @@
         
         body {
             font-family: 'DejaVu Sans', Arial, sans-serif;
-            font-size: 8pt;
-            line-height: 1.2;
+            font-size: 7pt; /* Reduced base font size */
+            line-height: 1.1; /* Tightened line height */
             color: #000;
         }
 
@@ -31,9 +31,9 @@
         }
 
         .header {
-            border-bottom: 2px solid #000;
-            padding-bottom: 4px;
-            margin-bottom: 5px;
+            border-bottom: 1.5px solid #000;
+            padding-bottom: 3px;
+            margin-bottom: 3px; /* Reduced margin */
         }
 
         .header-flex {
@@ -48,7 +48,7 @@
 
         .header-left {
             width: 20%;
-            font-size: 9pt;
+            font-size: 8pt; /* Slightly reduced */
         }
 
         .header-center {
@@ -57,30 +57,30 @@
         }
 
         .header-center h1 {
-            font-size: 18pt;
-            letter-spacing: 3px;
+            font-size: 16pt; /* Reduced title size */
+            letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
             font-weight: bold;
         }
 
         .header-right {
             width: 20%;
             text-align: right;
-            font-size: 9pt;
+            font-size: 8pt;
         }
 
         .meta-section {
             display: table;
             width: 100%;
-            margin-bottom: 5px;
+            margin-bottom: 3px; /* Reduced margin */
         }
 
         .meta-box {
             display: table-cell;
             border: 1px solid #000;
-            padding: 3px 5px;
-            font-size: 8pt;
+            padding: 2px 4px; /* Reduced padding */
+            font-size: 7pt;
         }
 
         .meta-box:not(:last-child) {
@@ -90,14 +90,14 @@
         .teams-section {
             display: table;
             width: 100%;
-            margin-bottom: 5px;
+            margin-bottom: 3px; /* Reduced margin */
         }
 
         .team-panel {
             display: table-cell;
             width: 50%;
             border: 1px solid #000;
-            padding: 4px;
+            padding: 3px; /* Reduced padding */
             vertical-align: top;
         }
 
@@ -107,8 +107,8 @@
 
         .team-name {
             font-weight: bold;
-            font-size: 10pt;
-            margin-bottom: 3px;
+            font-size: 9pt; /* Reduced font size */
+            margin-bottom: 2px;
             text-transform: uppercase;
         }
 
@@ -120,7 +120,7 @@
         .roster-col {
             display: table-cell;
             width: 65%;
-            font-size: 8pt;
+            font-size: 7pt; /* Reduced font size */
             vertical-align: top;
         }
 
@@ -128,48 +128,48 @@
             display: table-cell;
             width: 35%;
             border-left: 1px solid #000;
-            padding-left: 4px;
+            padding-left: 3px;
             vertical-align: top;
         }
 
         .notes-box {
             border: 1px solid #000;
-            height: 60px;
+            height: 50px; /* Reduced height */
             margin-top: 2px;
         }
 
         .sets-section {
             display: table;
             width: 100%;
-            margin-bottom: 5px;
+            margin-bottom: 3px; /* Reduced margin */
         }
 
         .set-column {
             display: table-cell;
             width: 33.33%;
-            padding: 2px;
+            padding: 1px; /* Reduced padding */
             vertical-align: top;
         }
 
         .set-card {
             border: 1px solid #000;
-            padding: 4px;
-            height: 180px;
+            padding: 3px; /* Reduced padding */
+            height: 140px; /* Reduced height to fit sets on one page */
         }
 
         .set-title {
             text-align: center;
             font-weight: bold;
-            font-size: 9pt;
-            margin-bottom: 3px;
+            font-size: 8pt; /* Reduced font size */
+            margin-bottom: 2px;
             border-bottom: 1px solid #000;
-            padding-bottom: 2px;
+            padding-bottom: 1px;
         }
 
         .score-row {
             display: table;
             width: 100%;
-            margin-bottom: 4px;
+            margin-bottom: 3px; /* Reduced margin */
         }
 
         .score-box {
@@ -177,9 +177,9 @@
             width: 50%;
             text-align: center;
             border: 1px solid #000;
-            padding: 3px;
+            padding: 2px; /* Reduced padding */
             font-weight: bold;
-            font-size: 10pt;
+            font-size: 9pt; /* Reduced font size */
         }
 
         .score-box:first-child {
@@ -189,16 +189,16 @@
         .running-title {
             text-align: center;
             font-weight: bold;
-            font-size: 7pt;
-            margin: 4px 0 2px 0;
+            font-size: 6pt; /* Reduced font size */
+            margin: 3px 0 1px 0;
             border-top: 1px solid #000;
-            padding-top: 3px;
+            padding-top: 2px;
         }
 
         .running-numbers {
             display: table;
             width: 100%;
-            margin-bottom: 3px;
+            margin-bottom: 2px; /* Reduced margin */
         }
 
         .team-numbers {
@@ -207,18 +207,18 @@
         }
 
         .team-numbers:first-child {
-            padding-right: 2px;
+            padding-right: 1px;
         }
 
         .team-numbers:last-child {
-            padding-left: 2px;
+            padding-left: 1px;
         }
 
         .team-label {
             text-align: center;
             font-weight: bold;
-            font-size: 7pt;
-            margin-bottom: 2px;
+            font-size: 6pt; /* Reduced font size */
+            margin-bottom: 1px;
         }
 
         .number-grid {
@@ -240,10 +240,10 @@
             width: 10%;
             text-align: center;
             border-right: 1px solid #000;
-            padding: 1px 0;
-            font-size: 7pt;
-            height: 12px;
-            line-height: 12px;
+            padding: 0.5px 0; /* Reduced padding */
+            font-size: 6pt; /* Reduced font size */
+            height: 10px; /* Reduced height */
+            line-height: 10px;
             position: relative;
         }
 
@@ -263,22 +263,22 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 9pt;
+            font-size: 8pt;
             font-weight: bold;
         }
 
         .timeout-section {
             display: table;
             width: 100%;
-            margin-top: 3px;
+            margin-top: 2px; /* Reduced margin */
         }
 
         .timeout-box {
             display: table-cell;
             width: 50%;
             border: 1px solid #000;
-            padding: 2px;
-            font-size: 6pt;
+            padding: 1px; /* Reduced padding */
+            font-size: 5pt; /* Reduced font size */
         }
 
         .timeout-box:first-child {
@@ -288,14 +288,14 @@
         .bottom-section {
             display: table;
             width: 100%;
-            margin-top: 5px;
+            margin-top: 3px; /* Reduced margin */
         }
 
         .mvp-box, .sig-box {
             display: table-cell;
             width: 50%;
             border: 1px solid #000;
-            padding: 5px;
+            padding: 3px; /* Reduced padding */
             vertical-align: top;
         }
 
@@ -305,36 +305,36 @@
 
         .section-title {
             font-weight: bold;
-            font-size: 9pt;
-            margin-bottom: 4px;
+            font-size: 8pt; /* Reduced font size */
+            margin-bottom: 3px;
         }
 
         .mvp-info {
-            font-size: 8pt;
-            margin-bottom: 2px;
+            font-size: 7pt; /* Reduced font size */
+            margin-bottom: 1px;
         }
 
         .remarks-label {
             font-weight: bold;
-            font-size: 8pt;
-            margin-top: 4px;
-            margin-bottom: 2px;
+            font-size: 7pt; /* Reduced font size */
+            margin-top: 3px;
+            margin-bottom: 1px;
         }
 
         .remarks-box {
             border: 1px solid #000;
-            height: 25px;
+            height: 20px; /* Reduced height */
         }
 
         .sig-line {
-            font-size: 8pt;
-            margin-bottom: 5px;
+            font-size: 7pt; /* Reduced font size */
+            margin-bottom: 3px;
         }
 
         .final-score {
-            font-size: 8pt;
-            margin-top: 5px;
-            padding-top: 4px;
+            font-size: 7pt; /* Reduced font size */
+            margin-top: 3px;
+            padding-top: 3px;
             border-top: 1px solid #000;
         }
 
@@ -348,31 +348,31 @@
 
         .muted {
             color: #555;
-            font-size: 7pt;
+            font-size: 6pt; /* Reduced font size */
         }
     </style>
 </head>
 <body>
     @if(!isset($isPdf) || !$isPdf)
-    <div style="background: #f5f5f5; padding: 15px; margin-bottom: 20px; border-bottom: 2px solid #ddd;">
+    <div style="background: #f5f5f5; padding: 10px; margin-bottom: 15px; border-bottom: 1.5px solid #ddd;">
         <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
             <div>
-                <h2 style="margin: 0; font-size: 18px; color: #333;">Volleyball Scoresheet Preview</h2>
-                <p style="margin: 5px 0 0 0; font-size: 13px; color: #666;">Game #{{ $game->id }} - {{ $game->team1->team_name ?? 'Team A' }} vs {{ $game->team2->team_name ?? 'Team B' }}</p>
+                <h2 style="margin: 0; font-size: 16px; color: #333;">Volleyball Scoresheet Preview</h2>
+                <p style="margin: 3px 0 0 0; font-size: 12px; color: #666;">Game #{{ $game->id }} - {{ $game->team1->team_name ?? 'Team A' }} vs {{ $game->team2->team_name ?? 'Team B' }}</p>
             </div>
             <div>
                 <a href="{{ route('pdf.volleyball-scoresheet', $game->id) }}" 
-                   style="display: inline-block; background: #007bff; color: white; padding: 10px 20px; 
-                          border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 14px;
-                          box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background 0.3s;"
+                   style="display: inline-block; background: #007bff; color: white; padding: 8px 15px; 
+                          border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 12px;
+                          box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: background 0.3s;"
                    onmouseover="this.style.background='#0056b3'" 
                    onmouseout="this.style.background='#007bff'">
                     📥 Download PDF
                 </a>
                 <a href="{{ url()->previous() }}" 
-                   style="display: inline-block; background: #6c757d; color: white; padding: 10px 20px; 
-                          border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 14px;
-                          box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-left: 10px; transition: background 0.3s;"
+                   style="display: inline-block; background: #6c757d; color: white; padding: 8px 15px; 
+                          border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 12px;
+                          box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-left: 8px; transition: background 0.3s;"
                    onmouseover="this.style.background='#545b62'" 
                    onmouseout="this.style.background='#6c757d'">
                     ← Back
@@ -439,20 +439,20 @@
         <div class="header">
             <div class="header-flex">
                 <div class="header-left">
-                    <div style="font-size: 8pt; color: #666;">Organized by:</div>
-                    <div style="font-size: 7pt; margin-top: 2px;">{{ $game->bracket->tournament->organizer ?? 'Sports Committee' }}</div>
+                    <div style="font-size: 7pt; color: #666;">Organized by:</div>
+                    <div style="font-size: 6pt; margin-top: 1px;">{{ $game->bracket->tournament->organizer ?? 'Sports Committee' }}</div>
                 </div>
                 <div class="header-center">
-                    <div style="font-size: 11pt; font-weight: bold; margin-bottom: 2px;">{{ strtoupper($game->bracket->tournament->name ?? 'TOURNAMENT') }}</div>
+                    <div style="font-size: 10pt; font-weight: bold; margin-bottom: 1px;">{{ strtoupper($game->bracket->tournament->name ?? 'TOURNAMENT') }}</div>
                     <h1>VOLLEYBALL SCORESHEET</h1>
-                    <div class="muted" style="margin-top: 2px;">
+                    <div class="muted" style="margin-top: 1px;">
                         {{ $game->started_at ? $game->started_at->format('M d, Y H:i') : now()->format('M d, Y') }} | Game #{{ $game->id }}
                     </div>
                 </div>
                 <div class="header-right">
                     <div><strong>Venue:</strong></div>
-                    <div style="margin-top: 2px;">{{ strtoupper($game->venue ?? '---') }}</div>
-                    <div style="margin-top: 4px; font-size: 8pt;"><strong>Referee:</strong> {{ $game->referee ?? '________' }}</div>
+                    <div style="margin-top: 1px;">{{ strtoupper($game->venue ?? '---') }}</div>
+                    <div style="margin-top: 3px; font-size: 7pt;"><strong>Referee:</strong> {{ $game->referee ?? '________' }}</div>
                 </div>
             </div>
         </div>
@@ -479,29 +479,21 @@
                 <div class="team-name">TEAM A - {{ strtoupper($game->team1->team_name ?? '') }}</div>
                 <div class="team-content">
                     <div class="roster-col">
-                        <strong style="font-size: 8pt;">Roster</strong>
+                        <strong style="font-size: 7pt;">Roster</strong>
                         @foreach ($team1Players as $p)
                             <div>{{ $loop->iteration }}. {{ $p->name }} <span style="float:right;">#{{ $p->number ?? '00' }}</span></div>
                         @endforeach
-                    </div>
-                    <div class="notes-col">
-                        <strong style="font-size: 8pt;">Stats/Notes</strong>
-                        <div class="notes-box"></div>
-                    </div>
+                    </div>                   
                 </div>
             </div>
             <div class="team-panel">
                 <div class="team-name">TEAM B - {{ strtoupper($game->team2->team_name ?? '') }}</div>
                 <div class="team-content">
                     <div class="roster-col">
-                        <strong style="font-size: 8pt;">Roster</strong>
+                        <strong style="font-size: 7pt;">Roster</strong>
                         @foreach ($team2Players as $p)
                             <div>{{ $loop->iteration }}. {{ $p->name }} <span style="float:right;">#{{ $p->number ?? '00' }}</span></div>
                         @endforeach
-                    </div>
-                    <div class="notes-col">
-                        <strong style="font-size: 8pt;">Stats/Notes</strong>
-                        <div class="notes-box"></div>
                     </div>
                 </div>
             </div>
@@ -585,8 +577,11 @@
                                     @for ($row = 0; $row < 3; $row++)
                                         <div class="number-row">
                                             @for ($col = 1; $col <= 10; $col++)
-                                                @php $num = ($row * 10) + $col; @endphp
-                                                <div class="number-cell">{{ $num }}</div>
+                                                @php 
+                                                    $num = ($row * 10) + $col;
+                                                    $isChecked = $teamAChecks[$set][$num] ?? false;
+                                                @endphp
+                                                <div class="number-cell {{ $isChecked ? 'checked' : '' }}">{{ $num }}</div>
                                             @endfor
                                         </div>
                                     @endfor
@@ -598,8 +593,11 @@
                                     @for ($row = 0; $row < 3; $row++)
                                         <div class="number-row">
                                             @for ($col = 1; $col <= 10; $col++)
-                                                @php $num = ($row * 10) + $col; @endphp
-                                                <div class="number-cell">{{ $num }}</div>
+                                                @php 
+                                                    $num = ($row * 10) + $col;
+                                                    $isChecked = $teamBChecks[$set][$num] ?? false;
+                                                @endphp
+                                                <div class="number-cell {{ $isChecked ? 'checked' : '' }}">{{ $num }}</div>
                                             @endfor
                                         </div>
                                     @endfor

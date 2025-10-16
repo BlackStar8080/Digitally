@@ -120,6 +120,7 @@ Route::delete('/teams/{team}', [TeamsController::class, 'destroy'])->name('teams
 
 // Teams Stats
 Route::get('/teams-stats', function() { return 'Teams & Player Stats'; })->name('teams.stats');
+Route::get('/tournaments/{tournament}/bracket/pdf', [PdfController::class, 'downloadBracketPdf'])->name('tournaments.bracket.pdf');
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
