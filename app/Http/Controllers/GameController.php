@@ -1116,32 +1116,67 @@ private function processVolleyballRunningScores(array $events)
 {
     $runningScores = [];
     
-    // Group scores by set
-    $setScores = [];
+    // Initialize score tracking for all sets
+    $setScores = [
+        1 => ['A' => 0, 'B' => 0],
+        2 => ['A' => 0, 'B' => 0],
+        3 => ['A' => 0, 'B' => 0],
+        4 => ['A' => 0, 'B' => 0],
+        5 => ['A' => 0, 'B' => 0],
+    ];
     
-    // Process events in reverse order (they're stored newest first)
+    // Process events in chronological order (reverse since they're stored newest first)
     $sortedEvents = array_reverse($events);
     
-    foreach ($sortedEvents as $event) {
-        if (isset($event['points']) && $event['points'] > 0 && isset($event['set'])) {
-            $set = (int)$event['set'];
-            $team = $event['team'];
-            
-            // Initialize set tracking if needed
-            if (!isset($setScores[$set])) {
-                $setScores[$set] = ['A' => 0, 'B' => 0];
-            }
-            
-            // Increment score for the team in this set
-            $setScores[$set][$team]++;
-            
-            // Add to running scores with set information
-            $runningScores[] = [
-                'team' => $team,
-                'score' => $setScores[$set][$team],
-                'set' => $set,
-                'sequence' => count($runningScores) + 1
-            ];
+    \Log::info('=== Processing Volleyball Running Scores ===');
+    \Log::info('Total events to process: ' . count($sortedEvents));
+    
+    foreach ($sortedEvents as $index => $event) {
+        // Skip non-scoring events
+        if (!isset($event['points']) || $event['points'] <= 0) {
+            continue;
+        }
+        
+        // Check if set number exists
+        if (!isset($event['set'])) {
+            \Log::warning('Event missing set number at index ' . $index, ['event' => $event]);
+            continue;
+        }
+        
+        $set = (int)$event['set'];
+        $team = $event['team'] ?? null;
+        
+        // Validate set and team
+        if ($set < 1 || $set > 5) {
+            \Log::warning('Invalid set number: ' . $set, ['event' => $event]);
+            continue;
+        }
+        
+        if (!in_array($team, ['A', 'B'])) {
+            \Log::warning('Invalid team: ' . $team, ['event' => $event]);
+            continue;
+        }
+        
+        // Increment score for the team in this set
+        $setScores[$set][$team]++;
+        
+        // Add to running scores with set information
+        $runningScores[] = [
+            'team' => $team,
+            'score' => $setScores[$set][$team],
+            'set' => $set,
+            'sequence' => count($runningScores) + 1
+        ];
+    }
+    
+    // Log summary
+    \Log::info('=== Processing Complete ===');
+    \Log::info('Total running scores created: ' . count($runningScores));
+    
+    for ($s = 1; $s <= 5; $s++) {
+        $count = count(array_filter($runningScores, fn($rs) => $rs['set'] === $s));
+        if ($count > 0) {
+            \Log::info("Set $s: $count running scores");
         }
     }
     
@@ -1158,7 +1193,7 @@ public function volleyballScoresheet(Game $game, Request $request)
     if ($request->has('live_data')) {
         $liveData = json_decode(urldecode($request->get('live_data')), true);
     } else {
-        // Load saved tallysheet if game is completed
+        // ✅ Load saved tallysheet if game is completed
         if ($game->status === 'completed' && $game->volleyballTallysheet) {
             $tallysheet = $game->volleyballTallysheet;
             $liveData = [
@@ -1166,6 +1201,14 @@ public function volleyballScoresheet(Game $game, Request $request)
                 'team2_score' => $tallysheet->team2_sets_won,
                 'set_scores' => $tallysheet->set_scores,
                 'events' => $tallysheet->game_events,
+                'running_scores' => $tallysheet->running_scores,  // ✅ ADD THIS LINE
+                'team1_timeouts' => $tallysheet->team1_timeouts ?? 0,
+                'team2_timeouts' => $tallysheet->team2_timeouts ?? 0,
+                'team1_substitutions' => $tallysheet->team1_substitutions ?? 0,
+                'team2_substitutions' => $tallysheet->team2_substitutions ?? 0,
+                'initial_server' => $tallysheet->initial_server,
+                'best_player_id' => $tallysheet->best_player_id,
+                'best_player_stats' => $tallysheet->best_player_stats,
             ];
         }
     }
@@ -1180,17 +1223,20 @@ public function volleyballScoresheet(Game $game, Request $request)
 
     $team1Players = $game->team1->players->filter(function($player) use ($team1RosterIds) {
         return in_array($player->id, $team1RosterIds);
-    });
+    })->sortBy('number');
     
     $team2Players = $game->team2->players->filter(function($player) use ($team2RosterIds) {
         return in_array($player->id, $team2RosterIds);
-    });
+    })->sortBy('number');
+
+    $isPdf = false; // ✅ For browser view
     
     return view('games.volleyball-scoresheet', compact(
         'game',
         'team1Players',
         'team2Players',
-        'liveData'
+        'liveData',
+        'isPdf'
     ));
 }
 
