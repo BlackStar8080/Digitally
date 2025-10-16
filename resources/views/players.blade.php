@@ -684,10 +684,12 @@
                             </div>
 
 
-                            <button class="add-btn" type="button" onclick="openModal()">
-                                <i class="bi bi-plus-circle"></i>
-                                Add Player
-                            </button>
+                            @if(!session('is_guest'))
+                                <button class="add-btn" type="button" onclick="openModal()">
+                                    <i class="bi bi-plus-circle"></i>
+                                    Add Player
+                                </button>
+                            @endif
                         </div>
                     </div>
 
@@ -724,31 +726,29 @@
                                         <td>{{ $player->sport->sports_name ?? '-' }}</td>
                                         <td>{{ $player->team->team_name ?? '-' }}</td>
                                         <td>
-                                            <div class="action-buttons">
-                                                <button type="button" class="btn-action btn-edit"
-                                                    onclick="openEditFromButton(this)"
-                                                    data-update-url="{{ route('players.update', $player->id) }}"
-                                                    data-id="{{ $player->id }}"
-                                                    data-name="{{ $player->name }}"
-                                                    data-team-id="{{ $player->team_id }}"
-                                                    data-sport-id="{{ $player->sport_id }}"
-                                                    data-number="{{ $player->number }}"
-                                                    data-position="{{ $player->position }}"
-                                                    data-age="{{ $player->age }}"
-                                                    title="Edit Player">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                </button>
-
-                                                <form action="{{ route('players.destroy', $player->id) }}" method="POST"
-                                                    style="display: inline;">
-                                                    @csrf @method('DELETE')
-                                                    <button type="submit" class="btn-action btn-delete"
-                                                        onclick="return confirm('Are you sure you want to delete {{ $player->name }}?')"
-                                                        title="Delete Player">
-                                                        <i class="bi bi-trash"></i>
+                                            @if(!session('is_guest'))
+                                                <div class="action-buttons">
+                                                    <button type="button" class="btn-action btn-edit"
+                                                        onclick="openEditFromButton(this)"
+                                                        data-update-url="{{ route('players.update', $player->id) }}"
+                                                        ...
+                                                        title="Edit Player">
+                                                        <i class="bi bi-pencil-square"></i>
                                                     </button>
-                                                </form>
-                                            </div>
+
+                                                    <form action="{{ route('players.destroy', $player->id) }}" method="POST"
+                                                        style="display: inline;">
+                                                        @csrf @method('DELETE')
+                                                        <button type="submit" class="btn-action btn-delete"
+                                                            onclick="return confirm('Are you sure you want to delete {{ $player->name }}?')"
+                                                            title="Delete Player">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            @else
+                                                <span class="text-muted">View Only</span>
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty

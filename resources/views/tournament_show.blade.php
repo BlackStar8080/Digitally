@@ -2304,6 +2304,7 @@
                         @if ($tournament->brackets->isEmpty())
                             <div class="col-md-6">
                                 <h5 class="section-title">Quick Actions</h5>
+                                @if (!session('is_guest'))
                                 @if ($tournament->teams->count() >= 3)
                                     <button class="btn btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#createBracketModal">
@@ -2317,6 +2318,7 @@
                                         registered)
                                     </p>
                                 @endif
+                                @endif
                             </div>
                         @endif
                     </div>
@@ -2326,11 +2328,13 @@
                 <div class="info-card">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="section-title mb-0">Team Management ({{ $tournament->teams->count() }})</h5>
+                        @if(!session('is_guest'))
                         @if (isset($availableTeams) && $availableTeams->count() > 0)
                             <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#assignTeamModal">
                                 <i class="bi bi-plus-circle"></i>
                                 Add Team
                             </button>
+                        @endif
                         @endif
                     </div>
 
@@ -2346,6 +2350,7 @@
                                             Coach: {{ $team->coach_name ?? 'N/A' }}
                                         </small>
                                     </div>
+                                    @if(!session('is_guest')) 
                                     @if ($tournament->brackets()->where('status', 'active')->doesntExist())
                                         <form action="{{ route('tournaments.remove-team', [$tournament->id, $team->id]) }}"
                                             method="POST"
@@ -2356,6 +2361,7 @@
                                                 <i class="bi bi-x-circle"></i>
                                             </button>
                                         </form>
+                                    @endif
                                     @endif
                                 </div>
                             @endforeach
@@ -2406,7 +2412,7 @@
                                     @endif
                                 </div>
                             </div>
-
+                            @if(!session('is_guest'))
                             @if ($bracket->status === 'setup' && $bracket->games->isEmpty())
                                 <div class="d-flex gap-2">
                                     @if ($bracket->type === 'single-elimination')
@@ -2425,6 +2431,7 @@
                                         </button>
                                     </form>
                                 </div>
+                            @endif
 
                                 {{-- Keep the existing Bracket Customizer for Single Elimination --}}
                                 @if ($bracket->type === 'single-elimination')
@@ -2870,11 +2877,13 @@
                             @else
                                 <!-- SINGLE ELIMINATION TOURNAMENT -->
                                     <!-- Add this in resources/views/tournaments/show.blade.php, e.g., above <div class="bracket-container"> -->
+                                    @if(!session('is_guest'))
                                     <div class="d-flex justify-content-end mb-3">
                                         <a href="{{ route('tournaments.bracket.pdf', $tournament) }}" class="btn btn-primary">
                                             <i class="bi bi-download"></i> Download Bracket PDF
                                         </a>
                                     </div>
+                                    @endif
 
                                 <!-- Keep your existing bracket display code exactly as it is -->
                                 <div class="bracket-container"
@@ -3177,6 +3186,8 @@
                                                     </div>
 
                                                     <div class="game-actions button-grid">
+                                                        @if (!session('is_guest'))
+                                                        {{-- Only show these buttons if not a guest --}}
                                                         @if (!$game->isCompleted())
                                                             <button class="edit-schedule-btn btn btn-primary"
                                                                 data-game-id="{{ $game->id }}"
@@ -3195,7 +3206,10 @@
                                                                 {{ $game->scheduled_at ? 'Edit' : 'Set' }} Schedule
                                                             </button>
                                                         @endif
+                                                        @endif
 
+                                                        {{-- Show Start/Resume button based on game status --}}
+                                                        @if (!session('is_guest'))
                                                         @if (!$game->isCompleted() && $game->isReady() && $game->status !== 'in_progress')
                                                             <a href="{{ route('games.prepare', $game->id) }}"
                                                                 class="start-game-btn btn btn-success">
@@ -3214,20 +3228,22 @@
                                                                 </a>
                                                             @endif
                                                         @endif
-
-                                                       @if ($game->isVolleyball())
-    <a href="javascript:void(0);" 
-       class="tally-sheet-btn btn btn-info"
-       onclick="openTallySheet({{ $game->id }}, 'volleyball')">
-        <i class="bi bi-clipboard-data"></i> Tallysheet
-    </a>
-@else
-    <a href="javascript:void(0);" 
-       class="tally-sheet-btn btn btn-info"
-       onclick="openTallySheet({{ $game->id }}, 'basketball')">
-        <i class="bi bi-clipboard-data"></i> Tallysheet
-    </a>
-@endif
+                                                        @endif
+                                                            @if (!session('is_guest'))    
+                                                            @if ($game->isVolleyball())
+                                                                <a href="javascript:void(0);" 
+                                                                class="tally-sheet-btn btn btn-info"
+                                                                onclick="openTallySheet({{ $game->id }}, 'volleyball')">
+                                                                    <i class="bi bi-clipboard-data"></i> Tallysheet
+                                                                </a>
+                                                            @else
+                                                                <a href="javascript:void(0);" 
+                                                                class="tally-sheet-btn btn btn-info"
+                                                                onclick="openTallySheet({{ $game->id }}, 'basketball')">
+                                                                    <i class="bi bi-clipboard-data"></i> Tallysheet
+                                                                </a>
+                                                            @endif
+                                                            @endif
 
 
 

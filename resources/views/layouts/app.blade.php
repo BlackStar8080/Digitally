@@ -472,10 +472,12 @@
                     <i class="bi bi-trophy me-1"></i>
                     <span>Tournaments</span>
                 </a></li>
-                <li><a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? 'active' : '' }}">
-                    <i class="bi bi-bar-chart me-1"></i>
-                    <span>Reports</span>
-                </a></li>
+                @if(!session('is_guest'))
+                    <li><a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? 'active' : '' }}">
+                        <i class="bi bi-bar-chart me-1"></i>
+                        <span>Reports</span>
+                    </a></li>
+                @endif
             </ul>
             
             <div class="nav-actions">

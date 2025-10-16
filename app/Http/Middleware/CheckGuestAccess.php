@@ -9,9 +9,9 @@ class CheckGuestAccess
 {
     public function handle(Request $request, Closure $next)
     {
-        // If user is a guest, redirect with error for restricted actions
+        // If user is a guest, block the action
         if (session('is_guest')) {
-            return redirect()->back()->with('error', 'This action is not available for guest users. Please log in.');
+            return redirect()->back()->with('error', 'This action is not available for guest users. Please register or log in.');
         }
         
         return $next($request);

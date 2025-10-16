@@ -667,6 +667,7 @@
                                             </span>
                                         </td>
                                         <td>
+                                            @if(!session('is_guest'))
                                             <div class="action-buttons">
                                                 <a href="{{ route('players.edit', $player->id) }}" 
                                                    class="action-btn edit-btn" 
@@ -686,6 +687,9 @@
                                                     </button>
                                                 </form>
                                             </div>
+                                             @else
+                                                <span class="text-muted">View Only</span>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -696,9 +700,11 @@
                             <i class="bi bi-person-plus"></i>
                             <h3>No Players Yet</h3>
                             <p>This team doesn't have any players. Start building your roster!</p>
+                            @if(!session('is_guest'))
                             <a href="{{ route('players.index') }}" class="add-player-btn">
                                 <i class="bi bi-plus-lg"></i> Add Players
                             </a>
+                            @endif
                         </div>
                     @endif
                 </div>

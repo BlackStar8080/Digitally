@@ -611,10 +611,21 @@ body {
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>
-                        <button class="add-btn" type="button" data-bs-toggle="modal" data-bs-target="#addTeamModal">
-                            <i class="bi bi-plus-circle"></i>
-                            Add Team
-                        </button>
+                        @if(!session('is_guest'))
+                            @if ($game->isVolleyball())
+                                <a href="javascript:void(0);" 
+                                class="tally-sheet-btn btn btn-info"
+                                onclick="openTallySheet({{ $game->id }}, 'volleyball')">
+                                    <i class="bi bi-clipboard-data"></i> Tallysheet
+                                </a>
+                            @else
+                                <a href="javascript:void(0);" 
+                                class="tally-sheet-btn btn btn-info"
+                                onclick="openTallySheet({{ $game->id }}, 'basketball')">
+                                    <i class="bi bi-clipboard-data"></i> Tallysheet
+                                </a>
+                            @endif
+                        @endif
                     </div>
                 </div>
                 
@@ -888,14 +899,16 @@ function hideToast() {
 
             return `
                 <div class="team-card fade-in-card" style="animation-delay: ${index * 0.05}s">
-                    <div class="team-actions">
-                        <button class="btn-card-action btn-card-edit" onclick="openEditModal(${team.id}, event)" title="Edit Team">
-                            <i class="bi bi-pencil-fill"></i>
-                        </button>
-                        <button class="btn-card-action btn-card-delete" onclick="deleteTeam(${team.id}, '${escapeHtml(name)}', event)" title="Delete Team">
-                            <i class="bi bi-trash-fill"></i>
-                        </button>
-                    </div>
+                    @if(!session('is_guest'))
+                        <div class="team-actions">
+                            <button class="btn-card-action btn-card-edit" onclick="openEditModal({{ $team->id }}, event)" title="Edit Team">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                            <button class="btn-card-action btn-card-delete" onclick="deleteTeam({{ $team->id }}, '{{ addslashes($team->team_name) }}', event)" title="Delete Team">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </div>
+                    @endif
                     <a href="/teams/${team.id}" style="text-decoration: none; color: inherit; display: block;">
                         <div class="team-header">
                             <div class="team-logo">

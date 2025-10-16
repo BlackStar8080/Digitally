@@ -560,10 +560,12 @@
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>
-                        <button class="add-btn" type="button" data-bs-toggle="modal" data-bs-target="#addTournamentModal">
-                            <i class="bi bi-plus-circle"></i>
-                            Add Tournament
-                        </button>
+                        @if(!session('is_guest'))
+                            <button class="add-btn" type="button" data-bs-toggle="modal" data-bs-target="#addTournamentModal">
+                                <i class="bi bi-plus-circle"></i>
+                                Add Tournament
+                            </button>
+                        @endif
                     </div>
                 </div>
                 
@@ -574,14 +576,16 @@
                             data-name="{{ strtolower($tournament->name) }}"
                             data-sport="{{ strtolower($tournament->sport->sports_name ?? '') }}"
                             data-id="{{ $tournament->id }}">
-                            <div class="tournament-actions">
-                                <button class="btn-card-action btn-card-edit" onclick="openEditModal({{ $tournament->id }}, event)" title="Edit Tournament">
-                                    <i class="bi bi-pencil-fill"></i>
-                                </button>
-                                <button class="btn-card-action btn-card-delete" onclick="deleteTournament({{ $tournament->id }}, '{{ addslashes($tournament->name) }}', event)" title="Delete Tournament">
-                                    <i class="bi bi-trash-fill"></i>
-                                </button>
-                            </div>
+                            @if(!session('is_guest'))
+                                <div class="tournament-actions">
+                                    <button class="btn-card-action btn-card-edit" onclick="openEditModal({{ $tournament->id }}, event)" title="Edit Tournament">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </button>
+                                    <button class="btn-card-action btn-card-delete" onclick="deleteTournament({{ $tournament->id }}, '{{ addslashes($tournament->name) }}', event)" title="Delete Tournament">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </div>
+                            @endif
                             <a href="{{ route('tournaments.show', $tournament->id) }}" style="text-decoration: none; color: inherit; display: block;">
                                 <div class="tournament-header">
                                     <div class="tournament-info">
