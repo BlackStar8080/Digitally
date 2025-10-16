@@ -658,6 +658,9 @@
                                 <option value="Opposite Hitter"
                                     {{ request('position') == 'Opposite Hitter' ? 'selected' : '' }}>Opposite Hitter
                                 </option>
+                                <option value="Opposite"
+                                    {{ request('position') == 'Opposite' ? 'selected' : '' }}>Opposite
+                                </option>
                             </select>
 
                             <select name="sport_id" class="filter-select" onchange="this.form.submit()">
@@ -949,8 +952,7 @@
     // Define positions by sport name or sport_id
     const positionsBySport = {
         basketball: ["Point Guard", "Shooting Guard", "Small Forward", "Power Forward", "Center"],
-        volleyball: ["Setter", "Libero", "Outside Hitter", "Middle Blocker", "Opposite Hitter"],
-        football: ["Goalkeeper", "Defender", "Midfielder", "Forward"],
+        volleyball: ["Setter", "Libero", "Outside Hitter", "Middle Blocker", "Opposite Hitter", "Opposite"],
     };
 
     // Update sport automatically when team is chosen
@@ -1026,7 +1028,7 @@
 
             const positions = {
                 Basketball: ["Point Guard", "Shooting Guard", "Small Forward", "Power Forward", "Center"],
-                Volleyball: ["Setter", "Middle Blocker", "Outside Hitter", "Opposite Hitter", "Libero"]
+                Volleyball: ["Setter", "Middle Blocker", "Outside Hitter", "Opposite Hitter", "Libero", "Opposite"],
             };
 
             window.openModal = function() {

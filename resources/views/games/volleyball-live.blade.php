@@ -1625,24 +1625,46 @@ function getWinningScore(setNumber) {
   return setNumber === 5 ? 15 : 25;
 }
 
-function endSet() {
-  // Save current set scores
-  setScores.A[currentSet - 1] = scoreA;
-  setScores.B[currentSet - 1] = scoreB;
+function checkSetWin() {
+    // ✅ Don't check for set win if game is already over
+    if (setsA >= 3 || setsB >= 3) {
+        return;
+    }
 
-  // Only increment sets if neither team has already won 3
-  if (setsA < 3 && setsB < 3) {
-    if (scoreA > scoreB) setsA++;
-    else setsB++;
-  }
+    const maxPoints = currentSet === 5 ? 15 : 25;
+    const minLead = 2;
 
-  // Show modal, check for game end
-  if (setsA === 3 || setsB === 3) {
-    showGameEndModal();
-  } else {
+    if (scoreA >= maxPoints && scoreA - scoreB >= minLead) {
+        handleSetWin('A');
+    } else if (scoreB >= maxPoints && scoreB - scoreA >= minLead) {
+        handleSetWin('B');
+    }
+}
+
+
+function startNextSet() {
+    document.getElementById('setEndModal').classList.remove('show');
+    
+    // Move to next set
     currentSet++;
-    resetScoresForNextSet();
-  }
+    
+    // Reset scores for new set
+    scoreA = 0;
+    scoreB = 0;
+    
+    // Reset timeouts and substitutions per set
+    timeoutsA = 0;
+    timeoutsB = 0;
+    substitutionsA = 0;
+    substitutionsB = 0;
+
+    // Switch serve
+    serving = serving === 'A' ? 'B' : 'A';
+
+    updateScoreboard();
+    updateServingIndicator();
+    updateSetScoresDisplay();
+    logEvent('GAME', 'SYSTEM', `Set ${currentSet} Started`, 0);
 }
 
 
@@ -2010,26 +2032,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function handleScore(team, action, playerNumber) {
-            const actionLabel = action.charAt(0).toUpperCase() + action.slice(1);
-           
-            if (team === 'A') {
-                scoreA++;
-                updateScoreDisplay();
-                logEvent('A', playerNumber, actionLabel, 1);
-            } else {
-                scoreB++;
-                updateScoreDisplay();
-                logEvent('B', playerNumber, actionLabel, 1);
-            }
+    // ✅ Prevent scoring if game is already over
+    if (setsA >= 3 || setsB >= 3) {
+        return;
+    }
 
-            if (team !== serving) {
-                serving = team;
-                updateServingIndicator();
-                logEvent('GAME', 'SYSTEM', `Serve → Team ${team}`, 0);
-            }
+    const actionLabel = action.charAt(0).toUpperCase() + action.slice(1);
+    
+    if (team === 'A') {
+        scoreA++;
+        updateScoreDisplay();
+        logEvent('A', playerNumber, actionLabel, 1);
+    } else {
+        scoreB++;
+        updateScoreDisplay();
+        logEvent('B', playerNumber, actionLabel, 1);
+    }
 
-            checkSetWin();
-        }
+    if (team !== serving) {
+        serving = team;
+        updateServingIndicator();
+        logEvent('GAME', 'SYSTEM', `Serve → Team ${team}`, 0);
+    }
+
+    checkSetWin();
+}
 
         function checkSetWin() {
             const maxPoints = currentSet < 5 ? 25 : 15;
@@ -2043,25 +2070,33 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function handleSetWin(winner) {
-            setScores.A[currentSet - 1] = scoreA;
-            setScores.B[currentSet - 1] = scoreB;
+    // Save current set scores BEFORE incrementing
+    setScores.A[currentSet - 1] = scoreA;
+    setScores.B[currentSet - 1] = scoreB;
 
-            if (winner === 'A') {
-                setsA++;
-            } else {
-                setsB++;
-            }
+    // Increment sets won for the winner
+    if (winner === 'A') {
+        setsA++;
+    } else {
+        setsB++;
+    }
 
-            updateScoreboard();
-            updateSetScoresDisplay();
-            logEvent('GAME', 'SYSTEM', `Set ${currentSet} Ended - Team ${winner} wins ${winner === 'A' ? scoreA : scoreB}-${winner === 'A' ? scoreB : scoreA}`, 0);
+    // Log the set end
+    logEvent('GAME', 'SYSTEM', `Set ${currentSet} Ended - Team ${winner} wins ${winner === 'A' ? scoreA : scoreB}-${winner === 'A' ? scoreB : scoreA}`, 0);
 
-            if (setsA === 3 || setsB === 3) {
-                setTimeout(() => showGameEndModal(), 1000);
-            } else {
-                setTimeout(() => showSetEndModal(), 1000);
-            }
-        }
+    // Update displays
+    updateScoreboard();
+    updateSetScoresDisplay();
+
+    // ✅ CRITICAL: Check if game is over IMMEDIATELY (first to 3 sets wins)
+    if (setsA >= 3 || setsB >= 3) {
+        // Game is over - show game end modal
+        setTimeout(() => showGameEndModal(), 1000);
+    } else {
+        // Game continues - show set end modal for next set
+        setTimeout(() => showSetEndModal(), 1000);
+    }
+}
 
         function handleTimeoutClick() {
             selectingTeam = true;
@@ -2189,28 +2224,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function showGameEndModal() {
-            const winner = setsA > setsB ? gameData.team1.name : gameData.team2.name;
-            document.getElementById('winnerText').textContent = `${winner.toUpperCase()} WINS!`;
-            document.getElementById('finalSetsA').textContent = setsA;
-            document.getElementById('finalSetsB').textContent = setsB;
+    const winner = setsA > setsB ? gameData.team1.name : gameData.team2.name;
+    document.getElementById('winnerText').textContent = `${winner.toUpperCase()} WINS!`;
+    document.getElementById('finalSetsA').textContent = setsA;
+    document.getElementById('finalSetsB').textContent = setsB;
 
-            let setScoresHtml = '';
-            for (let i = 0; i < currentSet; i++) {
-                const scoreA = setScores.A[i];
-                const scoreB = setScores.B[i];
-                const wonClass = scoreA > scoreB ? 'won-a' : 'won-b';
+    let setScoresHtml = '';
+    
+    // ✅ ONLY show sets that were actually played (not empty sets)
+    for (let i = 0; i < currentSet; i++) {
+        const scoreA = setScores.A[i];
+        const scoreB = setScores.B[i];
+        
+        // Only show if this set has scores
+        if (scoreA !== undefined && scoreB !== undefined && (scoreA > 0 || scoreB > 0)) {
+            const wonClass = scoreA > scoreB ? 'won-a' : 'won-b';
 
-                setScoresHtml += `
-                    <div style="display: flex; justify-content: space-between; padding: 10px; background: #3d3d3d; margin-bottom: 8px; border-radius: 6px;" class="${wonClass}">
-                        <span>Set ${i + 1}:</span>
-                        <span style="font-family: 'Courier New', monospace; font-weight: bold;">${scoreA} - ${scoreB}</span>
-                    </div>
-                `;
-            }
-
-            document.getElementById('finalSetScores').innerHTML = setScoresHtml;
-            document.getElementById('gameEndModal').classList.add('show');
+            setScoresHtml += `
+                <div style="display: flex; justify-content: space-between; padding: 10px; background: #3d3d3d; margin-bottom: 8px; border-radius: 6px;" class="${wonClass}">
+                    <span>Set ${i + 1}:</span>
+                    <span style="font-family: 'Courier New', monospace; font-weight: bold;">${scoreA} - ${scoreB}</span>
+                </div>
+            `;
         }
+    }
+
+    document.getElementById('finalSetScores').innerHTML = setScoresHtml;
+    document.getElementById('gameEndModal').classList.add('show');
+}
 
         function collectPlayerStats() {
             const playerStats = {};
@@ -2289,7 +2330,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function saveGameResults() {
             const playerStats = collectPlayerStats();
-           
+    
             const finalGameData = {
                 game_id: gameData.id,
                 team1_score: setsA,
@@ -2302,7 +2343,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 winner_id: setsA > setsB ? 1 : 2,
                 status: 'completed',
                 completed_at: new Date().toISOString(),
-                game_events: events,
+                game_events: events,  // ✅ Events already include 'set' property
                 player_stats: playerStats
             };
 
@@ -2332,7 +2373,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 player,
                 action,
                 points,
-                set: currentSet,
+                set: currentSet,  // ✅ This is already there
                 score: `${scoreA}-${scoreB}`
             };
             events.unshift(event);

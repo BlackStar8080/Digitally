@@ -1115,31 +1115,33 @@ private function saveVolleyballTallysheet(Game $game, array $gameData)
 private function processVolleyballRunningScores(array $events)
 {
     $runningScores = [];
-    $scoreA = 0;
-    $scoreB = 0;
+    
+    // Group scores by set
+    $setScores = [];
     
     // Process events in reverse order (they're stored newest first)
     $sortedEvents = array_reverse($events);
     
     foreach ($sortedEvents as $event) {
-        if (isset($event['points']) && $event['points'] > 0) {
-            if ($event['team'] === 'A') {
-                $scoreA += $event['points'];
-                $runningScores[] = [
-                    'team' => 'A',
-                    'score' => $scoreA,
-                    'set' => $event['set'] ?? 1,
-                    'sequence' => count($runningScores) + 1
-                ];
-            } else {
-                $scoreB += $event['points'];
-                $runningScores[] = [
-                    'team' => 'B',
-                    'score' => $scoreB,
-                    'set' => $event['set'] ?? 1,
-                    'sequence' => count($runningScores) + 1
-                ];
+        if (isset($event['points']) && $event['points'] > 0 && isset($event['set'])) {
+            $set = (int)$event['set'];
+            $team = $event['team'];
+            
+            // Initialize set tracking if needed
+            if (!isset($setScores[$set])) {
+                $setScores[$set] = ['A' => 0, 'B' => 0];
             }
+            
+            // Increment score for the team in this set
+            $setScores[$set][$team]++;
+            
+            // Add to running scores with set information
+            $runningScores[] = [
+                'team' => $team,
+                'score' => $setScores[$set][$team],
+                'set' => $set,
+                'sequence' => count($runningScores) + 1
+            ];
         }
     }
     
