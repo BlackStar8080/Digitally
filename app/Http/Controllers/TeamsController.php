@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Team;
 use App\Models\Tournament;
 use App\Models\Sport;
-use App\Models\Game; // Add this: Import the Game model (adjust namespace if needed)
+use App\Models\Game; // Ensure Game model is imported
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // Optional: If using auth for user-specific logic
+use Illuminate\Support\Facades\Auth;
 
 class TeamsController extends Controller
 {
@@ -29,17 +29,10 @@ class TeamsController extends Controller
         $tournaments = Tournament::orderBy('name')->get();
         $sports = Sport::all();
 
-        // 🔧 NEW: Fetch $game variable (customize this query based on your app logic)
-        // Assuming $game is context-specific, e.g., the latest active game, or tied to the user/team.
-        // If it's per-team or user-specific, adjust accordingly. For now, fetching the first active game as example.
-        // Replace with your actual logic (e.g., Game::where('status', 'active')->first() or based on auth user).
-        $game = Game::first(); // Or: Game::find(session('current_game_id')); 
-        // If tied to user: $game = Auth::check() && !session('is_guest') ? Game::where('user_id', Auth::id())->first() : null;
-
-        // If no game found, set to null to avoid issues in the view
-        if (!$game) {
-            $game = null;
-        }
+        // 🔧 Fetch $game for tallysheet (customize based on your logic)
+        $game = session('is_guest') ? null : Game::first(); // Example: null for guests, first game for users
+        // Alternative: $game = Auth::check() ? Game::where('user_id', Auth::id())->first() : null;
+        // Or: $game = Game::where('status', 'active')->first();
 
         return view('teams', compact('teams', 'tournaments', 'sports', 'game'));
     }
@@ -70,10 +63,7 @@ class TeamsController extends Controller
     {
         $team = Team::with(['players', 'sport'])->findOrFail($id);
 
-        // 🔧 OPTIONAL: If show() also uses teams.blade or needs $game, add similar logic here
-        // $game = Game::first(); // etc.
-        // return view('team_show', compact('team', 'game'));
-
+        // 🔧 If team_show.blade.php needs $game or other vars, add them here
         return view('team_show', compact('team'));
     }
 
