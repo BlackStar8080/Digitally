@@ -608,21 +608,6 @@ body {
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>
-                        @if(!session('is_guest') && isset($game) && $game)
-                            @if ($game->isVolleyball())
-                                <a href="javascript:void(0);" 
-                                   class="tally-sheet-btn btn btn-info"
-                                   onclick="openTallySheet({{ $game->id }}, 'volleyball')">
-                                    <i class="bi bi-clipboard-data"></i> Tallysheet
-                                </a>
-                            @else
-                                <a href="javascript:void(0);" 
-                                   class="tally-sheet-btn btn btn-info"
-                                   onclick="openTallySheet({{ $game->id }}, 'basketball')">
-                                    <i class="bi bi-clipboard-data"></i> Tallysheet
-                                </a>
-                            @endif
-                        @endif
                         @if(!session('is_guest'))
                             <button class="add-btn" data-bs-toggle="modal" data-bs-target="#addTeamModal">
                                 <i class="bi bi-plus-circle me-2"></i>Add Team
