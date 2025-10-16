@@ -3229,7 +3229,7 @@
                                                             @endif
                                                         @endif
                                                         @endif
-                                                            @if (!session('is_guest'))    
+                                                            @if(!session('is_guest') && isset($game) && $game)
                                                             @if ($game->isVolleyball())
                                                                 <a href="javascript:void(0);" 
                                                                 class="tally-sheet-btn btn btn-info"
