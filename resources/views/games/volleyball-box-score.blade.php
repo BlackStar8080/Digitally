@@ -135,11 +135,11 @@
     .game-title-header {
         text-align: center;
         margin-bottom: 2rem;
-        background: linear-gradient(135deg, #2196F3, #1976D2, #0D47A1);
+        background: linear-gradient(135deg, #9d4edd, #7c3aed, #5f2da8);
         color: white;
         padding: 2rem;
         border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(33, 150, 243, 0.2);
+        box-shadow: 0 4px 20px rgba(157, 78, 221, 0.2);
         position: relative;
         overflow: hidden;
     }
@@ -194,7 +194,7 @@
         color: #333;
         margin-bottom: 1rem;
         padding-bottom: 0.5rem;
-        border-bottom: 3px solid #2196F3;
+        border-bottom: 3px solid #9d4edd;
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -211,7 +211,7 @@
     }
 
     .team-stats-table thead {
-        background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(25, 118, 210, 0.1));
+        background: linear-gradient(135deg, rgba(157, 78, 221, 0.1), rgba(124, 58, 237, 0.1));
     }
 
     .team-stats-table th {
@@ -219,10 +219,10 @@
         text-align: left;
         font-size: 0.8rem;
         font-weight: 700;
-        color: #0D47A1;
+        color: #5f2da8;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        border-bottom: 2px solid #2196F3;
+        border-bottom: 2px solid #9d4edd;
     }
 
     .team-stats-table th.stat-col {
@@ -246,7 +246,7 @@
     }
 
     .team-stats-table tbody tr:hover {
-        background: rgba(33, 150, 243, 0.05);
+        background: rgba(157, 78, 221, 0.05);
         transform: translateX(4px);
     }
 
@@ -257,7 +257,7 @@
     }
 
     .player-number {
-        background: linear-gradient(135deg, #2196F3, #1976D2);
+        background: linear-gradient(135deg, #9d4edd, #7c3aed);
         color: white;
         min-width: 32px;
         height: 32px;
@@ -268,12 +268,12 @@
         font-weight: 700;
         font-size: 0.9rem;
         padding: 0 0.5rem;
-        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+        box-shadow: 0 2px 8px rgba(157, 78, 221, 0.3);
     }
 
     .position-badge {
-        background: rgba(33, 150, 243, 0.1);
-        color: #1976D2;
+        background: rgba(157, 78, 221, 0.1);
+        color: #7c3aed;
         padding: 0.2rem 0.5rem;
         border-radius: 4px;
         font-size: 0.75rem;
@@ -332,13 +332,13 @@
         width: 60px;
         height: 60px;
         margin: 0 auto 0.5rem;
-        background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(25, 118, 210, 0.1));
+        background: linear-gradient(135deg, rgba(157, 78, 221, 0.1), rgba(124, 58, 237, 0.1));
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 1.5rem;
-        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+        box-shadow: 0 4px 12px rgba(157, 78, 221, 0.2);
     }
 
     .team-name {
@@ -351,7 +351,7 @@
     .score-number {
         font-size: 2.5rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #2196F3, #1976D2);
+        background: linear-gradient(135deg, #9d4edd, #7c3aed);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -393,10 +393,10 @@
 
     /* MVP CARD */
     .mvp-card {
-        background: linear-gradient(135deg, #2196F3 0%, #1976D2 50%, #0D47A1 100%);
+        background: linear-gradient(135deg, #9d4edd 0%, #7c3aed 50%, #5f2da8 100%);
         border-radius: 16px;
         padding: 2rem;
-        box-shadow: 0 8px 32px rgba(33, 150, 243, 0.4);
+        box-shadow: 0 8px 32px rgba(157, 78, 221, 0.4);
         color: white;
         position: relative;
         overflow: hidden;
@@ -563,7 +563,7 @@
         left: 0;
         width: 100%;
         height: 4px;
-        background: linear-gradient(90deg, #2196F3, #1976D2);
+        background: linear-gradient(90deg, #9d4edd, #7c3aed);
         transform: scaleX(0);
         transition: transform 0.3s ease;
     }
@@ -573,9 +573,9 @@
     }
 
     .mvp-candidate-card:hover {
-        border-color: #2196F3;
+        border-color: #9d4edd;
         transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(33, 150, 243, 0.2);
+        box-shadow: 0 8px 24px rgba(157, 78, 221, 0.2);
     }
 
     .mvp-candidate-card.selected {
@@ -597,7 +597,7 @@
     }
 
     .candidate-number {
-        background: linear-gradient(135deg, #2196F3, #1976D2);
+        background: linear-gradient(135deg, #9d4edd, #7c3aed);
         color: white;
         width: 48px;
         height: 48px;
@@ -607,7 +607,7 @@
         justify-content: center;
         font-weight: 700;
         font-size: 1.2rem;
-        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        box-shadow: 0 4px 12px rgba(157, 78, 221, 0.3);
     }
 
     .candidate-info {
@@ -643,7 +643,7 @@
     .candidate-stat-value {
         font-size: 1.5rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #2196F3, #1976D2);
+        background: linear-gradient(135deg, #9d4edd, #7c3aed);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -709,16 +709,16 @@
     }
 
     .btn-primary {
-        background: linear-gradient(135deg, #2196F3, #1976D2);
+        background: linear-gradient(135deg, #9d4edd, #7c3aed);
         color: white;
         border: none;
-        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+        box-shadow: 0 2px 8px rgba(157, 78, 221, 0.3);
     }
 
     .btn-primary:hover {
-        background: linear-gradient(135deg, #1976D2, #0D47A1);
+        background: linear-gradient(135deg, #7c3aed, #5f2da8);
         transform: translateY(-2px);
-        box-shadow: 0 4px 16px rgba(33, 150, 243, 0.4);
+        box-shadow: 0 4px 16px rgba(157, 78, 221, 0.4);
         color: white;
     }
 
