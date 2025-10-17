@@ -727,18 +727,30 @@
                                         <td>{{ $player->team->team_name ?? '-' }}</td>
                                         <td>
                                             @if(!session('is_guest'))
-                                                <button type="button" class="btn-action btn-edit"
-                                                    onclick="openEditFromButton(this)"
-                                                    data-update-url="{{ route('players.update', $player->id) }}"
-                                                    data-name="{{ $player->name }}"
-                                                    data-team-id="{{ $player->team_id }}"
-                                                    data-number="{{ $player->number }}"
-                                                    data-sport-id="{{ $player->sport_id }}"
-                                                    data-position="{{ $player->position }}"
-                                                    data-birthday="{{ $player->birthday }}"
-                                                    title="Edit Player">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                </button>
+                                                <div class="action-buttons">
+                                                    <button type="button" class="btn-action btn-edit"
+                                                        onclick="openEditFromButton(this)"
+                                                        data-update-url="{{ route('players.update', $player->id) }}"
+                                                        data-name="{{ $player->name }}"
+                                                        data-team-id="{{ $player->team_id }}"
+                                                        data-number="{{ $player->number }}"
+                                                        data-sport-id="{{ $player->sport_id }}"
+                                                        data-position="{{ $player->position }}"
+                                                        data-birthday="{{ $player->birthday }}"
+                                                        title="Edit Player">
+                                                        <i class="bi bi-pencil-square"></i>
+                                                    </button>
+
+                                                    <form action="{{ route('players.destroy', $player->id) }}" method="POST"
+                                                        style="display: inline;">
+                                                        @csrf @method('DELETE')
+                                                        <button type="submit" class="btn-action btn-delete"
+                                                            onclick="return confirm('Are you sure you want to delete {{ $player->name }}?')"
+                                                            title="Delete Player">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             @else
                                                 <span class="text-muted">View Only</span>
                                             @endif
@@ -959,24 +971,21 @@
     // Also update when user changes sport manually
     sportSelect.addEventListener('change', updatePositions);
 
-    function updatePositions(selectedPosition = null) {
-    const selectedSportText = sportSelect.options[sportSelect.selectedIndex]?.text?.toLowerCase() || '';
-    const positions = positionsBySport[selectedSportText] || [];
+    function updatePositions() {
+        const selectedSportText = sportSelect.options[sportSelect.selectedIndex]?.text?.toLowerCase() || '';
+        const positions = positionsBySport[selectedSportText] || [];
 
-    // Clear current options
-    positionSelect.innerHTML = '<option value="">Select position</option>';
+        // Clear current options
+        positionSelect.innerHTML = '<option value="">Select position</option>';
 
-    // Populate new ones
-    positions.forEach(pos => {
-        const opt = document.createElement('option');
-        opt.value = pos;
-        opt.textContent = pos;
-        if (selectedPosition && pos === selectedPosition) {
-            opt.selected = true;
-        }
-        positionSelect.appendChild(opt);
-    });
-}
+        // Populate new ones
+        positions.forEach(pos => {
+            const opt = document.createElement('option');
+            opt.value = pos;
+            opt.textContent = pos;
+            positionSelect.appendChild(opt);
+        });
+    }
 });
         // Toast Notification Functions
         function showToast(message) {
@@ -1037,32 +1046,35 @@
             };
 
             window.openEditFromButton = function(button) {
-    playerForm.reset();
-    playerForm.action = button.dataset.updateUrl;
-    formMethodInput.value = "PUT";
-    modalTitleEl.innerHTML = '<i class="bi bi-pencil-square"></i> Edit Player';
+                playerForm.reset();
+                playerForm.action = button.dataset.updateUrl;
+                formMethodInput.value = "PUT";
+                modalTitleEl.innerHTML = '<i class="bi bi-pencil-square"></i> Edit Player';
 
-    // Populate form fields with existing data
-    playerName.value = button.dataset.name || '';
-    playerTeam.value = button.dataset.teamId || '';
-    playerNumber.value = button.dataset.number || '';
-    playerBirthday.value = button.dataset.birthday || '';
+                playerName.value = button.dataset.name || '';
+                playerTeam.value = button.dataset.teamId || '';
+                playerNumber.value = button.dataset.number || '';
 
-    const sportId = button.dataset.sportId || '';
-    sportSelect.value = sportId;
+                const sportId = button.dataset.sportId || '';
+                sportSelect.value = sportId;
 
-    // Trigger change event to update positions
-    sportSelect.dispatchEvent(new Event('change'));
+                // Get sport name from the select option text
+                const sportOption = sportSelect.options[sportSelect.selectedIndex];
+                const sportName = sportOption ? sportOption.text : '';
 
-    // Wait a bit for positions to populate, then set the selected position
-    setTimeout(() => {
-        if (button.dataset.position) {
-            positionSelect.value = button.dataset.position;
-        }
-    }, 100);
+                positionSelect.innerHTML = '<option value="">Select position</option>';
+                if (positions[sportName]) {
+                    positions[sportName].forEach(pos => {
+                        const opt = document.createElement('option');
+                        opt.value = pos;
+                        opt.textContent = pos;
+                        if (pos === button.dataset.position) opt.selected = true;
+                        positionSelect.appendChild(opt);
+                    });
+                }
 
-    bsPlayerModal.show();
-};
+                bsPlayerModal.show();
+            };
 
             sportSelect.addEventListener('change', function() {
                 const sportOption = this.options[this.selectedIndex];
