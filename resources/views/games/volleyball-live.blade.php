@@ -673,7 +673,7 @@
 
         .actions-grid {
             display: grid;
-            grid-template-columns: repeat(8, 1fr);
+            grid-template-columns: repeat(9, 1fr);
             gap: 12px;
             max-width: 1400px;
             margin: 0 auto;
