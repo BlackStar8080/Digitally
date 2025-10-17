@@ -468,7 +468,6 @@
                 <strong>Coach:</strong> {{ $game->team2->coach_name ?? '________' }}
             </div>
             <div class="meta-box" style="width: 40%;">
-                <strong>Initial Server:</strong> {{ $liveData['initial_server'] ?? '____' }} | 
                 <strong>Match Type:</strong> Best of 5
             </div>
         </div>

@@ -419,7 +419,7 @@
         <table class="meta-row">
             <tr>
                 <td style="width: 25%;"><span class="meta-label">Game No.</span> {{ $game->id }}</td>
-                <td style="width: 25%;"><span class="meta-label">Place</span> CASINGLOT COURT</td>
+                <td style="width: 25%;"><span class="meta-label">Place</span></td>
                 <td style="width: 20%;"><span class="meta-label">Referee</span> {{ $game->referee ?? '________' }}</td>
                 <td style="width: 15%;"><span class="meta-label">Umpire 1</span> {{ $game->assistant_referee_1 ?? '____' }}</td>
                 <td style="width: 15%;"><span class="meta-label">Umpire 2</span> {{ $game->assistant_referee_2 ?? '____' }}</td>
