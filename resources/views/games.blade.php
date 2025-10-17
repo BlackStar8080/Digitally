@@ -534,10 +534,6 @@
 
                                         @if ($game->status === 'completed')
                                             <div class="game-actions">
-                                                <a href="{{ route('games.tallysheet', $game) }}"
-                                                    class="btn-action btn-primary">
-                                                    <i class="bi bi-file-text"></i> Tallysheet
-                                                </a>
                                                 <a href="{{ route('games.box-score', $game->id) }}"
                                                     class="btn-action btn-secondary">
                                                     <i class="bi bi-table"></i>
@@ -549,10 +545,7 @@
                                                 <a href="{{ route('games.live', $game) }}" class="btn-action btn-primary">
                                                     <i class="bi bi-play-circle"></i> Live Scoresheet
                                                 </a>
-                                                <a href="{{ route('games.tallysheet', $game) }}"
-                                                    class="btn-action btn-secondary">
-                                                    <i class="bi bi-file-text"></i> Tallysheet
-                                                </a>
+                                
                                             </div>
                                         @endif
                                     </div>
