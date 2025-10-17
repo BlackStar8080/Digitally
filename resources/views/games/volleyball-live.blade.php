@@ -1001,6 +1001,7 @@
             <!-- Will be populated by JavaScript -->
         </div>
         <div class="score-display" id="scoreA">00</div>
+        <div class="serving-indicator" id="servingA" style="display: none;"></div>
     </div>
 
     <!-- Center Panel -->
@@ -1018,6 +1019,7 @@
     <!-- Team B Section -->
     <div class="team-section right">
         <div class="score-display" id="scoreB">00</div>
+        <div class="serving-indicator" id="servingB" style="display: none;"></div>
         <!-- Team B Player Jerseys -->
         <div class="team-jerseys" id="teamBJerseys">
             <!-- Will be populated by JavaScript -->
