@@ -1019,7 +1019,6 @@
     <!-- Team B Section -->
     <div class="team-section right">
         <div class="score-display" id="scoreB">00</div>
-        <div class="serving-indicator" id="servingB" style="display: none;"></div>
         <!-- Team B Player Jerseys -->
         <div class="team-jerseys" id="teamBJerseys">
             <!-- Will be populated by JavaScript -->
@@ -1030,6 +1029,7 @@
                 <span>T.O: <span id="timeoutsB">0</span>/<span id="maxTimeoutsB">2</span></span>
                 <span>SUB: <span id="substitutionsB">0</span>/<span id="maxSubstitutionsB">6</span></span>
             </div>
+            <div class="serving-indicator" id="servingB" style="display: none;"></div>
         </div>
     </div>
 </div>
