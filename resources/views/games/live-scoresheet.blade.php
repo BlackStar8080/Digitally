@@ -1731,11 +1731,12 @@
                 <!-- Dropdown Menu -->
                 <div class="dropdown-menu" id="dropdownMenu">
                     <a href="/tournaments/{{ $game->tournament_id }}" class="dropdown-item">
-                        🏆 Back to Tournament
+                         Back to Tournament
                     </a>
-                    <button class="dropdown-item" id="postponeBtn">Postpone Game</button>
                     <button class="dropdown-item" id="tallysheetBtn">Tallysheet</button>
                     <button class="dropdown-item" id="hotkeysBtn">Customize Hotkeys</button>
+                    <button class="dropdown-item" id="gameSettingsBtn"> Game Settings</button>
+
                 </div>
             </div>
 
@@ -2083,6 +2084,50 @@
                 </div>
             </div>
         </div>
+
+        <!-- Game Settings Modal -->
+<div class="hotkeys-modal" id="gameSettingsModal">
+  <div class="hotkeys-content">
+    <div class="hotkeys-header">
+      <div class="hotkeys-title">Game Settings</div>
+      <button class="hotkeys-close" id="gameSettingsClose">&times;</button>
+    </div>
+
+    <div class="hotkeys-body">
+      <div class="hotkeys-instructions">
+        Adjust your preferred game settings below.
+      </div>
+
+      <div class="hotkeys-grid">
+        <div class="hotkey-item">
+          <div class="hotkey-label">⏱ Time Limit (per quarter, minutes)</div>
+          <input type="number" id="quarterTimeInput" class="hotkey-input" min="1" max="20" value="8">
+        </div>
+
+        <div class="hotkey-item">
+          <div class="hotkey-label">⏸ Timeout Duration (seconds)</div>
+          <input type="number" id="timeoutDurationInput" class="hotkey-input" min="10" max="120" value="60">
+        </div>
+
+        <div class="hotkey-item">
+          <div class="hotkey-label">🛑 Timeout Limit per Quarter</div>
+          <input type="number" id="timeoutLimitInput" class="hotkey-input" min="1" max="5" value="2">
+        </div>
+
+        <div class="hotkey-item">
+          <div class="hotkey-label">🔁 Substitutions per Quarter</div>
+          <input type="number" id="subsPerQuarterInput" class="hotkey-input" min="1" max="10" value="5">
+        </div>
+      </div>
+
+      <div class="hotkeys-actions">
+        <button class="hotkey-btn save" id="saveGameSettings">Save Settings</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 
         <script>
@@ -4554,6 +4599,69 @@ function startOvertime() {
                 // Load saved hotkeys
                 loadHotkeys();
             });
+            
+           // ================= GAME SETTINGS LOGIC =================
+const gameSettingsBtn = document.getElementById("gameSettingsBtn");
+const gameSettingsModal = document.getElementById("gameSettingsModal");
+const gameSettingsClose = document.getElementById("gameSettingsClose");
+const saveGameSettings = document.getElementById("saveGameSettings");
+
+// Inputs
+const quarterTimeInput = document.getElementById("quarterTimeInput");
+const timeoutDurationInput = document.getElementById("timeoutDurationInput");
+const timeoutLimitInput = document.getElementById("timeoutLimitInput");
+const subsPerQuarterInput = document.getElementById("subsPerQuarterInput");
+
+// Default game settings
+let gameSettings = {
+  quarterTime: 8, // minutes
+  timeoutDuration: 60, // seconds
+  timeoutLimit: 2,
+  subsPerQuarter: 5,
+};
+
+// Open modal
+gameSettingsBtn.addEventListener("click", () => {
+  gameSettingsModal.style.display = "flex";
+  quarterTimeInput.value = gameSettings.quarterTime;
+  timeoutDurationInput.value = gameSettings.timeoutDuration;
+  timeoutLimitInput.value = gameSettings.timeoutLimit;
+  subsPerQuarterInput.value = gameSettings.subsPerQuarter;
+});
+
+// Close modal
+gameSettingsClose.addEventListener("click", () => {
+  gameSettingsModal.style.display = "none";
+});
+
+// Save settings
+saveGameSettings.addEventListener("click", () => {
+  gameSettings.quarterTime = parseInt(quarterTimeInput.value);
+  gameSettings.timeoutDuration = parseInt(timeoutDurationInput.value);
+  gameSettings.timeoutLimit = parseInt(timeoutLimitInput.value);
+  gameSettings.subsPerQuarter = parseInt(subsPerQuarterInput.value);
+
+  // Apply to actual game logic
+  quarterLength = gameSettings.quarterTime * 60; // seconds
+  timeoutTime = gameSettings.timeoutDuration; // seconds
+  maxTimeoutsPerQuarter = gameSettings.timeoutLimit;
+
+  // Reset the timer to reflect new quarter time if not running
+  if (!isRunning) {
+    time = quarterLength;
+    updateTimer();
+  }
+
+  // Update timeout limit display
+  document.querySelectorAll(".max-timeouts").forEach(el => {
+    el.textContent = maxTimeoutsPerQuarter;
+  });
+
+  alert("✅ Game settings updated successfully!");
+  gameSettingsModal.style.display = "none";
+});
+
+
 
             updateTimer();
 
