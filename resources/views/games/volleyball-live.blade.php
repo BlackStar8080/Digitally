@@ -1018,6 +1018,7 @@
 
     <!-- Team B Section -->
     <div class="team-section right">
+        <div class="serving-indicator" id="servingB" style="display: none;"></div>
         <div class="score-display" id="scoreB">00</div>
         <!-- Team B Player Jerseys -->
         <div class="team-jerseys" id="teamBJerseys">
@@ -1028,7 +1029,6 @@
             <div class="team-stats">
                 <span>T.O: <span id="timeoutsB">0</span>/<span id="maxTimeoutsB">2</span></span>
                 <span>SUB: <span id="substitutionsB">0</span>/<span id="maxSubstitutionsB">6</span></span>
-                <div class="serving-indicator" id="servingB" style="display: none;"></div>
             </div>
         </div>
     </div>
