@@ -1028,8 +1028,8 @@
             <div class="team-stats">
                 <span>T.O: <span id="timeoutsB">0</span>/<span id="maxTimeoutsB">2</span></span>
                 <span>SUB: <span id="substitutionsB">0</span>/<span id="maxSubstitutionsB">6</span></span>
+                <div class="serving-indicator" id="servingB" style="display: none;"></div>
             </div>
-            <div class="serving-indicator" id="servingB" style="display: none;"></div>
         </div>
     </div>
 </div>
