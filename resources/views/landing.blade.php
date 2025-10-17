@@ -1381,9 +1381,6 @@ html {
                 <i class="bi bi-shield-lock me-2"></i>
                 Admin Login
             </button>
-            <div class="mobile-menu">
-                <i class="bi bi-list"></i>
-            </div>
         </div>
     </header>
 
