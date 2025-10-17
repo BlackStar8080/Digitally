@@ -1490,35 +1490,41 @@ html {
 
             @if ($tournamentGames->count() > 0)
                 <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 2rem;">
-                    <div id="tournamentTabsCarousel" class="carousel slide tournament-tabs-carousel" data-bs-interval="false">
-                        <div class="carousel-inner">
-                            @foreach ($tournamentGames->chunk(3) as $chunkIndex => $tournamentsChunk)
-                                <div class="carousel-item {{ $chunkIndex === 0 ? 'active' : '' }}">
-                                    <div class="d-flex justify-content-center gap-3">
-                                        @foreach ($tournamentsChunk as $index => $tournament)
-                                            <button class="tournament-tab {{ $chunkIndex === 0 && $index === 0 ? 'active' : '' }}"
-                                                onclick="switchTournament('{{ $tournament->id }}', this)"
-                                                data-tournament-id="{{ $tournament->id }}">
-                                                <div class="tab-info">
-                                                    <span class="tab-name">{{ $tournament->name }}</span>
-                                                    <span class="tab-meta">{{ $tournament->sport_name }} • {{ $tournament->games->count() }} Games</span>
-                                                </div>
-                                                @if ($tournament->games->where('status', 'in-progress')->count() > 0)
-                                                    <span class="live-dot"></span>
-                                                @endif
-                                            </button>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                        <button class="carousel-control-prev custom-arrow-btn" type="button" data-bs-target="#tournamentTabsCarousel" data-bs-slide="prev" aria-label="Previous tournaments">
-                            <span class="custom-arrow">&lt;</span>
+                    <div id="tournamentTabsCarousel" class="carousel slide tournament-tabs-carousel" data-bs-ride="carousel" data-bs-interval="false">
+    <div class="carousel-inner">
+        @foreach ($tournamentGames->chunk(3) as $chunkIndex => $tournamentsChunk)
+            <div class="carousel-item {{ $chunkIndex === 0 ? 'active' : '' }}">
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    @foreach ($tournamentsChunk as $index => $tournament)
+                        <button class="tournament-tab {{ $chunkIndex === 0 && $index === 0 ? 'active' : '' }}"
+                            onclick="switchTournament('{{ $tournament->id }}', this)"
+                            data-tournament-id="{{ $tournament->id }}">
+                            <div class="tab-info">
+                                <span class="tab-name">{{ $tournament->name }}</span>
+                                <span class="tab-meta">
+                                    {{ $tournament->sport->name ?? 'N/A' }} • {{ $tournament->games->count() }} Games
+                                </span>
+                            </div>
+                            @if ($tournament->games->where('status', 'in-progress')->count() > 0)
+                                <span class="live-dot"></span>
+                            @endif
                         </button>
-                        <button class="carousel-control-next custom-arrow-btn" type="button" data-bs-target="#tournamentTabsCarousel" data-bs-slide="next" aria-label="Next tournaments">
-                            <span class="custom-arrow">&gt;</span>
-                        </button>
-                    </div>
+                    @endforeach
+                </div>
+            </div>
+        @endforeach
+    </div>
+
+    <button class="carousel-control-prev custom-arrow-btn" type="button"
+        data-bs-target="#tournamentTabsCarousel" data-bs-slide="prev">
+        <span>&lt;</span>
+    </button>
+    <button class="carousel-control-next custom-arrow-btn" type="button"
+        data-bs-target="#tournamentTabsCarousel" data-bs-slide="next">
+        <span>&gt;</span>
+    </button>
+</div>
+
                 </div>
 
                 <hr style="margin-bottom:2rem;">
