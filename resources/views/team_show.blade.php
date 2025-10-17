@@ -666,31 +666,6 @@
                                                 {{ $player->position ?? 'N/A' }}
                                             </span>
                                         </td>
-                                        <td>
-                                            @if(!session('is_guest'))
-                                            <div class="action-buttons">
-                                                <a href="{{ route('players.edit', $player->id) }}" 
-                                                   class="action-btn edit-btn" 
-                                                   title="Edit Player">
-                                                    <i class="bi bi-pencil-fill"></i>
-                                                </a>
-                                                <form action="{{ route('players.destroy', $player->id) }}" 
-                                                      method="POST" 
-                                                      style="display:inline;"
-                                                      onsubmit="return confirm('Are you sure you want to remove {{ $player->name }} from the team?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" 
-                                                            class="action-btn delete-btn" 
-                                                            title="Remove Player">
-                                                        <i class="bi bi-trash-fill"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                             @else
-                                                <span class="text-muted">View Only</span>
-                                            @endif
-                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
