@@ -648,7 +648,6 @@
                                     <th>Age</th>
                                     <th>Jersey #</th>
                                     <th>Position</th>
-                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
