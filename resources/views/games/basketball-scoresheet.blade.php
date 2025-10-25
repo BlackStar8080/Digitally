@@ -1,5 +1,3 @@
-{{-- resources/views/games/basketball-scoresheet.blade.php --}}
-
 <!doctype html>
 <html>
 <head>
@@ -158,6 +156,7 @@
 
         .main-container {
             width: 100%;
+            height: 11.1in; /* Adjusted height */
             border-collapse: collapse;
         }
 
@@ -264,6 +263,7 @@
 
         .running-score-table {
             width: 100%;
+            height: 8.5in; /* Adjusted height */
             border-collapse: collapse;
             font-size: 6px; /* Reduced font size */
         }
@@ -292,6 +292,7 @@
 
         .scores-section table {
             width: 100%;
+            height: 1in; /* Adjusted height */
             border-collapse: collapse;
         }
 
@@ -311,8 +312,8 @@
         .winning-team-box {
             margin-top: 2px;
             padding: 4px; /* Reduced padding */
-            border: 1.5px solid #000;
-            background: #d4edda;
+            
+            background: #ffffff;
             font-size: 7.5px; /* Reduced font size */
         }
 
@@ -331,8 +332,8 @@
             margin-top: 2px;
             padding: 4px; /* Reduced padding */
             border: 1.5px solid #000;
-            background: #fff3cd;
-            font-size: 7.5px; /* Reduced font size */
+            background: #ffffff;
+            font-size: 9px; /* Reduced font size */
         }
 
         .best-player-section strong {
@@ -364,10 +365,10 @@
     @if (!isset($isPdf) || !$isPdf)
         <div class="download-buttons">
             <a href="{{ route('pdf.basketball.scoresheet.download', $game->id) }}" class="btn-download">
-                📥 Download PDF
+                 Download PDF
             </a>
             <a href="{{ route('pdf.basketball.scoresheet.view', $game->id) }}" target="_blank" class="btn-view">
-                👁️ View PDF
+                 View PDF
             </a>
         </div>
     @endif
@@ -589,8 +590,8 @@
                             </thead>
                             <tbody>
                                 @php
-                                    $teamAChecks = array_fill(1, 120, false); // Reduced max score to 120
-                                    $teamBChecks = array_fill(1, 120, false);
+                                    $teamAChecks = array_fill(1, 160, false); 
+                                    $teamBChecks = array_fill(1, 160, false);
                                     if (isset($liveData['events'])) {
                                         $scoreA = 0;
                                         $scoreB = 0;
@@ -599,12 +600,12 @@
                                             if (isset($event['points']) && $event['points'] > 0) {
                                                 if ($event['team'] === 'A') {
                                                     $scoreA += $event['points'];
-                                                    if ($scoreA <= 120) {
+                                                    if ($scoreA <= 160) {
                                                         $teamAChecks[$scoreA] = true;
                                                     }
                                                 } else {
                                                     $scoreB += $event['points'];
-                                                    if ($scoreB <= 120) {
+                                                    if ($scoreB <= 160) {
                                                         $teamBChecks[$scoreB] = true;
                                                     }
                                                 }
@@ -612,10 +613,10 @@
                                         }
                                     }
                                 @endphp
-                                @for ($row = 0; $row < 30; $row++) <!-- Reduced rows from 40 to 30 -->
+                                @for ($row = 0; $row < 40; $row++) 
                                     <tr>
                                         @for ($col = 0; $col < 4; $col++)
-                                            @php $num = $row + 1 + ($col * 30); @endphp
+                                            @php $num = $row + 1 + ($col * 40); @endphp
                                             <td>{{ $num }}</td>
                                             <td>{!! $teamAChecks[$num] ?? false ? '&#x2714;' : '&nbsp;' !!}</td>
                                             <td>{{ $num }}</td>
@@ -671,7 +672,7 @@
                                 <strong>Final Score</strong>
                                 <span style="margin-left: 10px;">Team A <u>{{ $liveData['team1_score'] ?? 0 }}</u></span>
                                 <span style="margin-left: 20px;">Team B <u>{{ $liveData['team2_score'] ?? 0 }}</u></span>
-                            </div>
+                            
 
                             <div class="winning-team-box">
                                 <strong>Name of winning team:</strong>
@@ -682,6 +683,7 @@
                                 @else
                                     ________________
                                 @endif
+                            </div>
                             </div>
 
                             <!-- Best Player Section -->
