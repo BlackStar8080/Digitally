@@ -515,178 +515,185 @@
         </div>
 
 
-<!-- <!-- TEAMS AND PLAYERS PERFORMANCES - DOMPDF COMPATIBLE -->
+
+<!-- TEAMS AND PLAYERS PERFORMANCES - DOMPDF FIX -->
 <div class="stats-wrapper" style="page-break-inside: avoid;">
     <div class="stats-title">TEAMS AND PLAYERS PERFORMANCES</div>
     
     <!-- SCORING SKILLS TABLE -->
-    <table style="width: 100%; border-collapse: collapse; font-size: 5pt; line-height: 1;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 5pt;">
+        <tbody>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 8pt;">Won Pts</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 8pt;">Total Atts</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 8pt;">No Name</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 8pt; background-color: #e8e8e8;">Scoring Skills</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 8pt;">Won Pts</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 8pt;">Total Atts</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 8pt;">No Name</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Won Pts</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Atts</td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">No Name</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Scoring Skills</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Won Pts</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Atts</td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">No Name</td>
         </tr>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5pt;">Total Team</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 8pt; background-color: #e8e8e8;">Spike</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5pt;">Total Team</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Spike</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
         </tr>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; font-size: 4.5pt;">Player #</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px; background-color: #e8e8e8;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; font-size: 4.5pt;">Player #</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
         </tr>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; font-size: 4.5pt;">Player #</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px; background-color: #e8e8e8;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; font-size: 4.5pt;">Player #</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
         </tr>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5pt;">Total Team</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 8pt; background-color: #e8e8e8;">Block</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5pt;">Total Team</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Block</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
         </tr>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; font-size: 4.5pt;">Player #</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px; background-color: #e8e8e8;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; font-size: 4.5pt;">Player #</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
         </tr>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; font-size: 4.5pt;">Player #</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px; background-color: #e8e8e8;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; font-size: 4.5pt;">Player #</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
         </tr>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5pt;">Total Team</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 8pt; background-color: #e8e8e8;">Serve</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5pt;">Total Team</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Serve</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
         </tr>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; font-size: 4.5pt;">Player #</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px; background-color: #e8e8e8;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; font-size: 4.5pt;">Player #</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
         </tr>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5pt;">Total Team</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 8pt; background-color: #e8e8e8;">Opp. error Total</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5pt;">Total Team</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Opp. error Total</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
         </tr>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5pt;">Total Team</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px; background-color: #e8e8e8;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5pt;">Total Team</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
         </tr>
         <tr style="background-color: #e8e8e8;">
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; font-weight: bold; font-size: 5pt;">Best Scorer</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; font-weight: bold; font-size: 5pt;">Best Scorer</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; font-weight: bold;">Best Scorer</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; font-weight: bold;">Best Scorer</td>
         </tr>
+        </tbody>
     </table>
 
+    <br>
+
     <!-- NON-SCORING SKILLS TABLE -->
-    <table style="width: 100%; border-collapse: collapse; font-size: 5pt; line-height: 1;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 5pt;">
+        <tbody>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5.5pt;">Excellent</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5.5pt;">Total Atts</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5.5pt;">No Name</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 8pt; background-color: #e8e8e8;">Non scoring Skills</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5.5pt;">Excellent</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5.5pt;">Total Atts</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5.5pt;">No Name</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Excellent</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Atts</td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">No Name</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Non scoring Skills</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Excellent</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Atts</td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">No Name</td>
         </tr>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5pt;">Total Team</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 8pt; background-color: #e8e8e8;">Dig</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5pt;">Total Team</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Dig</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
         </tr>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; font-size: 4.5pt;">Player #</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px; background-color: #e8e8e8;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; font-size: 4.5pt;">Player #</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
         </tr>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5pt;">Total Team</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 8pt; background-color: #e8e8e8;">Set</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5pt;">Total Team</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Set</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
         </tr>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5pt;">Total Team</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 8pt; background-color: #e8e8e8;">Reception</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; text-align: center; font-weight: bold; font-size: 5pt;">Total Team</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Reception</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
         </tr>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; font-weight: bold; font-size: 4.5pt;">Success - Faults # Attempts</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 1px; background-color: #e8e8e8;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 1px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 1px; font-weight: bold; font-size: 4.5pt;">Success - Faults # Attempts</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; font-weight: bold;">Success - Faults # Attempts</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; font-weight: bold;">Success - Faults # Attempts</td>
         </tr>
+        </tbody>
     </table>
 </div>
 

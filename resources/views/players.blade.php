@@ -659,7 +659,7 @@
                                     {{ request('position') == 'Opposite Hitter' ? 'selected' : '' }}>Opposite Hitter
                                 </option>
                                 <option value="Opposite"
-                                    {{ request('position') == 'Opposite' ? 'selected' : '' }}>Opposite
+                                    {{ request('position') == 'Opposite' ? 'selected' : '' }}>Defensive Specialist
                                 </option>
                             </select>
 
