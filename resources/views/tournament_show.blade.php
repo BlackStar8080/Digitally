@@ -744,7 +744,7 @@
         }
 
         .tournament-page .btn-success {
-            background: linear-gradient(135deg, var(--success-color), #20c997);
+            background: linear-gradient(135deg, var(--success-color), #ffc4a4);
             padding: 0.75rem 1.5rem;
         }
 
@@ -2509,7 +2509,7 @@
                                             <button class="btn btn-primary"
                                                 onclick="toggleBracketCustomizer({{ $bracket->id }})">
                                                 <i class="bi bi-gear"></i>
-                                                Customize Bracket
+                                                Customize Matches
                                             </button>
                                         @endif
                                         <form action="{{ route('brackets.generate', $bracket) }}" method="POST"
@@ -2517,7 +2517,7 @@
                                             @csrf
                                             <button type="submit" class="btn btn-success">
                                                 <i class="bi bi-play-circle"></i>
-                                                Generate Tournament
+                                                Generate Bracket
                                             </button>
                                         </form>
                                     </div>

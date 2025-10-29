@@ -284,7 +284,7 @@ public function volleyballScoresheet($gameId)
         'enable_font_subsetting' => true,
     ]);
 
-    $pdf->setPaper('legal', 'landscape');
+    $pdf->setPaper('legal', 'portrait');
 
     $filename = sprintf(
         'volleyball-scoresheet-%s-vs-%s-game%d.pdf',
