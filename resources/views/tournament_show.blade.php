@@ -381,6 +381,51 @@
             border-radius: 16px;
             padding: 2rem;
             border: 2px solid var(--border-color);
+            position: relative;
+            /* allow absolute-positioned close button */
+        }
+
+        /* When an info-card is marked as customizing, hide its action buttons as a fail-safe */
+        .info-card.customizing [id^="bracketActions"] {
+            display: none !important;
+        }
+
+        /* When toggled, present the customizer as a fixed-top panel so it stays above the page
+               instead of moving to the left side of the interface. We compute top via JS to sit
+               below the page header, but provide sensible defaults here. */
+        .bracket-customizer.fixed-top {
+            position: fixed;
+            top: 120px;
+            /* default, overridden by JS to match header height */
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 4rem);
+            max-width: 1200px;
+            z-index: 1050;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Close button inside the customizer panel */
+        .customizer-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: white;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            z-index: 20;
+        }
+
+        .customizer-close i {
+            font-size: 1rem;
+            color: var(--text-muted);
         }
 
         .customizer-instructions {
@@ -413,9 +458,17 @@
 
         .customizer-container {
             display: grid;
-            grid-template-columns: 320px 1fr;
+            /* Make right column able to shrink properly to avoid child overflow */
+            grid-template-columns: 320px minmax(0, 1fr);
             gap: 2rem;
             margin-bottom: 2rem;
+        }
+
+        /* Allow direct children to shrink when the container is constrained (fixes overlap)
+               This avoids the left column content forcing the grid to overflow and overlap nearby
+               UI like action buttons. */
+        .customizer-container>* {
+            min-width: 0;
         }
 
         .team-pool {
@@ -502,7 +555,20 @@
 
         .customizer-actions {
             display: flex;
+            flex-wrap: wrap;
+            /* Ensure wrapping to prevent overlap */
             gap: 0.75rem;
+            /* Consistent gap */
+            justify-content: flex-end;
+            /* Align to right, but wrap if needed */
+            align-items: center;
+            /* keep buttons vertically centered */
+        }
+
+        /* Allow buttons inside customizer-actions to shrink on small widths */
+        .customizer-actions .btn {
+            min-width: 0;
+            white-space: nowrap;
         }
 
         .customizer-progress {
@@ -757,6 +823,25 @@
 
             100% {
                 transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .button-grid,
+            .customizer-actions {
+                flex-direction: column;
+                /* Stack vertically on mobile */
+                align-items: stretch;
+                /* Full width buttons */
+            }
+
+            .button-grid .btn,
+            .customizer-actions .btn {
+                width: 100%;
+                /* Full width on small screens */
+                min-width: unset;
+                /* Remove min-width constraint */
             }
         }
 
@@ -1483,13 +1568,23 @@
                 grid-template-columns: 1fr;
             }
 
+            /* Ensure children can shrink in the stacked (mobile) layout */
+            .customizer-container>* {
+                min-width: 0;
+            }
+
             .matchups-builder-grid {
                 grid-template-columns: 1fr;
             }
 
             .customizer-actions {
-                flex-direction: column;
-                gap: 0.5rem;
+                display: flex;
+                flex-wrap: wrap;
+                /* Ensure wrapping to prevent overlap */
+                gap: 0.75rem;
+                /* Consistent gap */
+                justify-content: flex-end;
+                /* Align to right, but wrap if needed */
             }
 
             .team-card-content {
@@ -2214,42 +2309,33 @@
         }
 
         .button-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            /* Two columns */
-            grid-template-rows: repeat(2, auto);
-            /* Two rows */
-            gap: 0.5rem;
-            /* Space between buttons */
-            justify-items: stretch;
-            align-items: stretch;
+            display: flex;
+            /* Switch to flex for better adaptability */
+            flex-wrap: wrap;
+            /* Allow wrapping to prevent overlap */
+            gap: 0.75rem;
+            /* Increased gap for breathing room */
+            justify-content: flex-start;
+            /* Align left but allow wrap */
         }
 
         .button-grid .btn {
-            width: 150px;
-            /* Fixed minimum width to accommodate text */
-            min-width: 150px;
-            /* Ensures button doesn't shrink below this */
-            text-align: left;
-            /* Keep text aligned left */
-            white-space: nowrap;
-            /* Prevent text from wrapping */
-            overflow: visible;
-            /* Allow text to be fully visible */
-            text-overflow: clip;
-            /* No ellipsis, let text extend if needed */
-            padding: 0.375rem 0.75rem;
-            /* Standard button padding */
-            font-size: 0.9rem;
-            /* Slightly smaller font to fit */
-            display: flex;
-            /* Flexbox for icon + text alignment */
-            align-items: center;
-            /* Vertical center icon and text */
-            justify-content: flex-start;
-            /* Left-align content */
-            gap: 0.25rem;
-            /* Small gap between icon and text */
+            width: auto;
+            /* Remove fixed width to prevent overflow/overlap */
+            min-width: 120px;
+            /* Smaller min-width for flexibility */
+            max-width: 100%;
+            /* Prevent buttons from exceeding container */
+            text-align: center;
+            /* Center text for better look */
+            white-space: normal;
+            /* Allow text wrapping if needed */
+            overflow: hidden;
+            /* Hide overflow if text is too long */
+            text-overflow: ellipsis;
+            /* Add ellipsis for long text */
+            padding: 0.5rem 1rem;
+            /* Consistent padding */
         }
 
         /* Ensure icons don't cause issues */
@@ -2305,19 +2391,20 @@
                             <div class="col-md-6">
                                 <h5 class="section-title">Quick Actions</h5>
                                 @if (!session('is_guest'))
-                                @if ($tournament->teams->count() >= 3)
-                                    <button class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#createBracketModal">
-                                        <i class="bi bi-diagram-3"></i>
-                                        Create Bracket
-                                    </button>
-                                @else
-                                    <p class="text-muted">
-                                        <i class="bi bi-info-circle"></i>
-                                        Add at least 3 teams to create a bracket ({{ $tournament->teams->count() }}/3 teams
-                                        registered)
-                                    </p>
-                                @endif
+                                    @if ($tournament->teams->count() >= 3)
+                                        <button class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#createBracketModal">
+                                            <i class="bi bi-diagram-3"></i>
+                                            Create Bracket
+                                        </button>
+                                    @else
+                                        <p class="text-muted">
+                                            <i class="bi bi-info-circle"></i>
+                                            Add at least 3 teams to create a bracket ({{ $tournament->teams->count() }}/3
+                                            teams
+                                            registered)
+                                        </p>
+                                    @endif
                                 @endif
                             </div>
                         @endif
@@ -2328,13 +2415,14 @@
                 <div class="info-card">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="section-title mb-0">Team Management ({{ $tournament->teams->count() }})</h5>
-                        @if(!session('is_guest'))
-                        @if (isset($availableTeams) && $availableTeams->count() > 0)
-                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#assignTeamModal">
-                                <i class="bi bi-plus-circle"></i>
-                                Add Team
-                            </button>
-                        @endif
+                        @if (!session('is_guest'))
+                            @if (isset($availableTeams) && $availableTeams->count() > 0)
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#assignTeamModal">
+                                    <i class="bi bi-plus-circle"></i>
+                                    Add Team
+                                </button>
+                            @endif
                         @endif
                     </div>
 
@@ -2350,18 +2438,19 @@
                                             Coach: {{ $team->coach_name ?? 'N/A' }}
                                         </small>
                                     </div>
-                                    @if(!session('is_guest')) 
-                                    @if ($tournament->brackets()->where('status', 'active')->doesntExist())
-                                        <form action="{{ route('tournaments.remove-team', [$tournament->id, $team->id]) }}"
-                                            method="POST"
-                                            onsubmit="return confirm('Remove {{ $team->team_name }} from this tournament?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-outline-danger btn-sm">
-                                                <i class="bi bi-x-circle"></i>
-                                            </button>
-                                        </form>
-                                    @endif
+                                    @if (!session('is_guest'))
+                                        @if ($tournament->brackets()->where('status', 'active')->doesntExist())
+                                            <form
+                                                action="{{ route('tournaments.remove-team', [$tournament->id, $team->id]) }}"
+                                                method="POST"
+                                                onsubmit="return confirm('Remove {{ $team->team_name }} from this tournament?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                    <i class="bi bi-x-circle"></i>
+                                                </button>
+                                            </form>
+                                        @endif
                                     @endif
                                 </div>
                             @endforeach
@@ -2393,8 +2482,9 @@
                     @endif
                 </div>
                 @foreach ($tournament->brackets as $bracket)
-                    <div class="info-card">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="info-card" id="bracketCard{{ $bracket->id }}">
+                        <div id="bracketHeader{{ $bracket->id }}"
+                            class="d-flex justify-content-between align-items-center mb-3">
                             <div>
                                 <h5 class="section-title mb-1">{{ $bracket->name }}</h5>
                                 <div class="badge-group">
@@ -2412,30 +2502,34 @@
                                     @endif
                                 </div>
                             </div>
-                            @if(!session('is_guest'))
-                            @if ($bracket->status === 'setup' && $bracket->games->isEmpty())
-                                <div class="d-flex gap-2">
-                                    @if ($bracket->type === 'single-elimination')
-                                        <button class="btn btn-primary"
-                                            onclick="toggleBracketCustomizer({{ $bracket->id }})">
-                                            <i class="bi bi-gear"></i>
-                                            Customize Bracket
-                                        </button>
-                                    @endif
-                                    <form action="{{ route('brackets.generate', $bracket) }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success">
-                                            <i class="bi bi-play-circle"></i>
-                                            Generate Tournament
-                                        </button>
-                                    </form>
-                                </div>
-                            @endif
+                            @if (!session('is_guest'))
+                                @if ($bracket->status === 'setup' && $bracket->games->isEmpty())
+                                    <div id="bracketActions{{ $bracket->id }}" class="d-flex gap-2">
+                                        @if ($bracket->type === 'single-elimination')
+                                            <button class="btn btn-primary"
+                                                onclick="toggleBracketCustomizer({{ $bracket->id }})">
+                                                <i class="bi bi-gear"></i>
+                                                Customize Bracket
+                                            </button>
+                                        @endif
+                                        <form action="{{ route('brackets.generate', $bracket) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="bi bi-play-circle"></i>
+                                                Generate Tournament
+                                            </button>
+                                        </form>
+                                    </div>
+                                @endif
 
                                 {{-- Keep the existing Bracket Customizer for Single Elimination --}}
                                 @if ($bracket->type === 'single-elimination')
                                     <div class="bracket-customizer" id="bracketCustomizer{{ $bracket->id }}">
+                                        <button type="button" class="customizer-close" aria-label="Close customizer"
+                                            onclick="toggleBracketCustomizer({{ $bracket->id }})">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
                                         <!-- Instructions removed -->
                                         <div class="customizer-progress">
                                             <div class="progress-bar-custom">
@@ -2876,14 +2970,15 @@
                                 @endif
                             @else
                                 <!-- SINGLE ELIMINATION TOURNAMENT -->
-                                    <!-- Add this in resources/views/tournaments/show.blade.php, e.g., above <div class="bracket-container"> -->
-                                    @if(!session('is_guest'))
+                                <!-- Add this in resources/views/tournaments/show.blade.php, e.g., above <div class="bracket-container"> -->
+                                @if (!session('is_guest'))
                                     <div class="d-flex justify-content-end mb-3">
-                                        <a href="{{ route('tournaments.bracket.pdf', $tournament) }}" class="btn btn-primary">
+                                        <a href="{{ route('tournaments.bracket.pdf', $tournament) }}"
+                                            class="btn btn-primary">
                                             <i class="bi bi-download"></i> Download Bracket PDF
                                         </a>
                                     </div>
-                                    @endif
+                                @endif
 
                                 <!-- Keep your existing bracket display code exactly as it is -->
                                 <div class="bracket-container"
@@ -3187,63 +3282,63 @@
 
                                                     <div class="game-actions button-grid">
                                                         @if (!session('is_guest'))
-                                                        {{-- Only show these buttons if not a guest --}}
-                                                        @if (!$game->isCompleted())
-                                                            <button class="edit-schedule-btn btn btn-primary"
-                                                                data-game-id="{{ $game->id }}"
-                                                                data-game-title="{{ addslashes($game->getDisplayName()) }}"
-                                                                data-team1="{{ addslashes($game->team1 ? $game->team1->team_name : 'TBD') }}"
-                                                                data-team2="{{ addslashes($game->team2 ? $game->team2->team_name : 'TBD') }}"
-                                                                data-scheduled="{{ $game->scheduled_at ? $game->scheduled_at->format('Y-m-d\TH:i') : '' }}"
-                                                                onclick="openEditScheduleModal(
+                                                            {{-- Only show these buttons if not a guest --}}
+                                                            @if (!$game->isCompleted())
+                                                                <button class="edit-schedule-btn btn btn-primary"
+                                                                    data-game-id="{{ $game->id }}"
+                                                                    data-game-title="{{ addslashes($game->getDisplayName()) }}"
+                                                                    data-team1="{{ addslashes($game->team1 ? $game->team1->team_name : 'TBD') }}"
+                                                                    data-team2="{{ addslashes($game->team2 ? $game->team2->team_name : 'TBD') }}"
+                                                                    data-scheduled="{{ $game->scheduled_at ? $game->scheduled_at->format('Y-m-d\TH:i') : '' }}"
+                                                                    onclick="openEditScheduleModal(
                                                                     '{{ $game->id }}', 
                                                                     '{{ addslashes($game->getDisplayName()) }}', 
                                                                     '{{ addslashes($game->team1 ? $game->team1->team_name : 'TBD') }}', 
                                                                     '{{ addslashes($game->team2 ? $game->team2->team_name : 'TBD') }}', 
                                                                     '{{ $game->scheduled_at ? $game->scheduled_at->format('Y-m-d\TH:i') : '' }}'
                                                                 )">
-                                                                <i class="bi bi-calendar-event"></i>
-                                                                {{ $game->scheduled_at ? 'Edit' : 'Set' }} Schedule
-                                                            </button>
-                                                        @endif
+                                                                    <i class="bi bi-calendar-event"></i>
+                                                                    {{ $game->scheduled_at ? 'Edit' : 'Set' }} Schedule
+                                                                </button>
+                                                            @endif
                                                         @endif
 
                                                         {{-- Show Start/Resume button based on game status --}}
                                                         @if (!session('is_guest'))
-                                                        @if (!$game->isCompleted() && $game->isReady() && $game->status !== 'in_progress')
-                                                            <a href="{{ route('games.prepare', $game->id) }}"
-                                                                class="start-game-btn btn btn-success">
-                                                                <i class="bi bi-play-fill"></i> Start Game
-                                                            </a>
-                                                        @elseif($game->status === 'in_progress')
-                                                            @if ($game->isVolleyball())
-                                                                <a href="{{ route('games.volleyball-live', $game->id) }}"
-                                                                    class="start-game-btn btn btn-warning">
-                                                                    <i class="bi bi-play-circle"></i> Resume Game
+                                                            @if (!$game->isCompleted() && $game->isReady() && $game->status !== 'in_progress')
+                                                                <a href="{{ route('games.prepare', $game->id) }}"
+                                                                    class="start-game-btn btn btn-success">
+                                                                    <i class="bi bi-play-fill"></i> Start Game
                                                                 </a>
-                                                            @else
-                                                                <a href="{{ route('games.live', $game->id) }}"
-                                                                    class="start-game-btn btn btn-warning">
-                                                                    <i class="bi bi-play-circle"></i> Resume Game
-                                                                </a>
+                                                            @elseif($game->status === 'in_progress')
+                                                                @if ($game->isVolleyball())
+                                                                    <a href="{{ route('games.volleyball-live', $game->id) }}"
+                                                                        class="start-game-btn btn btn-warning">
+                                                                        <i class="bi bi-play-circle"></i> Resume Game
+                                                                    </a>
+                                                                @else
+                                                                    <a href="{{ route('games.live', $game->id) }}"
+                                                                        class="start-game-btn btn btn-warning">
+                                                                        <i class="bi bi-play-circle"></i> Resume Game
+                                                                    </a>
+                                                                @endif
                                                             @endif
                                                         @endif
-                                                        @endif
-                                                            @if(!session('is_guest') && isset($game) && $game)
+                                                        @if (!session('is_guest') && isset($game) && $game)
                                                             @if ($game->isVolleyball())
-                                                                <a href="javascript:void(0);" 
-                                                                class="tally-sheet-btn btn btn-info"
-                                                                onclick="openTallySheet({{ $game->id }}, 'volleyball')">
+                                                                <a href="javascript:void(0);"
+                                                                    class="tally-sheet-btn btn btn-info"
+                                                                    onclick="openTallySheet({{ $game->id }}, 'volleyball')">
                                                                     <i class="bi bi-clipboard-data"></i> Tallysheet
                                                                 </a>
                                                             @else
-                                                                <a href="javascript:void(0);" 
-                                                                class="tally-sheet-btn btn btn-info"
-                                                                onclick="openTallySheet({{ $game->id }}, 'basketball')">
+                                                                <a href="javascript:void(0);"
+                                                                    class="tally-sheet-btn btn btn-info"
+                                                                    onclick="openTallySheet({{ $game->id }}, 'basketball')">
                                                                     <i class="bi bi-clipboard-data"></i> Tallysheet
                                                                 </a>
                                                             @endif
-                                                            @endif
+                                                        @endif
 
 
 
@@ -3277,7 +3372,7 @@
                                 </div>
                             @endif
                         @else
-                            <div class="empty-state">
+                            <div class="empty-state" id="bracketEmpty{{ $bracket->id }}">
                                 <i class="bi bi-diagram-3"></i>
                                 <p>Tournament not generated yet. Click "Generate Tournament" to start!</p>
                             </div>
@@ -4059,50 +4154,50 @@
     });
 
     function openTallySheet(gameId, sport) {
-  let url;
-  if (sport === 'volleyball') {
-    url = `/games/${gameId}/volleyball-scoresheet`;
-  } else {
-    url = `/games/${gameId}/basketball-scoresheet`;
-  }
+        let url;
+        if (sport === 'volleyball') {
+            url = `/games/${gameId}/volleyball-scoresheet`;
+        } else {
+            url = `/games/${gameId}/basketball-scoresheet`;
+        }
 
-  const tallysheeetWindow = window.open(
-    url,
-    'scoresheet',
-    'width=1200,height=900,scrollbars=yes,resizable=yes'
-  );
+        const tallysheeetWindow = window.open(
+            url,
+            'scoresheet',
+            'width=1200,height=900,scrollbars=yes,resizable=yes'
+        );
 
-  if (tallysheeetWindow) {
-    tallysheeetWindow.focus();
-  } else {
-    alert('Please allow popups for this site to view the tallysheet.');
-  }
-}
+        if (tallysheeetWindow) {
+            tallysheeetWindow.focus();
+        } else {
+            alert('Please allow popups for this site to view the tallysheet.');
+        }
+    }
 
-    
+
 
     function openVolleyballScoresheet(gameId) {
-            // Build the URL for the PDF version
-            const url = `/games/${gameId}/volleyball-scoresheet-pdf`;
+        // Build the URL for the PDF version
+        const url = `/games/${gameId}/volleyball-scoresheet-pdf`;
 
 
-            // Open in a new tab or window (like basketball)
-            const scoresheetWindow = window.open(
+        // Open in a new tab or window (like basketball)
+        const scoresheetWindow = window.open(
             url,
             'volleyball_scoresheet',
             'width=1200,height=900,scrollbars=yes,resizable=yes'
-            );
+        );
 
 
-            if (scoresheetWindow) {
+        if (scoresheetWindow) {
             scoresheetWindow.focus();
-            } else {
+        } else {
             alert('Please allow popups for this site to view the volleyball scoresheet.');
-            }
-            }
-            
+        }
+    }
 
-            
+
+
 
     // Drag and Drop Bracket Customizer Functions
     let draggedTeamData = null;
@@ -4110,11 +4205,55 @@
 
     function toggleBracketCustomizer(bracketId) {
         const customizer = document.getElementById(`bracketCustomizer${bracketId}`);
+        // Find the actions container for this bracket (the buttons we want hidden while customizing)
+        const actions = document.getElementById(`bracketActions${bracketId}`);
+
+        const card = document.getElementById(`bracketCard${bracketId}`);
+        const header = document.getElementById(`bracketHeader${bracketId}`);
+        const emptyState = document.getElementById(`bracketEmpty${bracketId}`);
+
         if (customizer.style.display === 'none' || customizer.style.display === '') {
+            // Show the customizer in the normal document flow (not fixed/modal)
             customizer.style.display = 'block';
+
+            // Hide the header, actions, and empty-state so they don't appear beside the customizer
+            if (header) {
+                header.style.display = 'none';
+            }
+            if (actions) {
+                actions.style.display = 'none';
+            }
+            if (emptyState) {
+                emptyState.style.display = 'none';
+            }
+
+            // Mark the parent card as customizing to apply CSS fail-safes
+            if (card) {
+                card.classList.add('customizing');
+            }
+
             initializeBracketCustomizer(bracketId);
+
+            // Ensure it's visible to the user
+            customizer.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
         } else {
+            // Hide the customizer and restore the actions container
             customizer.style.display = 'none';
+            if (actions) {
+                actions.style.display = ''; // let CSS decide (restores flex)
+            }
+            if (header) {
+                header.style.display = '';
+            }
+            if (emptyState) {
+                emptyState.style.display = '';
+            }
+            if (card) {
+                card.classList.remove('customizing');
+            }
         }
     }
 
