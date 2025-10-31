@@ -302,6 +302,9 @@ html {
     z-index: 1;
     letter-spacing: -2px;
     animation: fadeInUp 0.8s ease-out 0.2s backwards;
+    font-family: 'Arial Black', 'Gadget', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 3px;
 }
 
 .hero-subtitle {
@@ -1360,6 +1363,10 @@ html {
     }
 }
     </style>
+        @if(session('success'))
+            {{-- Provide server-side data for toast JS --}}
+            <script>window.__serverSuccessMessage = {!! json_encode(session('success')) !!};</script>
+        @endif
 </head>
 <body>
     <!-- Header -->
@@ -1489,40 +1496,22 @@ html {
             </div>
 
             @if ($tournamentGames->count() > 0)
-                <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 2rem;">
-                    <div id="tournamentTabsCarousel" class="carousel slide tournament-tabs-carousel" data-bs-ride="carousel" data-bs-interval="false">
-    <div class="carousel-inner">
-        @foreach ($tournamentGames->chunk(3) as $chunkIndex => $tournamentsChunk)
-            <div class="carousel-item {{ $chunkIndex === 0 ? 'active' : '' }}">
-                <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    @foreach ($tournamentsChunk as $index => $tournament)
-                        <button class="tournament-tab {{ $chunkIndex === 0 && $index === 0 ? 'active' : '' }}"
-                            onclick="switchTournament('{{ $tournament->id }}', this)"
-                            data-tournament-id="{{ $tournament->id }}">
-                            <div class="tab-info">
-                                <span class="tab-name">{{ $tournament->name }}</span>
-                                <span class="tab-meta">
-                                    {{ $tournament->sport->name ?? 'N/A' }} • {{ $tournament->games->count() }} Games
-                                </span>
-                            </div>
-                            @if ($tournament->games->where('status', 'in-progress')->count() > 0)
-                                <span class="live-dot"></span>
-                            @endif
-                        </button>
-                    @endforeach
-                </div>
+                <div class="d-flex justify-content-center gap-3 flex-wrap" style="flex-wrap: wrap; overflow-x: auto; padding-bottom: 1rem;">
+    @foreach ($tournamentGames as $tournament)
+        <button class="tournament-tab {{ $loop->first ? 'active' : '' }}"
+            onclick="switchTournament('{{ $tournament->id }}', this)"
+            data-tournament-id="{{ $tournament->id }}">
+            <div class="tab-info">
+                <span class="tab-name">{{ $tournament->name }}</span>
+                <span class="tab-meta">
+                    {{ $tournament->sport->name ?? 'N/A' }} • {{ $tournament->games->count() }} Games
+                </span>
             </div>
-        @endforeach
-    </div>
-
-    <button class="carousel-control-prev custom-arrow-btn" type="button"
-        data-bs-target="#tournamentTabsCarousel" data-bs-slide="prev">
-        <span>&lt;</span>
-    </button>
-    <button class="carousel-control-next custom-arrow-btn" type="button"
-        data-bs-target="#tournamentTabsCarousel" data-bs-slide="next">
-        <span>&gt;</span>
-    </button>
+            @if ($tournament->games->where('status', 'in-progress')->count() > 0)
+                <span class="live-dot"></span>
+            @endif
+        </button>
+    @endforeach
 </div>
 
                 </div>
@@ -1863,6 +1852,51 @@ html {
     document.body.appendChild(form);
     form.submit();
 }
+    </script>
+
+    <!-- Global toast for landing page (shows logout/login success) -->
+    <div id="landingToastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: none;">
+        <div id="landingToast" style="background: white; border-radius: 12px; padding: 1rem 1.25rem; box-shadow: 0 10px 40px rgba(0,0,0,0.15); display:flex; gap:0.75rem; align-items:center; min-width:300px; border-left:4px solid #28a745;">
+            <div style="width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#28a745,#20c997); display:flex; align-items:center; justify-content:center; color:white; font-size:18px; flex-shrink:0;">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <div style="flex:1">
+                <div id="landingToastTitle" style="font-weight:700; color:#212529; font-size:14px;">Success</div>
+                <div id="landingToastMessage" style="color:#6c757d; font-size:13px;">Operation completed successfully.</div>
+            </div>
+            <button id="landingToastClose" style="background:none; border:none; color:#6c757d; font-size:18px; cursor:pointer;">&times;</button>
+        </div>
+    </div>
+
+    <script>
+        (function(){
+            function showLandingToast(message, title = 'Success', duration = 4000) {
+                try {
+                    var container = document.getElementById('landingToastContainer');
+                    var toast = document.getElementById('landingToast');
+                    var msgEl = document.getElementById('landingToastMessage');
+                    var titleEl = document.getElementById('landingToastTitle');
+                    var closeBtn = document.getElementById('landingToastClose');
+                    if (!container || !toast || !msgEl) return;
+                    titleEl.textContent = title;
+                    msgEl.textContent = message;
+                    container.style.display = 'block';
+                    toast.classList.add('show');
+                    function hide() {
+                        toast.classList.remove('show');
+                        container.style.display = 'none';
+                    }
+                    closeBtn.onclick = hide;
+                    setTimeout(hide, duration);
+                } catch (err) { console.error(err); }
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                if (window.__serverSuccessMessage) {
+                    showLandingToast(window.__serverSuccessMessage);
+                }
+            });
+        })();
     </script>
 </body>
 </html>

@@ -42,7 +42,8 @@ Route::post('/logout', function () {
     session()->forget('guest_name');
     session()->flush();
     
-    return redirect('/');
+    // Flash a success message so the global toast in the layout can show it
+    return redirect('/')->with('success', 'You have been logged out successfully.');
 })->name('logout');
 
 /*

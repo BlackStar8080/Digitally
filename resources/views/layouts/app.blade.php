@@ -496,6 +496,20 @@
         @yield('content')
     </div>
 
+    {{-- Global toast (shows messages like successful login) --}}
+    <div class="global-toast-container" id="globalToastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: none;">
+        <div class="global-toast" id="globalToast" style="background: white; border-radius: 12px; padding: 1rem 1.25rem; box-shadow: 0 10px 40px rgba(0,0,0,0.15); display:flex; gap:0.75rem; align-items:center; min-width:300px; border-left:4px solid #28a745;">
+            <div style="width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#28a745,#20c997); display:flex; align-items:center; justify-content:center; color:white; font-size:18px; flex-shrink:0;">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <div style="flex:1">
+                <div id="globalToastTitle" style="font-weight:700; color:#212529; font-size:14px;">Success</div>
+                <div id="globalToastMessage" style="color:#6c757d; font-size:13px;">Operation completed successfully.</div>
+            </div>
+            <button id="globalToastClose" style="background:none; border:none; color:#6c757d; font-size:18px; cursor:pointer;">&times;</button>
+        </div>
+    </div>
+
     {{-- ✅ Enhanced Logout Modal --}}
     <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
 
@@ -594,5 +608,43 @@
     {{-- Page-specific scripts --}}
     @yield('scripts')
     @stack('scripts')
+
+    <script>
+        // Global toast helper (used for login success and other global messages)
+        function showGlobalToast(message, title = 'Success', duration = 4000) {
+            try {
+                var container = document.getElementById('globalToastContainer');
+                var toast = document.getElementById('globalToast');
+                var msgEl = document.getElementById('globalToastMessage');
+                var titleEl = document.getElementById('globalToastTitle');
+                var closeBtn = document.getElementById('globalToastClose');
+
+                if (!container || !toast || !msgEl) return;
+
+                titleEl.textContent = title;
+                msgEl.textContent = message;
+                container.style.display = 'block';
+                toast.classList.add('show');
+
+                function hide() {
+                    toast.classList.remove('show');
+                    container.style.display = 'none';
+                }
+
+                closeBtn.onclick = hide;
+
+                setTimeout(hide, duration);
+            } catch (err) {
+                console.error('Toast error', err);
+            }
+        }
+
+        // If there's a success message in session (e.g., after login), show it
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session('success'))
+                showGlobalToast({!! json_encode(session('success')) !!});
+            @endif
+        });
+    </script>
 </body>
 </html>

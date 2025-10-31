@@ -22,8 +22,8 @@ class AuthController extends Controller
         // ✅ IMPORTANT: Clear guest session when real user logs in
         session()->forget('is_guest');
         session()->forget('guest_name');
-        
-        return redirect()->route('dashboard');
+        // Flash success so layout global toast shows
+        return redirect()->route('dashboard')->with('success', 'Logged in successfully');
     }
 
     return back()->withErrors([
@@ -74,7 +74,8 @@ class AuthController extends Controller
     session()->forget('is_guest');
     session()->forget('guest_name');
 
-    return redirect()->route('dashboard');
+    // Flash success so layout global toast shows
+    return redirect()->route('dashboard')->with('success', 'Account created and logged in successfully');
 }
 
     public function logout(Request $request)
