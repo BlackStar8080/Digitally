@@ -6,6 +6,7 @@ use App\Models\Tournament;
 use App\Models\Sport;
 use App\Models\Team;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class TournamentController extends Controller
 {
@@ -24,22 +25,30 @@ class TournamentController extends Controller
 
     // Store new tournament
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name'         => 'required|string|max:255|unique:tournaments,name',
-            'division'     => 'required|string|max:255',
-            'sport_id'     => 'required|exists:sports,sports_id',
-            'start_date'   => 'nullable|date',
-        ], [
-            'name.unique' => 'This tournament name is already registered.',
-        ]);
+{
+    $validated = $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'division' => ['required', 'string', 'max:255'],
+        'sport_id' => [
+            'required',
+            'exists:sports,sports_id',
+            Rule::unique('tournaments')->where(function ($query) use ($request) {
+                return $query->where('name', $request->name)
+                             ->where('division', $request->division)
+                             ->where('sport_id', $request->sport_id);
+            }),
+        ],
+        'start_date' => ['required','date'],
+    ], [
+        'sport_id.unique' => 'Tournament already exists.',
+    ]);
 
-        Tournament::create($validated);
+    Tournament::create($validated);
+    
 
-        // ✨ Enhanced success message with emoji
-        return redirect()->route('tournaments.index')
-            ->with('success', '🎉 Tournament has been successfully created!');
-    }
+    return redirect()->route('tournaments.index')
+        ->with('success', '🎉 Tournament has been successfully created!');
+}
 
     // View a single tournament
     public function show($id)
@@ -51,22 +60,29 @@ class TournamentController extends Controller
 
     // Update tournament
     public function update(Request $request, Tournament $tournament)
-    {
-        $validated = $request->validate([
-            'name'         => 'required|string|max:255|unique:tournaments,name,' . $tournament->id,
-            'division'     => 'required|string|max:255',
-            'sport_id'     => 'required|exists:sports,sports_id',
-            'start_date'   => 'nullable|date',
-        ], [
-            'name.unique' => 'This tournament name is already registered.',
-        ]);
+{
+    $validated = $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'division' => ['required', 'string', 'max:255'],
+        'sport_id' => [
+            'required',
+            'exists:sports,sports_id',
+            Rule::unique('tournaments')->where(function ($query) use ($request) {
+                return $query->where('name', $request->name)
+                             ->where('division', $request->division)
+                             ->where('sport_id', $request->sport_id);
+            })->ignore($tournament->id),
+        ],
+        'start_date' => ['required','date'],
+    ], [
+        'sport_id.unique' => 'Tournament already exists.',
+    ]);
 
-        $tournament->update($validated);
+    $tournament->update($validated);
 
-        // ✨ Enhanced success message with emoji
-        return redirect()->route('tournaments.index')
-            ->with('success', '✅ Tournament has been successfully updated!');
-    }
+    return redirect()->route('tournaments.index')
+        ->with('success', '✅ Tournament has been successfully updated!');
+}
 
     // Delete tournament
     public function destroy(Tournament $tournament)

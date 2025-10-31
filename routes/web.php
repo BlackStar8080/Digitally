@@ -12,6 +12,7 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\GameAssignmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -137,4 +138,34 @@ Route::middleware(['guest.restrict'])->group(function () {
     Route::post('/tournaments/{tournament}/teams', [BracketController::class, 'assignTeam'])->name('tournaments.assign-team');
     Route::delete('/tournaments/{tournament}/teams/{team}', [BracketController::class, 'removeTeam'])->name('tournaments.remove-team');
     Route::post('/tournaments/{tournament}/assign-teams', [TournamentController::class, 'assignTeams'])->name('tournaments.assign-teams');
+    Route::post('/games/{game}/generate-invite', [GameAssignmentController::class, 'generateInvite'])
+    ->name('games.generate-invite');
+
+Route::get('/games/{game}/join', [GameAssignmentController::class, 'join'])
+    ->name('games.join');
+
+Route::get('/games/{game}/connected-users', [GameAssignmentController::class, 'getConnectedUsers'])
+    ->name('games.connected-users');
+
+    // Game Invite Routes
+Route::get('/games/{game}/invite', [GameAssignmentController::class, 'showInvite'])
+    ->name('games.invite');
+
+    // Update existing score routes to use middleware
+Route::post('/games/{game}/score', [ScoreController::class, 'store'])
+    ->middleware('game.role:scorer')
+    ->name('games.score');
+
+Route::post('/games/{game}/stats', [StatController::class, 'store'])
+    ->middleware('game.role:stat_keeper')
+    ->name('games.stats');
+
+Route::post('/games/{game}/complete', [GameController::class, 'completeGame'])
+    ->middleware('game.role:scorer')
+    ->name('games.complete');
+
+Route::post('/games/{game}/volleyball-complete', [GameController::class, 'completeVolleyballGame'])
+    ->middleware('game.role:scorer')
+    ->name('games.volleyball-complete');
+
 });

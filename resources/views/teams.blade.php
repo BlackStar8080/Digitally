@@ -633,17 +633,7 @@ body {
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                @if ($errors->any())
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <strong>There were some errors:</strong>
-                        <ul class="mb-0">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
+                
                 
                 <form id="addTeamForm" action="{{ route('teams.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
@@ -800,6 +790,77 @@ body {
 
 @section('scripts')
 <script>
+    // Allowed rules
+const namePattern = /^[a-zA-Z0-9\s]+$/;
+const coachPattern = /^[a-zA-Z\s]+$/;
+const addressPattern = /^[a-zA-Z0-9\s]+$/;
+
+function validateField(input, pattern, errorMessage) {
+    let value = input.value;
+
+    // Remove disallowed characters
+    value = value.replace(/[^a-zA-Z0-9\s]/g, "");
+    input.value = value;
+
+    // Check validity
+    if (!pattern.test(value) && value !== "") {
+        input.classList.add("is-invalid");
+        showInlineError(input, errorMessage);
+    } else {
+        input.classList.remove("is-invalid");
+        removeInlineError(input);
+    }
+}
+
+function validateContactField(input) {
+    let value = input.value.replace(/\D/g, ""); // Only digits
+    input.value = value.slice(0, 11); // Max 11 digits
+
+    if (value.length > 0 && value.length < 11) {
+        input.classList.add("is-invalid");
+        showInlineError(input, "Contact number must be exactly 11 digits.");
+    } else {
+        input.classList.remove("is-invalid");
+        removeInlineError(input);
+    }
+}
+
+function showInlineError(input, message) {
+    removeInlineError(input);
+    input.insertAdjacentHTML(
+        "afterend",
+        `<div class="invalid-feedback d-block">${message}</div>`
+    );
+}
+
+function removeInlineError(input) {
+    const next = input.nextElementSibling;
+    if (next && next.classList.contains("invalid-feedback")) {
+        next.remove();
+    }
+}
+
+// EVENT BINDING
+document.addEventListener("input", function (e) {
+    const input = e.target;
+
+    if (input.id === "team_name" || input.id === "edit_team_name") {
+        validateField(input, namePattern, "Only letters, numbers and spaces allowed.");
+    }
+
+    if (input.id === "coach_name" || input.id === "edit_coach_name") {
+        validateField(input, coachPattern, "Only letters and spaces allowed.");
+    }
+
+    if (input.id === "address" || input.id === "edit_address") {
+        validateField(input, addressPattern, "Only letters, numbers and spaces allowed.");
+    }
+
+    if (input.id === "contact" || input.id === "edit_contact") {
+        validateContactField(input);
+    }
+});
+
 // Logo Preview Function
 function previewLogo(event, previewId) {
     const file = event.target.files[0];

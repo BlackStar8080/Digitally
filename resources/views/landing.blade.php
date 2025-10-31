@@ -1660,9 +1660,6 @@ html {
                             {{ ucwords(str_replace('-', ' ', $tournament->bracket_type)) }}</p>
                         <p><i class="bi bi-geo-alt"></i> {{ $tournament->sport_name }} • {{ $tournament->division }}</p>
                     </div>
-                    <a href="{{ route('tournaments.show', $tournament->id) }}" class="view-tournament-btn">
-                        View Tournament
-                    </a>
                 </div>
             @empty
                 <div class="empty-state">

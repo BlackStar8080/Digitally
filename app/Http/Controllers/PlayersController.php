@@ -61,31 +61,38 @@ class PlayersController extends Controller
 
 
     // Store new player
-    public function store(Request $request)
+public function store(Request $request)
 {
     $validated = $request->validate([
         'name' => [
             'required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s]+$/',
+            // Player name must be unique within the same sport
             Rule::unique('players', 'name')->where(function ($query) use ($request) {
-                return $query->where('team_id', $request->team_id);
+                return $query->where('sport_id', $request->sport_id);
             }),
         ],
         'team_id'   => 'required|exists:teams,id',
         'sport_id'  => 'required|exists:sports,sports_id',
-        'number'    => 'nullable|integer',
+        'number'    => [
+            'nullable',
+            'integer',
+            // Jersey number must be unique within same team
+            Rule::unique('players', 'number')->where(function ($query) use ($request) {
+                return $query->where('team_id', $request->team_id);
+            }),
+        ],
         'position'  => 'nullable|string|max:50|regex:/^[a-zA-Z0-9\s]+$/',
         'birthday'  => 'required|date',
     ], [
-        'name.unique' => 'This player already exists in the selected team.',
+        'name.unique' => 'This player already exists in this sport.',
+        'number.unique' => 'This jersey number is already taken in this team.',
         'name.regex' => 'Player name can only contain letters, numbers, and spaces.',
         'position.regex' => 'Position name can only contain letters, numbers, and spaces.',
     ]);
 
     // Compute age from birthday
     $birthday = $request->input('birthday');
-    $age = $birthday ? \Carbon\Carbon::parse($birthday)->age : null;
-
-    $validated['age'] = $age;
+    $validated['age'] = $birthday ? \Carbon\Carbon::parse($birthday)->age : null;
 
     Player::create($validated);
 
@@ -93,37 +100,46 @@ class PlayersController extends Controller
         ->with('success', '🎉 Player has been successfully added!');
 }
 
-    public function update(Request $request, Player $player)
+
+
+// Update player
+public function update(Request $request, Player $player)
 {
     $validated = $request->validate([
         'name' => [
             'required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s]+$/',
-            Rule::unique('players', 'name')->where(function ($query) use ($request, $player) {
-                return $query->where('team_id', $request->team_id)
-                             ->where('id', '!=', $player->id);
-            }),
+            Rule::unique('players', 'name')
+                ->where(fn($query) => $query->where('sport_id', $request->sport_id))
+                ->ignore($player->id),
         ],
         'team_id'   => 'required|exists:teams,id',
         'sport_id'  => 'required|exists:sports,sports_id',
-        'number'    => 'nullable|integer',
+        'number'    => [
+            'nullable',
+            'integer',
+            Rule::unique('players', 'number')
+                ->where(fn($query) => $query->where('team_id', $request->team_id))
+                ->ignore($player->id),
+        ],
         'position'  => 'nullable|string|max:50|regex:/^[a-zA-Z0-9\s]+$/',
         'birthday'  => 'required|date',
     ], [
-        'name.unique' => 'This player already exists in the selected team.',
+        'name.unique' => 'This player already exists in this sport.',
+        'number.unique' => 'This jersey number is already taken in this team.',
         'name.regex' => 'Player name can only contain letters, numbers, and spaces.',
         'position.regex' => 'Position name can only contain letters, numbers, and spaces.',
     ]);
 
     $birthday = $request->input('birthday');
-    $age = $birthday ? \Carbon\Carbon::parse($birthday)->age : null;
-
-    $validated['age'] = $age;
+    $validated['age'] = $birthday ? \Carbon\Carbon::parse($birthday)->age : null;
 
     $player->update($validated);
 
     return redirect()->route('players.index')
         ->with('success', '✅ Player has been successfully updated!');
 }
+
+
 
     public function destroy(Player $player)
     {

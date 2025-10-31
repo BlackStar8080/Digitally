@@ -622,6 +622,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <form method="POST" action="{{ route('tournaments.store') }}" class="modal-content">
             @csrf
+            <input type="hidden" name="modal_type" value="add">
             <div class="modal-header">
                 <h5 class="modal-title">
                     <i class="bi bi-trophy me-2"></i> Add New Tournament
@@ -632,28 +633,48 @@
                 <div class="mb-3">
                     <label for="name" class="form-label">Tournament Name</label>
                     <input type="text" class="form-control" id="name" name="name"
-                        required pattern="^[a-zA-Z0-9\s]+$"
-                        title="Only letters, numbers, and spaces are allowed.">
+                           value="{{ old('name') }}"
+                           required pattern="^[a-zA-Z0-9\s]+$"
+                           title="Only letters, numbers, and spaces are allowed.">
+                    @error('name')
+                        <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
+
                 <div class="mb-3">
                     <label for="division" class="form-label">Division</label>
                     <input type="text" class="form-control" id="division" name="division"
-                        required pattern="^[a-zA-Z0-9\s]+$"
-                        title="Only letters, numbers, and spaces are allowed.">
+                           value="{{ old('division') }}"
+                           required pattern="^[a-zA-Z0-9\s]+$"
+                           title="Only letters, numbers, and spaces are allowed.">
+                    @error('division')
+                        <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
+
                 <div class="mb-3">
                     <label for="tournamentDate" class="form-label">Tournament Date</label>
-                    <input type="date" id="tournamentDate" name="start_date" class="form-control">
+                    <input type="date" id="tournamentDate" name="start_date" class="form-control"
+                           value="{{ old('start_date') }}">
+                    @error('start_date')
+                        <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
+
                 <div class="mb-3">
-                <label for="teamSport" class="form-label">Sport</label>
-                <select name="sport_id" id="teamSport" class="form-select" required>
-                    <option value="">Select sport</option>
-                    @foreach ($sports as $sport)
-                        <option value="{{ $sport->sports_id }}">{{ $sport->sports_name }}</option>
-                    @endforeach
-                </select>
-            </div>
+                    <label for="teamSport" class="form-label">Sport</label>
+                    <select name="sport_id" id="teamSport" class="form-select" required>
+                        <option value="">Select sport</option>
+                        @foreach ($sports as $sport)
+                            <option value="{{ $sport->sports_id }}" {{ old('sport_id') == $sport->sports_id ? 'selected' : '' }}>
+                                {{ $sport->sports_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('sport_id')
+                        <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -665,12 +686,15 @@
     </div>
 </div>
 
+
+
 <!-- Edit Tournament Modal -->
 <div class="modal fade" id="editTournamentModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <form method="POST" id="editTournamentForm" class="modal-content">
             @csrf
             @method('PUT')
+            <input type="hidden" name="modal_type" value="edit">
             <div class="modal-header">
                 <h5 class="modal-title">
                     <i class="bi bi-pencil-square me-2"></i> Edit Tournament
@@ -680,26 +704,45 @@
             <div class="modal-body">
                 <div class="mb-3">
                     <label for="edit_name" class="form-label">Tournament Name</label>
-                    <input type="text" class="form-control" id="edit_name" name="name" required>
+                    <input type="text" class="form-control" id="edit_name" name="name"
+                           value="{{ old('name') }}" required>
+                    @error('name')
+                        <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
+
                 <div class="mb-3">
                     <label for="edit_division" class="form-label">Division</label>
-                    <input type="text" class="form-control" id="edit_division" name="division" required>
+                    <input type="text" class="form-control" id="edit_division" name="division"
+                           value="{{ old('division') }}" required>
+                    @error('division')
+                        <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
+
                 <div class="mb-3">
                     <label for="edit_date" class="form-label">Tournament Date</label>
-                    <input type="date" id="edit_date" name="start_date" class="form-control">
+                    <input type="date" id="edit_date" name="start_date" class="form-control"
+                           value="{{ old('start_date') }}">
+                    @error('start_date')
+                        <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
+
                 <div class="mb-3">
                     <label for="edit_sport" class="form-label">Sports Type</label>
                     <select id="edit_sport" name="sport_id" class="form-select" required>
                         <option value="">Select a sport</option>
                         @foreach($sports as $sport)
-                            <option value="{{ $sport->sports_id }}">{{ $sport->sports_name }}</option>
+                            <option value="{{ $sport->sports_id }}" {{ old('sport_id') == $sport->sports_id ? 'selected' : '' }}>
+                                {{ $sport->sports_name }}
+                            </option>
                         @endforeach
                     </select>
+                    @error('sport_id')
+                        <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
-                
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -710,10 +753,24 @@
         </form>
     </div>
 </div>
+
 @endsection
 
 @push('scripts')
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+    // Check for validation errors for add modal
+    @if($errors->any() && old('modal_type') === 'add')
+        var addModal = new bootstrap.Modal(document.getElementById('addTournamentModal'));
+        addModal.show();
+    @endif
+
+    // Check for validation errors for edit modal
+    @if($errors->any() && old('modal_type') === 'edit')
+        var editModal = new bootstrap.Modal(document.getElementById('editTournamentModal'));
+        editModal.show();
+    @endif
+});
 // Toast Notification Functions
 function showToast(message) {
     const toast = document.getElementById('successToast');
@@ -818,5 +875,57 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 });
+
+// Numbers-only input helper
+// Usage: add class="numbers-only" to any <input> you want to restrict to digits only
+(function() {
+    function enableNumbersOnly(selector) {
+        selector = selector || '.numbers-only';
+        document.querySelectorAll(selector).forEach(function(input) {
+            // Clean non-digits on input (handles mobile keyboards and IME)
+            input.addEventListener('input', function(e) {
+                var caret = this.selectionStart;
+                var cleaned = this.value.replace(/\D+/g, '');
+                if (this.value !== cleaned) {
+                    this.value = cleaned;
+                    try {
+                        this.setSelectionRange(caret - 1, caret - 1);
+                    } catch (err) {
+                        // ignore if not supported
+                    }
+                }
+            });
+
+            // Prevent non-digit keypresses
+            input.addEventListener('keypress', function(e) {
+                var char = String.fromCharCode(e.which || e.keyCode);
+                // allow control keys (backspace handled separately by browsers)
+                if (!/\d/.test(char) && !e.ctrlKey && !e.metaKey) {
+                    e.preventDefault();
+                }
+            });
+
+            // Handle paste events: strip non-digits from pasted content
+            input.addEventListener('paste', function(e) {
+                var paste = (e.clipboardData || window.clipboardData).getData('text');
+                if (/\D/.test(paste)) {
+                    e.preventDefault();
+                    var digits = paste.replace(/\D+/g, '');
+                    // insert cleaned digits at caret position
+                    var start = this.selectionStart || 0;
+                    var end = this.selectionEnd || 0;
+                    var val = this.value;
+                    this.value = val.slice(0, start) + digits + val.slice(end);
+                    try { this.setSelectionRange(start + digits.length, start + digits.length); } catch (err) {}
+                }
+            });
+        });
+    }
+
+    // enable on DOM ready
+    document.addEventListener('DOMContentLoaded', function() {
+        enableNumbersOnly();
+    });
+})();
 </script>
 @endpush
