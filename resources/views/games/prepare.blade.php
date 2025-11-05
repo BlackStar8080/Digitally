@@ -1152,12 +1152,54 @@ body {
                     </div>
                 </div>
 
+                <div class="mode-selector" style="margin-bottom: 2rem;">
+                    <label class="form-label"><strong>Game Mode</strong></label>
+                    <div class="btn-group" role="group">
+                        <input type="radio" class="btn-check" name="interface_mode" 
+                            id="allInOne" value="all_in_one" checked>
+                        <label class="btn btn-outline-primary" for="allInOne">
+                            <i class="bi bi-person"></i> All-in-One (Solo)
+                        </label>
+
+                        <input type="radio" class="btn-check" name="interface_mode" 
+                            id="separated" value="separated">
+                        <label class="btn btn-outline-primary" for="separated">
+                            <i class="bi bi-people"></i> Separated (With Stat-keeper)
+                        </label>
+                    </div>
+                    
+                    <!-- Show warning if separated but no stat-keeper -->
+                    <div id="separatedWarning" style="display: none; margin-top: 1rem;">
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Stat-keeper required:</strong> Make sure the stat-keeper has joined 
+                            before clicking Start.
+                        </div>
+                    </div>
+                </div>
+
                 <form action="{{ route('games.start-live', $game) }}" method="POST" id="startGameForm">
                     @csrf
+
+                    <input type="hidden" name="interface_mode" id="interface_mode_input" value="all_in_one">
                     <input type="hidden" name="team1_roster" id="team1_roster_input">
                     <input type="hidden" name="team2_roster" id="team2_roster_input">
                     <input type="hidden" name="team1_starters" id="team1_starters_input">
                     <input type="hidden" name="team2_starters" id="team2_starters_input">
+
+                    <div id="generateInviteContainer" style="margin-bottom: 1rem; display: none;">
+                        <a href="{{ route('games.invite', $game) }}" 
+                        class="btn btn-warning btn-lg" 
+                        id="generateInviteBtn">
+                            <i class="bi bi-qr-code"></i> Generate Invite Link
+                        </a>
+                    </div>
+
+                    <div id="connectedUsers" style="margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                        <strong>Connected Users:</strong>
+                        <div id="usersList"></div>
+                    </div>
+
 
                     <button type="submit" class="start-game-btn" id="startGameBtn" disabled>
                         <i class="bi bi-play-circle-fill"></i>
@@ -1170,6 +1212,31 @@ body {
 </div>
 
 <script>
+
+    document.querySelectorAll('input[name="interface_mode"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        // ✅ UPDATE THE HIDDEN INPUT VALUE
+        document.getElementById('interface_mode_input').value = this.value;
+        
+        const generateBtn = document.getElementById('generateInviteBtn');
+        const generateContainer = document.getElementById('generateInviteContainer');
+        
+        if (this.value === 'separated') {
+            generateContainer.style.display = 'block';
+            refreshConnectedUsers(); // Poll for stat-keeper
+        } else {
+            generateContainer.style.display = 'none';
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('allInOne').checked) {
+        document.getElementById('interface_mode_input').value = 'all_in_one';
+    } else if (document.getElementById('separated').checked) {
+        document.getElementById('interface_mode_input').value = 'separated';
+    }
+});
 // Game state tracking
 var gameState = {
     currentStep: 'roster',
@@ -1225,6 +1292,48 @@ window.addEventListener('load', function() {
     setupOfficialsForm();
     updateReadinessChecks();
 });
+
+document.querySelectorAll('input[name="interface_mode"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const warning = document.getElementById('separatedWarning');
+        if (this.value === 'separated') {
+            warning.style.display = 'block';
+            refreshConnectedUsers(); // Poll for stat-keeper
+        } else {
+            warning.style.display = 'none';
+        }
+    });
+});
+
+
+
+// Initial state
+if (document.getElementById('separated').checked) {
+    document.getElementById('generateInviteContainer').style.display = 'block';
+}
+
+// Poll for connected users every 2 seconds
+function refreshConnectedUsers() {
+    const gameId = {{ $game->id }};
+    fetch(`/games/${gameId}/connected-users`)
+        .then(r => r.json())
+        .then(data => {
+            const list = document.getElementById('usersList');
+            const users = data.connected_users;
+            
+            if (users.length === 0) {
+                list.innerHTML = '<p class="text-muted">Waiting for stat-keeper...</p>';
+            } else {
+                list.innerHTML = users.map(u => 
+                    `<span class="badge bg-success">${u.user_name} (${u.role})</span>`
+                ).join(' ');
+            }
+        });
+}
+
+// Refresh on page load and every 3 seconds
+refreshConnectedUsers();
+setInterval(refreshConnectedUsers, 3000);
 
 function setupStepButtons() {
     var rosterStepBtn = document.getElementById('roster-step-btn');

@@ -581,12 +581,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sportFilter = document.getElementById('sportFilter');
-            const statusFilter = document.getElementById('statusFilter');
             const tournamentFilter = document.getElementById('tournamentFilter');
 
             function filterGames() {
                 const selectedSport = sportFilter.value.toLowerCase();
-                const selectedStatus = statusFilter.value.toLowerCase();
                 const selectedTournament = tournamentFilter.value;
 
                 const gameCards = document.querySelectorAll('.game-card');
@@ -594,7 +592,6 @@
 
                 gameCards.forEach(card => {
                     const cardSport = card.dataset.sport.toLowerCase();
-                    const cardStatus = card.dataset.status.toLowerCase();
                     const tournamentSection = card.closest('.tournament-section');
                     const tournamentId = tournamentSection.dataset.tournamentId;
 
@@ -603,9 +600,7 @@
                     if (selectedSport && !cardSport.includes(selectedSport)) {
                         showCard = false;
                     }
-                    if (selectedStatus && cardStatus !== selectedStatus) {
-                        showCard = false;
-                    }
+            
                     if (selectedTournament && tournamentId !== selectedTournament) {
                         showCard = false;
                     }
@@ -624,7 +619,6 @@
             }
 
             if (sportFilter) sportFilter.addEventListener('change', filterGames);
-            if (statusFilter) statusFilter.addEventListener('change', filterGames);
             if (tournamentFilter) tournamentFilter.addEventListener('change', filterGames);
 
             // Auto-refresh live scores

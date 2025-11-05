@@ -108,7 +108,7 @@ class PdfController extends Controller
         ]);
 
         $pdf->getDomPDF()->getOptions()->set('isUnicodeEnabled', true);
-        $pdf->setPaper('legal', 'portrait');
+        $pdf->setPaper('folio', 'portrait');
 
         $filename = sprintf(
             'basketball-scoresheet-%s-vs-%s-game%d.pdf',
@@ -217,7 +217,7 @@ class PdfController extends Controller
         ]);
 
         $pdf->getDomPDF()->getOptions()->set('isUnicodeEnabled', true);
-        $pdf->setPaper('legal', 'portrait');
+        $pdf->setPaper('folio', 'portrait');
 
         return $pdf->stream('basketball-scoresheet-game-' . $game->id . '.pdf');
     }
@@ -284,7 +284,7 @@ public function volleyballScoresheet($gameId)
         'enable_font_subsetting' => true,
     ]);
 
-    $pdf->setPaper('legal', 'landscape');
+    $pdf->setPaper('legal', 'portrait');
 
     $filename = sprintf(
         'volleyball-scoresheet-%s-vs-%s-game%d.pdf',
@@ -419,7 +419,6 @@ public function downloadBracketPdf($id)
 
     return $pdf->download("{$tournament->name}_bracket.pdf");
 }
-
 
 
 

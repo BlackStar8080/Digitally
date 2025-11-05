@@ -12,6 +12,7 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\GameAssignmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,47 +42,52 @@ Route::post('/logout', function () {
     session()->forget('guest_name');
     session()->flush();
     
-    return redirect('/');
+    // Flash a success message so the global toast in the layout can show it
+    return redirect('/')->with('success', 'You have been logged out successfully.');
 })->name('logout');
 
 /*
 |--------------------------------------------------------------------------
 | Routes accessible to BOTH guests and authenticated users
+| ✅ ADDED: auth middleware to require login/guest login
 |--------------------------------------------------------------------------
 */
 
-// Dashboard - accessible to guests and logged-in users
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::middleware(['auth.or.guest'])->group(function () { // ✅ Changed from 'auth' to 'auth.or.guest'
+    // Dashboard - accessible to guests and logged-in users
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-// Games (view only)
-Route::get('/games', [GameController::class, 'index'])->name('games.index');
-Route::get('/games/{game}/box-score', [GameController::class, 'boxScore'])->name('games.box-score');
-Route::get('/games/{game}/volleyball-box-score', [GameController::class, 'volleyballBoxScore'])->name('games.volleyball-box-score');
+    // Games (view only)
+    Route::get('/games', [GameController::class, 'index'])->name('games.index');
+    Route::get('/games/{game}/box-score', [GameController::class, 'boxScore'])->name('games.box-score');
+    Route::get('/games/{game}/volleyball-box-score', [GameController::class, 'volleyballBoxScore'])->name('games.volleyball-box-score');
 
-// Teams (view only)
-Route::get('/teams', [TeamsController::class, 'index'])->name('teams.index');
-Route::get('/teams/{id}', [TeamsController::class, 'show'])->name('teams.show');
+    // Teams (view only)
+    Route::get('/teams', [TeamsController::class, 'index'])->name('teams.index');
+    Route::get('/teams/{id}', [TeamsController::class, 'show'])->name('teams.show');
 
-// Players (view only)
-Route::get('/players', [PlayersController::class, 'index'])->name('players.index');
-Route::get('/stats', [PlayersController::class, 'stats'])->name('players.stats');
-Route::get('/check-player', [PlayersController::class, 'checkPlayer'])->name('check.player');
+    // Players (view only)
+    Route::get('/players', [PlayersController::class, 'index'])->name('players.index');
+    Route::get('/stats', [PlayersController::class, 'stats'])->name('players.stats');
+    Route::get('/check-player', [PlayersController::class, 'checkPlayer'])->name('check.player');
 
-// Tournaments (view only)
-Route::get('/tournaments', [TournamentController::class, 'index'])->name('tournaments.index');
-Route::get('/tournaments/{id}', [BracketController::class, 'showTournament'])->name('tournaments.show');
-Route::get('/tournament/{id}/guest', [BracketController::class, 'guestView'])->name('tournament.guest');
+    // Tournaments (view only)
+    Route::get('/tournaments', [TournamentController::class, 'index'])->name('tournaments.index');
+    Route::get('/tournaments/{id}', [BracketController::class, 'showTournament'])->name('tournaments.show');
+    Route::get('/tournament/{id}/guest', [BracketController::class, 'guestView'])->name('tournament.guest');
 
-// API route for live scores
-Route::get('/api/live-scores', [LandingController::class, 'getLiveScores'])->name('api.live-scores');
+    // API route for live scores
+    Route::get('/api/live-scores', [LandingController::class, 'getLiveScores'])->name('api.live-scores');
+});
 
 /*
 |--------------------------------------------------------------------------
-| Guest-Restricted Routes (Only for logged-in users)
+| Guest-Restricted Routes (Only for logged-in users, NOT guests)
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['guest.restrict'])->group(function () {
+Route::middleware(['auth.or.guest', 'guest.restrict'])->group(function () { // ✅ Changed here too
+
     
     // Reports (completely blocked for guests)
     Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
@@ -137,4 +143,10 @@ Route::middleware(['guest.restrict'])->group(function () {
     Route::post('/tournaments/{tournament}/teams', [BracketController::class, 'assignTeam'])->name('tournaments.assign-team');
     Route::delete('/tournaments/{tournament}/teams/{team}', [BracketController::class, 'removeTeam'])->name('tournaments.remove-team');
     Route::post('/tournaments/{tournament}/assign-teams', [TournamentController::class, 'assignTeams'])->name('tournaments.assign-teams');
+    
+    // Game Assignment Routes
+    Route::post('/games/{game}/generate-invite', [GameAssignmentController::class, 'generateInvite'])->name('games.generate-invite');
+    Route::get('/games/{game}/join', [GameAssignmentController::class, 'join'])->name('games.join');
+    Route::get('/games/{game}/connected-users', [GameAssignmentController::class, 'getConnectedUsers'])->name('games.connected-users');
+    Route::get('/games/{game}/invite', [GameAssignmentController::class, 'showInvite'])->name('games.invite');
 });

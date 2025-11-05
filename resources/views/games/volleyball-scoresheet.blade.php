@@ -2,25 +2,26 @@
 
 <!doctype html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Volleyball Scoresheet - {{ $game->id }}</title>
     <style>
         @page {
-            size: 14in 8.5in;
-            margin: 0.2in; /* Reduced margin to save space */
+            size: 8.5in 14in;
+            margin: 0.15in;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'DejaVu Sans', Arial, sans-serif;
-            font-size: 7pt; /* Reduced base font size */
-            line-height: 1.1; /* Tightened line height */
+            font-size: 7pt;
+            line-height: 1.0;
             color: #000;
         }
 
@@ -30,314 +31,273 @@
             page-break-inside: avoid;
         }
 
+        /* HEADER */
         .header {
-            border-bottom: 1.5px solid #000;
-            padding-bottom: 3px;
-            margin-bottom: 3px; /* Reduced margin */
-        }
-
-        .header-flex {
             display: table;
             width: 100%;
+            border-bottom: 2px solid #000;
+            margin-bottom: 3px;
+            padding-bottom: 2px;
         }
 
-        .header-left, .header-center, .header-right {
+        .header-left,
+        .header-center,
+        .header-right {
             display: table-cell;
-            vertical-align: middle;
+            vertical-align: top;
+            padding: 1px 3px;
         }
 
         .header-left {
-            width: 20%;
-            font-size: 8pt; /* Slightly reduced */
+            width: 25%;
+            border-right: 1px solid #000;
         }
 
         .header-center {
-            width: 60%;
+            width: 50%;
             text-align: center;
-        }
-
-        .header-center h1 {
-            font-size: 16pt; /* Reduced title size */
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 2px;
-            font-weight: bold;
+            border-right: 1px solid #000;
         }
 
         .header-right {
-            width: 20%;
-            text-align: right;
-            font-size: 8pt;
+            width: 25%;
         }
 
-        .meta-section {
+        .header-center h1 {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-bottom: 0px;
+        }
+
+        .tournament-name {
+            font-size: 8pt;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .match-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2px;
+        }
+
+        .match-info-table td {
+            border: 1px solid #000;
+            padding: 1px 3px;
+            font-size: 6pt;
+        }
+
+        .match-info-table .label {
+            font-weight: bold;
+            width: 30%;
+        }
+
+        /* MATCH META */
+        .match-meta {
             display: table;
             width: 100%;
-            margin-bottom: 3px; /* Reduced margin */
+            border: 1px solid #000;
+            margin-bottom: 2px;
         }
 
-        .meta-box {
+        .meta-cell {
             display: table-cell;
-            border: 1px solid #000;
-            padding: 2px 4px; /* Reduced padding */
+            border-right: 1px solid #000;
+            padding: 2px 3px;
+            font-size: 6.5pt;
+            vertical-align: top;
+        }
+
+        .meta-cell:last-child {
+            border-right: none;
+        }
+
+        .meta-cell strong {
+            display: block;
+            font-weight: bold;
+        }
+
+        .meta-value {
             font-size: 7pt;
         }
 
-        .meta-box:not(:last-child) {
-            border-right: none;
-        }
-
-        .teams-section {
+        /* MAIN CONTENT - 3 COLUMN */
+        .content-wrapper {
             display: table;
             width: 100%;
-            margin-bottom: 3px; /* Reduced margin */
-        }
-
-        .team-panel {
-            display: table-cell;
-            width: 50%;
-            border: 1px solid #000;
-            padding: 3px; /* Reduced padding */
-            vertical-align: top;
-        }
-
-        .team-panel:first-child {
-            border-right: none;
-        }
-
-        .team-name {
-            font-weight: bold;
-            font-size: 9pt; /* Reduced font size */
             margin-bottom: 2px;
-            text-transform: uppercase;
-        }
-
-        .team-content {
-            display: table;
-            width: 100%;
-        }
-
-        .roster-col {
-            display: table-cell;
-            width: 65%;
-            font-size: 7pt; /* Reduced font size */
-            vertical-align: top;
-        }
-
-        .notes-col {
-            display: table-cell;
-            width: 35%;
-            border-left: 1px solid #000;
-            padding-left: 3px;
-            vertical-align: top;
-        }
-
-        .notes-box {
             border: 1px solid #000;
-            height: 50px; /* Reduced height */
-            margin-top: 2px;
         }
 
-        .sets-section {
-            display: table;
-            width: 100%;
-            margin-bottom: 3px; /* Reduced margin */
-        }
-
-        .set-column {
+        .roster-column {
             display: table-cell;
             width: 33.33%;
-            padding: 1px; /* Reduced padding */
+            border-right: 1px solid #000;
+            padding: 2px;
             vertical-align: top;
+            font-size: 6pt; 
         }
 
-        .set-card {
-            border: 1px solid #000;
-            padding: 3px; /* Reduced padding */
-            height: 140px; /* Reduced height to fit sets on one page */
-        }
-
-        .set-title {
-            text-align: center;
-            font-weight: bold;
-            font-size: 8pt; /* Reduced font size */
-            margin-bottom: 2px;
-            border-bottom: 1px solid #000;
-            padding-bottom: 1px;
-        }
-
-        .score-row {
-            display: table;
-            width: 100%;
-            margin-bottom: 3px; /* Reduced margin */
-        }
-
-        .score-box {
-            display: table-cell;
-            width: 50%;
-            text-align: center;
-            border: 1px solid #000;
-            padding: 2px; /* Reduced padding */
-            font-weight: bold;
-            font-size: 9pt; /* Reduced font size */
-        }
-
-        .score-box:first-child {
+        .roster-column:last-child {
             border-right: none;
         }
 
-        .running-title {
-            text-align: center;
+        .roster-header {
             font-weight: bold;
-            font-size: 6pt; /* Reduced font size */
-            margin: 3px 0 1px 0;
-            border-top: 1px solid #000;
-            padding-top: 2px;
+            font-size: 6.5pt;
+            text-align: left;
+            border-bottom: 1px solid #000;
+            padding-bottom: 1px;
+            margin-bottom: 1px;
+            background: #f0f0f0;
         }
 
-        .running-numbers {
+        .player-row {
             display: table;
             width: 100%;
-            margin-bottom: 2px; /* Reduced margin */
+            border-bottom: 1px solid #ccc;
+            padding: 0.5px 0;
+            margin-bottom: 0.5px;
+            font-size: 5pt;
         }
 
-        .team-numbers {
+        .player-number {
+            display: table-cell;
+            width: 15%;
+            text-align: center;
+            font-weight: bold;
+            border-right: 1px solid #ccc;
+            padding: 0.5px;
+        }
+
+        .player-name {
             display: table-cell;
             width: 50%;
+            padding: 0 1px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        .team-numbers:first-child {
-            padding-right: 1px;
-        }
-
-        .team-numbers:last-child {
-            padding-left: 1px;
-        }
-
-        .team-label {
+        .player-checks {
+            display: table-cell;
+            width: 35%;
             text-align: center;
-            font-weight: bold;
-            font-size: 6pt; /* Reduced font size */
-            margin-bottom: 1px;
+            font-size: 4pt;
+            padding: 0.5px;
         }
 
-        .number-grid {
+        .check-box {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
             border: 1px solid #000;
+            margin: 0 0.5px;
         }
 
-        .number-row {
+        .check-box.checked {
+            background: #000;
+        }
+
+        /* BOTTOM STATS */
+        .stats-wrapper {
+            width: 100%;
+            border: 1px solid #000;
+            margin-bottom: 2px;
+        }
+
+        .stats-title {
+            font-weight: bold;
+            text-align: center;
+            padding: 2px;
+            font-size: 10pt;
+            background: #f0f0f0;
+        }
+
+        .stats-content {
             display: table;
             width: 100%;
-            border-bottom: 1px solid #000;
         }
 
-        .number-row:last-child {
+        .team-stats {
+            display: table-cell;
+            width: 50%;
+            border-right: 1px solid #000;
+            padding: 2px;
+            vertical-align: top;
+        }
+
+        .team-stats:last-child {
+            border-right: none;
+        }
+
+        .stats-section {
+            margin-bottom: 3px;
+        }
+
+        .stats-section-title {
+            font-weight: bold;
+            font-size: 6pt;
+            margin-bottom: 1px;
+            text-align: center;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 0.5px;
+        }
+
+        .stat-row {
+            display: table;
+            width: 100%;
+            font-size: 5.5pt;
+            border-bottom: 1px solid #ccc;
+            padding: 0.5px 0;
+        }
+
+        .stat-label {
+            display: table-cell;
+            width: 60%;
+            padding: 0 1px;
+        }
+
+        .stat-value {
+            display: table-cell;
+            width: 40%;
+            text-align: center;
+            border-left: 1px solid #ccc;
+        }
+
+        .stat-row:last-child {
             border-bottom: none;
         }
 
-        .number-cell {
+        /* SIGNATURES */
+        .signatures {
+            display: table;
+            width: 100%;
+            border: 1px solid #000;
+            margin-bottom: 2px;
+        }
+
+        .sig-cell {
             display: table-cell;
-            width: 10%;
-            text-align: center;
+            width: 50%;
             border-right: 1px solid #000;
-            padding: 0.5px 0; /* Reduced padding */
-            font-size: 6pt; /* Reduced font size */
-            height: 10px; /* Reduced height */
-            line-height: 10px;
-            position: relative;
-        }
-
-        .number-cell:last-child {
-            border-right: none;
-        }
-
-        .number-cell.checked {
-            background-color: #000;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .number-cell.checked::after {
-            content: '✓';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 8pt;
-            font-weight: bold;
-        }
-
-        .timeout-section {
-            display: table;
-            width: 100%;
-            margin-top: 2px; /* Reduced margin */
-        }
-
-        .timeout-box {
-            display: table-cell;
-            width: 50%;
-            border: 1px solid #000;
-            padding: 1px; /* Reduced padding */
-            font-size: 5pt; /* Reduced font size */
-        }
-
-        .timeout-box:first-child {
-            border-right: none;
-        }
-
-        .bottom-section {
-            display: table;
-            width: 100%;
-            margin-top: 3px; /* Reduced margin */
-        }
-
-        .mvp-box, .sig-box {
-            display: table-cell;
-            width: 50%;
-            border: 1px solid #000;
-            padding: 3px; /* Reduced padding */
+            padding: 2px 3px;
+            font-size: 6pt;
             vertical-align: top;
         }
 
-        .mvp-box {
+        .sig-cell:last-child {
             border-right: none;
         }
 
-        .section-title {
-            font-weight: bold;
-            font-size: 8pt; /* Reduced font size */
-            margin-bottom: 3px;
-        }
-
-        .mvp-info {
-            font-size: 7pt; /* Reduced font size */
-            margin-bottom: 1px;
-        }
-
-        .remarks-label {
-            font-weight: bold;
-            font-size: 7pt; /* Reduced font size */
-            margin-top: 3px;
-            margin-bottom: 1px;
-        }
-
-        .remarks-box {
-            border: 1px solid #000;
-            height: 20px; /* Reduced height */
-        }
-
         .sig-line {
-            font-size: 7pt; /* Reduced font size */
-            margin-bottom: 3px;
+            margin: 2px 0;
+            border-bottom: 1px solid #000;
+            padding-top: 2px;
+            min-height: 12px;
         }
 
-        .final-score {
-            font-size: 7pt; /* Reduced font size */
-            margin-top: 3px;
-            padding-top: 3px;
-            border-top: 1px solid #000;
-        }
-
+        /* UTILITIES */
         .no-print {
             display: none;
         }
@@ -346,67 +306,66 @@
             font-weight: bold;
         }
 
-        .muted {
-            color: #555;
-            font-size: 6pt; /* Reduced font size */
+        .centered {
+            text-align: center;
+        }
+
+        .small-text {
+            font-size: 5pt;
         }
     </style>
 </head>
+
 <body>
-    @if(!isset($isPdf) || !$isPdf)
-    <div style="background: #f5f5f5; padding: 10px; margin-bottom: 15px; border-bottom: 1.5px solid #ddd;">
-        <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <h2 style="margin: 0; font-size: 16px; color: #333;">Volleyball Scoresheet Preview</h2>
-                <p style="margin: 3px 0 0 0; font-size: 12px; color: #666;">Game #{{ $game->id }} - {{ $game->team1->team_name ?? 'Team A' }} vs {{ $game->team2->team_name ?? 'Team B' }}</p>
-            </div>
-            <div>
-                <a href="{{ route('pdf.volleyball-scoresheet', $game->id) }}" 
-                   style="display: inline-block; background: #007bff; color: white; padding: 8px 15px; 
+    @if (!isset($isPdf) || !$isPdf)
+        <div style="background: #f5f5f5; padding: 10px; margin-bottom: 15px; border-bottom: 1.5px solid #ddd;">
+            <div
+                style="max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 style="margin: 0; font-size: 16px; color: #333;">Volleyball Scoresheet Preview</h2>
+                    <p style="margin: 3px 0 0 0; font-size: 12px; color: #666;">Game #{{ $game->id }} -
+                        {{ $game->team1->team_name ?? 'Team A' }} vs {{ $game->team2->team_name ?? 'Team B' }}</p>
+                </div>
+                <div>
+                    <a href="{{ route('pdf.volleyball-scoresheet', $game->id) }}"
+                        style="display: inline-block; background: #007bff; color: white; padding: 8px 15px; 
                           border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 12px;
                           box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: background 0.3s;"
-                   onmouseover="this.style.background='#0056b3'" 
-                   onmouseout="this.style.background='#007bff'">
-                    📥 Download PDF
-                </a>
-                <a href="{{ url()->previous() }}" 
-                   style="display: inline-block; background: #6c757d; color: white; padding: 8px 15px; 
+                        onmouseover="this.style.background='#0056b3'" onmouseout="this.style.background='#007bff'">
+                        📥 Download PDF
+                    </a>
+                    <a href="{{ url()->previous() }}"
+                        style="display: inline-block; background: #6c757d; color: white; padding: 8px 15px; 
                           border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 12px;
                           box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-left: 8px; transition: background 0.3s;"
-                   onmouseover="this.style.background='#545b62'" 
-                   onmouseout="this.style.background='#6c757d'">
-                    ← Back
-                </a>
+                        onmouseover="this.style.background='#545b62'" onmouseout="this.style.background='#6c757d'">
+                        ← Back
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
     @endif
 
     @php
         $liveData = $liveData ?? [];
         $setScores = $liveData['set_scores'] ?? [];
         $runningScores = $liveData['running_scores'] ?? [];
-        
-        // Build lookup arrays for checked numbers per set and team
-        $maxNumberPerSet = 30;
+
+        // Build lookup for checked numbers
         $teamAChecks = [];
         $teamBChecks = [];
-        
+
         for ($s = 1; $s <= 5; $s++) {
-            $teamAChecks[$s] = array_fill(1, $maxNumberPerSet, false);
-            $teamBChecks[$s] = array_fill(1, $maxNumberPerSet, false);
+            $teamAChecks[$s] = array_fill(1, 30, false);
+            $teamBChecks[$s] = array_fill(1, 30, false);
         }
-        
-        // Process running scores to mark which numbers should be checked
-        // Expected format: [['team' => 'A' or 'B', 'score' => 1-30, 'set' => 1-5], ...]
+
         foreach ($runningScores as $rs) {
             $set = (int) ($rs['set'] ?? 1);
             $team = $rs['team'] ?? '';
             $score = (int) ($rs['score'] ?? 0);
-            
-            if ($set < 1 || $set > 5) continue;
-            
-            if ($score >= 1 && $score <= $maxNumberPerSet) {
+
+            if ($set >= 1 && $set <= 5 && $score >= 1 && $score <= 30) {
                 if ($team === 'A' || $team === 'team1') {
                     $teamAChecks[$set][$score] = true;
                 }
@@ -415,240 +374,330 @@
                 }
             }
         }
-        
+
         $getSetScore = function ($setIndex, $teamKey) use ($setScores) {
             if (is_array($setScores)) {
                 foreach ($setScores as $s) {
-                    if ((isset($s['set']) && (int) $s['set'] === $setIndex)) {
-                        return $teamKey === 'team1' ? ($s['team1'] ?? '') : ($s['team2'] ?? '');
+                    if (isset($s['set']) && (int) $s['set'] === $setIndex) {
+                        return $teamKey === 'team1' ? $s['team1'] ?? '' : $s['team2'] ?? '';
                     }
                 }
             }
             return '';
         };
-
-        $bestPlayer = null;
-        if (!empty($liveData['best_player_id'])) {
-            $bestPlayer = $team1Players->firstWhere('id', $liveData['best_player_id']) ??
-                          $team2Players->firstWhere('id', $liveData['best_player_id']);
-        }
     @endphp
 
     <div class="sheet">
-        <!-- Header -->
+        <!-- HEADER -->
         <div class="header">
-            <div class="header-flex">
-                <div class="header-left">
-                    <div style="font-size: 7pt; color: #666;">Organized by:</div>
-                    <div style="font-size: 6pt; margin-top: 1px;">{{ $game->bracket->tournament->organizer ?? 'Sports Committee' }}</div>
-                </div>
-                <div class="header-center">
-                    <div style="font-size: 10pt; font-weight: bold; margin-bottom: 1px;">{{ strtoupper($game->bracket->tournament->name ?? 'TOURNAMENT') }}</div>
-                    <h1>VOLLEYBALL SCORESHEET</h1>
-                    <div class="muted" style="margin-top: 1px;">
-                        {{ $game->started_at ? $game->started_at->format('M d, Y H:i') : now()->format('M d, Y') }} | Game #{{ $game->id }}
-                    </div>
-                </div>
-                <div class="header-right">
-                    <div><strong>Venue:</strong></div>
-                    <div style="margin-top: 1px;">{{ strtoupper($game->venue ?? '---') }}</div>
-                    <div style="margin-top: 3px; font-size: 7pt;"><strong>Referee:</strong> {{ $game->referee ?? '________' }}</div>
-                </div>
+            <div class="header-left">
+                <strong>Match:</strong> {{ $game->id }}<br>
+                <strong>Date:</strong>
+                {{ $game->started_at ? $game->started_at->format('m/d/Y') : now()->format('m/d/Y') }}<br>
+                <strong>City:</strong> {{ strtoupper($game->venue ?? '---') }}<br>
+                <strong>Hall:</strong> {{ strtoupper($game->venue ?? '---') }}
+            </div>
+            <div class="header-center">
+                <div class="tournament-name">
+                    {{ strtoupper($game->bracket->tournament->name ?? 'VOLLEYBALL TOURNAMENT') }}</div>
+                <h1>VOLLEYBALL • Match result</h1>
+                <div class="small-text">{{ $game->started_at ? $game->started_at->format('H:i') : '00:00' }}</div>
+            </div>
+            <div class="header-right">
+                <strong>Teams</strong><br>
+                <table class="match-info-table">
+                    <tr>
+                        <td class="label">Sets</td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                        <td>5</td>
+                        <td>Total</td>
+                    </tr>
+                    <tr>
+                        <td class="label">{{ strtoupper($game->team1->team_name ?? 'Team A') }}</td>
+                        <td>{{ $getSetScore(1, 'team1') ?: '—' }}</td>
+                        <td>{{ $getSetScore(2, 'team1') ?: '—' }}</td>
+                        <td>{{ $getSetScore(3, 'team1') ?: '—' }}</td>
+                        <td>{{ $getSetScore(4, 'team1') ?: '—' }}</td>
+                        <td>{{ $getSetScore(5, 'team1') ?: '—' }}</td>
+                        <td><strong>{{ $liveData['team1_score'] ?? 0 }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="label">{{ strtoupper($game->team2->team_name ?? 'Team B') }}</td>
+                        <td>{{ $getSetScore(1, 'team2') ?: '—' }}</td>
+                        <td>{{ $getSetScore(2, 'team2') ?: '—' }}</td>
+                        <td>{{ $getSetScore(3, 'team2') ?: '—' }}</td>
+                        <td>{{ $getSetScore(4, 'team2') ?: '—' }}</td>
+                        <td>{{ $getSetScore(5, 'team2') ?: '—' }}</td>
+                        <td><strong>{{ $liveData['team2_score'] ?? 0 }}</strong></td>
+                    </tr>
+                </table>
             </div>
         </div>
 
-        <!-- Meta Info -->
-        <div class="meta-section">
-            <div class="meta-box" style="width: 30%;">
-                <strong>Team A:</strong> {{ strtoupper($game->team1->team_name ?? 'Team A') }}<br>
-                <strong>Coach:</strong> {{ $game->team1->coach_name ?? '________' }}
+        <!-- REFEREES INFO -->
+        <div class="match-meta">
+            <div class="meta-cell" style="width: 25%;">
+                <strong>Referees:</strong> <span class="meta-value">{{ $game->referee ?? 'N/A' }}</span>
             </div>
-            <div class="meta-box" style="width: 30%;">
-                <strong>Team B:</strong> {{ strtoupper($game->team2->team_name ?? 'Team B') }}<br>
-                <strong>Coach:</strong> {{ $game->team2->coach_name ?? '________' }}
-            </div>
-            <div class="meta-box" style="width: 40%;">
-                <strong>Match Type:</strong> Best of 5
+            
+            <div class="meta-cell" style="width: 25%;">
+                <strong>Spectators:</strong> <span class="meta-value">___________</span>
             </div>
         </div>
 
-        <!-- Teams -->
-        <div class="teams-section">
-            <div class="team-panel">
-                <div class="team-name">TEAM A - {{ strtoupper($game->team1->team_name ?? '') }}</div>
-                <div class="team-content">
-                    <div class="roster-col">
-                        <strong style="font-size: 7pt;">Roster</strong>
-                        @foreach ($team1Players as $p)
-                            <div>{{ $loop->iteration }}. {{ $p->name }} <span style="float:right;">#{{ $p->number ?? '00' }}</span></div>
-                        @endforeach
-                    </div>                   
-                </div>
-            </div>
-            <div class="team-panel">
-                <div class="team-name">TEAM B - {{ strtoupper($game->team2->team_name ?? '') }}</div>
-                <div class="team-content">
-                    <div class="roster-col">
-                        <strong style="font-size: 7pt;">Roster</strong>
-                        @foreach ($team2Players as $p)
-                            <div>{{ $loop->iteration }}. {{ $p->name }} <span style="float:right;">#{{ $p->number ?? '00' }}</span></div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sets Row 1 -->
-        <div class="sets-section">
-            @for ($set = 1; $set <= 3; $set++)
-                <div class="set-column">
-                    <div class="set-card">
-                        <div class="set-title">SET {{ $set }}</div>
-                        <div class="score-row">
-                            <div class="score-box">A: {{ $getSetScore($set, 'team1') !== '' ? $getSetScore($set, 'team1') : '---' }}</div>
-                            <div class="score-box">B: {{ $getSetScore($set, 'team2') !== '' ? $getSetScore($set, 'team2') : '---' }}</div>
+        <!-- MAIN CONTENT: ROSTERS & SCORING -->
+        <div class="content-wrapper">
+            <!-- TEAM A ROSTER -->
+            <div class="roster-column">
+                <div class="roster-header">{{ strtoupper($game->team1->team_name ?? 'Team A') }}</div>
+                @foreach ($team1Players as $player)
+                    <div class="player-row">
+                        <div class="player-number">{{ $player->number ?? '00' }}</div>
+                        <div class="player-name">
+                            @if ($player->first_name && $player->last_name)
+                                {{ strtoupper($player->last_name) }}
+                                {{ strtoupper(substr($player->first_name, 0, 1)) }}.
+                            @elseif($player->name)
+                                {{ strtoupper($player->name) }}
+                            @else
+                                ___________
+                            @endif
                         </div>
-                        <div class="running-title">Running Score (1-30)</div>
-                        <div class="running-numbers">
-                            <div class="team-numbers">
-                                <div class="team-label">Team A</div>
-                                <div class="number-grid">
-                                    @for ($row = 0; $row < 3; $row++)
-                                        <div class="number-row">
-                                            @for ($col = 1; $col <= 10; $col++)
-                                                @php 
-                                                    $num = ($row * 10) + $col;
-                                                    $isChecked = $teamAChecks[$set][$num] ?? false;
-                                                @endphp
-                                                <div class="number-cell {{ $isChecked ? 'checked' : '' }}">{{ $num }}</div>
-                                            @endfor
-                                        </div>
-                                    @endfor
+                        <div class="player-checks">
+                            @for ($s = 1; $s <= 5; $s++)
+                                @php $num = (int)($player->number ?? 0); @endphp
+                                <div
+                                    class="check-box {{ isset($teamAChecks[$s][$num]) && $teamAChecks[$s][$num] ? 'checked' : '' }}">
                                 </div>
-                            </div>
-                            <div class="team-numbers">
-                                <div class="team-label">Team B</div>
-                                <div class="number-grid">
-                                    @for ($row = 0; $row < 3; $row++)
-                                        <div class="number-row">
-                                            @for ($col = 1; $col <= 10; $col++)
-                                                @php 
-                                                    $num = ($row * 10) + $col;
-                                                    $isChecked = $teamBChecks[$set][$num] ?? false;
-                                                @endphp
-                                                <div class="number-cell {{ $isChecked ? 'checked' : '' }}">{{ $num }}</div>
-                                            @endfor
-                                        </div>
-                                    @endfor
-                                </div>
-                            </div>
-                        </div>
-                        <div class="timeout-section">
-                            <div class="timeout-box">
-                                <strong>Timeouts:</strong> {{ $liveData['team1_timeouts'] ?? '0' }}<br>
-                                <strong>Subs:</strong> {{ $liveData['team1_substitutions'] ?? '0' }}
-                            </div>
-                            <div class="timeout-box">
-                                <strong>Timeouts:</strong> {{ $liveData['team2_timeouts'] ?? '0' }}<br>
-                                <strong>Subs:</strong> {{ $liveData['team2_substitutions'] ?? '0' }}
-                            </div>
+                            @endfor
                         </div>
                     </div>
-                </div>
-            @endfor
-        </div>
-
-        <!-- Sets Row 2 -->
-        <div class="sets-section">
-            @for ($set = 4; $set <= 5; $set++)
-                <div class="set-column">
-                    <div class="set-card">
-                        <div class="set-title">SET {{ $set }}</div>
-                        <div class="score-row">
-                            <div class="score-box">A: {{ $getSetScore($set, 'team1') !== '' ? $getSetScore($set, 'team1') : '---' }}</div>
-                            <div class="score-box">B: {{ $getSetScore($set, 'team2') !== '' ? $getSetScore($set, 'team2') : '---' }}</div>
-                        </div>
-                        <div class="running-title">Running Score (1-30)</div>
-                        <div class="running-numbers">
-                            <div class="team-numbers">
-                                <div class="team-label">Team A</div>
-                                <div class="number-grid">
-                                    @for ($row = 0; $row < 3; $row++)
-                                        <div class="number-row">
-                                            @for ($col = 1; $col <= 10; $col++)
-                                                @php 
-                                                    $num = ($row * 10) + $col;
-                                                    $isChecked = $teamAChecks[$set][$num] ?? false;
-                                                @endphp
-                                                <div class="number-cell {{ $isChecked ? 'checked' : '' }}">{{ $num }}</div>
-                                            @endfor
-                                        </div>
-                                    @endfor
-                                </div>
-                            </div>
-                            <div class="team-numbers">
-                                <div class="team-label">Team B</div>
-                                <div class="number-grid">
-                                    @for ($row = 0; $row < 3; $row++)
-                                        <div class="number-row">
-                                            @for ($col = 1; $col <= 10; $col++)
-                                                @php 
-                                                    $num = ($row * 10) + $col;
-                                                    $isChecked = $teamBChecks[$set][$num] ?? false;
-                                                @endphp
-                                                <div class="number-cell {{ $isChecked ? 'checked' : '' }}">{{ $num }}</div>
-                                            @endfor
-                                        </div>
-                                    @endfor
-                                </div>
-                            </div>
-                        </div>
-                        <div class="timeout-section">
-                            <div class="timeout-box">
-                                <strong>Timeouts:</strong> {{ $liveData['team1_timeouts'] ?? '0' }}<br>
-                                <strong>Subs:</strong> {{ $liveData['team1_substitutions'] ?? '0' }}
-                            </div>
-                            <div class="timeout-box">
-                                <strong>Timeouts:</strong> {{ $liveData['team2_timeouts'] ?? '0' }}<br>
-                                <strong>Subs:</strong> {{ $liveData['team2_substitutions'] ?? '0' }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endfor
-            <!-- Empty column for alignment -->
-            <div class="set-column"></div>
-        </div>
-
-        <!-- Bottom Section -->
-        <div class="bottom-section">
-            <div class="mvp-box">
-                <div class="section-title">BEST PLAYER / MVP</div>
-                @if (!empty($liveData['best_player_stats']) || !empty($bestPlayer))
-                    <div class="mvp-info"><strong>Name:</strong> {{ $bestPlayer->name ?? ($liveData['best_player_stats']['name'] ?? '---') }}</div>
-                    <div class="mvp-info"><strong>#:</strong> {{ $bestPlayer->number ?? ($liveData['best_player_stats']['number'] ?? '---') }}</div>
-                    <div class="mvp-info">
-                        <strong>Kills:</strong> {{ $liveData['best_player_stats']['kills'] ?? '0' }} | 
-                        <strong>Aces:</strong> {{ $liveData['best_player_stats']['aces'] ?? '0' }} | 
-                        <strong>Blocks:</strong> {{ $liveData['best_player_stats']['blocks'] ?? '0' }}
-                    </div>
-                @else
-                    <div class="mvp-info">Name: _____________________________</div>
-                    <div class="mvp-info">Stats: Kills ___ | Aces ___ | Blocks ___</div>
-                @endif
-                <div class="remarks-label">Remarks:</div>
-                <div class="remarks-box"></div>
+                @endforeach
+                 <div class="meta-cell" style="width: 25%;">
+                <strong>Coach A:</strong> <span class="meta-value">{{ $game->team1->coach_name ?? '___' }}</span>
             </div>
-            <div class="sig-box">
-                <div class="section-title">SIGNATURES</div>
-                <div class="sig-line"><strong>Scorekeeper:</strong> ________________________________</div>
-                <div class="sig-line"><strong>Referee:</strong> ________________________________</div>
-                <div class="sig-line"><strong>Coach A:</strong> ______________ <strong>Coach B:</strong> ______________</div>
-                <div class="final-score">
-                    <strong>FINAL SETS:</strong> Team A <u>{{ $liveData['team1_score'] ?? ($game->team1_score ?? 0) }}</u> - Team B <u>{{ $liveData['team2_score'] ?? ($game->team2_score ?? 0) }}</u>
-                </div>
+            
+            </div>
+
+            <!-- TEAM B ROSTER -->
+            <div class="roster-column">
+                <div class="roster-header">{{ strtoupper($game->team2->team_name ?? 'Team B') }}</div>
+                @foreach ($team2Players as $player)
+                    <div class="player-row">
+                        <div class="player-number">{{ $player->number ?? '00' }}</div>
+                        <div class="player-name">
+                            @if ($player->first_name && $player->last_name)
+                                {{ strtoupper($player->last_name) }}
+                                {{ strtoupper(substr($player->first_name, 0, 1)) }}.
+                            @elseif($player->name)
+                                {{ strtoupper($player->name) }}
+                            @else
+                                ___________
+                            @endif
+                        </div>
+                        <div class="player-checks">
+                            @for ($s = 1; $s <= 5; $s++)
+                                @php $num = (int)($player->number ?? 0); @endphp
+                                <div
+                                    class="check-box {{ isset($teamBChecks[$s][$num]) && $teamBChecks[$s][$num] ? 'checked' : '' }}">
+                                </div>
+                            @endfor
+                        </div>
+                    </div>
+                @endforeach
+                <div class="meta-cell" style="width: 25%;">
+                <strong>Coach B:</strong> <span class="meta-value">{{ $game->team2->coach_name ?? '___' }}</span>
+            </div>
             </div>
         </div>
+
+
+
+<!-- TEAMS AND PLAYERS PERFORMANCES - DOMPDF FIX -->
+<div class="stats-wrapper" style="page-break-inside: avoid;">
+    <div class="stats-title">TEAMS AND PLAYERS PERFORMANCES</div>
+    
+    <!-- SCORING SKILLS TABLE -->
+    <table style="width: 100%; border-collapse: collapse; font-size: 5pt;">
+        <tbody>
+        <tr>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Won Pts</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Atts</td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">No Name</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Scoring Skills</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Won Pts</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Atts</td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">No Name</td>
+        </tr>
+        <tr>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Spike</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+        </tr>
+        <tr>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+        </tr>
+        <tr>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+        </tr>
+        <tr>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Block</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+        </tr>
+        <tr>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+        </tr>
+        <tr>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+        </tr>
+        <tr>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Serve</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+        </tr>
+        <tr>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+        </tr>
+        <tr>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Opp. error Total</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+        </tr>
+        <tr>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+        </tr>
+        <tr style="background-color: #e8e8e8;">
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; font-weight: bold;">Best Scorer</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; font-weight: bold;">Best Scorer</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <!-- NON-SCORING SKILLS TABLE -->
+    <table style="width: 100%; border-collapse: collapse; font-size: 5pt;">
+        <tbody>
+        <tr>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Excellent</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Atts</td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">No Name</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Non scoring Skills</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Excellent</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Atts</td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">No Name</td>
+        </tr>
+        <tr>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Dig</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+        </tr>
+        <tr>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px;">Player #</td>
+        </tr>
+        <tr>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Set</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+        </tr>
+        <tr>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Reception</td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+        </tr>
+        <tr>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; font-weight: bold;">Success - Faults # Attempts</td>
+            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
+            <td style="width: 10%; border: 1px solid #000; padding: 2px; font-weight: bold;">Success - Faults # Attempts</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
     </div>
 </body>
+
 </html>

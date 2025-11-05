@@ -33,9 +33,22 @@ class GameController extends Controller
             'team1.players', 
             'team2.players', 
         ]);
+
+         $game->load([
+        'team1.players', 
+        'team2.players', 
+    ]);
+
+    // ✅ NEW: Auto-assign first user as scorer
+    if (auth()->check()) {
+        $assignmentController = new GameAssignmentController();
+        $assignmentController->ensureScorer($game, auth()->user());
+    }
         
         return view('games.prepare', compact('game'));
     }
+
+    
 
     public function updateOfficials(Request $request, Game $game)
     {
@@ -116,18 +129,44 @@ class GameController extends Controller
     ));
 }
 
-    public function startLive(Request $request, Game $game)
+    // FILE: app/Http/Controllers/GameController.php
+// REPLACE THE ENTIRE startLive() METHOD WITH THIS:
+
+public function startLive(Request $request, Game $game)
 {
-    // Determine required counts based on sport
+    // ✅ VALIDATE FIRST (before any permission checks)
     $requiredStarters = $game->isVolleyball() ? 6 : 5;
     $minRosterSize = $game->isVolleyball() ? 6 : 5;
     
-    // Validate the roster and starter selections
     $validated = $request->validate([
         'team1_roster' => 'required|json',
         'team2_roster' => 'required|json',
         'team1_starters' => 'required|json', 
         'team2_starters' => 'required|json',
+        'interface_mode' => 'required|in:all_in_one,separated',  // ✅ REQUIRED
+    ]);
+
+    // ✅ THEN CHECK PERMISSIONS
+    if (!auth()->check()) {
+        return back()->with('error', 'You must be logged in to start a game');
+    }
+
+    if (!GameAssignmentController::canScore(auth()->user(), $game)) {
+        return back()->with('error', 'Only the Scorer can start the game');
+    }
+
+    // ✅ THEN CHECK SEPARATED MODE REQUIREMENTS
+    if ($validated['interface_mode'] === 'separated') {
+        $hasStatKeeper = $game->activeStatKeepers()->count() > 0;
+        
+        if (!$hasStatKeeper) {
+            return back()->with('error', 'Stat-keeper must be connected before starting in Separated mode');
+        }
+    }
+
+    // ✅ UPDATE INTERFACE MODE
+    $game->update([
+        'interface_mode' => $validated['interface_mode'],
     ]);
 
     // Decode the selections
@@ -201,6 +240,7 @@ class GameController extends Controller
     
     return redirect()->route('games.live', $game)->with('success', 'Game started successfully!');
 }
+
 
     public function live(Game $game)
     {
@@ -586,6 +626,13 @@ private function processPlayerFouls(array $events)
         if ($game->bracket_id) {
             $this->updateBracketStatus($game->bracket_id);
         }
+
+        \App\Events\GameScoreUpdated::dispatch(
+            $game,
+            'final',
+            $validated['team1_score'],
+            $validated['team2_score']
+        );
 
         DB::commit();
 
@@ -1320,5 +1367,7 @@ public function selectVolleyballMVP(Request $request, Game $game)
         ], 500);
     }
 }
+
+
 
 }

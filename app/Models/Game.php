@@ -335,4 +335,43 @@ public function getSportTallysheet()
     return $this->tallysheet; // Basketball tallysheet
 }
 
+
+
+public function assignments()
+{
+    return $this->hasMany(GameAssignment::class);
+}
+
+/**
+ * Get all active scorers for this game
+ */
+public function activeScorers()
+{
+    return $this->assignments()->active()->scorers();
+}
+
+/**
+ * Get all active stat-keepers for this game
+ */
+public function activeStatKeepers()
+{
+    return $this->assignments()->active()->statKeepers();
+}
+
+/**
+ * Check if game is in separated mode
+ */
+public function isSeparatedMode()
+{
+    return $this->interface_mode === 'separated';
+}
+
+/**
+ * Check if game is in all-in-one mode
+ */
+public function isAllInOneMode()
+{
+    return $this->interface_mode === 'all_in_one';
+}
+
 }

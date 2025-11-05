@@ -83,6 +83,12 @@
     animation: activeGlow 2s infinite;
 }
 
+.jersey-badge.current-server {
+    box-shadow: 0 0 14px rgba(255, 235, 59, 0.9);
+    border-color: #FFEB3B;
+    transform: scale(1.08);
+}
+
 @keyframes activeGlow {
     0%, 100% {
         box-shadow: 0 0 12px rgba(76, 175, 80, 0.6);
@@ -497,7 +503,7 @@
         /* Main Layout */
         .container {
             display: grid;
-            grid-template-columns: 280px 1fr 280px;
+            grid-template-columns: 400px 1fr 400px;
             gap: 1px;
             flex: 1;
             overflow: hidden;
@@ -530,10 +536,26 @@
 
         .players-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            /* 3 columns on wide screens */
+            grid-template-columns: repeat(3, 1fr);
             gap: 12px;
             padding: 16px;
             overflow-y: auto;
+            min-height: 0;
+            
+        }
+
+        /* Responsive fallbacks: 2 columns on medium, 1 column on small */
+        @media (max-width: 900px) {
+            .players-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .players-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .player-card {
@@ -547,6 +569,27 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+        }
+
+        .player-card.current-server {
+            outline: 3px solid #FFEB3B;
+            transform: scale(1.03);
+            box-shadow: 0 8px 30px rgba(255,235,59,0.08);
+        }
+
+        .set-server-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255,235,59,0.95);
+            color: #111;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 6px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 12px;
+            display: inline-block;
         }
 
         .player-card:hover {
@@ -564,6 +607,18 @@
 
         .player-card.selecting {
             animation: selectPulse 1s infinite;
+        }
+
+        /* Drag-and-drop styles for roster reordering */
+        .player-card.dragging {
+            opacity: 0.5;
+            transform: scale(0.98);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        }
+
+        .player-card.drag-over {
+            outline: 3px dashed rgba(76,175,80,0.7);
+            transform: translateY(-4px) scale(1.02);
         }
 
         @keyframes selectPulse {
@@ -1061,7 +1116,7 @@
         <button class="action-btn btn-ace" data-action="ace">Ace</button>
         <button class="action-btn btn-block" data-action="block">Block</button>
         <button class="action-btn btn-dig" data-action="dig">Dig</button>
-        <button class="action-btn btn-assist" data-action="assist">Assist</button>
+        <button class="action-btn btn-assist" data-action="assist">Set</button>
         <button class="action-btn btn-error" data-action="error">Error</button>
         <button class="action-btn btn-timeout" id="timeoutBtn">Timeout</button>
         <button class="action-btn btn-substitution" id="substitutionBtn">Substitution</button>
@@ -1153,7 +1208,7 @@
             </div>
             
             <div class="hotkey-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Assist</div>
+                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Set</div>
                 <div class="hotkey-input" data-action="assist">
                     <span class="current-key" id="key-assist">S</span>
                 </div>
@@ -1296,6 +1351,9 @@
         let selectingPlayer = false;
         let selectingTeam = false;
         let teamSelectCallback = null;
+    // Current server tracking
+    let currentServerId = null;
+    let currentServerTeam = null;
 
         let timeoutActive = false;
         let timeoutTime = 30;
@@ -1382,7 +1440,93 @@ function createJerseyBadge(player, team) {
     
     badge.innerHTML = `<span class="player-number">${player.number || '00'}</span>`;
     
+    // clicking a jersey sets that player as the current server for their team
+    badge.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setServer(team, player.id);
+    });
+
+    // visually mark current server
+    if (currentServerId && currentServerId.toString() === player.id.toString() && currentServerTeam === team) {
+        badge.classList.add('current-server');
+    }
+
     return badge;
+}
+
+// Set the current server (choose which team serves and which player)
+function setServer(team, playerId) {
+    serving = team; // set global serving team
+    currentServerTeam = team;
+
+    // Mapping of position -> array index for the grid layout:
+    // positions:
+    // [4, 3, 2]
+    // [5, 6, 1]
+    // arr indices: 0->4,1->3,2->2,3->5,4->6,5->1
+    const posIndex = {1:5,2:2,3:1,4:0,5:3,6:4};
+
+    const arr = team === 'A' ? activePlayers.A : activePlayers.B;
+    if (arr && arr.length >= 1) {
+        // Try to rotate the team's active array until the chosen player is in the server position (pos 1)
+        let attempts = 0;
+        while ((arr[posIndex[1]] && arr[posIndex[1]].id.toString() !== playerId.toString()) && attempts < 6) {
+            rotateTeamClockwise(team);
+            attempts++;
+        }
+    }
+
+    currentServerId = playerId;
+    updateServingIndicator();
+    renderTeamJerseys();
+    updateMainRoster();
+    renderSubstitutionPlayers();
+    highlightServerBadge();
+    showNotification(`Server set to Team ${team} player #${playerId}`);
+}
+
+function highlightServerBadge() {
+    // Clear both jersey badges and roster cards
+    document.querySelectorAll('.jersey-badge').forEach(b => b.classList.remove('current-server'));
+    document.querySelectorAll('.player-card').forEach(c => c.classList.remove('current-server'));
+    if (!currentServerId) return;
+    // highlight jersey if visible
+    const el = document.querySelector(`.jersey-badge[data-player-id="${currentServerId}"]`);
+    if (el) el.classList.add('current-server');
+    // highlight roster card
+    const card = document.querySelector(`.player-card[data-player-id="${currentServerId}"]`);
+    if (card) card.classList.add('current-server');
+}
+
+// Rotate a team's active players clockwise (used when they gain serve)
+function rotateTeamClockwise(team) {
+    // Use the court layout mapping so rotation matches visual positions.
+    // positions layout (visual):
+    // [4, 3, 2]
+    // [5, 6, 1]
+    // array indices map: index 0->pos4, 1->pos3, 2->pos2, 3->pos5, 4->pos6, 5->pos1
+    const posIndex = {1:5,2:2,3:1,4:0,5:3,6:4};
+    const arr = team === 'A' ? activePlayers.A : activePlayers.B;
+    if (!arr || arr.length < 6) return; // require full 6 players to rotate
+
+    const old = arr.slice();
+    const newArr = new Array(6);
+    // For each position p (1..6), new occupant at p becomes the old occupant at p_next (clockwise next)
+    // Based on desired mapping: new[pos] = old[nextPos], where nextPos = (pos % 6) + 1
+    for (let pos = 1; pos <= 6; pos++) {
+        const nextPos = pos % 6 + 1;
+        const newIndex = posIndex[pos];
+        const oldIndex = posIndex[nextPos];
+        newArr[newIndex] = old[oldIndex];
+    }
+
+    // copy back into original array
+    for (let i = 0; i < 6; i++) arr[i] = newArr[i];
+
+    // After rotation, re-render UI
+    renderTeamJerseys();
+    updateMainRoster();
+    renderSubstitutionPlayers();
 }
 
 // Substitution Modal Functions
@@ -1689,8 +1833,9 @@ substitutionModal.addEventListener('click', (e) => {
 
         // Initialize
         function init() {
-            initializePlayerRosters(); // Add this line
-            renderPlayers();
+            initializePlayerRosters(); // populate activePlayers/benchPlayers
+            // render from activePlayers so draggable reordering is based on that state
+            updateMainRoster();
             updateScoreboard();
             updateServingIndicator();
             setupEventListeners();
@@ -1980,13 +2125,149 @@ document.addEventListener('DOMContentLoaded', function() {
             card.dataset.team = team;
             card.dataset.number = player.number || '00';
             card.dataset.playerId = player.id;
+            // include a small Set-Server button inside the card (stops propagation)
             card.innerHTML = `
+                <button class="set-server-btn" title="Set as server">S</button>
                 <div class="player-number">${player.number || '00'}</div>
                 <div class="player-position">${player.position || 'P'}</div>
             `;
+
+            // Make the card draggable for roster reordering
+            card.draggable = true;
+
+            // Roster drag event handlers (defined below)
+            card.addEventListener('dragstart', rosterDragStart);
+            card.addEventListener('dragend', rosterDragEnd);
+            card.addEventListener('dragenter', rosterDragEnter);
+            card.addEventListener('dragleave', rosterDragLeave);
+            card.addEventListener('dragover', rosterDragOver);
+            card.addEventListener('drop', rosterDropOnCard);
+
+            // Attach click handler for selecting player for actions
             card.addEventListener('click', () => handlePlayerClick(team, player));
+
+            // Wire up the set-server button (inside the card)
+            const btn = card.querySelector('.set-server-btn');
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    setServer(team, player.id);
+                });
+            }
             return card;
         }
+
+        // Roster drag helpers
+        let rosterDragging = null; // { playerId, fromTeam }
+
+        function rosterDragStart(e) {
+            const el = e.currentTarget;
+            rosterDragging = { playerId: el.dataset.playerId, fromTeam: el.dataset.team };
+            el.classList.add('dragging');
+            try { e.dataTransfer.setData('text/plain', el.dataset.playerId); } catch (err) {}
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function rosterDragEnd(e) {
+            document.querySelectorAll('.player-card').forEach(c => c.classList.remove('dragging', 'drag-over'));
+            rosterDragging = null;
+        }
+
+        function rosterDragEnter(e) {
+            e.preventDefault();
+            const el = e.currentTarget;
+            el.classList.add('drag-over');
+        }
+
+        function rosterDragLeave(e) {
+            const el = e.currentTarget;
+            el.classList.remove('drag-over');
+        }
+
+        function rosterDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        // Drop onto an existing card — insert before the drop target
+        function rosterDropOnCard(e) {
+            e.preventDefault();
+            const dropCard = e.currentTarget;
+            dropCard.classList.remove('drag-over');
+            if (!rosterDragging) return;
+
+            const destGrid = dropCard.closest('.players-grid');
+            if (!destGrid) return;
+            const destTeam = destGrid.id === 'playersA' ? 'A' : 'B';
+
+            const srcTeam = rosterDragging.fromTeam;
+            const playerId = rosterDragging.playerId;
+
+            // Disallow cross-team moves
+            if (srcTeam !== destTeam) {
+                showNotification('Cannot move player to the other team');
+                rosterDragEnd();
+                return;
+            }
+
+            const arr = srcTeam === 'A' ? activePlayers.A : activePlayers.B;
+            const srcIdx = arr.findIndex(p => p.id.toString() === playerId.toString());
+            if (srcIdx === -1) return;
+
+            // find index of dropCard among cards in dest grid (same array)
+            const cards = Array.from(destGrid.querySelectorAll('.player-card'));
+            const destIdx = cards.indexOf(dropCard);
+            if (destIdx === -1) return;
+
+            // Swap source and destination items
+            if (srcIdx !== destIdx) {
+                const tmp = arr[destIdx];
+                arr[destIdx] = arr[srcIdx];
+                arr[srcIdx] = tmp;
+            }
+
+            // Re-render UI
+            renderTeamJerseys();
+            updateMainRoster();
+            renderSubstitutionPlayers();
+
+            rosterDragEnd();
+        }
+
+        // Allow dropping into empty grid area (append)
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.players-grid').forEach(grid => {
+                grid.addEventListener('dragover', (e) => { e.preventDefault(); });
+                grid.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    if (!rosterDragging) return;
+                    const destTeam = grid.id === 'playersA' ? 'A' : 'B';
+                    const srcTeam = rosterDragging.fromTeam;
+                    const playerId = rosterDragging.playerId;
+
+                    // prevent cross-team drops
+                    if (srcTeam !== destTeam) {
+                        showNotification('Cannot move player to the other team');
+                        rosterDragEnd();
+                        return;
+                    }
+
+                    const arr = srcTeam === 'A' ? activePlayers.A : activePlayers.B;
+                    const idx = arr.findIndex(p => p.id.toString() === playerId.toString());
+                    if (idx === -1) return;
+
+                    // Move to end inside same team
+                    const [playerObj] = arr.splice(idx, 1);
+                    arr.push(playerObj);
+
+                    renderTeamJerseys();
+                    updateMainRoster();
+                    renderSubstitutionPlayers();
+                    rosterDragEnd();
+                });
+            });
+        });
 
         function setupEventListeners() {
             document.querySelectorAll('.action-btn[data-action]').forEach(btn => {
@@ -2050,8 +2331,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (team !== serving) {
+        // team gained the serve -> rotate that team's players (visual mapping)
         serving = team;
+        rotateTeamClockwise(team);
+        // update current server to the player in the server position (pos 1 -> index 5)
+        const serverIndexMap = {1:5,2:2,3:1,4:0,5:3,6:4};
+        const arr = team === 'A' ? activePlayers.A : activePlayers.B;
+        const newServer = arr && arr[serverIndexMap[1]] ? arr[serverIndexMap[1]] : null;
+        if (newServer) {
+            currentServerId = newServer.id;
+            currentServerTeam = team;
+        }
         updateServingIndicator();
+        highlightServerBadge();
         logEvent('GAME', 'SYSTEM', `Serve → Team ${team}`, 0);
     }
 
