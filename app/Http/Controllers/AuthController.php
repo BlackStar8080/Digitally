@@ -26,9 +26,20 @@ class AuthController extends Controller
             return redirect()->route('dashboard')->with('success', 'Logged in successfully');
         }
 
+<<<<<<< HEAD
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ])->with('form_type', 'login');
+=======
+    if (Auth::attempt($request->only('email', 'password'))) {
+        $request->session()->regenerate();
+        
+        // ✅ IMPORTANT: Clear guest session when real user logs in
+        session()->forget('is_guest');
+        session()->forget('guest_name');
+        // Flash success so layout global toast shows
+        return redirect()->route('dashboard')->with('success', 'Logged in successfully');
+>>>>>>> 90b0adc929cb50a3077cf1934df63d9d789100ba
     }
 
     public function register(Request $request)
@@ -92,6 +103,25 @@ class AuthController extends Controller
         return redirect()->route('dashboard')->with('success', 'Account created and logged in successfully');
     }
 
+<<<<<<< HEAD
+=======
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => bcrypt($request->password),
+    ]);
+
+    Auth::login($user);
+    
+    // ✅ IMPORTANT: Clear guest session when user registers
+    session()->forget('is_guest');
+    session()->forget('guest_name');
+
+    // Flash success so layout global toast shows
+    return redirect()->route('dashboard')->with('success', 'Account created and logged in successfully');
+}
+
+>>>>>>> 90b0adc929cb50a3077cf1934df63d9d789100ba
     public function logout(Request $request)
     {
         Auth::logout();

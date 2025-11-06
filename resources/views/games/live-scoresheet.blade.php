@@ -2731,6 +2731,7 @@
                         if (shotTime > 0) {
                             startShotClock();
                         }
+<<<<<<< HEAD
                     }
                 } else {
                     // Normal resume
@@ -2749,10 +2750,31 @@
                     if (shotTime <= 0) {
                         resetShotClock(24);
                     }
+=======
+                    }
+                } else {
+                    // Normal resume
+                    interval = setInterval(() => {
+                        if (time > 0) {
+                            time--;
+                            updateTimer();
+                        }
+                    }, 1000);
+                    isRunning = true;
+                    playPauseBtn.textContent = "⏸";
+                    playPauseBtn.style.backgroundColor = '#4CAF50';
+                    wasRunningBeforePause = false;
+                    pauseReason = null;
+                    // Start or resume shot clock when game resumes
+                    if (shotTime <= 0) {
+                        resetShotClock(24);
+                    }
+>>>>>>> 90b0adc929cb50a3077cf1934df63d9d789100ba
                     startShotClock();
                 }
             }
         });
+<<<<<<< HEAD
 
         // NEW: Save game results function
         function saveGameResults() {
@@ -2991,6 +3013,253 @@
             // Log the timeout event
             logEvent(team, 'TEAM', 'Timeout', 0);
 
+=======
+
+        // NEW: Save game results function
+        function saveGameResults() {
+            const saveModal = document.getElementById('saveGameModal');
+            const saveStatus = document.getElementById('saveStatus');
+            const saveError = document.getElementById('saveError');
+            const saveSpinner = document.getElementById('saveSpinner');
+            const retryBtn = document.getElementById('retryBtn');
+
+            // Show save modal
+            saveModal.style.display = 'flex';
+            saveStatus.textContent = 'Preparing game data...';
+            saveError.style.display = 'none';
+            retryBtn.style.display = 'none';
+            saveSpinner.style.display = 'block';
+
+            // NEW: Collect player statistics
+            const playerStats = collectPlayerStats();
+
+            // Prepare game data
+            const finalGameData = {
+                game_id: gameData.id,
+                team1_score: scoreA,
+                team2_score: scoreB,
+                team1_fouls: foulsA,
+                team2_fouls: foulsB,
+                team1_timeouts: timeoutsA,
+                team2_timeouts: timeoutsB,
+                total_quarters: currentQuarter,
+                game_events: gameEvents,
+                period_scores: {
+                    team1: periodScores.teamA,
+                    team2: periodScores.teamB
+                },
+                winner_id: scoreA > scoreB ? 1 : (scoreB > scoreA ? 2 : null),
+                status: 'completed',
+                completed_at: new Date().toISOString(),
+                player_stats: playerStats // NEW: Include player stats
+            };
+
+            // Update status
+            saveStatus.textContent = 'Saving game results...';
+
+            // Send data to backend
+            fetch(`/games/${gameData.id}/complete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(finalGameData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    saveStatus.textContent = 'Game saved successfully!';
+                    saveSpinner.style.display = 'none';
+
+                    // Show success message briefly then redirect
+                    setTimeout(() => {
+                        saveStatus.textContent = 'Redirecting to box score...';
+                        window.location.href = data.redirect_url;
+                    }, 1500);
+                })
+                .catch(error => {
+                    console.error('Error saving game:', error);
+                    saveSpinner.style.display = 'none';
+                    saveStatus.textContent = 'Failed to save game results';
+                    saveError.style.display = 'block';
+                    saveError.textContent = `Error: ${error.message}. Please try again.`;
+                    retryBtn.style.display = 'inline-block';
+                });
+        }
+
+        // NEW: Collect player statistics from game events
+        // Collect player statistics from game events
+        function collectPlayerStats() {
+            const playerStats = {};
+
+            // Helper to get player by number and team
+            function findPlayerByNumber(playerNumber, team) {
+                const players = team === 'A' ? [...activePlayers.A, ...benchPlayers.A] : [...activePlayers.B, ...
+                    benchPlayers.B
+                ];
+
+                return players.find(p => (p.number || '00').toString() === playerNumber.toString());
+            }
+
+            // Initialize stats for all players
+            [...activePlayers.A, ...benchPlayers.A].forEach(player => {
+                const key = `A_${player.id}`;
+                playerStats[key] = {
+                    player_id: player.id,
+                    team_id: player.team_id,
+                    points: 0,
+                    fouls: player.fouls || 0,
+                    free_throws_made: 0,
+                    free_throws_attempted: 0,
+                    two_points_made: 0,
+                    two_points_attempted: 0,
+                    three_points_made: 0,
+                    three_points_attempted: 0,
+                    assists: 0, // ADD THIS
+                    steals: 0, // ADD THIS
+                    rebounds: 0, // ADD THIS
+                    blocks: 0 // ADD THIS
+                };
+            });
+
+            [...activePlayers.B, ...benchPlayers.B].forEach(player => {
+                const key = `B_${player.id}`;
+                playerStats[key] = {
+                    player_id: player.id,
+                    team_id: player.team_id,
+                    points: 0,
+                    fouls: player.fouls || 0,
+                    free_throws_made: 0,
+                    free_throws_attempted: 0,
+                    two_points_made: 0,
+                    two_points_attempted: 0,
+                    three_points_made: 0,
+                    three_points_attempted: 0,
+                    assists: 0, // ADD THIS
+                    steals: 0, // ADD THIS
+                    rebounds: 0, // ADD THIS
+                    blocks: 0 // ADD THIS
+                };
+            });
+
+            console.log('Initial player stats:', playerStats);
+            console.log('Processing game events:', gameEvents);
+
+            // Process game events to calculate stats
+            gameEvents.forEach(event => {
+                // Skip system/team events
+                if (event.player === 'TEAM' || event.player === 'SYSTEM') {
+                    return;
+                }
+
+                // Find the player
+                const player = findPlayerByNumber(event.player, event.team);
+
+                if (!player) {
+                    console.warn(`Player not found for event:`, event);
+                    return;
+                }
+
+                const key = `${event.team}_${player.id}`;
+
+                if (!playerStats[key]) {
+                    console.warn(`No stats entry for player ${player.id}`);
+                    return;
+                }
+
+                // Process scoring events
+                if (event.action.includes('Points') || event.action.includes('Made')) {
+                    playerStats[key].points += (event.points || 0);
+
+                    // Track shot types
+                    if (event.action.includes('Free Throw')) {
+                        if (event.action.includes('Made')) {
+                            playerStats[key].free_throws_made++;
+                            playerStats[key].free_throws_attempted++;
+                        } else if (event.action.includes('Miss')) {
+                            playerStats[key].free_throws_attempted++;
+                        }
+                    } else if (event.action.includes('2 Points')) {
+                        playerStats[key].two_points_made++;
+                        playerStats[key].two_points_attempted++;
+                    } else if (event.action.includes('3 Points')) {
+                        playerStats[key].three_points_made++;
+                        playerStats[key].three_points_attempted++;
+                    }
+                }
+
+                // ADD: Process assists
+                if (event.action === 'Assist') {
+                    playerStats[key].assists++;
+                    console.log(`Assist recorded for player ${player.id}`);
+                }
+
+                // ADD: Process steals
+                if (event.action === 'Steal') {
+                    playerStats[key].steals++;
+                    console.log(`Steal recorded for player ${player.id}`);
+                }
+
+                // ADD: Process rebounds
+                if (event.action === 'Rebound') {
+                    playerStats[key].rebounds++;
+                    console.log(`Rebound recorded for player ${player.id}`);
+                }
+
+                // ADD: Process rebounds
+                if (event.action === 'block') {
+                    playerStats[key].block++;
+                    console.log(`block recorded for player ${player.id}`);
+                }
+
+                console.log(`Updated stats for player ${player.id}:`, playerStats[key]);
+            });
+
+            // Convert to array
+            const statsArray = Object.values(playerStats);
+
+            console.log('Final player stats array:', statsArray);
+
+            return statsArray;
+        }
+
+        // NEW: Retry save function
+        function retryGameSave() {
+            saveGameResults();
+        }
+
+        // =============== TIMEOUT FUNCTIONALITY =================
+        function enterTimeoutMode() {
+            timeoutMode = true;
+            timeoutInstruction.style.display = 'block';
+            teamSectionA.classList.add('timeout-selectable');
+            teamSectionB.classList.add('timeout-selectable');
+            timeoutBtn.textContent = 'Select Team...';
+            timeoutBtn.classList.add('selected');
+        }
+
+        function exitTimeoutMode() {
+            timeoutMode = false;
+            timeoutInstruction.style.display = 'none';
+            teamSectionA.classList.remove('timeout-selectable');
+            teamSectionB.classList.remove('timeout-selectable');
+        }
+
+        function startTimeoutTimer(team) {
+            // Auto-pause game timer when timeout starts
+            pauseTimer('timeout');
+
+            exitTimeoutMode();
+
+            // Log the timeout event
+            logEvent(team, 'TEAM', 'Timeout', 0);
+
+>>>>>>> 90b0adc929cb50a3077cf1934df63d9d789100ba
             // Start the 1-minute countdown
             timeoutTime = 60;
             timeoutBtn.classList.add('timer-active');
