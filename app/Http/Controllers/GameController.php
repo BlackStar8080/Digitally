@@ -129,125 +129,100 @@ class GameController extends Controller
     ));
 }
 
-    // FILE: app/Http/Controllers/GameController.php
-// REPLACE THE ENTIRE startLive() METHOD WITH THIS:
+
 
 public function startLive(Request $request, Game $game)
-{
-    // ✅ VALIDATE FIRST (before any permission checks)
-    $requiredStarters = $game->isVolleyball() ? 6 : 5;
-    $minRosterSize = $game->isVolleyball() ? 6 : 5;
-    
-    $validated = $request->validate([
-        'team1_roster' => 'required|json',
-        'team2_roster' => 'required|json',
-        'team1_starters' => 'required|json', 
-        'team2_starters' => 'required|json',
-        'interface_mode' => 'required|in:all_in_one,separated',  // ✅ REQUIRED
-    ]);
-
-    // ✅ THEN CHECK PERMISSIONS
-    if (!auth()->check()) {
-        return back()->with('error', 'You must be logged in to start a game');
-    }
-
-    if (!GameAssignmentController::canScore(auth()->user(), $game)) {
-        return back()->with('error', 'Only the Scorer can start the game');
-    }
-
-    // ✅ THEN CHECK SEPARATED MODE REQUIREMENTS
-    if ($validated['interface_mode'] === 'separated') {
-        $hasStatKeeper = $game->activeStatKeepers()->count() > 0;
-        
-        if (!$hasStatKeeper) {
-            return back()->with('error', 'Stat-keeper must be connected before starting in Separated mode');
-        }
-    }
-
-    // ✅ UPDATE INTERFACE MODE
-    $game->update([
-        'interface_mode' => $validated['interface_mode'],
-    ]);
-
-    // Decode the selections
-    $team1RosterIds = json_decode($validated['team1_roster'], true);
-    $team2RosterIds = json_decode($validated['team2_roster'], true);
-    $team1StarterIds = json_decode($validated['team1_starters'], true);
-    $team2StarterIds = json_decode($validated['team2_starters'], true);
-
-    // Validate roster sizes
-    if (count($team1RosterIds) < $minRosterSize || count($team2RosterIds) < $minRosterSize) {
-        return back()->with('error', "You must select at least {$minRosterSize} players for each team roster!");
-    }
-
-    // Validate starter selections
-    if (count($team1StarterIds) !== $requiredStarters || count($team2StarterIds) !== $requiredStarters) {
-        return back()->with('error', "You must select exactly {$requiredStarters} starters for each team!");
-    }
-
-    // Validate that starters are from the roster
-    if (array_diff($team1StarterIds, $team1RosterIds) || array_diff($team2StarterIds, $team2RosterIds)) {
-        return back()->with('error', 'All starters must be selected from the team roster!');
-    }
-
-    // Validate that at least one referee is assigned
-    if (empty($game->referee)) {
-        return back()->with('error', 'You must assign at least one referee before starting the game!');
-    }
-
-    // Store combined roster/starter data
-    $team1Data = [
-        'roster' => $team1RosterIds,
-        'starters' => $team1StarterIds,
-        'all_players' => array_map(function($id) { return "player1_{$id}"; }, $team1RosterIds)
-    ];
-
-    $team2Data = [
-        'roster' => $team2RosterIds,
-        'starters' => $team2StarterIds, 
-        'all_players' => array_map(function($id) { return "player2_{$id}"; }, $team2RosterIds)
-    ];
-
-    // Update game status and store player selections
-    $game->update([
-        'status' => 'in_progress',
-        'started_at' => now(),
-        'team1_selected_players' => json_encode($team1Data),
-        'team2_selected_players' => json_encode($team2Data),
-    ]);
-
-    // Return JSON response for AJAX requests (volleyball)
-    if ($request->ajax() || $request->expectsJson()) {
-        if ($game->isVolleyball()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Volleyball game started successfully!',
-                'redirect_url' => route('games.volleyball-live', $game)
-            ]);
-        }
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Game started successfully!',
-            'redirect_url' => route('games.live', $game)
+    {
+        // Validate input
+        $validated = $request->validate([
+            'team1_roster' => 'required|json',
+            'team2_roster' => 'required|json',
+            'team1_starters' => 'required|json',
+            'team2_starters' => 'required|json',
+            'interface_mode' => 'required|in:all_in_one,separated',
         ]);
+
+        try {
+            // Decode JSON arrays
+            $team1Roster = json_decode($validated['team1_roster'], true);
+            $team2Roster = json_decode($validated['team2_roster'], true);
+            $team1Starters = json_decode($validated['team1_starters'], true);
+            $team2Starters = json_decode($validated['team2_starters'], true);
+
+            // Validate rosters
+            if (empty($team1Roster) || empty($team2Roster)) {
+                return back()->with('error', 'Please select rosters for both teams');
+            }
+
+            if (count($team1Starters) !== count($team2Starters)) {
+                return back()->with('error', 'Both teams must have the same number of starters');
+            }
+
+            // Save to game
+            $game->update([
+                'status' => 'in_progress',
+                'team1_selected_players' => json_encode([
+                    'roster' => $team1Roster,
+                    'starters' => $team1Starters,
+                ]),
+                'team2_selected_players' => json_encode([
+                    'roster' => $team2Roster,
+                    'starters' => $team2Starters,
+                ]),
+                'game_data' => [
+                    'interface_mode' => $validated['interface_mode'],
+                    'team1_fouls' => 0,
+                    'team2_fouls' => 0,
+                    'team1_timeouts' => 0,
+                    'team2_timeouts' => 0,
+                    'game_events' => [],
+                    'last_update' => now()->timestamp,
+                ]
+            ]);
+
+            // ✅ IMPORTANT: DON'T REDIRECT TO INVITE PAGE!
+            // Just go directly to live game
+            // For all_in_one, go directly to live (scorer interface)
+    return redirect()->route('games.live', [
+        'game' => $game->id,
+        'role' => 'scorer'  // ✅ EXPLICIT SCORER ROLE
+    ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error starting live game', [
+                'game_id' => $game->id,
+                'error' => $e->getMessage()
+            ]);
+
+            return back()->with('error', 'Failed to start game: ' . $e->getMessage());
+        }
     }
-    
-    // Regular redirect for non-AJAX requests (basketball)
-    if ($game->isVolleyball()) {
-        return redirect()->route('games.volleyball-live', $game)->with('success', 'Volleyball game started successfully!');
-    }
-    
-    return redirect()->route('games.live', $game)->with('success', 'Game started successfully!');
-}
 
 
-    public function live(Game $game)
+    public function live(Request $request, Game $game)  // ✅ ADD Request parameter
     {
         // Ensure game is in progress
         if ($game->status !== 'in_progress') {
             return redirect()->back()->with('error', 'Game has not been started yet!');
         }
+
+        // ✅ NEW: Check for explicit role parameter (passed from join)
+        $requestedRole = $request->query('role');
+        
+        if ($requestedRole && in_array($requestedRole, ['scorer', 'stat_keeper'])) {
+            // Use the explicitly requested role
+            $userRole = $requestedRole;
+        } else {
+            // Fallback to detecting from database
+            $userRole = 'viewer';
+            if (auth()->check()) {
+                $userRole = GameAssignmentController::getUserRole(auth()->user(), $game) ?? 'viewer';
+            }
+        }
+
+        // Get stored player data
+        $team1Data = json_decode($game->team1_selected_players, true) ?? [];
+        // ... rest of method stays the same
 
         // Get stored player data
         $team1Data = json_decode($game->team1_selected_players, true) ?? [];
@@ -294,7 +269,8 @@ public function startLive(Request $request, Game $game)
             'team1Roster',
             'team2Roster', 
             'team1Starters', 
-            'team2Starters'
+            'team2Starters',
+            'userRole'
         ));
     }
 
@@ -1368,6 +1344,62 @@ public function selectVolleyballMVP(Request $request, Game $game)
     }
 }
 
+
+    public function getGameState(Game $game)
+    {
+        // Check if user has access to this game
+        if (!auth()->check() || !GameAssignmentController::hasActiveRole(auth()->user(), $game)) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        return response()->json([
+            'gameId' => $game->id,
+            'scoreA' => $game->team1_score ?? 0,
+            'scoreB' => $game->team2_score ?? 0,
+            'foulsA' => $game->game_data['team1_fouls'] ?? 0,
+            'foulsB' => $game->game_data['team2_fouls'] ?? 0,
+            'timeoutsA' => $game->game_data['team1_timeouts'] ?? 0,
+            'timeoutsB' => $game->game_data['team2_timeouts'] ?? 0,
+            'events' => json_decode($game->game_data['game_events'] ?? '[]', true),
+            'last_update' => $game->updated_at->timestamp,
+        ]);
+    }
+
+    public function updateGameState(Request $request, Game $game)
+{
+    if (!GameAssignmentController::canScore(auth()->user(), $game)) {
+        return response()->json(['error' => 'Only scorer can update'], 403);
+    }
+
+    $validated = $request->validate([
+        'scoreA' => 'required|integer|min:0',
+        'scoreB' => 'required|integer|min:0',
+        'foulsA' => 'integer|min:0',
+        'foulsB' => 'integer|min:0',
+        'timeoutsA' => 'integer|min:0',
+        'timeoutsB' => 'integer|min:0',
+        'events' => 'array',
+    ]);
+
+    // Get existing game_data and preserve it
+    $gameData = $game->game_data ?? [];
+    
+    // Update only the fields we care about
+    $gameData['team1_fouls'] = $validated['foulsA'] ?? 0;
+    $gameData['team2_fouls'] = $validated['foulsB'] ?? 0;
+    $gameData['team1_timeouts'] = $validated['timeoutsA'] ?? 0;
+    $gameData['team2_timeouts'] = $validated['timeoutsB'] ?? 0;
+    $gameData['game_events'] = $validated['events'] ?? [];
+    $gameData['last_update'] = now()->timestamp;
+
+    $game->update([
+        'team1_score' => $validated['scoreA'],
+        'team2_score' => $validated['scoreB'],
+        'game_data' => $gameData,
+    ]);
+
+    return response()->json(['success' => true, 'last_update' => now()->timestamp]);
+}
 
 
 }

@@ -121,13 +121,32 @@ class GameAssignmentController extends Controller
 
         // If user is logged in, link this assignment to their user_id
         if (auth()->check()) {
-            $assignment->update([
-                'user_id' => auth()->id(),
-                'device_token' => null, // Clear device token once used
-            ]);
+            // ✅ CHECK IF USER ALREADY JOINED
+            $alreadyJoined = $game->assignments()
+                ->statKeepers()
+                ->where('user_id', auth()->id())
+                ->first();
 
-            return redirect()->route('games.live', $game)
-                ->with('success', 'You joined as Stat-keeper');
+            if ($alreadyJoined) {
+                // User already joined, just go to live
+                return redirect()->route('games.live', [
+                'game' => $game->id,
+                'role' => 'stat_keeper'  // ✅ PASS ROLE EXPLICITLY
+            ])->with('success', 'You joined as Stat-keeper');
+            }
+
+            // ✅ ONLY UPDATE IF THIS IS A DEVICE-TOKEN ASSIGNMENT
+            if ($assignment->user_id === null) {
+                $assignment->update([
+                    'user_id' => auth()->id(),
+                    'device_token' => null, // Clear device token once used
+                ]);
+            }
+
+            return redirect()->route('games.live', [
+                'game' => $game->id,
+                'role' => 'stat_keeper'  // ✅ PASS ROLE EXPLICITLY
+            ])->with('success', 'You joined as Stat-keeper');
         }
 
         // If not logged in, redirect to login with token in query

@@ -1187,12 +1187,21 @@ body {
                     <input type="hidden" name="team1_starters" id="team1_starters_input">
                     <input type="hidden" name="team2_starters" id="team2_starters_input">
 
+                    <!-- Show invite link only in separated mode -->
                     <div id="generateInviteContainer" style="margin-bottom: 1rem; display: none;">
+                        <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                            <strong>⚠️ Before starting:</strong> Generate and share the invite link with your stat-keeper
+                        </div>
                         <a href="{{ route('games.invite', $game) }}" 
-                        class="btn btn-warning btn-lg" 
-                        id="generateInviteBtn">
-                            <i class="bi bi-qr-code"></i> Generate Invite Link
+                        class="btn btn-warning btn-lg btn-block" 
+                        id="generateInviteBtn"
+                        target="_blank">
+                            <i class="bi bi-qr-code"></i> Generate & Share Invite Link
                         </a>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                            Open this in a new tab, generate the QR code, and share it with your stat-keeper.
+                            Come back here after they've joined.
+                        </p>
                     </div>
 
                     <div id="connectedUsers" style="margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
@@ -1220,12 +1229,21 @@ body {
         
         const generateBtn = document.getElementById('generateInviteBtn');
         const generateContainer = document.getElementById('generateInviteContainer');
+        const startBtn = document.getElementById('startGameBtn');
         
         if (this.value === 'separated') {
+            // Show invite container in separated mode
             generateContainer.style.display = 'block';
+            // Disable start button until stat-keeper joins
+            startBtn.disabled = true;
+            startBtn.textContent = '⏳ Waiting for stat-keeper to join...';
             refreshConnectedUsers(); // Poll for stat-keeper
         } else {
+            // Hide invite in all-in-one mode
             generateContainer.style.display = 'none';
+            // Enable start button
+            startBtn.disabled = false;
+            startBtn.textContent = '▶️ Start Live Game';
         }
     });
 });
@@ -1315,19 +1333,37 @@ if (document.getElementById('separated').checked) {
 // Poll for connected users every 2 seconds
 function refreshConnectedUsers() {
     const gameId = {{ $game->id }};
+    const isSeparated = document.getElementById('separated').checked;
+    
     fetch(`/games/${gameId}/connected-users`)
         .then(r => r.json())
         .then(data => {
             const list = document.getElementById('usersList');
             const users = data.connected_users;
+            const startBtn = document.getElementById('startGameBtn');
             
             if (users.length === 0) {
-                list.innerHTML = '<p class="text-muted">Waiting for stat-keeper...</p>';
+                list.innerHTML = '<p class="text-muted">No users connected</p>';
+                if (isSeparated) {
+                    startBtn.disabled = true;
+                    startBtn.textContent = '⏳ Waiting for stat-keeper...';
+                }
             } else {
                 list.innerHTML = users.map(u => 
                     `<span class="badge bg-success">${u.user_name} (${u.role})</span>`
                 ).join(' ');
+                
+                // ✅ ENABLE START BUTTON WHEN STAT-KEEPER JOINS
+                const hasStatKeeper = users.some(u => u.role === 'stat_keeper');
+                if (isSeparated && hasStatKeeper) {
+                    startBtn.disabled = false;
+                    startBtn.textContent = '▶️ Start Live Game';
+                }
             }
+        })
+        .catch(err => {
+            console.error('Failed to fetch users:', err);
+            list.innerHTML = '<p class="text-danger">Failed to load connected users</p>';
         });
 }
 

@@ -443,12 +443,14 @@
         }
 
         .serving-indicator {
-            width: 20px;
-            height: 20px;
-            background: #FF9800;
-            border-radius: 50%;
-            animation: servePulse 2s infinite;
-        }
+    width: 20px;
+    height: 20px;
+    background: #FF9800;
+    border-radius: 50%;
+    animation: servePulse 2s infinite;
+    flex-shrink: 0;
+    margin-left: 12px;
+}
 
         @keyframes servePulse {
             0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(255, 152, 0, 0.6); }
@@ -558,7 +560,7 @@
             }
         }
 
-        .player-card {
+       .player-card {
             background: #3d3d3d;
             border-radius: 10px;
             padding: 16px 12px;
@@ -569,6 +571,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            position: relative;  ← ADD THIS LINE
         }
 
         .player-card.current-server {
@@ -578,19 +581,23 @@
         }
 
         .set-server-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(255,235,59,0.95);
-            color: #111;
-            border: none;
-            border-radius: 6px;
-            padding: 4px 6px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 12px;
-            display: inline-block;
-        }
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255,235,59,0.95);
+    color: #111;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 6px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.player-card .set-server-btn {
+    display: inline-block;
+}
 
         .player-card:hover {
             background: #4d4d4d;

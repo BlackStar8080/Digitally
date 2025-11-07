@@ -65,10 +65,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'guest.restrict' => \App\Http\Middleware\CheckGuestAccess::class,
         'game.role' => \App\Http\Middleware\GameRoleMiddleware::class,
-<<<<<<< HEAD
         'auth.or.guest' => \App\Http\Middleware\AuthOrGuest::class,
-=======
->>>>>>> 90b0adc929cb50a3077cf1934df63d9d789100ba
     ];
 
 
