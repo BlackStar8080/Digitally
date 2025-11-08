@@ -66,6 +66,7 @@ class Kernel extends HttpKernel
         'guest.restrict' => \App\Http\Middleware\CheckGuestAccess::class,
         'game.role' => \App\Http\Middleware\GameRoleMiddleware::class,
         'auth.or.guest' => \App\Http\Middleware\AuthOrGuest::class,
+         'game.role' => \App\Http\Middleware\GameRolePermission::class,
     ];
 
 

@@ -1855,28 +1855,46 @@
             <div class="log-content" id="logContent"></div>
         </div>
 
-        <!-- Actions Panel -->
-        <div class="actions-section">
-            <div class="actions-header">Actions</div>
-            <button class="action-btn free-throw" data-action="Free Throw" data-points="1">Free Throw</button>
-            <button class="action-btn two-points" data-action="2 Points" data-points="2">2 Points</button>
-            <button class="action-btn three-points" data-action="3 Points" data-points="3">3 Points</button>
-            <button class="action-btn assist" data-action="Assist">Assist</button>
-            <button class="action-btn blocks" data-action="blocks">Block</button>
-            <div class="foul-buttons-row">
-                <button class="action-btn steal" data-action="Steal">Steal</button>
-                <button class="action-btn rebound" data-action="Rebound">Rebound</button>
-            </div>
-            <div class="foul-buttons-row">
-                <button class="action-btn foul" data-action="Foul">Foul</button>
-                <button class="action-btn tech" data-action="Tech Foul">Tech. F</button>
-            </div>
-            <button class="action-btn timeout" data-action="Timeout" id="timeoutBtn">Timeout</button>
-            <button class="action-btn substitution" data-action="Substitution">Substitution</button>
-            <button class="action-btn undo-btn" id="undoBtn">
-                <span>↶</span> Undo
-            </button>
+        {{-- ROLE-BASED UI SECTIONS --}}
+
+{{-- Show this if user is SCORER --}}
+@if($userRole === 'scorer')
+    <!-- SCORER UI - Only Scoring Actions -->
+    <div class="actions-section" id="scorerActions">
+        <div class="actions-header">⚡ SCORER PANEL</div>
+        <button class="action-btn free-throw" data-action="Free Throw" data-points="1">Free Throw</button>
+        <button class="action-btn two-points" data-action="2 Points" data-points="2">2 Points</button>
+        <button class="action-btn three-points" data-action="3 Points" data-points="3">3 Points</button>
+        <div class="foul-buttons-row">
+            <button class="action-btn foul" data-action="Foul">Foul</button>
+            <button class="action-btn tech" data-action="Tech Foul">Tech. F</button>
         </div>
+        <button class="action-btn timeout" data-action="Timeout" id="timeoutBtn">Timeout</button>
+        <button class="action-btn substitution" data-action="Substitution">Substitution</button>
+        <button class="action-btn undo-btn" id="undoBtn">
+            <span>↶</span> Undo
+        </button>
+    </div>
+@endif
+
+{{-- Show this if user is STAT-KEEPER --}}
+@if($userRole === 'stat_keeper')
+    <!-- STAT-KEEPER UI - Only Stat Recording Actions -->
+    <div class="actions-section" id="statKeeperActions">
+        <div class="actions-header">📊 STAT-KEEPER PANEL</div>
+        <button class="action-btn assist" data-action="Assist">Assist</button>
+        <button class="action-btn steal" data-action="Steal">Steal</button>
+        <button class="action-btn rebound" data-action="Rebound">Rebound</button>
+        <button class="action-btn blocks" data-action="blocks">Block</button>
+        <button class="action-btn undo-btn" id="undoBtn">
+            <span>↶</span> Undo
+        </button>
+        
+        <div style="margin-top: 20px; padding: 15px; background: #333; border-radius: 8px; font-size: 12px; color: #aaa;">
+            <strong>📌 Info:</strong> Only record player stats here. Scoring actions are handled by the Scorer.
+        </div>
+    </div>
+@endif
     </div>
 
     <!-- Free Throw Panel -->
@@ -2202,6 +2220,71 @@
             tournamentId: {{ $game->tournament_id ?? 'null' }},
             bracketId: {{ $game->bracket_id ?? 'null' }}
         };
+
+        // ===== JAVASCRIPT CONDITIONAL LOGIC =====
+
+// Determine which role this user has
+const userRole = '{{ $userRole ?? 'viewer' }}';
+
+// Disable actions based on role
+function applyRoleRestrictions() {
+    console.log('🔐 Applying role restrictions for:', userRole);
+    
+    if (userRole === 'scorer') {
+        // Scorer: disable stat buttons
+        const statOnlyButtons = ['Assist', 'Steal', 'Rebound', 'blocks'];
+        disableButtons(statOnlyButtons);
+        console.log('✅ Scorer mode: Stat buttons disabled');
+        
+    } else if (userRole === 'stat_keeper') {
+        // Stat-keeper: disable scoring buttons
+        const scoringOnlyButtons = [
+            'Free Throw', '2 Points', '3 Points', 
+            'Foul', 'Tech Foul', 'Timeout', 'Substitution'
+        ];
+        disableButtons(scoringOnlyButtons);
+        console.log('✅ Stat-keeper mode: Scoring buttons disabled');
+    }
+}
+
+// Helper function to disable buttons
+function disableButtons(actionNames) {
+    document.querySelectorAll('.action-btn').forEach(btn => {
+        const action = btn.dataset.action;
+        if (actionNames.includes(action)) {
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            btn.style.cursor = 'not-allowed';
+            btn.title = `Not available for ${userRole}`;
+        }
+    });
+}
+
+// Override the logEvent function to enforce role-based actions
+const originalLogEvent = window.logEvent;
+window.logEvent = function(team, player, action, points = 0) {
+    // Check if this action is allowed for this role
+    const scoringActions = ['Free Throw', '2 Points', '3 Points', 'Foul', 'Tech Foul', 'Timeout', 'Substitution', 'Personal Foul', 'Shooting Foul'];
+    const statActions = ['Assist', 'Steal', 'Rebound', 'blocks'];
+    
+    if (userRole === 'scorer' && statActions.includes(action)) {
+        console.warn('⛔ Scorer cannot record stat action:', action);
+        alert('⛔ Your role (Scorer) cannot record this stat. Only Stat-Keepers can record stats.');
+        return;
+    }
+    
+    if (userRole === 'stat_keeper' && scoringActions.includes(action)) {
+        console.warn('⛔ Stat-keeper cannot record scoring action:', action);
+        alert('⛔ Your role (Stat-Keeper) cannot record scoring. Only Scorers can record scores and fouls.');
+        return;
+    }
+    
+    // If role check passes, call original logEvent
+    return originalLogEvent(team, player, action, points);
+};
+
+// Apply restrictions when page loads
+document.addEventListener('DOMContentLoaded', applyRoleRestrictions);
 
         // Player roster management - UPDATED to use actual starter/roster data
         let activePlayers = {

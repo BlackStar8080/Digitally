@@ -249,4 +249,6 @@ public function showInvite(Game $game)
 
     return view('games.invite', compact('game'));
 }
+
+
 }

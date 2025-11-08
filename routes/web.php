@@ -152,9 +152,45 @@ Route::middleware(['auth.or.guest', 'guest.restrict'])->group(function () {
     Route::post('/tournaments/{tournament}/assign-teams', [TournamentController::class, 'assignTeams'])->name('tournaments.assign-teams');
 });
 
-// ✅ API Routes - Outside guest.restrict middleware
+// ✅ API Routes - With Role-Based Permission Checks
 Route::middleware(['auth'])->group(function () {
-    Route::get('/api/game-state/{game}', [GameController::class, 'getGameState']);
-    Route::post('/api/update-game-state/{game}', [GameController::class, 'updateGameState']);
-    Route::get('/api/connected-users/{game}', [GameAssignmentController::class, 'getConnectedUsers']);
+    
+    // ============ SCORER ONLY - Scoring Actions ============
+    Route::post('/api/record-score/{game}', [GameController::class, 'recordScore'])
+        ->middleware('game.role:record-score');
+    
+    Route::post('/api/record-foul/{game}', [GameController::class, 'recordFoul'])
+        ->middleware('game.role:record-foul');
+    
+    Route::post('/api/record-timeout/{game}', [GameController::class, 'recordTimeout'])
+        ->middleware('game.role:record-timeout');
+    
+    Route::post('/api/record-substitution/{game}', [GameController::class, 'recordSubstitution'])
+        ->middleware('game.role:record-substitution');
+    
+    // ============ STAT-KEEPER ONLY - Stat Recording ============
+    Route::post('/api/record-stat/{game}', [GameController::class, 'recordStat'])
+        ->middleware('game.role:record-stat');
+    
+    Route::post('/api/record-assist/{game}', [GameController::class, 'recordAssist'])
+        ->middleware('game.role:record-assist');
+    
+    Route::post('/api/record-steal/{game}', [GameController::class, 'recordSteal'])
+        ->middleware('game.role:record-steal');
+    
+    Route::post('/api/record-rebound/{game}', [GameController::class, 'recordRebound'])
+        ->middleware('game.role:record-rebound');
+    
+    Route::post('/api/record-block/{game}', [GameController::class, 'recordBlock'])
+        ->middleware('game.role:record-block');
+    
+    // ============ BOTH - View Only ============
+    Route::get('/api/game-state/{game}', [GameController::class, 'getGameState'])
+        ->middleware('game.role:get-game-state');
+    
+    Route::post('/api/update-game-state/{game}', [GameController::class, 'updateGameState'])
+        ->middleware('game.role:record-score'); // Only scorer can update state
+    
+    Route::get('/api/connected-users/{game}', [GameAssignmentController::class, 'getConnectedUsers'])
+        ->middleware('game.role:get-connected-users');
 });

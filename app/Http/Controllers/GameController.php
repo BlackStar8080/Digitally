@@ -1400,5 +1400,350 @@ public function selectVolleyballMVP(Request $request, Game $game)
     return response()->json(['success' => true, 'last_update' => now()->timestamp]);
 }
 
+public function recordScore(Request $request, Game $game)
+{
+    // Validate that only scorers can call this
+    if (!GameAssignmentController::canScore(auth()->user(), $game)) {
+        return response()->json(['error' => 'Only scorers can record scores'], 403);
+    }
+
+    $validated = $request->validate([
+        'team' => 'required|in:A,B',
+        'player' => 'required|string',
+        'action' => 'required|string|in:Free Throw,2 Points,3 Points',
+        'points' => 'required|integer|min:1|max:3',
+    ]);
+
+    // Get existing game_data
+    $gameData = $game->game_data ?? [];
+    
+    // Add the scoring event
+    $event = [
+        'team' => $validated['team'],
+        'player' => $validated['player'],
+        'action' => $validated['action'],
+        'points' => $validated['points'],
+        'timestamp' => now()->timestamp,
+    ];
+
+    if (!isset($gameData['game_events'])) {
+        $gameData['game_events'] = [];
+    }
+
+    // Add to beginning of array (newest first)
+    array_unshift($gameData['game_events'], $event);
+
+    // Update scores
+    if ($validated['team'] === 'A') {
+        $game->team1_score = ($game->team1_score ?? 0) + $validated['points'];
+    } else {
+        $game->team2_score = ($game->team2_score ?? 0) + $validated['points'];
+    }
+
+    // Save updated game
+    $game->update([
+        'game_data' => $gameData,
+        'team1_score' => $game->team1_score,
+        'team2_score' => $game->team2_score,
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Score recorded',
+        'event' => $event,
+    ]);
+}
+
+/**
+ * Record a foul action
+ * Only Scorer can call this
+ */
+public function recordFoul(Request $request, Game $game)
+{
+    if (!GameAssignmentController::canScore(auth()->user(), $game)) {
+        return response()->json(['error' => 'Only scorers can record fouls'], 403);
+    }
+
+    $validated = $request->validate([
+        'team' => 'required|in:A,B',
+        'player' => 'required|string',
+        'foul_type' => 'required|string|in:personal,shooting,technical',
+    ]);
+
+    $gameData = $game->game_data ?? [];
+
+    $event = [
+        'team' => $validated['team'],
+        'player' => $validated['player'],
+        'action' => $validated['foul_type'] . '_foul',
+        'timestamp' => now()->timestamp,
+    ];
+
+    if (!isset($gameData['game_events'])) {
+        $gameData['game_events'] = [];
+    }
+
+    array_unshift($gameData['game_events'], $event);
+
+    // Update team fouls
+    if ($validated['team'] === 'A') {
+        $gameData['team1_fouls'] = ($gameData['team1_fouls'] ?? 0) + 1;
+    } else {
+        $gameData['team2_fouls'] = ($gameData['team2_fouls'] ?? 0) + 1;
+    }
+
+    $game->update(['game_data' => $gameData]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Foul recorded',
+        'event' => $event,
+    ]);
+}
+
+/**
+ * Record an assist (stat action)
+ * Only Stat-Keeper can call this
+ */
+public function recordAssist(Request $request, Game $game)
+{
+    if (!GameAssignmentController::canRecordStats(auth()->user(), $game)) {
+        return response()->json(['error' => 'Only stat-keepers can record stats'], 403);
+    }
+
+    $validated = $request->validate([
+        'team' => 'required|in:A,B',
+        'player' => 'required|string',
+    ]);
+
+    $gameData = $game->game_data ?? [];
+
+    $event = [
+        'team' => $validated['team'],
+        'player' => $validated['player'],
+        'action' => 'Assist',
+        'timestamp' => now()->timestamp,
+        'recorded_by' => 'stat_keeper',
+    ];
+
+    if (!isset($gameData['game_events'])) {
+        $gameData['game_events'] = [];
+    }
+
+    array_unshift($gameData['game_events'], $event);
+
+    $game->update(['game_data' => $gameData]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Assist recorded',
+        'event' => $event,
+    ]);
+}
+
+/**
+ * Record a steal (stat action)
+ * Only Stat-Keeper can call this
+ */
+public function recordSteal(Request $request, Game $game)
+{
+    if (!GameAssignmentController::canRecordStats(auth()->user(), $game)) {
+        return response()->json(['error' => 'Only stat-keepers can record stats'], 403);
+    }
+
+    $validated = $request->validate([
+        'team' => 'required|in:A,B',
+        'player' => 'required|string',
+    ]);
+
+    $gameData = $game->game_data ?? [];
+
+    $event = [
+        'team' => $validated['team'],
+        'player' => $validated['player'],
+        'action' => 'Steal',
+        'timestamp' => now()->timestamp,
+        'recorded_by' => 'stat_keeper',
+    ];
+
+    if (!isset($gameData['game_events'])) {
+        $gameData['game_events'] = [];
+    }
+
+    array_unshift($gameData['game_events'], $event);
+
+    $game->update(['game_data' => $gameData]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Steal recorded',
+        'event' => $event,
+    ]);
+}
+
+/**
+ * Record a rebound (stat action)
+ * Only Stat-Keeper can call this
+ */
+public function recordRebound(Request $request, Game $game)
+{
+    if (!GameAssignmentController::canRecordStats(auth()->user(), $game)) {
+        return response()->json(['error' => 'Only stat-keepers can record stats'], 403);
+    }
+
+    $validated = $request->validate([
+        'team' => 'required|in:A,B',
+        'player' => 'required|string',
+    ]);
+
+    $gameData = $game->game_data ?? [];
+
+    $event = [
+        'team' => $validated['team'],
+        'player' => $validated['player'],
+        'action' => 'Rebound',
+        'timestamp' => now()->timestamp,
+        'recorded_by' => 'stat_keeper',
+    ];
+
+    if (!isset($gameData['game_events'])) {
+        $gameData['game_events'] = [];
+    }
+
+    array_unshift($gameData['game_events'], $event);
+
+    $game->update(['game_data' => $gameData]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Rebound recorded',
+        'event' => $event,
+    ]);
+}
+
+/**
+ * Record a block (stat action)
+ * Only Stat-Keeper can call this
+ */
+public function recordBlock(Request $request, Game $game)
+{
+    if (!GameAssignmentController::canRecordStats(auth()->user(), $game)) {
+        return response()->json(['error' => 'Only stat-keepers can record stats'], 403);
+    }
+
+    $validated = $request->validate([
+        'team' => 'required|in:A,B',
+        'player' => 'required|string',
+    ]);
+
+    $gameData = $game->game_data ?? [];
+
+    $event = [
+        'team' => $validated['team'],
+        'player' => $validated['player'],
+        'action' => 'blocks',
+        'timestamp' => now()->timestamp,
+        'recorded_by' => 'stat_keeper',
+    ];
+
+    if (!isset($gameData['game_events'])) {
+        $gameData['game_events'] = [];
+    }
+
+    array_unshift($gameData['game_events'], $event);
+
+    $game->update(['game_data' => $gameData]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Block recorded',
+        'event' => $event,
+    ]);
+}
+
+/**
+ * Record timeout action
+ * Only Scorer can call this
+ */
+public function recordTimeout(Request $request, Game $game)
+{
+    if (!GameAssignmentController::canScore(auth()->user(), $game)) {
+        return response()->json(['error' => 'Only scorers can record timeouts'], 403);
+    }
+
+    $validated = $request->validate([
+        'team' => 'required|in:A,B',
+    ]);
+
+    $gameData = $game->game_data ?? [];
+
+    $event = [
+        'team' => $validated['team'],
+        'player' => 'TEAM',
+        'action' => 'Timeout',
+        'timestamp' => now()->timestamp,
+    ];
+
+    if (!isset($gameData['game_events'])) {
+        $gameData['game_events'] = [];
+    }
+
+    array_unshift($gameData['game_events'], $event);
+
+    // Update timeouts count
+    if ($validated['team'] === 'A') {
+        $gameData['team1_timeouts'] = ($gameData['team1_timeouts'] ?? 0) + 1;
+    } else {
+        $gameData['team2_timeouts'] = ($gameData['team2_timeouts'] ?? 0) + 1;
+    }
+
+    $game->update(['game_data' => $gameData]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Timeout recorded',
+        'event' => $event,
+    ]);
+}
+
+/**
+ * Record substitution
+ * Only Scorer can call this
+ */
+public function recordSubstitution(Request $request, Game $game)
+{
+    if (!GameAssignmentController::canScore(auth()->user(), $game)) {
+        return response()->json(['error' => 'Only scorers can record substitutions'], 403);
+    }
+
+    $validated = $request->validate([
+        'team' => 'required|in:A,B',
+        'player_out' => 'required|string',
+        'player_in' => 'required|string',
+    ]);
+
+    $gameData = $game->game_data ?? [];
+
+    $event = [
+        'team' => $validated['team'],
+        'player' => $validated['player_out'] . '→' . $validated['player_in'],
+        'action' => 'Substitution',
+        'timestamp' => now()->timestamp,
+    ];
+
+    if (!isset($gameData['game_events'])) {
+        $gameData['game_events'] = [];
+    }
+
+    array_unshift($gameData['game_events'], $event);
+
+    $game->update(['game_data' => $gameData]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Substitution recorded',
+        'event' => $event,
+    ]);
+}
 
 }
