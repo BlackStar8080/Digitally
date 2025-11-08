@@ -1178,6 +1178,25 @@ body {
                     </div>
                 </div>
 
+               <!-- Show invite link only in separated mode - OUTSIDE FORM -->
+                <!-- Show invite link only in separated mode - OUTSIDE FORM -->
+        <div id="generateInviteContainer" style="margin-bottom: 1rem; display: none;">
+            <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                <strong>⚠️ Before starting:</strong> Generate and share the invite link with your stat-keeper
+            </div>
+            <a href="{{ route('games.invite', $game) }}" 
+            class="btn btn-warning btn-lg" 
+            id="generateInviteBtn"
+            style="display: block; width: 100%; text-align: center;"
+            target="_blank">
+                <i class="bi bi-qr-code"></i> Generate & Share Invite Link
+            </a>
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                Open this in a new tab, generate the QR code, and share it with your stat-keeper.
+                Come back here after they've joined.
+            </p>
+        </div>
+
                 <form action="{{ route('games.start-live', $game) }}" method="POST" id="startGameForm">
                     @csrf
 
@@ -1187,28 +1206,10 @@ body {
                     <input type="hidden" name="team1_starters" id="team1_starters_input">
                     <input type="hidden" name="team2_starters" id="team2_starters_input">
 
-                    <!-- Show invite link only in separated mode -->
-                    <div id="generateInviteContainer" style="margin-bottom: 1rem; display: none;">
-                        <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
-                            <strong>⚠️ Before starting:</strong> Generate and share the invite link with your stat-keeper
-                        </div>
-                        <a href="{{ route('games.invite', $game) }}" 
-                        class="btn btn-warning btn-lg btn-block" 
-                        id="generateInviteBtn"
-                        target="_blank">
-                            <i class="bi bi-qr-code"></i> Generate & Share Invite Link
-                        </a>
-                        <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
-                            Open this in a new tab, generate the QR code, and share it with your stat-keeper.
-                            Come back here after they've joined.
-                        </p>
-                    </div>
-
                     <div id="connectedUsers" style="margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
                         <strong>Connected Users:</strong>
                         <div id="usersList"></div>
                     </div>
-
 
                     <button type="submit" class="start-game-btn" id="startGameBtn" disabled>
                         <i class="bi bi-play-circle-fill"></i>

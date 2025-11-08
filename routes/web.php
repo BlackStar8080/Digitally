@@ -86,8 +86,7 @@ Route::middleware(['auth.or.guest'])->group(function () { // ✅ Changed from 'a
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth.or.guest', 'guest.restrict'])->group(function () { // ✅ Changed here too
-
+Route::middleware(['auth.or.guest', 'guest.restrict'])->group(function () {
     
     // Reports (completely blocked for guests)
     Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
@@ -114,6 +113,14 @@ Route::middleware(['auth.or.guest', 'guest.restrict'])->group(function () { // �
     Route::post('/games/{game}/officials', [GameController::class, 'updateOfficials'])->name('games.update-officials');
     Route::post('/games/{game}/start-live', [GameController::class, 'startLive'])->name('games.start-live');
     Route::get('/prepare', [GameController::class, 'index'])->name('games.prepare.index');
+    
+    // ✅ SPECIFIC GAME ROUTES - MUST BE BEFORE /games/{game}/live
+    Route::post('/games/{game}/generate-invite', [GameAssignmentController::class, 'generateInvite'])->name('games.generate-invite');
+    Route::get('/games/{game}/invite', [GameAssignmentController::class, 'showInvite'])->name('games.invite');
+    Route::get('/games/{game}/join', [GameAssignmentController::class, 'join'])->name('games.join');
+    Route::get('/games/{game}/connected-users', [GameAssignmentController::class, 'getConnectedUsers'])->name('games.connected-users');
+    
+    // ✅ GENERAL GAME ROUTES - AFTER SPECIFIC ROUTES
     Route::get('/games/{game}/live', [GameController::class, 'live'])->name('games.live');
     Route::patch('/games/{game}/update-schedule', [GameController::class, 'updateSchedule'])->name('games.update-schedule');
     Route::get('/games/{game}/volleyball-live', [GameController::class, 'volleyballLive'])->name('games.volleyball-live');
@@ -143,18 +150,11 @@ Route::middleware(['auth.or.guest', 'guest.restrict'])->group(function () { // �
     Route::post('/tournaments/{tournament}/teams', [BracketController::class, 'assignTeam'])->name('tournaments.assign-team');
     Route::delete('/tournaments/{tournament}/teams/{team}', [BracketController::class, 'removeTeam'])->name('tournaments.remove-team');
     Route::post('/tournaments/{tournament}/assign-teams', [TournamentController::class, 'assignTeams'])->name('tournaments.assign-teams');
-    
-    // Game Assignment Routes
-    Route::post('/games/{game}/generate-invite', [GameAssignmentController::class, 'generateInvite'])->name('games.generate-invite');
-    Route::get('/games/{game}/join', [GameAssignmentController::class, 'join'])->name('games.join');
-    Route::get('/games/{game}/connected-users', [GameAssignmentController::class, 'getConnectedUsers'])->name('games.connected-users');
-    Route::get('/games/{game}/invite', [GameAssignmentController::class, 'showInvite'])->name('games.invite');
-
-  
 });
 
+// ✅ API Routes - Outside guest.restrict middleware
 Route::middleware(['auth'])->group(function () {
     Route::get('/api/game-state/{game}', [GameController::class, 'getGameState']);
     Route::post('/api/update-game-state/{game}', [GameController::class, 'updateGameState']);
-    Route::get('/api/connected-users/{game}', [GameController::class, 'getConnectedUsers']);
+    Route::get('/api/connected-users/{game}', [GameAssignmentController::class, 'getConnectedUsers']);
 });

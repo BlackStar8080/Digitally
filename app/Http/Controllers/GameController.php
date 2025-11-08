@@ -222,10 +222,6 @@ public function startLive(Request $request, Game $game)
 
         // Get stored player data
         $team1Data = json_decode($game->team1_selected_players, true) ?? [];
-        // ... rest of method stays the same
-
-        // Get stored player data
-        $team1Data = json_decode($game->team1_selected_players, true) ?? [];
         $team2Data = json_decode($game->team2_selected_players, true) ?? [];
 
         // Load the actual player data
