@@ -1342,24 +1342,27 @@ public function selectVolleyballMVP(Request $request, Game $game)
 
 
     public function getGameState(Game $game)
-    {
-        // Check if user has access to this game
-        if (!auth()->check() || !GameAssignmentController::hasActiveRole(auth()->user(), $game)) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
-
-        return response()->json([
-            'gameId' => $game->id,
-            'scoreA' => $game->team1_score ?? 0,
-            'scoreB' => $game->team2_score ?? 0,
-            'foulsA' => $game->game_data['team1_fouls'] ?? 0,
-            'foulsB' => $game->game_data['team2_fouls'] ?? 0,
-            'timeoutsA' => $game->game_data['team1_timeouts'] ?? 0,
-            'timeoutsB' => $game->game_data['team2_timeouts'] ?? 0,
-            'events' => json_decode($game->game_data['game_events'] ?? '[]', true),
-            'last_update' => $game->updated_at->timestamp,
-        ]);
+{
+    // Check if user has access to this game
+    if (!auth()->check() || !GameAssignmentController::hasActiveRole(auth()->user(), $game)) {
+        return response()->json(['error' => 'Unauthorized'], 403);
     }
+
+    // ✅ FIX: game_data is already an array, don't json_decode it
+    $gameData = $game->game_data ?? [];
+    
+    return response()->json([
+        'gameId' => $game->id,
+        'scoreA' => $game->team1_score ?? 0,
+        'scoreB' => $game->team2_score ?? 0,
+        'foulsA' => $gameData['team1_fouls'] ?? 0,
+        'foulsB' => $gameData['team2_fouls'] ?? 0,
+        'timeoutsA' => $gameData['team1_timeouts'] ?? 0,
+        'timeoutsB' => $gameData['team2_timeouts'] ?? 0,
+        'events' => $gameData['game_events'] ?? [],  // ✅ No json_decode needed
+        'last_update' => $game->updated_at->timestamp,
+    ]);
+}
 
     public function updateGameState(Request $request, Game $game)
 {
