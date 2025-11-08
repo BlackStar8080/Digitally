@@ -2345,7 +2345,9 @@
             width: 16px;
             /* Fixed icon width */
             text-align: center;
-        }
+        }`
+
+        
     </style>
 @endpush
 
@@ -3324,6 +3326,7 @@
                                                                 @endif
                                                             @endif
                                                         @endif
+                                                        @if($game->status === 'completed')
                                                         @if (!session('is_guest') && isset($game) && $game)
                                                             @if ($game->isVolleyball())
                                                                 <a href="javascript:void(0);"
@@ -3339,21 +3342,19 @@
                                                                 </a>
                                                             @endif
                                                         @endif
-
-
-
-
+                                                        
 
                                                         @if ($game->isVolleyball())
                                                             <a href="{{ route('games.volleyball-box-score', $game->id) }}"
                                                                 class="box-score-btn btn btn-info">
                                                                 <i class="bi bi-table"></i> Box Score
                                                             </a>
-                                                        @else
+                                                         @else
                                                             <a href="{{ route('games.box-score', $game->id) }}"
                                                                 class="box-score-btn btn btn-info">
                                                                 <i class="bi bi-table"></i> Box Score
                                                             </a>
+                                                        @endif
                                                         @endif
                                                     </div>
                                                 </div>
@@ -4204,58 +4205,35 @@
     let placedTeamsData = new Map();
 
     function toggleBracketCustomizer(bracketId) {
-        const customizer = document.getElementById(`bracketCustomizer${bracketId}`);
-        // Find the actions container for this bracket (the buttons we want hidden while customizing)
-        const actions = document.getElementById(`bracketActions${bracketId}`);
+    const customizer = document.getElementById(`bracketCustomizer${bracketId}`);
+    const actions = document.getElementById(`bracketActions${bracketId}`);
+    const card = document.getElementById(`bracketCard${bracketId}`);
+    const header = document.getElementById(`bracketHeader${bracketId}`);
+    const emptyState = document.getElementById(`bracketEmpty${bracketId}`);
 
-        const card = document.getElementById(`bracketCard${bracketId}`);
-        const header = document.getElementById(`bracketHeader${bracketId}`);
-        const emptyState = document.getElementById(`bracketEmpty${bracketId}`);
+    if (customizer.style.display === 'none' || customizer.style.display === '') {
+        // Show customizer
+        customizer.style.display = 'block';
 
-        if (customizer.style.display === 'none' || customizer.style.display === '') {
-            // Show the customizer in the normal document flow (not fixed/modal)
-            customizer.style.display = 'block';
+        // Hide header and actions
+        if (header) header.style.display = 'none';
+        if (actions) actions.style.display = 'none';
+        if (emptyState) emptyState.style.display = 'none';
 
-            // Hide the header, actions, and empty-state so they don't appear beside the customizer
-            if (header) {
-                header.style.display = 'none';
-            }
-            if (actions) {
-                actions.style.display = 'none';
-            }
-            if (emptyState) {
-                emptyState.style.display = 'none';
-            }
+        // Mark card as customizing for CSS fallback
+        if (card) card.classList.add('customizing');
 
-            // Mark the parent card as customizing to apply CSS fail-safes
-            if (card) {
-                card.classList.add('customizing');
-            }
-
-            initializeBracketCustomizer(bracketId);
-
-            // Ensure it's visible to the user
-            customizer.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        } else {
-            // Hide the customizer and restore the actions container
-            customizer.style.display = 'none';
-            if (actions) {
-                actions.style.display = ''; // let CSS decide (restores flex)
-            }
-            if (header) {
-                header.style.display = '';
-            }
-            if (emptyState) {
-                emptyState.style.display = '';
-            }
-            if (card) {
-                card.classList.remove('customizing');
-            }
-        }
+        initializeBracketCustomizer(bracketId);
+        customizer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+        // Hide customizer
+        customizer.style.display = 'none';
+        if (actions) actions.style.display = '';
+        if (header) header.style.display = '';
+        if (emptyState) emptyState.style.display = '';
+        if (card) card.classList.remove('customizing');
     }
+}
 
     function initializeBracketCustomizer(bracketId) {
         if (!placedTeamsData.has(bracketId)) {
@@ -4752,7 +4730,6 @@
                             scheduleModal.show();
                         }
                     });
-
                     // ===== SCHEDULE EDITING - SIMPLE VERSION =====
                     let currentScheduleGameId = null;
                     let scheduleModalInstance = null;
