@@ -18,6 +18,12 @@
             overflow: hidden;
             max-height: 100vh;
         }
+        .foul-dot.tech {
+    background: #9C27B0;
+    border-color: #7B1FA2;
+    box-shadow: 0 0 4px rgba(156, 39, 176, 0.6);
+}
+
 
 
         /* Top Scoreboard Bar */
@@ -1749,6 +1755,37 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+
+        /* Technical Foul Indicator - Violet Circle */
+.tech-foul-indicator {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #9C27B0; /* Violet color */
+    border: 2px solid #7B1FA2;
+    box-shadow: 0 0 8px rgba(156, 39, 176, 0.6);
+    z-index: 10;
+    animation: techPulse 2s infinite;
+}
+
+@keyframes techPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+/* Make player card position relative to contain the indicator */
+.player-card {
+    position: relative; /* Add this if not already present */
+}
     </style>
 </head>
 
@@ -3599,12 +3636,13 @@ document.addEventListener('DOMContentLoaded', applyRoleRestrictions);
             // derive last name: prefer explicit last_name, fallback to last word of name
             const lastName = ((player.last_name || player.name || '') + '').trim().split(/\s+/).slice(-1)[0] || '';
 
-            card.innerHTML = `
-        <div class="player-number">${player.number || '00'}</div>
-        <div class="player-lastname">${lastName}</div>
-        <div class="player-position">${player.position || 'P'}</div>
-        ${createFoulIndicator(player.fouls)}
-    `;
+           card.innerHTML = `
+                ${player.technicalFouls > 0 ? '<div class="tech-foul-indicator"></div>' : ''}
+                <div class="player-number">${player.number || '00'}</div>
+                <div class="player-lastname">${lastName}</div>
+                <div class="player-position">${player.position || 'P'}</div>
+                ${createFoulIndicator(player.fouls)}
+            `;
 
             // Only add click listener if player is not fouled out
             if (player.fouls < 5) {
@@ -4279,29 +4317,39 @@ document.addEventListener('DOMContentLoaded', applyRoleRestrictions);
         }
 
         // Add player foul
-        function addPlayerFoul(team, playerNumber) {
-            const playerArrays = team === 'A' ? [...activePlayers.A, ...benchPlayers.A] : [...activePlayers.B, ...
-                benchPlayers.B
-            ];
+        function addPlayerFoul(team, playerNumber, foulType = "personal") {
+    const playerArrays = team === 'A'
+        ? [...activePlayers.A, ...benchPlayers.A]
+        : [...activePlayers.B, ...benchPlayers.B];
 
-            const player = playerArrays.find(p => (p.number || '00').toString() === playerNumber.toString());
+    const player = playerArrays.find(p => (p.number || '00').toString() === playerNumber.toString());
 
-            if (player) {
-                player.fouls++;
-                console.log(`Player ${playerNumber} now has ${player.fouls} fouls`);
+    if (player) {
+        if (!player.fouls) player.fouls = 0;
+        if (!player.techFouls) player.techFouls = 0;
 
-                // Check for warnings and foul-outs
-                if (player.fouls === 4) {
-                    showFoulWarning(player, team);
-                } else if (player.fouls === 5) {
-                    handleFoulOut(player, team);
-                }
-
-                // Update visual display
-                updateMainRoster();
-                updateSubstitutionDisplay();
-            }
+        if (foulType === "technical") {
+            player.techFouls++;
+            console.log(`🟣 Player ${playerNumber} got a TECHNICAL foul (${player.techFouls})`);
+        } else {
+            player.fouls++;
+            console.log(`🔴 Player ${playerNumber} now has ${player.fouls} fouls`);
         }
+
+        // Check for warnings and foul-outs (only count total fouls)
+        const totalFouls = player.fouls + player.techFouls;
+        if (totalFouls === 4) {
+            showFoulWarning(player, team);
+        } else if (totalFouls === 5) {
+            handleFoulOut(player, team);
+        }
+
+        // Update visual display
+        updateMainRoster();
+        updateSubstitutionDisplay();
+    }
+}
+
 
         // Show 4th foul warning
         function showFoulWarning(player, team) {

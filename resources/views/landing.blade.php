@@ -1390,6 +1390,33 @@ html {
             </button>
         </div>
     </header>
+    @if(session()->has('pending_game_join'))
+        <div style="background: linear-gradient(135deg, #4CAF50, #45a049); color: white; padding: 16px; text-align: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: slideDown 0.3s ease-out;">
+            <div style="max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 12px;">
+                <i class="bi bi-basketball" style="font-size: 24px;"></i>
+                <div>
+                    <strong style="font-size: 16px; display: block;">🎯 Joining Game as Stat-Keeper</strong>
+                    <span style="font-size: 14px; opacity: 0.95;">{{ session('pending_game_join.game_name') }}</span>
+                    <small style="display: block; margin-top: 4px; font-size: 13px; opacity: 0.9;">
+                        Please log in or register below to continue
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <style>
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        </style>
+        @endif
 
     <!-- Modal -->
     <div class="modal fade login-modal" id="loginModal" tabindex="-1" aria-hidden="true">
@@ -1409,6 +1436,18 @@ html {
                     <div class="form-container">
                         <!-- Login Tab -->
                         <div id="loginTab" class="tab-content active">
+                            @if(session()->has('pending_game_join'))
+                            <div style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(69, 160, 73, 0.1)); border: 2px solid #4CAF50; border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: center;">
+                                <div style="color: #4CAF50; font-size: 18px; margin-bottom: 8px;">
+                                    <i class="bi bi-basketball"></i>
+                                    <strong>Join Game as Stat-Keeper</strong>
+                                </div>
+                                <div style="color: var(--text-dark); font-weight: 600; margin-bottom: 4px;">
+                                    {{ session('pending_game_join.game_name') }}
+                                </div>
+                                <small style="color: var(--text-muted);">Log in to continue to the game</small>
+                            </div>
+                            @endif
                             @if ($errors->any() && session('form_type') === 'login')
                                 <div class="error-list">
                                     <ul>
@@ -1439,6 +1478,18 @@ html {
                         <!-- Register Tab -->
                         <!-- Register Tab -->
 <div id="registerTab" class="tab-content" style="display: none;">
+    @if(session()->has('pending_game_join'))
+    <div style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(69, 160, 73, 0.1)); border: 2px solid #4CAF50; border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: center;">
+        <div style="color: #4CAF50; font-size: 18px; margin-bottom: 8px;">
+            <i class="bi bi-basketball"></i>
+            <strong>Join Game as Stat-Keeper</strong>
+        </div>
+        <div style="color: var(--text-dark); font-weight: 600; margin-bottom: 4px;">
+            {{ session('pending_game_join.game_name') }}
+        </div>
+        <small style="color: var(--text-muted);">Create an account to continue to the game</small>
+    </div>
+    @endif
     @if ($errors->any() && session('form_type') === 'register')
         <div class="error-list">
             <ul>
@@ -1909,5 +1960,15 @@ html {
             });
         })();
     </script>
+
+    <script>
+    @if(session('join_prompt'))
+        // Auto-open login modal when user needs to join a game
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+            loginModal.show();
+        });
+    @endif
+</script>
 </body>
 </html>

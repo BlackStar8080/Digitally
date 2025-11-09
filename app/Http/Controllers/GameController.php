@@ -199,76 +199,73 @@ public function startLive(Request $request, Game $game)
     }
 
 
-    public function live(Request $request, Game $game)  // ✅ ADD Request parameter
-    {
-        // Ensure game is in progress
-        if ($game->status !== 'in_progress') {
-            return redirect()->back()->with('error', 'Game has not been started yet!');
-        }
 
-        // ✅ NEW: Check for explicit role parameter (passed from join)
-        $requestedRole = $request->query('role');
-        
-        if ($requestedRole && in_array($requestedRole, ['scorer', 'stat_keeper'])) {
-            // Use the explicitly requested role
-            $userRole = $requestedRole;
-        } else {
-            // Fallback to detecting from database
-            $userRole = 'viewer';
-            if (auth()->check()) {
-                $userRole = GameAssignmentController::getUserRole(auth()->user(), $game) ?? 'viewer';
-            }
-        }
 
-        // Get stored player data
-        $team1Data = json_decode($game->team1_selected_players, true) ?? [];
-        $team2Data = json_decode($game->team2_selected_players, true) ?? [];
-
-        // Load the actual player data
-        $game->load(['team1.players', 'team2.players']);
-        
-        // Extract roster and starter IDs
-        $team1RosterIds = $team1Data['roster'] ?? [];
-        $team2RosterIds = $team2Data['roster'] ?? [];
-        $team1StarterIds = $team1Data['starters'] ?? [];
-        $team2StarterIds = $team2Data['starters'] ?? [];
-
-        // Filter players based on roster selection
-        $team1Players = $game->team1->players->filter(function($player) use ($team1RosterIds) {
-            return in_array($player->id, $team1RosterIds);
-        });
-        
-        $team2Players = $game->team2->players->filter(function($player) use ($team2RosterIds) {
-            return in_array($player->id, $team2RosterIds);
-        });
-
-        // Convert IDs to strings for JavaScript comparison
-        $team1Roster = array_map('strval', $team1RosterIds);
-        $team2Roster = array_map('strval', $team2RosterIds);
-        $team1Starters = array_map('strval', $team1StarterIds);
-        $team2Starters = array_map('strval', $team2StarterIds);
-
-        // Debug output (remove this after testing)
-        \Log::info('Live Game Data:', [
-            'team1Players_count' => $team1Players->count(),
-            'team2Players_count' => $team2Players->count(),
-            'team1Roster' => $team1Roster,
-            'team1Starters' => $team1Starters,
-            'team2Roster' => $team2Roster,
-            'team2Starters' => $team2Starters,
-        ]);
-
-        return view('games.live-scoresheet', compact(
-            'game', 
-            'team1Players', 
-            'team2Players',
-            'team1Roster',
-            'team2Roster', 
-            'team1Starters', 
-            'team2Starters',
-            'userRole'
-        ));
+public function live(Request $request, Game $game)
+{
+    // Ensure game is in progress
+    if ($game->status !== 'in_progress') {
+        return redirect()->back()->with('error', 'Game has not been started yet!');
     }
+
+    // ✅ PRIORITY 1: Check explicit role parameter from URL
+    $requestedRole = $request->query('role');
+    
+    if ($requestedRole && in_array($requestedRole, ['scorer', 'stat_keeper'])) {
+        // Use the explicitly requested role from URL
+        $userRole = $requestedRole;
+        \Log::info("Live: Using explicit role from URL: $userRole");
+    } else {
+        // PRIORITY 2: Get role from database if not in URL
+        $userRole = 'viewer';
+        if (auth()->check()) {
+            $userRole = GameAssignmentController::getUserRole(auth()->user(), $game) ?? 'viewer';
+            \Log::info("Live: Got role from database: $userRole for user " . auth()->id());
+        }
+    }
+
+    \Log::info("Live method - Final userRole: $userRole for game {$game->id}");
+    
+
+    // Get stored player data
+    $team1Data = json_decode($game->team1_selected_players, true) ?? [];
+    $team2Data = json_decode($game->team2_selected_players, true) ?? [];
+
+    // Load the actual player data
+    $game->load(['team1.players', 'team2.players']);
+    
+    // Extract roster and starter IDs
+    $team1RosterIds = $team1Data['roster'] ?? [];
+    $team2RosterIds = $team2Data['roster'] ?? [];
+    $team1StarterIds = $team1Data['starters'] ?? [];
+    $team2StarterIds = $team2Data['starters'] ?? [];
+
+    // Filter players based on roster selection
+    $team1Players = $game->team1->players->filter(function($player) use ($team1RosterIds) {
+        return in_array($player->id, $team1RosterIds);
+    });
+    
+    $team2Players = $game->team2->players->filter(function($player) use ($team2RosterIds) {
+        return in_array($player->id, $team2RosterIds);
+    });
+
+    // Convert IDs to strings for JavaScript comparison
+    $team1Roster = array_map('strval', $team1RosterIds);
+    $team2Roster = array_map('strval', $team2RosterIds);
+    $team1Starters = array_map('strval', $team1StarterIds);
+    $team2Starters = array_map('strval', $team2StarterIds);
+
+    return view('games.live-scoresheet', compact(
+        'game', 
+        'team1Players', 
+        'team2Players',
+        'team1Roster',
+        'team2Roster', 
+        'team1Starters', 
+        'team2Starters',
+        'userRole'  // ✅ PASS userRole TO VIEW
+    ));
+}
 
     /**
  * Update game schedule

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use App\Models\RegistrationCode; // ✅ Add this
+use App\Models\RegistrationCode;
 
 class AuthController extends Controller
 {
@@ -22,6 +22,20 @@ class AuthController extends Controller
             // ✅ IMPORTANT: Clear guest session when real user logs in
             session()->forget('is_guest');
             session()->forget('guest_name');
+            
+            // ✅ NEW: CHECK IF USER WAS TRYING TO JOIN A GAME
+            if (session()->has('pending_game_join')) {
+                $joinData = session('pending_game_join');
+                
+                // Clear the session
+                session()->forget('pending_game_join');
+                
+                // Redirect back to join route with token
+                return redirect()->route('games.join', [
+                    'game' => $joinData['game_id'],
+                    'token' => $joinData['token']
+                ]);
+            }
             
             return redirect()->route('dashboard')->with('success', 'Logged in successfully');
         }
@@ -43,10 +57,10 @@ class AuthController extends Controller
             ],
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
-            'registration_code' => 'required|string', // ✅ Add this
+            'registration_code' => 'required|string',
         ], [
             'name.regex' => 'The name must not contain special characters.',
-            'registration_code.required' => 'Registration code is required.', // ✅ Add this
+            'registration_code.required' => 'Registration code is required.',
         ]);
 
         // ✅ NEW: Validate registration code
@@ -88,6 +102,20 @@ class AuthController extends Controller
         // ✅ IMPORTANT: Clear guest session when user registers
         session()->forget('is_guest');
         session()->forget('guest_name');
+
+        // ✅ NEW: CHECK IF USER WAS TRYING TO JOIN A GAME
+        if (session()->has('pending_game_join')) {
+            $joinData = session('pending_game_join');
+            
+            // Clear the session
+            session()->forget('pending_game_join');
+            
+            // Redirect back to join route with token
+            return redirect()->route('games.join', [
+                'game' => $joinData['game_id'],
+                'token' => $joinData['token']
+            ]);
+        }
 
         return redirect()->route('dashboard')->with('success', 'Account created and logged in successfully');
     }
