@@ -534,40 +534,39 @@
             min-height: 0;
         }
 
-        /* Roster Sections */
-        .roster-section {
-            background: #2d2d2d;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+       .roster-section {
+    background: #2d2d2d;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0; /* ✅ ADD THIS */
+}
 
-        .roster-header {
-            padding: 16px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
+.roster-header {
+    padding: 16px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    flex-shrink: 0;
+}
 
-        .roster-header.team-a {
-            background: #c33;
-        }
+.roster-header.team-a {
+    background: #c33;
+}
 
-        .roster-header.team-b {
-            background: #339;
-        }
+.roster-header.team-b {
+    background: #339;
+}
 
-        .players-grid {
-            display: grid;
-            /* 3 columns on wide screens */
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            padding: 16px;
-            overflow-y: auto;
-            min-height: 0;
-
-        }
+.players-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 16px;
+    overflow-y: auto;
+    flex: 1; /* ✅ CHANGE FROM min-height: 0 to flex: 1 */
+    min-height: 0; /* ✅ KEEP THIS TOO */
+}
 
         /* Responsive fallbacks: 2 columns on medium, 1 column on small */
         @media (max-width: 900px) {
@@ -1429,16 +1428,20 @@
     </div>
 
     <!-- Action Buttons -->
-    <button class="action-btn btn-kill" data-action="kill">Kill</button>
-    <button class="action-btn btn-ace" data-action="ace">Ace</button>
-    <button class="action-btn btn-block" id="blockBtn">Block</button>
-    <button class="action-btn btn-dig" data-action="dig">Dig</button>
-    <button class="action-btn btn-assist" data-action="assist">Set</button>
-    <button class="action-btn btn-error" data-action="error">Error</button>
-    <button class="action-btn btn-penalty" id="penaltyBtn">🃏 Penalty</button>
-    <button class="action-btn btn-timeout" id="timeoutBtn">Timeout</button>
-    <button class="action-btn btn-substitution" id="substitutionBtn">Sub</button>
-    <button class="action-btn btn-undo" id="undoBtn">↶ Undo</button>
+<div class="actions-section">
+    <div class="actions-grid">
+        <button class="action-btn btn-kill" data-action="kill">Kill</button>
+        <button class="action-btn btn-ace" data-action="ace">Ace</button>
+        <button class="action-btn btn-block" id="blockBtn">Block</button>
+        <button class="action-btn btn-dig" data-action="dig">Dig</button>
+        <button class="action-btn btn-assist" data-action="assist">Set</button>
+        <button class="action-btn btn-error" data-action="error">Error</button>
+        <button class="action-btn btn-penalty" id="penaltyBtn">🃏 Penalty</button>
+        <button class="action-btn btn-timeout" id="timeoutBtn">Timeout</button>
+        <button class="action-btn btn-substitution" id="substitutionBtn">Sub</button>
+        <button class="action-btn btn-undo" id="undoBtn">↶ Undo</button>
+    </div>
+</div>
 
     <!-- Team Selection Modal -->
     <div class="modal" id="teamSelectModal">
@@ -2787,25 +2790,7 @@ function handlePenaltyCardDrop(team, cardType) {
             loadHotkeys();
         });
 
-        function renderPlayers() {
-            const playersAGrid = document.getElementById('playersA');
-            const playersBGrid = document.getElementById('playersB');
-            playersAGrid.innerHTML = '';
-            playersBGrid.innerHTML = '';
-
-            const activePlayersA = gameData.team1.players.slice(0, 6);
-            const activePlayersB = gameData.team2.players.slice(0, 6);
-
-            activePlayersA.forEach(player => {
-                const card = createPlayerCard(player, 'A');
-                playersAGrid.appendChild(card);
-            });
-
-            activePlayersB.forEach(player => {
-                const card = createPlayerCard(player, 'B');
-                playersBGrid.appendChild(card);
-            });
-        }
+        
 
         function createPlayerCard(player, team) {
             const card = document.createElement('div');
