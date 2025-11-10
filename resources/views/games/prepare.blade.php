@@ -974,7 +974,7 @@
                                             <p class="staff-assigned">
                                                 <i
                                                     class="bi bi-{{ $game->team1->coach_name ? 'check-circle text-success' : 'exclamation-circle text-warning' }}"></i>
-                                                Coach Status:
+                                                Coach Statuses:
                                                 <strong>{{ $game->team1->coach_name ? 'Assigned' : 'Not Assigned' }}</strong>
                                             </p>
                                         </div>

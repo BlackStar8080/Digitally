@@ -725,6 +725,101 @@
             font-size: 16px;
         }
 
+         /* ✅ ADD: Block Type Modal Styles */
+        .block-type-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .block-type-modal.show {
+            display: flex;
+        }
+
+        .block-type-content {
+            background: #2d2d2d;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .block-type-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #9C27B0;
+        }
+
+        .block-type-subtitle {
+            font-size: 16px;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .block-type-options {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .block-type-btn {
+            padding: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border: 3px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .block-type-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-kill-block {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .btn-kill-block:hover {
+            border-color: #4CAF50;
+        }
+
+        .btn-regular-block {
+            background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+            color: white;
+        }
+
+        .btn-regular-block:hover {
+            border-color: #9C27B0;
+        }
+
+        btn-yellow-card {
+            background: linear-gradient(135deg, #FDD835 0%, #F9A825 100%);
+            color: #000;
+            font-weight: 800;
+        }
+
+        .btn-red-card {
+            background: linear-gradient(135deg, #E53935 0%, #C62828 100%);
+            color: white;
+            font-weight: 800;
+        }
+
         /* Action Buttons */
         .actions-section {
             background: #2d2d2d;
@@ -1121,12 +1216,14 @@
     <div class="actions-grid">
         <button class="action-btn btn-kill" data-action="kill">Kill</button>
         <button class="action-btn btn-ace" data-action="ace">Ace</button>
-        <button class="action-btn btn-block" data-action="block">Block</button>
+        <button class="action-btn btn-block" id="blockBtn">Block</button>
         <button class="action-btn btn-dig" data-action="dig">Dig</button>
         <button class="action-btn btn-assist" data-action="assist">Set</button>
         <button class="action-btn btn-error" data-action="error">Error</button>
+        <button class="action-btn btn-yellow-card" id="yellowCardBtn">⚠️ Yellow</button>
+        <button class="action-btn btn-red-card" id="redCardBtn">🟥 Red</button>
         <button class="action-btn btn-timeout" id="timeoutBtn">Timeout</button>
-        <button class="action-btn btn-substitution" id="substitutionBtn">Substitution</button>
+        <button class="action-btn btn-substitution" id="substitutionBtn">Sub</button>
         <button class="action-btn btn-undo" id="undoBtn">↶ Undo</button>
     </div>
 
@@ -1325,6 +1422,34 @@
     </div>
 </div>
 
+<!-- ✅ NEW: Block Type Selection Modal -->
+    <div class="block-type-modal" id="blockTypeModal">
+        <div class="block-type-content">
+            <div class="block-type-title">🏐 Select Block Type</div>
+            <div class="block-type-subtitle">Choose the type of block</div>
+            
+            <div class="block-type-options">
+                <button class="block-type-btn btn-kill-block" onclick="handleBlockType('kill_block')">
+                    <span>⚡</span>
+                    <div>
+                        <div>KILL BLOCK</div>
+                        <div style="font-size: 12px; opacity: 0.8;">Point scored + Block recorded</div>
+                    </div>
+                </button>
+                
+                <button class="block-type-btn btn-regular-block" onclick="handleBlockType('regular_block')">
+                    <span>🛡️</span>
+                    <div>
+                        <div>REGULAR BLOCK</div>
+                        <div style="font-size: 12px; opacity: 0.8;">Block recorded only (no point)</div>
+                    </div>
+                </button>
+            </div>
+
+            <button class="modal-btn modal-btn-secondary" onclick="closeBlockTypeModal()">Cancel</button>
+        </div>
+    </div>
+
     <script>
         // Game data from Laravel
         const gameData = {
@@ -1460,6 +1585,158 @@ function createJerseyBadge(player, team) {
 
     return badge;
 }
+
+        document.getElementById('blockBtn').addEventListener('click', function() {
+            // Show block type modal instead of immediately selecting player
+            selectedAction = 'block';
+            document.querySelectorAll('.action-btn').forEach(btn => btn.classList.remove('selected'));
+            this.classList.add('selected');
+            
+            showInstruction('Select a team first, then choose block type');
+            selectingTeam = true;
+            teamSelectCallback = handleBlockTeamSelect;
+            showTeamSelectModal('Which team made the block?');
+        });
+
+        // ✅ NEW: Handle Block Team Selection
+        function handleBlockTeamSelect(team) {
+            blockingTeam = team;
+            closeTeamSelectModal();
+            
+            // Now show block type modal
+            document.getElementById('blockTypeModal').classList.add('show');
+        }
+
+        // ✅ NEW: Handle Block Type Selection
+        function handleBlockType(blockType) {
+            pendingBlockType = blockType;
+            document.getElementById('blockTypeModal').classList.remove('show');
+            
+            // Now select player
+            selectingPlayer = true;
+            document.querySelectorAll('.player-card').forEach(card => {
+                if (card.dataset.team === blockingTeam) {
+                    card.classList.add('selecting');
+                }
+            });
+            
+            if (blockType === 'kill_block') {
+                showInstruction(`Select ${blockingTeam === 'A' ? gameData.team1.name : gameData.team2.name} player who made the KILL BLOCK (will score point)`);
+            } else {
+                showInstruction(`Select ${blockingTeam === 'A' ? gameData.team1.name : gameData.team2.name} player who made the REGULAR BLOCK (no point)`);
+            }
+        }
+
+        // ✅ NEW: Close Block Type Modal
+        function closeBlockTypeModal() {
+            document.getElementById('blockTypeModal').classList.remove('show');
+            blockingTeam = null;
+            resetSelection();
+        }
+
+        // ✅ UPDATED: Handle Player Click for Blocks
+        function handlePlayerClick(team, player) {
+            if (!selectingPlayer) return;
+
+            const playerNumber = player.number || '00';
+            
+            // Handle block action
+            if (selectedAction === 'block' && pendingBlockType) {
+                if (pendingBlockType === 'kill_block') {
+                    // Kill block: award point and record block
+                    handleScore(team, 'Kill Block', playerNumber);
+                } else {
+                    // Regular block: just record the stat
+                    logEvent(team, playerNumber, 'Block', 0);
+                }
+                
+                pendingBlockType = null;
+                blockingTeam = null;
+                resetSelection();
+                return;
+            }
+            
+            // Handle other actions (kill, ace, dig, assist)
+            if (selectedAction === 'kill' || selectedAction === 'ace' || selectedAction === 'block') {
+                handleScore(team, selectedAction, playerNumber);
+            } else if (selectedAction === 'dig' || selectedAction === 'assist') {
+                logEvent(team, playerNumber, selectedAction.charAt(0).toUpperCase() + selectedAction.slice(1), 0);
+            }
+
+            resetSelection();
+        }
+
+        // ✅ NEW: Yellow Card Handler
+        document.getElementById('yellowCardBtn').addEventListener('click', function() {
+            selectingTeam = true;
+            teamSelectCallback = handleYellowCard;
+            showTeamSelectModal('Which team receives a YELLOW CARD (warning)?');
+        });
+
+        function handleYellowCard(team) {
+            logEvent(team, 'TEAM', '⚠️ Yellow Card (Warning)', 0);
+            showNotification(`Yellow card issued to Team ${team} - WARNING`);
+            closeTeamSelectModal();
+        }
+
+        // ✅ NEW: Red Card Handler
+        document.getElementById('redCardBtn').addEventListener('click', function() {
+            selectingTeam = true;
+            teamSelectCallback = handleRedCard;
+            showTeamSelectModal('Which team receives a RED CARD (opponent scores)?');
+        });
+
+        function handleRedCard(team) {
+            const opponent = team === 'A' ? 'B' : 'A';
+            
+            // Opponent scores a point
+            if (opponent === 'A') {
+                scoreA++;
+            } else {
+                scoreB++;
+            }
+            
+            updateScoreDisplay();
+            logEvent(team, 'TEAM', '🟥 Red Card (Penalty Point)', 0);
+            logEvent(opponent, 'SYSTEM', `Point awarded (Red Card to Team ${team})`, 1);
+            
+            // Check if opponent gains serve
+            if (opponent !== serving) {
+                serving = opponent;
+                rotateTeamClockwise(opponent);
+                updateServingIndicator();
+                logEvent('GAME', 'SYSTEM', `Serve → Team ${opponent}`, 0);
+            }
+            
+            checkSetWin();
+            showNotification(`Red card issued to Team ${team} - Point awarded to Team ${opponent}`);
+            closeTeamSelectModal();
+        }
+
+        // ✅ Helper function for notifications
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #4CAF50;
+                color: white;
+                padding: 15px 30px;
+                border-radius: 10px;
+                font-weight: bold;
+                z-index: 10001;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                animation: fadeIn 0.3s;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 3000);
+        }
 
 // Set the current server (choose which team serves and which player)
 function setServer(team, playerId) {

@@ -132,71 +132,89 @@ class GameController extends Controller
 
 
 public function startLive(Request $request, Game $game)
-    {
-        // Validate input
-        $validated = $request->validate([
-            'team1_roster' => 'required|json',
-            'team2_roster' => 'required|json',
-            'team1_starters' => 'required|json',
-            'team2_starters' => 'required|json',
-            'interface_mode' => 'required|in:all_in_one,separated',
-        ]);
-
-        try {
-            // Decode JSON arrays
-            $team1Roster = json_decode($validated['team1_roster'], true);
-            $team2Roster = json_decode($validated['team2_roster'], true);
-            $team1Starters = json_decode($validated['team1_starters'], true);
-            $team2Starters = json_decode($validated['team2_starters'], true);
-
-            // Validate rosters
-            if (empty($team1Roster) || empty($team2Roster)) {
-                return back()->with('error', 'Please select rosters for both teams');
-            }
-
-            if (count($team1Starters) !== count($team2Starters)) {
-                return back()->with('error', 'Both teams must have the same number of starters');
-            }
-
-            // Save to game
-            $game->update([
-                'status' => 'in_progress',
-                'team1_selected_players' => json_encode([
-                    'roster' => $team1Roster,
-                    'starters' => $team1Starters,
-                ]),
-                'team2_selected_players' => json_encode([
-                    'roster' => $team2Roster,
-                    'starters' => $team2Starters,
-                ]),
-                'game_data' => [
-                    'interface_mode' => $validated['interface_mode'],
-                    'team1_fouls' => 0,
-                    'team2_fouls' => 0,
-                    'team1_timeouts' => 0,
-                    'team2_timeouts' => 0,
-                    'game_events' => [],
-                    'last_update' => now()->timestamp,
-                ]
-            ]);
-
-            // ✅ IMPORTANT: DON'T REDIRECT TO INVITE PAGE!
-            // Just go directly to live game
-            // For all_in_one, go directly to live (scorer interface)
-    return redirect()->route('games.live', [
-        'game' => $game->id,
-        'role' => 'scorer'  // ✅ EXPLICIT SCORER ROLE
+{
+    // Validate input
+    $validated = $request->validate([
+        'team1_roster' => 'required|json',
+        'team2_roster' => 'required|json',
+        'team1_starters' => 'required|json',
+        'team2_starters' => 'required|json',
+        'interface_mode' => 'required|in:all_in_one,separated',
     ]);
 
-        } catch (\Exception $e) {
-            \Log::error('Error starting live game', [
-                'game_id' => $game->id,
-                'error' => $e->getMessage()
-            ]);
+    try {
+        // ✅ CRITICAL: Load relationships BEFORE checking sport type
+        $game->load('bracket.tournament.sport');
+        
+        // Decode JSON arrays
+        $team1Roster = json_decode($validated['team1_roster'], true);
+        $team2Roster = json_decode($validated['team2_roster'], true);
+        $team1Starters = json_decode($validated['team1_starters'], true);
+        $team2Starters = json_decode($validated['team2_starters'], true);
 
-            return back()->with('error', 'Failed to start game: ' . $e->getMessage());
+        // Validate rosters
+        if (empty($team1Roster) || empty($team2Roster)) {
+            return back()->with('error', 'Please select rosters for both teams');
         }
+
+        if (count($team1Starters) !== count($team2Starters)) {
+            return back()->with('error', 'Both teams must have the same number of starters');
+        }
+
+        // Save to game
+        $game->update([
+            'status' => 'in_progress',
+            'team1_selected_players' => json_encode([
+                'roster' => $team1Roster,
+                'starters' => $team1Starters,
+            ]),
+            'team2_selected_players' => json_encode([
+                'roster' => $team2Roster,
+                'starters' => $team2Starters,
+            ]),
+            'game_data' => [
+                'interface_mode' => $validated['interface_mode'],
+                'team1_fouls' => 0,
+                'team2_fouls' => 0,
+                'team1_timeouts' => 0,
+                'team2_timeouts' => 0,
+                'game_events' => [],
+                'last_update' => now()->timestamp,
+            ]
+        ]);
+
+        // ✅ IMPORTANT: Refresh the game after update
+        $game->refresh();
+
+        // ✅ DEBUG LOG (remove this after testing)
+        \Log::info('🏐 Game sport check', [
+            'game_id' => $game->id,
+            'isVolleyball' => $game->isVolleyball(),
+            'sport_name' => $game->bracket?->tournament?->sport?->sports_name ?? 'NO SPORT'
+        ]);
+
+        // ✅ CHECK SPORT TYPE AND REDIRECT
+        if ($game->isVolleyball()) {
+            \Log::info('✅ Redirecting to VOLLEYBALL interface');
+            return redirect()->route('games.volleyball-live', ['game' => $game->id]);
+        } else {
+            \Log::info('✅ Redirecting to BASKETBALL interface');
+            return redirect()->route('games.live', [
+                'game' => $game->id,
+                'role' => 'scorer'
+            ]);
+        }
+
+    } catch (\Exception $e) {
+        \Log::error('Error starting live game', [
+            'game_id' => $game->id,
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+
+        return back()->with('error', 'Failed to start game: ' . $e->getMessage());
     }
+}
 
 
 
