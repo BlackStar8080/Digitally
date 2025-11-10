@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #1a1a1a;
@@ -30,268 +32,272 @@
         }
 
         /* Team Jerseys Display */
-.team-jerseys {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-    padding: 4px 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
-    min-width: 160px;
-    justify-content: center;
-}
+        .team-jerseys {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            min-width: 160px;
+            justify-content: center;
+        }
 
-.team-section.right .team-jerseys {
-    order: -1; /* Place jerseys before score for right team */
-}
+        .team-section.right .team-jerseys {
+            order: -1;
+            /* Place jerseys before score for right team */
+        }
 
-.jersey-badge {
-    width: 32px;
-    height: 32px;
-    background: linear-gradient(135deg, #2d2d2d, #3d3d3d);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 13px;
-    color: white;
-    border: 2px solid #444;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    position: relative;
-}
+        .jersey-badge {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #2d2d2d, #3d3d3d);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: white;
+            border: 2px solid #444;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
 
-.jersey-badge:hover {
-    transform: scale(1.1);
-    border-color: #4CAF50;
-}
+        .jersey-badge:hover {
+            transform: scale(1.1);
+            border-color: #4CAF50;
+        }
 
-.jersey-badge.team-a {
-    background: linear-gradient(135deg, #c33, #a22);
-    border-color: #c33;
-}
+        .jersey-badge.team-a {
+            background: linear-gradient(135deg, #c33, #a22);
+            border-color: #c33;
+        }
 
-.jersey-badge.team-b {
-    background: linear-gradient(135deg, #339, #227);
-    border-color: #339;
-}
+        .jersey-badge.team-b {
+            background: linear-gradient(135deg, #339, #227);
+            border-color: #339;
+        }
 
-.jersey-badge.active-player {
-    box-shadow: 0 0 12px rgba(76, 175, 80, 0.6);
-    border-color: #4CAF50;
-    animation: activeGlow 2s infinite;
-}
+        .jersey-badge.active-player {
+            box-shadow: 0 0 12px rgba(76, 175, 80, 0.6);
+            border-color: #4CAF50;
+            animation: activeGlow 2s infinite;
+        }
 
-.jersey-badge.current-server {
-    box-shadow: 0 0 14px rgba(255, 235, 59, 0.9);
-    border-color: #FFEB3B;
-    transform: scale(1.08);
-}
+        .jersey-badge.current-server {
+            box-shadow: 0 0 14px rgba(255, 235, 59, 0.9);
+            border-color: #FFEB3B;
+            transform: scale(1.08);
+        }
 
-@keyframes activeGlow {
-    0%, 100% {
-        box-shadow: 0 0 12px rgba(76, 175, 80, 0.6);
-    }
-    50% {
-        box-shadow: 0 0 20px rgba(76, 175, 80, 0.9);
-    }
-}
+        @keyframes activeGlow {
 
-.jersey-badge .player-number {
-    font-size: 14px;
-    font-weight: 700;
-}
+            0%,
+            100% {
+                box-shadow: 0 0 12px rgba(76, 175, 80, 0.6);
+            }
 
-/* Substitution Modal Styles */
-.substitution-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.85);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
+            50% {
+                box-shadow: 0 0 20px rgba(76, 175, 80, 0.9);
+            }
+        }
 
-.substitution-content {
-    background: #2d2d2d;
-    border-radius: 16px;
-    padding: 40px;
-    max-width: 1000px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    position: relative;
-}
+        .jersey-badge .player-number {
+            font-size: 14px;
+            font-weight: 700;
+        }
 
-.sub-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
+        /* Substitution Modal Styles */
+        .substitution-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
 
-.sub-title {
-    font-size: 28px;
-    font-weight: bold;
-    color: white;
-}
+        .substitution-content {
+            background: #2d2d2d;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 1000px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
 
-.sub-close {
-    background: #666;
-    border: none;
-    color: white;
-    padding: 10px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 20px;
-    font-weight: bold;
-}
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-.sub-close:hover {
-    background: #777;
-}
+        .sub-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+        }
 
-.sub-instructions {
-    background: rgba(76, 175, 80, 0.1);
-    border: 2px solid #4CAF50;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 25px;
-    text-align: center;
-    color: #ddd;
-    font-size: 15px;
-}
+        .sub-close {
+            background: #666;
+            border: none;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+        }
 
-.sub-teams {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-}
+        .sub-close:hover {
+            background: #777;
+        }
 
-.sub-team-section {
-    background: #3d3d3d;
-    padding: 25px;
-    border-radius: 12px;
-}
+        .sub-instructions {
+            background: rgba(76, 175, 80, 0.1);
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+            color: #ddd;
+            font-size: 15px;
+        }
 
-.sub-team-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    text-align: center;
-    padding: 12px;
-    border-radius: 8px;
-    color: white;
-}
+        .sub-teams {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
 
-.sub-team-a .sub-team-title {
-    background: linear-gradient(135deg, #c33, #a22);
-}
+        .sub-team-section {
+            background: #3d3d3d;
+            padding: 25px;
+            border-radius: 12px;
+        }
 
-.sub-team-b .sub-team-title {
-    background: linear-gradient(135deg, #339, #227);
-}
+        .sub-team-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+        }
 
-.sub-section-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #ccc;
-    margin: 20px 0 12px 0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
+        .sub-team-a .sub-team-title {
+            background: linear-gradient(135deg, #c33, #a22);
+        }
 
-.sub-players-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 12px;
-    margin-bottom: 20px;
-}
+        .sub-team-b .sub-team-title {
+            background: linear-gradient(135deg, #339, #227);
+        }
 
-.sub-player-card {
-    background: #4d4d4d;
-    padding: 16px 12px;
-    border-radius: 10px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s;
-    border: 2px solid transparent;
-    min-height: 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    user-select: none;
-}
+        .sub-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ccc;
+            margin: 20px 0 12px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-.sub-player-card:hover {
-    background: #5d5d5d;
-    transform: translateY(-2px);
-}
+        .sub-players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
 
-.sub-player-card.active-player {
-    border-color: #4CAF50;
-    box-shadow: 0 0 12px rgba(76, 175, 80, 0.3);
-}
+        .sub-player-card {
+            background: #4d4d4d;
+            padding: 16px 12px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+        }
 
-.sub-player-card.bench-player {
-    border-color: #FF9800;
-    box-shadow: 0 0 12px rgba(255, 152, 0, 0.2);
-}
+        .sub-player-card:hover {
+            background: #5d5d5d;
+            transform: translateY(-2px);
+        }
 
-.sub-player-card.dragging {
-    opacity: 0.6;
-    transform: scale(0.95) rotate(5deg);
-}
+        .sub-player-card.active-player {
+            border-color: #4CAF50;
+            box-shadow: 0 0 12px rgba(76, 175, 80, 0.3);
+        }
 
-.sub-player-card.drag-over {
-    background: #6d6d6d;
-    border-color: #4CAF50;
-    transform: scale(1.05);
-    box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
-}
+        .sub-player-card.bench-player {
+            border-color: #FF9800;
+            box-shadow: 0 0 12px rgba(255, 152, 0, 0.2);
+        }
 
-.sub-player-number {
-    font-size: 20px;
-    font-weight: bold;
-    color: white;
-    margin-bottom: 4px;
-}
+        .sub-player-card.dragging {
+            opacity: 0.6;
+            transform: scale(0.95) rotate(5deg);
+        }
 
-.sub-player-position {
-    font-size: 12px;
-    color: #aaa;
-    margin-top: 4px;
-}
+        .sub-player-card.drag-over {
+            background: #6d6d6d;
+            border-color: #4CAF50;
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+        }
 
-.sub-player-status {
-    font-size: 11px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    margin-top: 6px;
-    text-transform: uppercase;
-    font-weight: 600;
-}
+        .sub-player-number {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 4px;
+        }
 
-.sub-player-status.active {
-    background: #4CAF50;
-    color: white;
-}
+        .sub-player-position {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 4px;
+        }
 
-.sub-player-status.bench {
-    background: #FF9800;
-    color: white;
-}
+        .sub-player-status {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-top: 6px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
 
-/* Add substitution button style */
-.btn-substitution {
-    background: linear-gradient(135deg, #795548 0%, #5D4037 100%);
-}
+        .sub-player-status.active {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .sub-player-status.bench {
+            background: #FF9800;
+            color: white;
+        }
+
+        /* Add substitution button style */
+        .btn-substitution {
+            background: linear-gradient(135deg, #795548 0%, #5D4037 100%);
+        }
 
         .hamburger-btn {
             background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
@@ -340,7 +346,7 @@
             left: 0;
             background: #2d2d2d;
             border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
             overflow: hidden;
             opacity: 0;
             visibility: hidden;
@@ -443,18 +449,27 @@
         }
 
         .serving-indicator {
-    width: 20px;
-    height: 20px;
-    background: #FF9800;
-    border-radius: 50%;
-    animation: servePulse 2s infinite;
-    flex-shrink: 0;
-    margin-left: 12px;
-}
+            width: 20px;
+            height: 20px;
+            background: #FF9800;
+            border-radius: 50%;
+            animation: servePulse 2s infinite;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
 
         @keyframes servePulse {
-            0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(255, 152, 0, 0.6); }
-            50% { opacity: 0.6; box-shadow: 0 0 15px rgba(255, 152, 0, 0.8); }
+
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 8px rgba(255, 152, 0, 0.6);
+            }
+
+            50% {
+                opacity: 0.6;
+                box-shadow: 0 0 15px rgba(255, 152, 0, 0.8);
+            }
         }
 
         .center-panel {
@@ -498,8 +513,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
         }
 
         /* Main Layout */
@@ -544,7 +566,7 @@
             padding: 16px;
             overflow-y: auto;
             min-height: 0;
-            
+
         }
 
         /* Responsive fallbacks: 2 columns on medium, 1 column on small */
@@ -560,7 +582,7 @@
             }
         }
 
-       .player-card {
+        .player-card {
             background: #3d3d3d;
             border-radius: 10px;
             padding: 16px 12px;
@@ -571,33 +593,34 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            position: relative;  ← ADD THIS LINE
+            position: relative;
+            ← ADD THIS LINE
         }
 
         .player-card.current-server {
             outline: 3px solid #FFEB3B;
             transform: scale(1.03);
-            box-shadow: 0 8px 30px rgba(255,235,59,0.08);
+            box-shadow: 0 8px 30px rgba(255, 235, 59, 0.08);
         }
 
         .set-server-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: rgba(255,235,59,0.95);
-    color: #111;
-    border: none;
-    border-radius: 6px;
-    padding: 4px 6px;
-    font-weight: 700;
-    cursor: pointer;
-    font-size: 12px;
-    display: inline-block;
-}
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 235, 59, 0.95);
+            color: #111;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 6px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 12px;
+            display: inline-block;
+        }
 
-.player-card .set-server-btn {
-    display: inline-block;
-}
+        .player-card .set-server-btn {
+            display: inline-block;
+        }
 
         .player-card:hover {
             background: #4d4d4d;
@@ -620,17 +643,24 @@
         .player-card.dragging {
             opacity: 0.5;
             transform: scale(0.98);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
         }
 
         .player-card.drag-over {
-            outline: 3px dashed rgba(76,175,80,0.7);
+            outline: 3px dashed rgba(76, 175, 80, 0.7);
             transform: translateY(-4px) scale(1.02);
         }
 
         @keyframes selectPulse {
-            0%, 100% { box-shadow: 0 0 0 2px #4CAF50; }
-            50% { box-shadow: 0 0 0 4px #4CAF50; }
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 2px #4CAF50;
+            }
+
+            50% {
+                box-shadow: 0 0 0 4px #4CAF50;
+            }
         }
 
         .player-number {
@@ -725,7 +755,7 @@
             font-size: 16px;
         }
 
-         /* ✅ ADD: Block Type Modal Styles */
+        /* ✅ ADD: Block Type Modal Styles */
         .block-type-modal {
             position: fixed;
             top: 0;
@@ -891,6 +921,184 @@
             background: linear-gradient(135deg, #666 0%, #555 100%);
         }
 
+        .btn-penalty {
+            background: linear-gradient(135deg, #FFC107 0%, #FFA000 100%);
+            color: #000;
+            font-weight: 800;
+        }
+
+        /* Penalty Cards Modal */
+        .penalty-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .penalty-modal.show {
+            display: flex;
+        }
+
+        .penalty-content {
+            background: #2d2d2d;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 700px;
+            width: 90%;
+        }
+
+        .penalty-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #FFC107;
+        }
+
+        .penalty-subtitle {
+            font-size: 16px;
+            color: #aaa;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .penalty-cards-section {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .penalty-card {
+            width: 120px;
+            height: 160px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            user-select: none;
+        }
+
+        .penalty-card:active {
+            cursor: grabbing;
+        }
+
+        .penalty-card.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .penalty-card.yellow-card {
+            background: linear-gradient(135deg, #FDD835 0%, #F9A825 100%);
+            color: #000;
+        }
+
+        .penalty-card.red-card {
+            background: linear-gradient(135deg, #E53935 0%, #C62828 100%);
+            color: white;
+        }
+
+        .penalty-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .card-label {
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .card-description {
+            font-size: 11px;
+            margin-top: 8px;
+            opacity: 0.8;
+            text-align: center;
+            padding: 0 10px;
+        }
+
+        .penalty-teams-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .penalty-team-zone {
+            background: #3d3d3d;
+            border: 3px dashed #555;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .penalty-team-zone.drag-over {
+            border-color: #FFC107;
+            background: rgba(255, 193, 7, 0.1);
+            transform: scale(1.02);
+        }
+
+        .penalty-team-zone.team-a {
+            border-color: #c33;
+        }
+
+        .penalty-team-zone.team-b {
+            border-color: #339;
+        }
+
+        .penalty-team-zone.drag-over.team-a {
+            border-color: #FFC107;
+            background: rgba(204, 51, 51, 0.1);
+        }
+
+        .penalty-team-zone.drag-over.team-b {
+            border-color: #FFC107;
+            background: rgba(51, 51, 153, 0.1);
+        }
+
+        .penalty-team-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .penalty-team-zone.team-a .penalty-team-name {
+            color: #c33;
+        }
+
+        .penalty-team-zone.team-b .penalty-team-name {
+            color: #339;
+        }
+
+        .drop-instruction {
+            font-size: 14px;
+            color: #888;
+        }
+
         /* Modals */
         .modal {
             position: fixed;
@@ -1032,8 +1240,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
         }
 
         /* Set Score Display */
@@ -1061,56 +1276,57 @@
         }
 
         /* Hotkeys Modal Styles */
-.hotkey-item {
-    background: #3d3d3d;
-    padding: 15px;
-    border-radius: 8px;
-}
+        .hotkey-item {
+            background: #3d3d3d;
+            padding: 15px;
+            border-radius: 8px;
+        }
 
-.hotkey-input {
-    background: #4d4d4d;
-    padding: 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: 2px solid transparent;
-    text-align: center;
-}
+        .hotkey-input {
+            background: #4d4d4d;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            text-align: center;
+        }
 
-.hotkey-input:hover {
-    background: #5d5d5d;
-    border-color: #4CAF50;
-}
+        .hotkey-input:hover {
+            background: #5d5d5d;
+            border-color: #4CAF50;
+        }
 
-.hotkey-input.listening {
-    background: #FF9800;
-    border-color: #F57C00;
-    animation: pulse 1s infinite;
-}
+        .hotkey-input.listening {
+            background: #FF9800;
+            border-color: #F57C00;
+            animation: pulse 1s infinite;
+        }
 
-.current-key {
-    color: white;
-    font-weight: bold;
-    font-size: 16px;
-    font-family: 'Courier New', monospace;
-}
+        .current-key {
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+        }
 
-/* Settings Input Styles */
-.settings-input {
-    background: #4d4d4d;
-    color: white;
-    padding: 10px;
-    border-radius: 6px;
-    border: none;
-    font-size: 16px;
-    width: 100%;
-}
+        /* Settings Input Styles */
+        .settings-input {
+            background: #4d4d4d;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            font-size: 16px;
+            width: 100%;
+        }
 
-.team-jerseys {
-    display: none !important;
-}
+        .team-jerseys {
+            display: none !important;
+        }
     </style>
 </head>
+
 <body>
     <!-- Hamburger Menu -->
     <div class="menu-container">
@@ -1129,13 +1345,13 @@
                 <span class="menu-item-text">View Scoresheet</span>
             </a>
             <a href="#" class="menu-item" id="hotkeysBtn">
-            <span class="menu-item-icon">⌨️</span>
-            <span class="menu-item-text">Customize Hotkeys</span>
-        </a>
-        <a href="#" class="menu-item" id="gameSettingsBtn">
-            <span class="menu-item-icon">⚙️</span>
-            <span class="menu-item-text">Game Settings</span>
-        </a>
+                <span class="menu-item-icon">⌨️</span>
+                <span class="menu-item-text">Customize Hotkeys</span>
+            </a>
+            <a href="#" class="menu-item" id="gameSettingsBtn">
+                <span class="menu-item-icon">⚙️</span>
+                <span class="menu-item-text">Game Settings</span>
+            </a>
         </div>
     </div>
 
@@ -1143,53 +1359,53 @@
     <div class="instruction-banner" id="instructionBanner"></div>
 
     <!-- Scoreboard -->
-<div class="scoreboard">
-    <!-- Team A Section -->
-    <div class="team-section left">
-        <div class="team-info">
-            <div class="team-name" id="teamAName">{{ strtoupper($game->team1->team_name) }}</div>
-            <div class="team-stats">
-                <span>T.O: <span id="timeoutsA">0</span>/<span id="maxTimeoutsA">2</span></span>
-                <span>SUB: <span id="substitutionsA">0</span>/<span id="maxSubstitutionsA">6</span></span>
+    <div class="scoreboard">
+        <!-- Team A Section -->
+        <div class="team-section left">
+            <div class="team-info">
+                <div class="team-name" id="teamAName">{{ strtoupper($game->team1->team_name) }}</div>
+                <div class="team-stats">
+                    <span>T.O: <span id="timeoutsA">0</span>/<span id="maxTimeoutsA">2</span></span>
+                    <span>SUB: <span id="substitutionsA">0</span>/<span id="maxSubstitutionsA">6</span></span>
+                </div>
+            </div>
+            <!-- Team A Player Jerseys -->
+            <div class="team-jerseys" id="teamAJerseys">
+                <!-- Will be populated by JavaScript -->
+            </div>
+            <div class="score-display" id="scoreA">00</div>
+            <div class="serving-indicator" id="servingA" style="display: none;"></div>
+        </div>
+
+        <!-- Center Panel -->
+        <div class="center-panel">
+            <div class="set-display">SET <span id="currentSet">1</span></div>
+            <div class="sets-won">
+                <span class="sets-score" id="setsA">0</span>
+                <span style="color: #666;">-</span>
+                <span class="sets-score" id="setsB">0</span>
+            </div>
+            <div class="set-scores" id="setScoresDisplay"></div>
+            <div class="timeout-timer" id="timeoutTimer">TIMEOUT: <span id="timeoutTime">30</span>s</div>
+        </div>
+
+        <!-- Team B Section -->
+        <div class="team-section right">
+            <div class="serving-indicator" id="servingB" style="display: none;"></div>
+            <div class="score-display" id="scoreB">00</div>
+            <!-- Team B Player Jerseys -->
+            <div class="team-jerseys" id="teamBJerseys">
+                <!-- Will be populated by JavaScript -->
+            </div>
+            <div class="team-info">
+                <div class="team-name" id="teamBName">{{ strtoupper($game->team2->team_name) }}</div>
+                <div class="team-stats">
+                    <span>T.O: <span id="timeoutsB">0</span>/<span id="maxTimeoutsB">2</span></span>
+                    <span>SUB: <span id="substitutionsB">0</span>/<span id="maxSubstitutionsB">6</span></span>
+                </div>
             </div>
         </div>
-        <!-- Team A Player Jerseys -->
-        <div class="team-jerseys" id="teamAJerseys">
-            <!-- Will be populated by JavaScript -->
-        </div>
-        <div class="score-display" id="scoreA">00</div>
-        <div class="serving-indicator" id="servingA" style="display: none;"></div>
     </div>
-
-    <!-- Center Panel -->
-    <div class="center-panel">
-        <div class="set-display">SET <span id="currentSet">1</span></div>
-        <div class="sets-won">
-            <span class="sets-score" id="setsA">0</span>
-            <span style="color: #666;">-</span>
-            <span class="sets-score" id="setsB">0</span>
-        </div>
-        <div class="set-scores" id="setScoresDisplay"></div>
-        <div class="timeout-timer" id="timeoutTimer">TIMEOUT: <span id="timeoutTime">30</span>s</div>
-    </div>
-
-    <!-- Team B Section -->
-    <div class="team-section right">
-        <div class="serving-indicator" id="servingB" style="display: none;"></div>
-        <div class="score-display" id="scoreB">00</div>
-        <!-- Team B Player Jerseys -->
-        <div class="team-jerseys" id="teamBJerseys">
-            <!-- Will be populated by JavaScript -->
-        </div>
-        <div class="team-info">
-            <div class="team-name" id="teamBName">{{ strtoupper($game->team2->team_name) }}</div>
-            <div class="team-stats">
-                <span>T.O: <span id="timeoutsB">0</span>/<span id="maxTimeoutsB">2</span></span>
-                <span>SUB: <span id="substitutionsB">0</span>/<span id="maxSubstitutionsB">6</span></span>
-            </div>
-        </div>
-    </div>
-</div>
 
     <!-- Main Content -->
     <div class="container">
@@ -1213,27 +1429,26 @@
     </div>
 
     <!-- Action Buttons -->
-    <div class="actions-grid">
-        <button class="action-btn btn-kill" data-action="kill">Kill</button>
-        <button class="action-btn btn-ace" data-action="ace">Ace</button>
-        <button class="action-btn btn-block" id="blockBtn">Block</button>
-        <button class="action-btn btn-dig" data-action="dig">Dig</button>
-        <button class="action-btn btn-assist" data-action="assist">Set</button>
-        <button class="action-btn btn-error" data-action="error">Error</button>
-        <button class="action-btn btn-yellow-card" id="yellowCardBtn">⚠️ Yellow</button>
-        <button class="action-btn btn-red-card" id="redCardBtn">🟥 Red</button>
-        <button class="action-btn btn-timeout" id="timeoutBtn">Timeout</button>
-        <button class="action-btn btn-substitution" id="substitutionBtn">Sub</button>
-        <button class="action-btn btn-undo" id="undoBtn">↶ Undo</button>
-    </div>
+    <button class="action-btn btn-kill" data-action="kill">Kill</button>
+    <button class="action-btn btn-ace" data-action="ace">Ace</button>
+    <button class="action-btn btn-block" id="blockBtn">Block</button>
+    <button class="action-btn btn-dig" data-action="dig">Dig</button>
+    <button class="action-btn btn-assist" data-action="assist">Set</button>
+    <button class="action-btn btn-error" data-action="error">Error</button>
+    <button class="action-btn btn-penalty" id="penaltyBtn">🃏 Penalty</button>
+    <button class="action-btn btn-timeout" id="timeoutBtn">Timeout</button>
+    <button class="action-btn btn-substitution" id="substitutionBtn">Sub</button>
+    <button class="action-btn btn-undo" id="undoBtn">↶ Undo</button>
 
     <!-- Team Selection Modal -->
     <div class="modal" id="teamSelectModal">
         <div class="modal-content">
             <h2 class="modal-title">Select Team</h2>
             <p class="modal-subtitle" id="teamSelectPrompt">Choose which team</p>
-            <button class="team-select-btn team-a" data-team="A" id="selectTeamA">{{ strtoupper($game->team1->team_name) }}</button>
-            <button class="team-select-btn team-b" data-team="B" id="selectTeamB">{{ strtoupper($game->team2->team_name) }}</button>
+            <button class="team-select-btn team-a" data-team="A"
+                id="selectTeamA">{{ strtoupper($game->team1->team_name) }}</button>
+            <button class="team-select-btn team-b" data-team="B"
+                id="selectTeamB">{{ strtoupper($game->team2->team_name) }}</button>
             <button class="modal-btn modal-btn-secondary" onclick="closeTeamSelectModal()">Cancel</button>
         </div>
     </div>
@@ -1254,9 +1469,11 @@
             </div>
             <div style="margin: 20px 0;">
                 <div style="color: #888; margin-bottom: 8px;">SETS WON</div>
-                <div style="font-size: 32px; font-weight: bold;"><span id="modalSetsA">0</span> - <span id="modalSetsB">0</span></div>
+                <div style="font-size: 32px; font-weight: bold;"><span id="modalSetsA">0</span> - <span
+                        id="modalSetsB">0</span></div>
             </div>
-            <button class="modal-btn modal-btn-primary" onclick="startNextSet()">START SET <span id="nextSetNumber">2</span></button>
+            <button class="modal-btn modal-btn-primary" onclick="startNextSet()">START SET <span
+                    id="nextSetNumber">2</span></button>
         </div>
     </div>
 
@@ -1277,157 +1494,160 @@
     </div>
 
     <!-- Hotkeys Modal -->
-<div class="modal" id="hotkeysModal">
-    <div class="modal-content">
-        <h2 class="modal-title">Customize Hotkeys</h2>
-        <p class="modal-subtitle">Click on an action and press a key to assign a hotkey. Press ESC to clear.</p>
-        
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
-            <div class="hotkey-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Kill</div>
-                <div class="hotkey-input" data-action="kill">
-                    <span class="current-key" id="key-kill">K</span>
+    <div class="modal" id="hotkeysModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Customize Hotkeys</h2>
+            <p class="modal-subtitle">Click on an action and press a key to assign a hotkey. Press ESC to clear.</p>
+
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+                <div class="hotkey-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Kill</div>
+                    <div class="hotkey-input" data-action="kill">
+                        <span class="current-key" id="key-kill">K</span>
+                    </div>
+                </div>
+
+                <div class="hotkey-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Ace</div>
+                    <div class="hotkey-input" data-action="ace">
+                        <span class="current-key" id="key-ace">A</span>
+                    </div>
+                </div>
+
+                <div class="hotkey-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Block</div>
+                    <div class="hotkey-input" data-action="block">
+                        <span class="current-key" id="key-block">B</span>
+                    </div>
+                </div>
+
+                <div class="hotkey-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Dig</div>
+                    <div class="hotkey-input" data-action="dig">
+                        <span class="current-key" id="key-dig">D</span>
+                    </div>
+                </div>
+
+                <div class="hotkey-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Set</div>
+                    <div class="hotkey-input" data-action="assist">
+                        <span class="current-key" id="key-assist">S</span>
+                    </div>
+                </div>
+
+                <div class="hotkey-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Error</div>
+                    <div class="hotkey-input" data-action="error">
+                        <span class="current-key" id="key-error">E</span>
+                    </div>
+                </div>
+
+                <div class="hotkey-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Timeout</div>
+                    <div class="hotkey-input" data-action="timeout">
+                        <span class="current-key" id="key-timeout">T</span>
+                    </div>
+                </div>
+
+                <div class="hotkey-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Undo</div>
+                    <div class="hotkey-input" data-action="undo">
+                        <span class="current-key" id="key-undo">Z</span>
+                    </div>
                 </div>
             </div>
-            
-            <div class="hotkey-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Ace</div>
-                <div class="hotkey-input" data-action="ace">
-                    <span class="current-key" id="key-ace">A</span>
-                </div>
-            </div>
-            
-            <div class="hotkey-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Block</div>
-                <div class="hotkey-input" data-action="block">
-                    <span class="current-key" id="key-block">B</span>
-                </div>
-            </div>
-            
-            <div class="hotkey-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Dig</div>
-                <div class="hotkey-input" data-action="dig">
-                    <span class="current-key" id="key-dig">D</span>
-                </div>
-            </div>
-            
-            <div class="hotkey-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Set</div>
-                <div class="hotkey-input" data-action="assist">
-                    <span class="current-key" id="key-assist">S</span>
-                </div>
-            </div>
-            
-            <div class="hotkey-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Error</div>
-                <div class="hotkey-input" data-action="error">
-                    <span class="current-key" id="key-error">E</span>
-                </div>
-            </div>
-            
-            <div class="hotkey-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Timeout</div>
-                <div class="hotkey-input" data-action="timeout">
-                    <span class="current-key" id="key-timeout">T</span>
-                </div>
-            </div>
-            
-            <div class="hotkey-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Undo</div>
-                <div class="hotkey-input" data-action="undo">
-                    <span class="current-key" id="key-undo">Z</span>
-                </div>
-            </div>
-        </div>
-        
-        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
-            <button class="modal-btn modal-btn-secondary" onclick="resetHotkeysToDefault()">Reset to Defaults</button>
-            <button class="modal-btn modal-btn-primary" onclick="saveHotkeysSettings()">Save Changes</button>
-            <button class="modal-btn modal-btn-secondary" onclick="closeHotkeysModal()">Cancel</button>
-        </div>
-    </div>
-</div>
 
-<!-- Game Settings Modal -->
-<div class="modal" id="gameSettingsModal">
-    <div class="modal-content">
-        <h2 class="modal-title">Game Settings</h2>
-        <p class="modal-subtitle">Customize limits per set per team</p>
-        
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0;">
-            <div class="settings-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team A Max Timeouts</div>
-                <input type="number" min="0" class="settings-input" id="maxTimeoutsAInput">
-            </div>
-            
-            <div class="settings-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team B Max Timeouts</div>
-                <input type="number" min="0" class="settings-input" id="maxTimeoutsBInput">
-            </div>
-            
-            <div class="settings-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team A Max Substitutions</div>
-                <input type="number" min="0" class="settings-input" id="maxSubstitutionsAInput">
-            </div>
-            
-            <div class="settings-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team B Max Substitutions</div>
-                <input type="number" min="0" class="settings-input" id="maxSubstitutionsBInput">
-            </div>
-        </div>
-        
-        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
-            <button class="modal-btn modal-btn-secondary" onclick="resetSettingsToDefault()">Reset to Defaults</button>
-            <button class="modal-btn modal-btn-primary" onclick="saveGameSettings()">Save Changes</button>
-            <button class="modal-btn modal-btn-secondary" onclick="closeGameSettingsModal()">Cancel</button>
-        </div>
-    </div>
-</div>
-
-<!-- Substitution Modal -->
-<div class="substitution-modal" id="substitutionModal">
-    <div class="substitution-content">
-        <div class="sub-header">
-            <div class="sub-title">Player Substitutions</div>
-            <button class="sub-close" id="subClose">&times;</button>
-        </div>
-
-        <div class="sub-instructions">
-            Drag a bench player onto an active player to make a substitution
-        </div>
-
-        <div class="sub-teams">
-            <!-- Team A Substitutions -->
-            <div class="sub-team-section sub-team-a">
-                <div class="sub-team-title">{{ strtoupper($game->team1->team_name) }}</div>
-
-                <div class="sub-section-title">Active Players (On Court)</div>
-                <div class="sub-players-grid" id="activePlayersA"></div>
-
-                <div class="sub-section-title">Bench Players</div>
-                <div class="sub-players-grid" id="benchPlayersA"></div>
-            </div>
-
-            <!-- Team B Substitutions -->
-            <div class="sub-team-section sub-team-b">
-                <div class="sub-team-title">{{ strtoupper($game->team2->team_name) }}</div>
-
-                <div class="sub-section-title">Active Players (On Court)</div>
-                <div class="sub-players-grid" id="activePlayersB"></div>
-
-                <div class="sub-section-title">Bench Players</div>
-                <div class="sub-players-grid" id="benchPlayersB"></div>
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+                <button class="modal-btn modal-btn-secondary" onclick="resetHotkeysToDefault()">Reset to
+                    Defaults</button>
+                <button class="modal-btn modal-btn-primary" onclick="saveHotkeysSettings()">Save Changes</button>
+                <button class="modal-btn modal-btn-secondary" onclick="closeHotkeysModal()">Cancel</button>
             </div>
         </div>
     </div>
-</div>
 
-<!-- ✅ NEW: Block Type Selection Modal -->
+    <!-- Game Settings Modal -->
+    <div class="modal" id="gameSettingsModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Game Settings</h2>
+            <p class="modal-subtitle">Customize limits per set per team</p>
+
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0;">
+                <div class="settings-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team A Max Timeouts</div>
+                    <input type="number" min="0" class="settings-input" id="maxTimeoutsAInput">
+                </div>
+
+                <div class="settings-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team B Max Timeouts</div>
+                    <input type="number" min="0" class="settings-input" id="maxTimeoutsBInput">
+                </div>
+
+                <div class="settings-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team A Max Substitutions</div>
+                    <input type="number" min="0" class="settings-input" id="maxSubstitutionsAInput">
+                </div>
+
+                <div class="settings-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team B Max Substitutions</div>
+                    <input type="number" min="0" class="settings-input" id="maxSubstitutionsBInput">
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+                <button class="modal-btn modal-btn-secondary" onclick="resetSettingsToDefault()">Reset to
+                    Defaults</button>
+                <button class="modal-btn modal-btn-primary" onclick="saveGameSettings()">Save Changes</button>
+                <button class="modal-btn modal-btn-secondary" onclick="closeGameSettingsModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Substitution Modal -->
+    <div class="substitution-modal" id="substitutionModal">
+        <div class="substitution-content">
+            <div class="sub-header">
+                <div class="sub-title">Player Substitutions</div>
+                <button class="sub-close" id="subClose">&times;</button>
+            </div>
+
+            <div class="sub-instructions">
+                Drag a bench player onto an active player to make a substitution
+            </div>
+
+            <div class="sub-teams">
+                <!-- Team A Substitutions -->
+                <div class="sub-team-section sub-team-a">
+                    <div class="sub-team-title">{{ strtoupper($game->team1->team_name) }}</div>
+
+                    <div class="sub-section-title">Active Players (On Court)</div>
+                    <div class="sub-players-grid" id="activePlayersA"></div>
+
+                    <div class="sub-section-title">Bench Players</div>
+                    <div class="sub-players-grid" id="benchPlayersA"></div>
+                </div>
+
+                <!-- Team B Substitutions -->
+                <div class="sub-team-section sub-team-b">
+                    <div class="sub-team-title">{{ strtoupper($game->team2->team_name) }}</div>
+
+                    <div class="sub-section-title">Active Players (On Court)</div>
+                    <div class="sub-players-grid" id="activePlayersB"></div>
+
+                    <div class="sub-section-title">Bench Players</div>
+                    <div class="sub-players-grid" id="benchPlayersB"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ NEW: Block Type Selection Modal -->
     <div class="block-type-modal" id="blockTypeModal">
         <div class="block-type-content">
             <div class="block-type-title">🏐 Select Block Type</div>
             <div class="block-type-subtitle">Choose the type of block</div>
-            
+
             <div class="block-type-options">
                 <button class="block-type-btn btn-kill-block" onclick="handleBlockType('kill_block')">
                     <span>⚡</span>
@@ -1436,7 +1656,7 @@
                         <div style="font-size: 12px; opacity: 0.8;">Point scored + Block recorded</div>
                     </div>
                 </button>
-                
+
                 <button class="block-type-btn btn-regular-block" onclick="handleBlockType('regular_block')">
                     <span>🛡️</span>
                     <div>
@@ -1449,6 +1669,45 @@
             <button class="modal-btn modal-btn-secondary" onclick="closeBlockTypeModal()">Cancel</button>
         </div>
     </div>
+
+    <!-- ✅ NEW: Penalty Cards Modal -->
+<div class="penalty-modal" id="penaltyModal">
+    <div class="penalty-content">
+        <div class="penalty-title">🃏 Issue Penalty Card</div>
+        <div class="penalty-subtitle">Drag a card to the team receiving the penalty</div>
+        
+        <!-- Draggable Cards Section -->
+        <div class="penalty-cards-section">
+            <div class="penalty-card yellow-card" draggable="true" id="yellowCard">
+                <div class="card-icon">⚠️</div>
+                <div class="card-label">Yellow</div>
+                <div class="card-description">Warning</div>
+            </div>
+            
+            <div class="penalty-card red-card" draggable="true" id="redCard">
+                <div class="card-icon">🟥</div>
+                <div class="card-label">Red</div>
+                <div class="card-description">Opponent scores</div>
+            </div>
+        </div>
+
+        <!-- Team Drop Zones -->
+        <div class="penalty-teams-section">
+            <div class="penalty-team-zone team-a" id="penaltyZoneA" data-team="A">
+                <div class="penalty-team-name">{{ strtoupper($game->team1->team_name) }}</div>
+                <div class="drop-instruction">Drop card here</div>
+            </div>
+
+            <div class="penalty-team-zone team-b" id="penaltyZoneB" data-team="B">
+                <div class="penalty-team-name">{{ strtoupper($game->team2->team_name) }}</div>
+                <div class="drop-instruction">Drop card here</div>
+            </div>
+        </div>
+
+        <button class="modal-btn modal-btn-secondary" onclick="closePenaltyModal()">Cancel</button>
+    </div>
+</div>
+
 
     <script>
         // Game data from Laravel
@@ -1465,15 +1724,19 @@
         };
 
         // Game state
-        let scoreA = 0, scoreB = 0;
+        let scoreA = 0,
+            scoreB = 0;
         let currentSet = 1;
-        let setsA = 0, setsB = 0;
+        let setsA = 0,
+            setsB = 0;
         let serving = 'A';
-        let timeoutsA = 0, timeoutsB = 0;
-        let substitutionsA = 0, substitutionsB = 0;
+        let timeoutsA = 0,
+            timeoutsB = 0;
+        let substitutionsA = 0,
+            substitutionsB = 0;
         let events = [];
         let eventCounter = 1;
-       
+
         let setScores = {
             A: [0, 0, 0, 0, 0],
             B: [0, 0, 0, 0, 0]
@@ -1483,9 +1746,9 @@
         let selectingPlayer = false;
         let selectingTeam = false;
         let teamSelectCallback = null;
-    // Current server tracking
-    let currentServerId = null;
-    let currentServerTeam = null;
+        // Current server tracking
+        let currentServerId = null;
+        let currentServerTeam = null;
 
         let timeoutActive = false;
         let timeoutTime = 30;
@@ -1515,83 +1778,86 @@
         });
 
         // Player roster management
-let activePlayers = {
-    A: [],
-    B: []
-};
+        let activePlayers = {
+            A: [],
+            B: []
+        };
 
-let benchPlayers = {
-    A: [],
-    B: []
-};
+        let benchPlayers = {
+            A: [],
+            B: []
+        };
 
-// Initialize player rosters from game data
-function initializePlayerRosters() {
-    // Team A - first 6 players are active (starters)
-    activePlayers.A = gameData.team1.players.slice(0, 6);
-    benchPlayers.A = gameData.team1.players.slice(6);
+        // Initialize player rosters from game data
+        function initializePlayerRosters() {
+            // Team A - first 6 players are active (starters)
+            activePlayers.A = gameData.team1.players.slice(0, 6);
+            benchPlayers.A = gameData.team1.players.slice(6);
 
-    // Team B - first 6 players are active (starters)
-    activePlayers.B = gameData.team2.players.slice(0, 6);
-    benchPlayers.B = gameData.team2.players.slice(6);
+            // Team B - first 6 players are active (starters)
+            activePlayers.B = gameData.team2.players.slice(0, 6);
+            benchPlayers.B = gameData.team2.players.slice(6);
 
-    console.log('Initialized rosters:', { activePlayers, benchPlayers });
-    
-    // Render jerseys in scoreboard
-    renderTeamJerseys();
-}
+            console.log('Initialized rosters:', {
+                activePlayers,
+                benchPlayers
+            });
 
-// Render team jerseys in scoreboard
-function renderTeamJerseys() {
-    const teamAJerseys = document.getElementById('teamAJerseys');
-    const teamBJerseys = document.getElementById('teamBJerseys');
+            // Render jerseys in scoreboard
+            renderTeamJerseys();
+        }
 
-    teamAJerseys.innerHTML = '';
-    teamBJerseys.innerHTML = '';
+        // Render team jerseys in scoreboard
+        function renderTeamJerseys() {
+            const teamAJerseys = document.getElementById('teamAJerseys');
+            const teamBJerseys = document.getElementById('teamBJerseys');
 
-    // Render Team A jerseys
-    activePlayers.A.forEach(player => {
-        const badge = createJerseyBadge(player, 'A');
-        teamAJerseys.appendChild(badge);
-    });
+            teamAJerseys.innerHTML = '';
+            teamBJerseys.innerHTML = '';
 
-    // Render Team B jerseys
-    activePlayers.B.forEach(player => {
-        const badge = createJerseyBadge(player, 'B');
-        teamBJerseys.appendChild(badge);
-    });
-}
+            // Render Team A jerseys
+            activePlayers.A.forEach(player => {
+                const badge = createJerseyBadge(player, 'A');
+                teamAJerseys.appendChild(badge);
+            });
 
-// Create jersey badge
-function createJerseyBadge(player, team) {
-    const badge = document.createElement('div');
-    badge.className = `jersey-badge team-${team.toLowerCase()} active-player`;
-    badge.dataset.playerId = player.id;
-    badge.dataset.team = team;
-    badge.title = player.name || `#${player.number}`;
-    
-    badge.innerHTML = `<span class="player-number">${player.number || '00'}</span>`;
-    
-    // clicking a jersey sets that player as the current server for their team
-    badge.addEventListener('click', (e) => {
-        e.stopPropagation();
-        setServer(team, player.id);
-    });
+            // Render Team B jerseys
+            activePlayers.B.forEach(player => {
+                const badge = createJerseyBadge(player, 'B');
+                teamBJerseys.appendChild(badge);
+            });
+        }
 
-    // visually mark current server
-    if (currentServerId && currentServerId.toString() === player.id.toString() && currentServerTeam === team) {
-        badge.classList.add('current-server');
-    }
+        // Create jersey badge
+        function createJerseyBadge(player, team) {
+            const badge = document.createElement('div');
+            badge.className = `jersey-badge team-${team.toLowerCase()} active-player`;
+            badge.dataset.playerId = player.id;
+            badge.dataset.team = team;
+            badge.title = player.name || `#${player.number}`;
 
-    return badge;
-}
+            badge.innerHTML = `<span class="player-number">${player.number || '00'}</span>`;
+
+            // clicking a jersey sets that player as the current server for their team
+            badge.addEventListener('click', (e) => {
+                e.stopPropagation();
+                setServer(team, player.id);
+            });
+
+            // visually mark current server
+            if (currentServerId && currentServerId.toString() === player.id.toString() && currentServerTeam === team) {
+                badge.classList.add('current-server');
+            }
+
+            return badge;
+        }
 
         document.getElementById('blockBtn').addEventListener('click', function() {
             // Show block type modal instead of immediately selecting player
             selectedAction = 'block';
             document.querySelectorAll('.action-btn').forEach(btn => btn.classList.remove('selected'));
             this.classList.add('selected');
-            
+
             showInstruction('Select a team first, then choose block type');
             selectingTeam = true;
             teamSelectCallback = handleBlockTeamSelect;
@@ -1602,7 +1868,7 @@ function createJerseyBadge(player, team) {
         function handleBlockTeamSelect(team) {
             blockingTeam = team;
             closeTeamSelectModal();
-            
+
             // Now show block type modal
             document.getElementById('blockTypeModal').classList.add('show');
         }
@@ -1611,7 +1877,7 @@ function createJerseyBadge(player, team) {
         function handleBlockType(blockType) {
             pendingBlockType = blockType;
             document.getElementById('blockTypeModal').classList.remove('show');
-            
+
             // Now select player
             selectingPlayer = true;
             document.querySelectorAll('.player-card').forEach(card => {
@@ -1619,11 +1885,15 @@ function createJerseyBadge(player, team) {
                     card.classList.add('selecting');
                 }
             });
-            
+
             if (blockType === 'kill_block') {
-                showInstruction(`Select ${blockingTeam === 'A' ? gameData.team1.name : gameData.team2.name} player who made the KILL BLOCK (will score point)`);
+                showInstruction(
+                    `Select ${blockingTeam === 'A' ? gameData.team1.name : gameData.team2.name} player who made the KILL BLOCK (will score point)`
+                    );
             } else {
-                showInstruction(`Select ${blockingTeam === 'A' ? gameData.team1.name : gameData.team2.name} player who made the REGULAR BLOCK (no point)`);
+                showInstruction(
+                    `Select ${blockingTeam === 'A' ? gameData.team1.name : gameData.team2.name} player who made the REGULAR BLOCK (no point)`
+                    );
             }
         }
 
@@ -1639,7 +1909,7 @@ function createJerseyBadge(player, team) {
             if (!selectingPlayer) return;
 
             const playerNumber = player.number || '00';
-            
+
             // Handle block action
             if (selectedAction === 'block' && pendingBlockType) {
                 if (pendingBlockType === 'kill_block') {
@@ -1649,13 +1919,13 @@ function createJerseyBadge(player, team) {
                     // Regular block: just record the stat
                     logEvent(team, playerNumber, 'Block', 0);
                 }
-                
+
                 pendingBlockType = null;
                 blockingTeam = null;
                 resetSelection();
                 return;
             }
-            
+
             // Handle other actions (kill, ace, dig, assist)
             if (selectedAction === 'kill' || selectedAction === 'ace' || selectedAction === 'block') {
                 handleScore(team, selectedAction, playerNumber);
@@ -1688,18 +1958,18 @@ function createJerseyBadge(player, team) {
 
         function handleRedCard(team) {
             const opponent = team === 'A' ? 'B' : 'A';
-            
+
             // Opponent scores a point
             if (opponent === 'A') {
                 scoreA++;
             } else {
                 scoreB++;
             }
-            
+
             updateScoreDisplay();
             logEvent(team, 'TEAM', '🟥 Red Card (Penalty Point)', 0);
             logEvent(opponent, 'SYSTEM', `Point awarded (Red Card to Team ${team})`, 1);
-            
+
             // Check if opponent gains serve
             if (opponent !== serving) {
                 serving = opponent;
@@ -1707,328 +1977,458 @@ function createJerseyBadge(player, team) {
                 updateServingIndicator();
                 logEvent('GAME', 'SYSTEM', `Serve → Team ${opponent}`, 0);
             }
-            
+
             checkSetWin();
             showNotification(`Red card issued to Team ${team} - Point awarded to Team ${opponent}`);
             closeTeamSelectModal();
         }
 
-        // ✅ Helper function for notifications
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 100px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: #4CAF50;
-                color: white;
-                padding: 15px 30px;
-                border-radius: 10px;
-                font-weight: bold;
-                z-index: 10001;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-                animation: fadeIn 0.3s;
-            `;
-            notification.textContent = message;
-            document.body.appendChild(notification);
+        // ✅ NEW: Penalty Card Modal Handler
+document.getElementById('penaltyBtn').addEventListener('click', function() {
+    openPenaltyModal();
+});
+
+function openPenaltyModal() {
+    document.getElementById('penaltyModal').classList.add('show');
+    setupPenaltyCardDragDrop();
+}
+
+function closePenaltyModal() {
+    document.getElementById('penaltyModal').classList.remove('show');
+}
+
+// ✅ NEW: Penalty Card Drag and Drop System
+let draggedCard = null;
+let draggedCardType = null;
+
+function setupPenaltyCardDragDrop() {
+    const yellowCard = document.getElementById('yellowCard');
+    const redCard = document.getElementById('redCard');
+    const zoneA = document.getElementById('penaltyZoneA');
+    const zoneB = document.getElementById('penaltyZoneB');
+
+    // Card drag events
+    [yellowCard, redCard].forEach(card => {
+        card.addEventListener('dragstart', function(e) {
+            draggedCard = this;
+            draggedCardType = this.classList.contains('yellow-card') ? 'yellow' : 'red';
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        });
+
+        card.addEventListener('dragend', function(e) {
+            this.classList.remove('dragging');
+            draggedCard = null;
+            draggedCardType = null;
+        });
+    });
+
+    // Team zone drop events
+    [zoneA, zoneB].forEach(zone => {
+        zone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        });
+
+        zone.addEventListener('dragenter', function(e) {
+            e.preventDefault();
+            if (draggedCard) {
+                this.classList.add('drag-over');
+            }
+        });
+
+        zone.addEventListener('dragleave', function(e) {
+            if (!this.contains(e.relatedTarget)) {
+                this.classList.remove('drag-over');
+            }
+        });
+
+        zone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
             
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 3000);
+            if (draggedCard && draggedCardType) {
+                const team = this.dataset.team;
+                handlePenaltyCardDrop(team, draggedCardType);
+            }
+        });
+    });
+}
+
+function handlePenaltyCardDrop(team, cardType) {
+    closePenaltyModal();
+
+    if (cardType === 'yellow') {
+        // Yellow card - warning only
+        logEvent(team, 'TEAM', '⚠️ Yellow Card (Warning)', 0);
+        showNotification(`Yellow card issued to Team ${team} - WARNING`, '#FDD835');
+    } else if (cardType === 'red') {
+        // Red card - opponent scores
+        const opponent = team === 'A' ? 'B' : 'A';
+        
+        if (opponent === 'A') {
+            scoreA++;
+        } else {
+            scoreB++;
+        }
+        
+        updateScoreDisplay();
+        logEvent(team, 'TEAM', '🟥 Red Card (Penalty Point)', 0);
+        logEvent(opponent, 'SYSTEM', `Point awarded (Red Card to Team ${team})`, 1);
+        
+        // Check if opponent gains serve
+        if (opponent !== serving) {
+            serving = opponent;
+            rotateTeamClockwise(opponent);
+            const serverIndexMap = {1:5,2:2,3:1,4:0,5:3,6:4};
+            const arr = opponent === 'A' ? activePlayers.A : activePlayers.B;
+            const newServer = arr && arr[serverIndexMap[1]] ? arr[serverIndexMap[1]] : null;
+            if (newServer) {
+                currentServerId = newServer.id;
+                currentServerTeam = opponent;
+            }
+            updateServingIndicator();
+            highlightServerBadge();
+            logEvent('GAME', 'SYSTEM', `Serve → Team ${opponent}`, 0);
+        }
+        
+        checkSetWin();
+        showNotification(`Red card issued to Team ${team} - Point awarded to Team ${opponent}`, '#E53935');
+    }
+}
+
+        // ✅ Helper function for notifications
+        function showNotification(message, bgColor = '#4CAF50') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${bgColor};
+        color: ${bgColor === '#FDD835' ? '#000' : 'white'};
+        padding: 15px 30px;
+        border-radius: 10px;
+        font-weight: bold;
+        z-index: 10001;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        animation: fadeIn 0.3s;
+    `;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (document.body.contains(notification)) {
+            document.body.removeChild(notification);
+        }
+    }, 3000);
+}
+
+        // Set the current server (choose which team serves and which player)
+        function setServer(team, playerId) {
+            serving = team; // set global serving team
+            currentServerTeam = team;
+
+            // Mapping of position -> array index for the grid layout:
+            // positions:
+            // [4, 3, 2]
+            // [5, 6, 1]
+            // arr indices: 0->4,1->3,2->2,3->5,4->6,5->1
+            const posIndex = {
+                1: 5,
+                2: 2,
+                3: 1,
+                4: 0,
+                5: 3,
+                6: 4
+            };
+
+            const arr = team === 'A' ? activePlayers.A : activePlayers.B;
+            if (arr && arr.length >= 1) {
+                // Try to rotate the team's active array until the chosen player is in the server position (pos 1)
+                let attempts = 0;
+                while ((arr[posIndex[1]] && arr[posIndex[1]].id.toString() !== playerId.toString()) && attempts < 6) {
+                    rotateTeamClockwise(team);
+                    attempts++;
+                }
+            }
+
+            currentServerId = playerId;
+            updateServingIndicator();
+            renderTeamJerseys();
+            updateMainRoster();
+            renderSubstitutionPlayers();
+            highlightServerBadge();
+            showNotification(`Server set to Team ${team} player #${playerId}`);
         }
 
-// Set the current server (choose which team serves and which player)
-function setServer(team, playerId) {
-    serving = team; // set global serving team
-    currentServerTeam = team;
-
-    // Mapping of position -> array index for the grid layout:
-    // positions:
-    // [4, 3, 2]
-    // [5, 6, 1]
-    // arr indices: 0->4,1->3,2->2,3->5,4->6,5->1
-    const posIndex = {1:5,2:2,3:1,4:0,5:3,6:4};
-
-    const arr = team === 'A' ? activePlayers.A : activePlayers.B;
-    if (arr && arr.length >= 1) {
-        // Try to rotate the team's active array until the chosen player is in the server position (pos 1)
-        let attempts = 0;
-        while ((arr[posIndex[1]] && arr[posIndex[1]].id.toString() !== playerId.toString()) && attempts < 6) {
-            rotateTeamClockwise(team);
-            attempts++;
+        function highlightServerBadge() {
+            // Clear both jersey badges and roster cards
+            document.querySelectorAll('.jersey-badge').forEach(b => b.classList.remove('current-server'));
+            document.querySelectorAll('.player-card').forEach(c => c.classList.remove('current-server'));
+            if (!currentServerId) return;
+            // highlight jersey if visible
+            const el = document.querySelector(`.jersey-badge[data-player-id="${currentServerId}"]`);
+            if (el) el.classList.add('current-server');
+            // highlight roster card
+            const card = document.querySelector(`.player-card[data-player-id="${currentServerId}"]`);
+            if (card) card.classList.add('current-server');
         }
-    }
 
-    currentServerId = playerId;
-    updateServingIndicator();
-    renderTeamJerseys();
-    updateMainRoster();
-    renderSubstitutionPlayers();
-    highlightServerBadge();
-    showNotification(`Server set to Team ${team} player #${playerId}`);
-}
+        // Rotate a team's active players clockwise (used when they gain serve)
+        function rotateTeamClockwise(team) {
+            // Use the court layout mapping so rotation matches visual positions.
+            // positions layout (visual):
+            // [4, 3, 2]
+            // [5, 6, 1]
+            // array indices map: index 0->pos4, 1->pos3, 2->pos2, 3->pos5, 4->pos6, 5->pos1
+            const posIndex = {
+                1: 5,
+                2: 2,
+                3: 1,
+                4: 0,
+                5: 3,
+                6: 4
+            };
+            const arr = team === 'A' ? activePlayers.A : activePlayers.B;
+            if (!arr || arr.length < 6) return; // require full 6 players to rotate
 
-function highlightServerBadge() {
-    // Clear both jersey badges and roster cards
-    document.querySelectorAll('.jersey-badge').forEach(b => b.classList.remove('current-server'));
-    document.querySelectorAll('.player-card').forEach(c => c.classList.remove('current-server'));
-    if (!currentServerId) return;
-    // highlight jersey if visible
-    const el = document.querySelector(`.jersey-badge[data-player-id="${currentServerId}"]`);
-    if (el) el.classList.add('current-server');
-    // highlight roster card
-    const card = document.querySelector(`.player-card[data-player-id="${currentServerId}"]`);
-    if (card) card.classList.add('current-server');
-}
+            const old = arr.slice();
+            const newArr = new Array(6);
+            // For each position p (1..6), new occupant at p becomes the old occupant at p_next (clockwise next)
+            // Based on desired mapping: new[pos] = old[nextPos], where nextPos = (pos % 6) + 1
+            for (let pos = 1; pos <= 6; pos++) {
+                const nextPos = pos % 6 + 1;
+                const newIndex = posIndex[pos];
+                const oldIndex = posIndex[nextPos];
+                newArr[newIndex] = old[oldIndex];
+            }
 
-// Rotate a team's active players clockwise (used when they gain serve)
-function rotateTeamClockwise(team) {
-    // Use the court layout mapping so rotation matches visual positions.
-    // positions layout (visual):
-    // [4, 3, 2]
-    // [5, 6, 1]
-    // array indices map: index 0->pos4, 1->pos3, 2->pos2, 3->pos5, 4->pos6, 5->pos1
-    const posIndex = {1:5,2:2,3:1,4:0,5:3,6:4};
-    const arr = team === 'A' ? activePlayers.A : activePlayers.B;
-    if (!arr || arr.length < 6) return; // require full 6 players to rotate
+            // copy back into original array
+            for (let i = 0; i < 6; i++) arr[i] = newArr[i];
 
-    const old = arr.slice();
-    const newArr = new Array(6);
-    // For each position p (1..6), new occupant at p becomes the old occupant at p_next (clockwise next)
-    // Based on desired mapping: new[pos] = old[nextPos], where nextPos = (pos % 6) + 1
-    for (let pos = 1; pos <= 6; pos++) {
-        const nextPos = pos % 6 + 1;
-        const newIndex = posIndex[pos];
-        const oldIndex = posIndex[nextPos];
-        newArr[newIndex] = old[oldIndex];
-    }
+            // After rotation, re-render UI
+            renderTeamJerseys();
+            updateMainRoster();
+            renderSubstitutionPlayers();
+        }
 
-    // copy back into original array
-    for (let i = 0; i < 6; i++) arr[i] = newArr[i];
+        // Substitution Modal Functions
+        const substitutionModal = document.getElementById('substitutionModal');
+        const subCloseBtn = document.getElementById('subClose');
+        const substitutionBtn = document.getElementById('substitutionBtn');
 
-    // After rotation, re-render UI
-    renderTeamJerseys();
-    updateMainRoster();
-    renderSubstitutionPlayers();
-}
+        // Open substitution modal
+        function openSubstitutionModal() {
+            substitutionModal.style.display = 'flex';
+            renderSubstitutionPlayers();
+        }
 
-// Substitution Modal Functions
-const substitutionModal = document.getElementById('substitutionModal');
-const subCloseBtn = document.getElementById('subClose');
-const substitutionBtn = document.getElementById('substitutionBtn');
+        // Close substitution modal
+        function closeSubstitutionModal() {
+            substitutionModal.style.display = 'none';
+        }
 
-// Open substitution modal
-function openSubstitutionModal() {
-    substitutionModal.style.display = 'flex';
-    renderSubstitutionPlayers();
-}
+        // Render players in substitution modal
+        function renderSubstitutionPlayers() {
+            const activePlayersA = document.getElementById('activePlayersA');
+            const benchPlayersA = document.getElementById('benchPlayersA');
+            const activePlayersB = document.getElementById('activePlayersB');
+            const benchPlayersB = document.getElementById('benchPlayersB');
 
-// Close substitution modal
-function closeSubstitutionModal() {
-    substitutionModal.style.display = 'none';
-}
+            // Clear existing
+            activePlayersA.innerHTML = '';
+            benchPlayersA.innerHTML = '';
+            activePlayersB.innerHTML = '';
+            benchPlayersB.innerHTML = '';
 
-// Render players in substitution modal
-function renderSubstitutionPlayers() {
-    const activePlayersA = document.getElementById('activePlayersA');
-    const benchPlayersA = document.getElementById('benchPlayersA');
-    const activePlayersB = document.getElementById('activePlayersB');
-    const benchPlayersB = document.getElementById('benchPlayersB');
+            // Render Team A
+            activePlayers.A.forEach(player => {
+                activePlayersA.appendChild(createSubPlayerCard(player, 'A', true));
+            });
+            benchPlayers.A.forEach(player => {
+                benchPlayersA.appendChild(createSubPlayerCard(player, 'A', false));
+            });
 
-    // Clear existing
-    activePlayersA.innerHTML = '';
-    benchPlayersA.innerHTML = '';
-    activePlayersB.innerHTML = '';
-    benchPlayersB.innerHTML = '';
+            // Render Team B
+            activePlayers.B.forEach(player => {
+                activePlayersB.appendChild(createSubPlayerCard(player, 'B', true));
+            });
+            benchPlayers.B.forEach(player => {
+                benchPlayersB.appendChild(createSubPlayerCard(player, 'B', false));
+            });
+        }
 
-    // Render Team A
-    activePlayers.A.forEach(player => {
-        activePlayersA.appendChild(createSubPlayerCard(player, 'A', true));
-    });
-    benchPlayers.A.forEach(player => {
-        benchPlayersA.appendChild(createSubPlayerCard(player, 'A', false));
-    });
+        // Create substitution player card
+        function createSubPlayerCard(player, team, isActive) {
+            const card = document.createElement('div');
+            card.className = `sub-player-card ${isActive ? 'active-player' : 'bench-player'}`;
+            card.draggable = true;
+            card.dataset.team = team;
+            card.dataset.number = player.number || '00';
+            card.dataset.playerId = player.id;
+            card.dataset.isActive = isActive;
 
-    // Render Team B
-    activePlayers.B.forEach(player => {
-        activePlayersB.appendChild(createSubPlayerCard(player, 'B', true));
-    });
-    benchPlayers.B.forEach(player => {
-        benchPlayersB.appendChild(createSubPlayerCard(player, 'B', false));
-    });
-}
-
-// Create substitution player card
-function createSubPlayerCard(player, team, isActive) {
-    const card = document.createElement('div');
-    card.className = `sub-player-card ${isActive ? 'active-player' : 'bench-player'}`;
-    card.draggable = true;
-    card.dataset.team = team;
-    card.dataset.number = player.number || '00';
-    card.dataset.playerId = player.id;
-    card.dataset.isActive = isActive;
-
-    card.innerHTML = `
+            card.innerHTML = `
         <div class="sub-player-number">${player.number || '00'}</div>
         <div class="sub-player-position">${player.position || 'P'}</div>
         <div class="sub-player-status ${isActive ? 'active' : 'bench'}">${isActive ? 'On Court' : 'Bench'}</div>
     `;
 
-    // Drag events
-    card.addEventListener('dragstart', handleDragStart);
-    card.addEventListener('dragend', handleDragEnd);
-    card.addEventListener('dragover', handleDragOver);
-    card.addEventListener('drop', handleDrop);
-    card.addEventListener('dragenter', handleDragEnter);
-    card.addEventListener('dragleave', handleDragLeave);
+            // Drag events
+            card.addEventListener('dragstart', handleDragStart);
+            card.addEventListener('dragend', handleDragEnd);
+            card.addEventListener('dragover', handleDragOver);
+            card.addEventListener('drop', handleDrop);
+            card.addEventListener('dragenter', handleDragEnter);
+            card.addEventListener('dragleave', handleDragLeave);
 
-    return card;
-}
-
-// Drag and Drop Handlers
-let draggedElement = null;
-
-function handleDragStart(e) {
-    draggedElement = e.target;
-    e.target.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-}
-
-function handleDragEnd(e) {
-    e.target.classList.remove('dragging');
-    document.querySelectorAll('.sub-player-card').forEach(card => {
-        card.classList.remove('drag-over');
-    });
-    draggedElement = null;
-}
-
-function handleDragOver(e) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    return false;
-}
-
-function handleDragEnter(e) {
-    e.preventDefault();
-    const target = e.target.closest('.sub-player-card');
-    if (target && canDropOn(draggedElement, target)) {
-        target.classList.add('drag-over');
-    }
-}
-
-function handleDragLeave(e) {
-    const target = e.target.closest('.sub-player-card');
-    if (target && !target.contains(e.relatedTarget)) {
-        target.classList.remove('drag-over');
-    }
-}
-
-function handleDrop(e) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const dropTarget = e.target.closest('.sub-player-card');
-    if (dropTarget) {
-        dropTarget.classList.remove('drag-over');
-        
-        if (draggedElement && draggedElement !== dropTarget && canDropOn(draggedElement, dropTarget)) {
-            makeSubstitution(draggedElement, dropTarget);
+            return card;
         }
-    }
-    return false;
-}
 
-// Check if can drop
-function canDropOn(source, target) {
-    if (!source || !target || source === target) return false;
+        // Drag and Drop Handlers
+        let draggedElement = null;
 
-    const sourceCard = source.closest('.sub-player-card');
-    const targetCard = target.closest('.sub-player-card');
-    
-    if (!sourceCard || !targetCard) return false;
+        function handleDragStart(e) {
+            draggedElement = e.target;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
 
-    const sourceTeam = sourceCard.dataset.team;
-    const targetTeam = targetCard.dataset.team;
-    const sourceActive = sourceCard.dataset.isActive === 'true';
-    const targetActive = targetCard.dataset.isActive === 'true';
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            document.querySelectorAll('.sub-player-card').forEach(card => {
+                card.classList.remove('drag-over');
+            });
+            draggedElement = null;
+        }
 
-    // Same team, bench to active only
-    return sourceTeam === targetTeam && !sourceActive && targetActive;
-}
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
 
-// Make substitution
-function makeSubstitution(benchCard, activeCard) {
-    const team = benchCard.dataset.team;
-    const benchPlayerId = benchCard.dataset.playerId;
-    const activePlayerId = activeCard.dataset.playerId;
+        function handleDragEnter(e) {
+            e.preventDefault();
+            const target = e.target.closest('.sub-player-card');
+            if (target && canDropOn(draggedElement, target)) {
+                target.classList.add('drag-over');
+            }
+        }
 
-    if (team === 'A' && substitutionsA >= maxSubstitutionsA) {
-        alert('Team A has no more substitutions remaining this set');
-        return;
-    } else if (team === 'B' && substitutionsB >= maxSubstitutionsB) {
-        alert('Team B has no more substitutions remaining this set');
-        return;
-    }
+        function handleDragLeave(e) {
+            const target = e.target.closest('.sub-player-card');
+            if (target && !target.contains(e.relatedTarget)) {
+                target.classList.remove('drag-over');
+            }
+        }
 
-    // Find players
-    const benchPlayerIndex = benchPlayers[team].findIndex(p => p.id.toString() === benchPlayerId);
-    const activePlayerIndex = activePlayers[team].findIndex(p => p.id.toString() === activePlayerId);
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
 
-    if (benchPlayerIndex === -1 || activePlayerIndex === -1) {
-        console.error('Players not found');
-        return;
-    }
+            const dropTarget = e.target.closest('.sub-player-card');
+            if (dropTarget) {
+                dropTarget.classList.remove('drag-over');
 
-    // Swap players
-    const benchPlayer = benchPlayers[team][benchPlayerIndex];
-    const activePlayer = activePlayers[team][activePlayerIndex];
+                if (draggedElement && draggedElement !== dropTarget && canDropOn(draggedElement, dropTarget)) {
+                    makeSubstitution(draggedElement, dropTarget);
+                }
+            }
+            return false;
+        }
 
-    benchPlayers[team][benchPlayerIndex] = activePlayer;
-    activePlayers[team][activePlayerIndex] = benchPlayer;
+        // Check if can drop
+        function canDropOn(source, target) {
+            if (!source || !target || source === target) return false;
 
-    // Update substitution count
-    if (team === 'A') {
-        substitutionsA++;
-        document.getElementById('substitutionsA').textContent = substitutionsA;
-    } else {
-        substitutionsB++;
-        document.getElementById('substitutionsB').textContent = substitutionsB;
-    }
+            const sourceCard = source.closest('.sub-player-card');
+            const targetCard = target.closest('.sub-player-card');
 
-    // Log event
-    logEvent(team, `${activePlayer.number}→${benchPlayer.number}`, 'Substitution', 0);
+            if (!sourceCard || !targetCard) return false;
 
-    // Update displays
-    renderSubstitutionPlayers();
-    renderTeamJerseys();
-    updateMainRoster();
+            const sourceTeam = sourceCard.dataset.team;
+            const targetTeam = targetCard.dataset.team;
+            const sourceActive = sourceCard.dataset.isActive === 'true';
+            const targetActive = targetCard.dataset.isActive === 'true';
 
-    // Show success message
-    showSubstitutionSuccess(team, activePlayer.number, benchPlayer.number);
-}
+            // Same team, bench to active only
+            return sourceTeam === targetTeam && !sourceActive && targetActive;
+        }
 
-// Update main roster display
-function updateMainRoster() {
-    const playersAGrid = document.getElementById('playersA');
-    const playersBGrid = document.getElementById('playersB');
-    
-    playersAGrid.innerHTML = '';
-    playersBGrid.innerHTML = '';
+        // Make substitution
+        function makeSubstitution(benchCard, activeCard) {
+            const team = benchCard.dataset.team;
+            const benchPlayerId = benchCard.dataset.playerId;
+            const activePlayerId = activeCard.dataset.playerId;
 
-    activePlayers.A.forEach(player => {
-        playersAGrid.appendChild(createPlayerCard(player, 'A'));
-    });
+            if (team === 'A' && substitutionsA >= maxSubstitutionsA) {
+                alert('Team A has no more substitutions remaining this set');
+                return;
+            } else if (team === 'B' && substitutionsB >= maxSubstitutionsB) {
+                alert('Team B has no more substitutions remaining this set');
+                return;
+            }
 
-    activePlayers.B.forEach(player => {
-        playersBGrid.appendChild(createPlayerCard(player, 'B'));
-    });
-}
+            // Find players
+            const benchPlayerIndex = benchPlayers[team].findIndex(p => p.id.toString() === benchPlayerId);
+            const activePlayerIndex = activePlayers[team].findIndex(p => p.id.toString() === activePlayerId);
 
-// Show substitution success
-function showSubstitutionSuccess(team, outNumber, inNumber) {
-    const message = document.createElement('div');
-    message.style.cssText = `
+            if (benchPlayerIndex === -1 || activePlayerIndex === -1) {
+                console.error('Players not found');
+                return;
+            }
+
+            // Swap players
+            const benchPlayer = benchPlayers[team][benchPlayerIndex];
+            const activePlayer = activePlayers[team][activePlayerIndex];
+
+            benchPlayers[team][benchPlayerIndex] = activePlayer;
+            activePlayers[team][activePlayerIndex] = benchPlayer;
+
+            // Update substitution count
+            if (team === 'A') {
+                substitutionsA++;
+                document.getElementById('substitutionsA').textContent = substitutionsA;
+            } else {
+                substitutionsB++;
+                document.getElementById('substitutionsB').textContent = substitutionsB;
+            }
+
+            // Log event
+            logEvent(team, `${activePlayer.number}→${benchPlayer.number}`, 'Substitution', 0);
+
+            // Update displays
+            renderSubstitutionPlayers();
+            renderTeamJerseys();
+            updateMainRoster();
+
+            // Show success message
+            showSubstitutionSuccess(team, activePlayer.number, benchPlayer.number);
+        }
+
+        // Update main roster display
+        function updateMainRoster() {
+            const playersAGrid = document.getElementById('playersA');
+            const playersBGrid = document.getElementById('playersB');
+
+            playersAGrid.innerHTML = '';
+            playersBGrid.innerHTML = '';
+
+            activePlayers.A.forEach(player => {
+                playersAGrid.appendChild(createPlayerCard(player, 'A'));
+            });
+
+            activePlayers.B.forEach(player => {
+                playersBGrid.appendChild(createPlayerCard(player, 'B'));
+            });
+        }
+
+        // Show substitution success
+        function showSubstitutionSuccess(team, outNumber, inNumber) {
+            const message = document.createElement('div');
+            message.style.cssText = `
         position: fixed;
         top: 100px;
         left: 50%;
@@ -2041,79 +2441,79 @@ function showSubstitutionSuccess(team, outNumber, inNumber) {
         z-index: 10000;
         animation: fadeIn 0.3s;
     `;
-    message.textContent = `Team ${team}: Player #${outNumber} → #${inNumber}`;
-    document.body.appendChild(message);
+            message.textContent = `Team ${team}: Player #${outNumber} → #${inNumber}`;
+            document.body.appendChild(message);
 
-    setTimeout(() => {
-        document.body.removeChild(message);
-    }, 3000);
-}
+            setTimeout(() => {
+                document.body.removeChild(message);
+            }, 3000);
+        }
 
-function getWinningScore(setNumber) {
-  return setNumber === 5 ? 15 : 25;
-}
+        function getWinningScore(setNumber) {
+            return setNumber === 5 ? 15 : 25;
+        }
 
-function checkSetWin() {
-    // ✅ Don't check for set win if game is already over
-    if (setsA >= 3 || setsB >= 3) {
-        return;
-    }
+        function checkSetWin() {
+            // ✅ Don't check for set win if game is already over
+            if (setsA >= 3 || setsB >= 3) {
+                return;
+            }
 
-    const maxPoints = currentSet === 5 ? 15 : 25;
-    const minLead = 2;
+            const maxPoints = currentSet === 5 ? 15 : 25;
+            const minLead = 2;
 
-    if (scoreA >= maxPoints && scoreA - scoreB >= minLead) {
-        handleSetWin('A');
-    } else if (scoreB >= maxPoints && scoreB - scoreA >= minLead) {
-        handleSetWin('B');
-    }
-}
-
-
-function startNextSet() {
-    document.getElementById('setEndModal').classList.remove('show');
-    
-    // Move to next set
-    currentSet++;
-    
-    // Reset scores for new set
-    scoreA = 0;
-    scoreB = 0;
-    
-    // Reset timeouts and substitutions per set
-    timeoutsA = 0;
-    timeoutsB = 0;
-    substitutionsA = 0;
-    substitutionsB = 0;
-
-    // Switch serve
-    serving = serving === 'A' ? 'B' : 'A';
-
-    updateScoreboard();
-    updateServingIndicator();
-    updateSetScoresDisplay();
-    logEvent('GAME', 'SYSTEM', `Set ${currentSet} Started`, 0);
-}
+            if (scoreA >= maxPoints && scoreA - scoreB >= minLead) {
+                handleSetWin('A');
+            } else if (scoreB >= maxPoints && scoreB - scoreA >= minLead) {
+                handleSetWin('B');
+            }
+        }
 
 
+        function startNextSet() {
+            document.getElementById('setEndModal').classList.remove('show');
+
+            // Move to next set
+            currentSet++;
+
+            // Reset scores for new set
+            scoreA = 0;
+            scoreB = 0;
+
+            // Reset timeouts and substitutions per set
+            timeoutsA = 0;
+            timeoutsB = 0;
+            substitutionsA = 0;
+            substitutionsB = 0;
+
+            // Switch serve
+            serving = serving === 'A' ? 'B' : 'A';
+
+            updateScoreboard();
+            updateServingIndicator();
+            updateSetScoresDisplay();
+            logEvent('GAME', 'SYSTEM', `Set ${currentSet} Started`, 0);
+        }
 
 
-// Event Listeners
-if (substitutionBtn) {
-    substitutionBtn.addEventListener('click', openSubstitutionModal);
-}
 
-if (subCloseBtn) {
-    subCloseBtn.addEventListener('click', closeSubstitutionModal);
-}
 
-substitutionModal.addEventListener('click', (e) => {
-    if (e.target === substitutionModal) {
-        closeSubstitutionModal();
-    }
-});
+        // Event Listeners
+        if (substitutionBtn) {
+            substitutionBtn.addEventListener('click', openSubstitutionModal);
+        }
 
-// Update the init function to call initializePlayerRosters
+        if (subCloseBtn) {
+            subCloseBtn.addEventListener('click', closeSubstitutionModal);
+        }
+
+        substitutionModal.addEventListener('click', (e) => {
+            if (e.target === substitutionModal) {
+                closeSubstitutionModal();
+            }
+        });
+
+        // Update the init function to call initializePlayerRosters
 
         // Initialize
         function init() {
@@ -2128,216 +2528,220 @@ substitutionModal.addEventListener('click', (e) => {
         }
 
         // Hotkeys functionality
-let hotkeys = {
-    'kill': 'K',
-    'ace': 'A',
-    'block': 'B',
-    'dig': 'D',
-    'assist': 'S',
-    'error': 'E',
-    'timeout': 'T',
-    'undo': 'Z'
-};
+        let hotkeys = {
+            'kill': 'K',
+            'ace': 'A',
+            'block': 'B',
+            'dig': 'D',
+            'assist': 'S',
+            'error': 'E',
+            'timeout': 'T',
+            'undo': 'Z'
+        };
 
-const defaultHotkeys = { ...hotkeys };
+        const defaultHotkeys = {
+            ...hotkeys
+        };
 
-// Load saved hotkeys from localStorage
-function loadHotkeys() {
-    const saved = localStorage.getItem('volleyballHotkeys');
-    if (saved) {
-        hotkeys = JSON.parse(saved);
-    }
-    applyHotkeys();
-}
-
-// Save hotkeys to localStorage
-function saveHotkeys() {
-    localStorage.setItem('volleyballHotkeys', JSON.stringify(hotkeys));
-}
-
-// Apply hotkeys (global keyboard listener)
-function applyHotkeys() {
-    document.addEventListener('keydown', handleHotkeyPress);
-}
-
-// Handle hotkey press
-function handleHotkeyPress(e) {
-    // Ignore if typing in input fields or modal is open
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    if (document.getElementById('hotkeysModal').classList.contains('show')) return;
-    if (selectingPlayer || selectingTeam) return;
-
-    const key = e.key.toUpperCase();
-
-    // Find action for this key
-    for (const [action, hotkey] of Object.entries(hotkeys)) {
-        if (hotkey.toUpperCase() === key) {
-            e.preventDefault();
-            executeHotkeyAction(action);
-            break;
-        }
-    }
-}
-
-// Execute action based on hotkey
-function executeHotkeyAction(action) {
-    if (action === 'timeout') {
-        document.getElementById('timeoutBtn').click();
-    } else if (action === 'undo') {
-        document.getElementById('undoBtn').click();
-    } else {
-        const btn = document.querySelector(`[data-action="${action}"]`);
-        if (btn) btn.click();
-    }
-}
-
-// Open hotkeys modal
-function openHotkeysModal() {
-    document.getElementById('hotkeysModal').classList.add('show');
-    updateHotkeyDisplay();
-}
-
-// Close hotkeys modal
-function closeHotkeysModal() {
-    document.getElementById('hotkeysModal').classList.remove('show');
-    document.querySelectorAll('.hotkey-input').forEach(input => {
-        input.classList.remove('listening');
-    });
-}
-
-// Update hotkey display in modal
-function updateHotkeyDisplay() {
-    for (const [action, key] of Object.entries(hotkeys)) {
-        const element = document.getElementById(`key-${action}`);
-        if (element) {
-            element.textContent = key.toUpperCase();
-        }
-    }
-}
-
-// Setup hotkey input listeners
-function setupHotkeyInputs() {
-    const inputs = document.querySelectorAll('.hotkey-input');
-    let listeningInput = null;
-
-    inputs.forEach(input => {
-        input.addEventListener('click', function() {
-            inputs.forEach(i => i.classList.remove('listening'));
-            this.classList.add('listening');
-            listeningInput = this;
-            
-            const keyDisplay = this.querySelector('.current-key');
-            keyDisplay.textContent = 'Press a key...';
-        });
-    });
-
-    document.addEventListener('keydown', function(e) {
-        if (listeningInput && document.getElementById('hotkeysModal').classList.contains('show')) {
-            e.preventDefault();
-            
-            const action = listeningInput.dataset.action;
-            
-            if (e.key === 'Escape') {
-                hotkeys[action] = '';
-                listeningInput.querySelector('.current-key').textContent = 'NONE';
-            } else {
-                const newKey = e.key.toUpperCase();
-                hotkeys[action] = newKey;
-                listeningInput.querySelector('.current-key').textContent = newKey;
+        // Load saved hotkeys from localStorage
+        function loadHotkeys() {
+            const saved = localStorage.getItem('volleyballHotkeys');
+            if (saved) {
+                hotkeys = JSON.parse(saved);
             }
-            
-            listeningInput.classList.remove('listening');
-            listeningInput = null;
+            applyHotkeys();
         }
-    });
-}
 
-// Reset hotkeys to defaults
-function resetHotkeysToDefault() {
-    if (confirm('Reset all hotkeys to default values?')) {
-        hotkeys = { ...defaultHotkeys };
-        updateHotkeyDisplay();
-        saveHotkeys();
-        showNotification('Hotkeys reset to defaults');
-    }
-}
+        // Save hotkeys to localStorage
+        function saveHotkeys() {
+            localStorage.setItem('volleyballHotkeys', JSON.stringify(hotkeys));
+        }
 
-// Save hotkeys settings
-function saveHotkeysSettings() {
-    saveHotkeys();
-    closeHotkeysModal();
-    showNotification('Hotkeys saved successfully');
-}
+        // Apply hotkeys (global keyboard listener)
+        function applyHotkeys() {
+            document.addEventListener('keydown', handleHotkeyPress);
+        }
 
-// Load game settings from localStorage
-function loadGameSettings() {
-    const saved = localStorage.getItem('volleyballSettings');
-    if (saved) {
-        const settings = JSON.parse(saved);
-        maxTimeoutsA = settings.maxTimeoutsA || 2;
-        maxTimeoutsB = settings.maxTimeoutsB || 2;
-        maxSubstitutionsA = settings.maxSubstitutionsA || 6;
-        maxSubstitutionsB = settings.maxSubstitutionsB || 6;
-    }
-    updateSettingsDisplay();
-}
+        // Handle hotkey press
+        function handleHotkeyPress(e) {
+            // Ignore if typing in input fields or modal is open
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (document.getElementById('hotkeysModal').classList.contains('show')) return;
+            if (selectingPlayer || selectingTeam) return;
 
-// Save game settings to localStorage
-function saveGameSettings() {
-    maxTimeoutsA = parseInt(document.getElementById('maxTimeoutsAInput').value) || 2;
-    maxTimeoutsB = parseInt(document.getElementById('maxTimeoutsBInput').value) || 2;
-    maxSubstitutionsA = parseInt(document.getElementById('maxSubstitutionsAInput').value) || 6;
-    maxSubstitutionsB = parseInt(document.getElementById('maxSubstitutionsBInput').value) || 6;
+            const key = e.key.toUpperCase();
 
-    localStorage.setItem('volleyballSettings', JSON.stringify({
-        maxTimeoutsA,
-        maxTimeoutsB,
-        maxSubstitutionsA,
-        maxSubstitutionsB
-    }));
-    updateSettingsDisplay();
-    closeGameSettingsModal();
-    showNotification('Settings saved successfully');
-}
+            // Find action for this key
+            for (const [action, hotkey] of Object.entries(hotkeys)) {
+                if (hotkey.toUpperCase() === key) {
+                    e.preventDefault();
+                    executeHotkeyAction(action);
+                    break;
+                }
+            }
+        }
 
-// Open game settings modal
-function openGameSettingsModal() {
-    document.getElementById('maxTimeoutsAInput').value = maxTimeoutsA;
-    document.getElementById('maxTimeoutsBInput').value = maxTimeoutsB;
-    document.getElementById('maxSubstitutionsAInput').value = maxSubstitutionsA;
-    document.getElementById('maxSubstitutionsBInput').value = maxSubstitutionsB;
-    document.getElementById('gameSettingsModal').classList.add('show');
-}
+        // Execute action based on hotkey
+        function executeHotkeyAction(action) {
+            if (action === 'timeout') {
+                document.getElementById('timeoutBtn').click();
+            } else if (action === 'undo') {
+                document.getElementById('undoBtn').click();
+            } else {
+                const btn = document.querySelector(`[data-action="${action}"]`);
+                if (btn) btn.click();
+            }
+        }
 
-// Close game settings modal
-function closeGameSettingsModal() {
-    document.getElementById('gameSettingsModal').classList.remove('show');
-}
+        // Open hotkeys modal
+        function openHotkeysModal() {
+            document.getElementById('hotkeysModal').classList.add('show');
+            updateHotkeyDisplay();
+        }
 
-// Reset settings to defaults
-function resetSettingsToDefault() {
-    if (confirm('Reset all settings to default values?')) {
-        maxTimeoutsA = 2;
-        maxTimeoutsB = 2;
-        maxSubstitutionsA = 6;
-        maxSubstitutionsB = 6;
-        openGameSettingsModal(); // Update inputs
-        saveGameSettings();
-    }
-}
+        // Close hotkeys modal
+        function closeHotkeysModal() {
+            document.getElementById('hotkeysModal').classList.remove('show');
+            document.querySelectorAll('.hotkey-input').forEach(input => {
+                input.classList.remove('listening');
+            });
+        }
 
-// Update settings display in scoreboard
-function updateSettingsDisplay() {
-    document.getElementById('maxTimeoutsA').textContent = maxTimeoutsA;
-    document.getElementById('maxTimeoutsB').textContent = maxTimeoutsB;
-    document.getElementById('maxSubstitutionsA').textContent = maxSubstitutionsA;
-    document.getElementById('maxSubstitutionsB').textContent = maxSubstitutionsB;
-}
+        // Update hotkey display in modal
+        function updateHotkeyDisplay() {
+            for (const [action, key] of Object.entries(hotkeys)) {
+                const element = document.getElementById(`key-${action}`);
+                if (element) {
+                    element.textContent = key.toUpperCase();
+                }
+            }
+        }
 
-// Show notification
-function showNotification(message) {
-    const notification = document.createElement('div');
-    notification.style.cssText = `
+        // Setup hotkey input listeners
+        function setupHotkeyInputs() {
+            const inputs = document.querySelectorAll('.hotkey-input');
+            let listeningInput = null;
+
+            inputs.forEach(input => {
+                input.addEventListener('click', function() {
+                    inputs.forEach(i => i.classList.remove('listening'));
+                    this.classList.add('listening');
+                    listeningInput = this;
+
+                    const keyDisplay = this.querySelector('.current-key');
+                    keyDisplay.textContent = 'Press a key...';
+                });
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (listeningInput && document.getElementById('hotkeysModal').classList.contains('show')) {
+                    e.preventDefault();
+
+                    const action = listeningInput.dataset.action;
+
+                    if (e.key === 'Escape') {
+                        hotkeys[action] = '';
+                        listeningInput.querySelector('.current-key').textContent = 'NONE';
+                    } else {
+                        const newKey = e.key.toUpperCase();
+                        hotkeys[action] = newKey;
+                        listeningInput.querySelector('.current-key').textContent = newKey;
+                    }
+
+                    listeningInput.classList.remove('listening');
+                    listeningInput = null;
+                }
+            });
+        }
+
+        // Reset hotkeys to defaults
+        function resetHotkeysToDefault() {
+            if (confirm('Reset all hotkeys to default values?')) {
+                hotkeys = {
+                    ...defaultHotkeys
+                };
+                updateHotkeyDisplay();
+                saveHotkeys();
+                showNotification('Hotkeys reset to defaults');
+            }
+        }
+
+        // Save hotkeys settings
+        function saveHotkeysSettings() {
+            saveHotkeys();
+            closeHotkeysModal();
+            showNotification('Hotkeys saved successfully');
+        }
+
+        // Load game settings from localStorage
+        function loadGameSettings() {
+            const saved = localStorage.getItem('volleyballSettings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                maxTimeoutsA = settings.maxTimeoutsA || 2;
+                maxTimeoutsB = settings.maxTimeoutsB || 2;
+                maxSubstitutionsA = settings.maxSubstitutionsA || 6;
+                maxSubstitutionsB = settings.maxSubstitutionsB || 6;
+            }
+            updateSettingsDisplay();
+        }
+
+        // Save game settings to localStorage
+        function saveGameSettings() {
+            maxTimeoutsA = parseInt(document.getElementById('maxTimeoutsAInput').value) || 2;
+            maxTimeoutsB = parseInt(document.getElementById('maxTimeoutsBInput').value) || 2;
+            maxSubstitutionsA = parseInt(document.getElementById('maxSubstitutionsAInput').value) || 6;
+            maxSubstitutionsB = parseInt(document.getElementById('maxSubstitutionsBInput').value) || 6;
+
+            localStorage.setItem('volleyballSettings', JSON.stringify({
+                maxTimeoutsA,
+                maxTimeoutsB,
+                maxSubstitutionsA,
+                maxSubstitutionsB
+            }));
+            updateSettingsDisplay();
+            closeGameSettingsModal();
+            showNotification('Settings saved successfully');
+        }
+
+        // Open game settings modal
+        function openGameSettingsModal() {
+            document.getElementById('maxTimeoutsAInput').value = maxTimeoutsA;
+            document.getElementById('maxTimeoutsBInput').value = maxTimeoutsB;
+            document.getElementById('maxSubstitutionsAInput').value = maxSubstitutionsA;
+            document.getElementById('maxSubstitutionsBInput').value = maxSubstitutionsB;
+            document.getElementById('gameSettingsModal').classList.add('show');
+        }
+
+        // Close game settings modal
+        function closeGameSettingsModal() {
+            document.getElementById('gameSettingsModal').classList.remove('show');
+        }
+
+        // Reset settings to defaults
+        function resetSettingsToDefault() {
+            if (confirm('Reset all settings to default values?')) {
+                maxTimeoutsA = 2;
+                maxTimeoutsB = 2;
+                maxSubstitutionsA = 6;
+                maxSubstitutionsB = 6;
+                openGameSettingsModal(); // Update inputs
+                saveGameSettings();
+            }
+        }
+
+        // Update settings display in scoreboard
+        function updateSettingsDisplay() {
+            document.getElementById('maxTimeoutsA').textContent = maxTimeoutsA;
+            document.getElementById('maxTimeoutsB').textContent = maxTimeoutsB;
+            document.getElementById('maxSubstitutionsA').textContent = maxSubstitutionsA;
+            document.getElementById('maxSubstitutionsB').textContent = maxSubstitutionsB;
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
         position: fixed;
         top: 20px;
         right: 20px;
@@ -2349,39 +2753,39 @@ function showNotification(message) {
         z-index: 99999;
         animation: fadeIn 0.3s;
     `;
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        document.body.removeChild(notification);
-    }, 3000);
-}
+            notification.textContent = message;
+            document.body.appendChild(notification);
 
-// Initialize hotkeys and settings when menu is clicked
-document.addEventListener('DOMContentLoaded', function() {
-    const hotkeysBtn = document.getElementById('hotkeysBtn');
-    if (hotkeysBtn) {
-        hotkeysBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            hamburgerBtn.classList.remove('active');
-            menuDropdown.classList.remove('show');
-            openHotkeysModal();
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 3000);
+        }
+
+        // Initialize hotkeys and settings when menu is clicked
+        document.addEventListener('DOMContentLoaded', function() {
+            const hotkeysBtn = document.getElementById('hotkeysBtn');
+            if (hotkeysBtn) {
+                hotkeysBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    hamburgerBtn.classList.remove('active');
+                    menuDropdown.classList.remove('show');
+                    openHotkeysModal();
+                });
+            }
+
+            const gameSettingsBtn = document.getElementById('gameSettingsBtn');
+            if (gameSettingsBtn) {
+                gameSettingsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    hamburgerBtn.classList.remove('active');
+                    menuDropdown.classList.remove('show');
+                    openGameSettingsModal();
+                });
+            }
+
+            setupHotkeyInputs();
+            loadHotkeys();
         });
-    }
-    
-    const gameSettingsBtn = document.getElementById('gameSettingsBtn');
-    if (gameSettingsBtn) {
-        gameSettingsBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            hamburgerBtn.classList.remove('active');
-            menuDropdown.classList.remove('show');
-            openGameSettingsModal();
-        });
-    }
-    
-    setupHotkeyInputs();
-    loadHotkeys();
-});
 
         function renderPlayers() {
             const playersAGrid = document.getElementById('playersA');
@@ -2446,9 +2850,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function rosterDragStart(e) {
             const el = e.currentTarget;
-            rosterDragging = { playerId: el.dataset.playerId, fromTeam: el.dataset.team };
+            rosterDragging = {
+                playerId: el.dataset.playerId,
+                fromTeam: el.dataset.team
+            };
             el.classList.add('dragging');
-            try { e.dataTransfer.setData('text/plain', el.dataset.playerId); } catch (err) {}
+            try {
+                e.dataTransfer.setData('text/plain', el.dataset.playerId);
+            } catch (err) {}
             e.dataTransfer.effectAllowed = 'move';
         }
 
@@ -2522,7 +2931,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Allow dropping into empty grid area (append)
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.players-grid').forEach(grid => {
-                grid.addEventListener('dragover', (e) => { e.preventDefault(); });
+                grid.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                });
                 grid.addEventListener('drop', (e) => {
                     e.preventDefault();
                     if (!rosterDragging) return;
@@ -2566,9 +2977,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function handleActionClick(action) {
             document.querySelectorAll('.action-btn').forEach(btn => btn.classList.remove('selected'));
-           
+
             selectedAction = action;
-           
+
             event.target.classList.add('selected');
 
             if (action === 'error') {
@@ -2586,7 +2997,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!selectingPlayer) return;
 
             const playerNumber = player.number || '00';
-           
+
             if (selectedAction === 'kill' || selectedAction === 'ace' || selectedAction === 'block') {
                 handleScore(team, selectedAction, playerNumber);
             } else if (selectedAction === 'dig' || selectedAction === 'assist') {
@@ -2597,42 +3008,49 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function handleScore(team, action, playerNumber) {
-    // ✅ Prevent scoring if game is already over
-    if (setsA >= 3 || setsB >= 3) {
-        return;
-    }
+            // ✅ Prevent scoring if game is already over
+            if (setsA >= 3 || setsB >= 3) {
+                return;
+            }
 
-    const actionLabel = action.charAt(0).toUpperCase() + action.slice(1);
-    
-    if (team === 'A') {
-        scoreA++;
-        updateScoreDisplay();
-        logEvent('A', playerNumber, actionLabel, 1);
-    } else {
-        scoreB++;
-        updateScoreDisplay();
-        logEvent('B', playerNumber, actionLabel, 1);
-    }
+            const actionLabel = action.charAt(0).toUpperCase() + action.slice(1);
 
-    if (team !== serving) {
-        // team gained the serve -> rotate that team's players (visual mapping)
-        serving = team;
-        rotateTeamClockwise(team);
-        // update current server to the player in the server position (pos 1 -> index 5)
-        const serverIndexMap = {1:5,2:2,3:1,4:0,5:3,6:4};
-        const arr = team === 'A' ? activePlayers.A : activePlayers.B;
-        const newServer = arr && arr[serverIndexMap[1]] ? arr[serverIndexMap[1]] : null;
-        if (newServer) {
-            currentServerId = newServer.id;
-            currentServerTeam = team;
+            if (team === 'A') {
+                scoreA++;
+                updateScoreDisplay();
+                logEvent('A', playerNumber, actionLabel, 1);
+            } else {
+                scoreB++;
+                updateScoreDisplay();
+                logEvent('B', playerNumber, actionLabel, 1);
+            }
+
+            if (team !== serving) {
+                // team gained the serve -> rotate that team's players (visual mapping)
+                serving = team;
+                rotateTeamClockwise(team);
+                // update current server to the player in the server position (pos 1 -> index 5)
+                const serverIndexMap = {
+                    1: 5,
+                    2: 2,
+                    3: 1,
+                    4: 0,
+                    5: 3,
+                    6: 4
+                };
+                const arr = team === 'A' ? activePlayers.A : activePlayers.B;
+                const newServer = arr && arr[serverIndexMap[1]] ? arr[serverIndexMap[1]] : null;
+                if (newServer) {
+                    currentServerId = newServer.id;
+                    currentServerTeam = team;
+                }
+                updateServingIndicator();
+                highlightServerBadge();
+                logEvent('GAME', 'SYSTEM', `Serve → Team ${team}`, 0);
+            }
+
+            checkSetWin();
         }
-        updateServingIndicator();
-        highlightServerBadge();
-        logEvent('GAME', 'SYSTEM', `Serve → Team ${team}`, 0);
-    }
-
-    checkSetWin();
-}
 
         function checkSetWin() {
             const maxPoints = currentSet < 5 ? 25 : 15;
@@ -2646,33 +3064,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function handleSetWin(winner) {
-    // Save current set scores BEFORE incrementing
-    setScores.A[currentSet - 1] = scoreA;
-    setScores.B[currentSet - 1] = scoreB;
+            // Save current set scores BEFORE incrementing
+            setScores.A[currentSet - 1] = scoreA;
+            setScores.B[currentSet - 1] = scoreB;
 
-    // Increment sets won for the winner
-    if (winner === 'A') {
-        setsA++;
-    } else {
-        setsB++;
-    }
+            // Increment sets won for the winner
+            if (winner === 'A') {
+                setsA++;
+            } else {
+                setsB++;
+            }
 
-    // Log the set end
-    logEvent('GAME', 'SYSTEM', `Set ${currentSet} Ended - Team ${winner} wins ${winner === 'A' ? scoreA : scoreB}-${winner === 'A' ? scoreB : scoreA}`, 0);
+            // Log the set end
+            logEvent('GAME', 'SYSTEM',
+                `Set ${currentSet} Ended - Team ${winner} wins ${winner === 'A' ? scoreA : scoreB}-${winner === 'A' ? scoreB : scoreA}`,
+                0);
 
-    // Update displays
-    updateScoreboard();
-    updateSetScoresDisplay();
+            // Update displays
+            updateScoreboard();
+            updateSetScoresDisplay();
 
-    // ✅ CRITICAL: Check if game is over IMMEDIATELY (first to 3 sets wins)
-    if (setsA >= 3 || setsB >= 3) {
-        // Game is over - show game end modal
-        setTimeout(() => showGameEndModal(), 1000);
-    } else {
-        // Game continues - show set end modal for next set
-        setTimeout(() => showSetEndModal(), 1000);
-    }
-}
+            // ✅ CRITICAL: Check if game is over IMMEDIATELY (first to 3 sets wins)
+            if (setsA >= 3 || setsB >= 3) {
+                // Game is over - show game end modal
+                setTimeout(() => showGameEndModal(), 1000);
+            } else {
+                // Game continues - show set end modal for next set
+                setTimeout(() => showSetEndModal(), 1000);
+            }
+        }
 
         function handleTimeoutClick() {
             selectingTeam = true;
@@ -2703,7 +3123,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function handleErrorTeamSelect(team) {
             const opponent = team === 'A' ? 'B' : 'A';
-           
+
             if (opponent === 'A') {
                 scoreA++;
             } else {
@@ -2782,7 +3202,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function startNextSet() {
             document.getElementById('setEndModal').classList.remove('show');
-           
+
             currentSet++;
             scoreA = 0;
             scoreB = 0;
@@ -2800,34 +3220,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function showGameEndModal() {
-    const winner = setsA > setsB ? gameData.team1.name : gameData.team2.name;
-    document.getElementById('winnerText').textContent = `${winner.toUpperCase()} WINS!`;
-    document.getElementById('finalSetsA').textContent = setsA;
-    document.getElementById('finalSetsB').textContent = setsB;
+            const winner = setsA > setsB ? gameData.team1.name : gameData.team2.name;
+            document.getElementById('winnerText').textContent = `${winner.toUpperCase()} WINS!`;
+            document.getElementById('finalSetsA').textContent = setsA;
+            document.getElementById('finalSetsB').textContent = setsB;
 
-    let setScoresHtml = '';
-    
-    // ✅ ONLY show sets that were actually played (not empty sets)
-    for (let i = 0; i < currentSet; i++) {
-        const scoreA = setScores.A[i];
-        const scoreB = setScores.B[i];
-        
-        // Only show if this set has scores
-        if (scoreA !== undefined && scoreB !== undefined && (scoreA > 0 || scoreB > 0)) {
-            const wonClass = scoreA > scoreB ? 'won-a' : 'won-b';
+            let setScoresHtml = '';
 
-            setScoresHtml += `
+            // ✅ ONLY show sets that were actually played (not empty sets)
+            for (let i = 0; i < currentSet; i++) {
+                const scoreA = setScores.A[i];
+                const scoreB = setScores.B[i];
+
+                // Only show if this set has scores
+                if (scoreA !== undefined && scoreB !== undefined && (scoreA > 0 || scoreB > 0)) {
+                    const wonClass = scoreA > scoreB ? 'won-a' : 'won-b';
+
+                    setScoresHtml += `
                 <div style="display: flex; justify-content: space-between; padding: 10px; background: #3d3d3d; margin-bottom: 8px; border-radius: 6px;" class="${wonClass}">
                     <span>Set ${i + 1}:</span>
                     <span style="font-family: 'Courier New', monospace; font-weight: bold;">${scoreA} - ${scoreB}</span>
                 </div>
             `;
-        }
-    }
+                }
+            }
 
-    document.getElementById('finalSetScores').innerHTML = setScoresHtml;
-    document.getElementById('gameEndModal').classList.add('show');
-}
+            document.getElementById('finalSetScores').innerHTML = setScoresHtml;
+            document.getElementById('gameEndModal').classList.add('show');
+        }
 
         function collectPlayerStats() {
             const playerStats = {};
@@ -2906,7 +3326,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function saveGameResults() {
             const playerStats = collectPlayerStats();
-    
+
             const finalGameData = {
                 game_id: gameData.id,
                 team1_score: setsA,
@@ -2919,27 +3339,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 winner_id: setsA > setsB ? 1 : 2,
                 status: 'completed',
                 completed_at: new Date().toISOString(),
-                game_events: events,  // ✅ Events already include 'set' property
+                game_events: events, // ✅ Events already include 'set' property
                 player_stats: playerStats
             };
 
             fetch(`/games/${gameData.id}/volleyball-complete`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify(finalGameData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert('Game saved successfully!');
-                window.location.href = data.redirect_url || '/games';
-            })
-            .catch(error => {
-                console.error('Error saving game:', error);
-                alert('Error saving game. Please try again.');
-            });
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify(finalGameData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert('Game saved successfully!');
+                    window.location.href = data.redirect_url || '/games';
+                })
+                .catch(error => {
+                    console.error('Error saving game:', error);
+                    alert('Error saving game. Please try again.');
+                });
         }
 
         function logEvent(team, player, action, points) {
@@ -2949,7 +3369,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 player,
                 action,
                 points,
-                set: currentSet,  // ✅ This is already there
+                set: currentSet, // ✅ This is already there
                 score: `${scoreA}-${scoreB}`
             };
             events.unshift(event);
@@ -3057,7 +3477,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const scoreA = setScores.A[i];
                 const scoreB = setScores.B[i];
                 const wonClass = scoreA > scoreB ? 'won-a' : 'won-b';
-               
+
                 const box = document.createElement('div');
                 box.className = `set-score-box ${wonClass}`;
                 box.textContent = `${scoreA}-${scoreB}`;
@@ -3087,4 +3507,5 @@ document.addEventListener('DOMContentLoaded', function() {
         init();
     </script>
 </body>
+
 </html>
