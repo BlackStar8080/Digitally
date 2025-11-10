@@ -569,7 +569,7 @@
                             <i class="bi bi-trophy"></i>
                         </div>
                         <p><strong>No tournaments with games</strong></p>
-                        <p>Games will appear here when tournaments are created and brackets are generatedss.</p>
+                        <p>Games will appear here when tournaments are created and brackets are generatedsssss.</p>
                     </div>
                 </div>
             @endforelse
