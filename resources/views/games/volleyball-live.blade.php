@@ -571,7 +571,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            position: relative;  ← ADD THIS LINE
+            position: relative;  
         }
 
         .player-card.current-server {
@@ -808,7 +808,7 @@
             border-color: #9C27B0;
         }
 
-        btn-yellow-card {
+        .btn-yellow-card {
             background: linear-gradient(135deg, #FDD835 0%, #F9A825 100%);
             color: #000;
             font-weight: 800;
@@ -1391,6 +1391,7 @@
     </div>
 
     <!-- Action Buttons -->
+    <div class="actions-section">
     <div class="actions-grid">
        <button class="action-btn btn-kill" data-action="kill">Kill</button>
         <button class="action-btn btn-ace" data-action="ace">Ace</button>
@@ -1403,6 +1404,7 @@
         <button class="action-btn btn-substitution" id="substitutionBtn">Sub</button>
         <button class="action-btn btn-undo" id="undoBtn">↶ Undo</button>
     </div>
+</div>
 
     <!-- Team Selection Modal -->
     <div class="modal" id="teamSelectModal">
@@ -1927,7 +1929,7 @@ function createJerseyBadge(player, team) {
             closeTeamSelectModal();
         }
 
-        / ✅ NEW: Penalty Card Modal Handler
+
 document.getElementById('penaltyBtn').addEventListener('click', function() {
     openPenaltyModal();
 });
@@ -2713,25 +2715,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadHotkeys();
 });
 
-        function renderPlayers() {
-            const playersAGrid = document.getElementById('playersA');
-            const playersBGrid = document.getElementById('playersB');
-            playersAGrid.innerHTML = '';
-            playersBGrid.innerHTML = '';
-
-            const activePlayersA = gameData.team1.players.slice(0, 6);
-            const activePlayersB = gameData.team2.players.slice(0, 6);
-
-            activePlayersA.forEach(player => {
-                const card = createPlayerCard(player, 'A');
-                playersAGrid.appendChild(card);
-            });
-
-            activePlayersB.forEach(player => {
-                const card = createPlayerCard(player, 'B');
-                playersBGrid.appendChild(card);
-            });
-        }
+        
 
         function createPlayerCard(player, team) {
             const card = document.createElement('div');
