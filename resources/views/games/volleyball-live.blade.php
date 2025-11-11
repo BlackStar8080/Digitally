@@ -1958,7 +1958,6 @@ function setupPenaltyCardDragDrop() {
 
 // ✅ FIXED: Red Card Logic - Only awards 1 point per red card
 // Replace the handlePenaltyCardDrop function in your volleyball-live.blade.php with this version
-
 function handlePenaltyCardDrop(team, cardType) {
     closePenaltyModal();
 
@@ -1966,38 +1965,50 @@ function handlePenaltyCardDrop(team, cardType) {
         // Yellow card - warning only
         logEvent(team, 'TEAM', '⚠️ Yellow Card (Warning)', 0);
         showNotification(`Yellow card issued to Team ${team} - WARNING`, '#FDD835');
-    } else if (cardType === 'red') {
-        // Red card - opponent scores
+        return;
+    }
+    
+    // Red card handling
+    if (cardType === 'red') {
         const opponent = team === 'A' ? 'B' : 'A';
         
-        // ✅ ONLY award 1 point to opponent
+        // Award exactly 1 point to opponent
         if (opponent === 'A') {
             scoreA++;
         } else {
             scoreB++;
         }
         
+        // Update display
         updateScoreDisplay();
+        
+        // Log the red card event
         logEvent(team, 'TEAM', '🟥 Red Card (Penalty Point)', 0);
         
-        // ✅ Only switch serve if opponent doesn't already have it
+        // Only switch serve if opponent doesn't already have it
         if (opponent !== serving) {
             serving = opponent;
             rotateTeamClockwise(opponent);
-            const serverIndexMap = {1:5,2:2,3:1,4:0,5:3,6:4};
+            
+            const serverIndexMap = {1:5, 2:2, 3:1, 4:0, 5:3, 6:4};
             const arr = opponent === 'A' ? activePlayers.A : activePlayers.B;
             const newServer = arr && arr[serverIndexMap[1]] ? arr[serverIndexMap[1]] : null;
+            
             if (newServer) {
                 currentServerId = newServer.id;
                 currentServerTeam = opponent;
             }
+            
             updateServingIndicator();
             highlightServerBadge();
             logEvent('GAME', 'SYSTEM', `Serve → Team ${opponent}`, 0);
         }
         
+        // Check if this ends the set
         checkSetWin();
-        showNotification(`Red card issued to Team ${team} - 1 point awarded to Team ${opponent}`, '#E53935');
+        
+        // Show notification
+        showNotification(`Red card to Team ${team} - 1 point to Team ${opponent}`, '#E53935');
     }
 }
 
@@ -2624,28 +2635,7 @@ function updateSettingsDisplay() {
     document.getElementById('maxSubstitutionsB').textContent = maxSubstitutionsB;
 }
 
-// Show notification
-function showNotification(message) {
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #4CAF50;
-        color: white;
-        padding: 15px 20px;
-        border-radius: 8px;
-        font-weight: bold;
-        z-index: 99999;
-        animation: fadeIn 0.3s;
-    `;
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        document.body.removeChild(notification);
-    }, 3000);
-}
+
 
 // Initialize hotkeys and settings when menu is clicked
 document.addEventListener('DOMContentLoaded', function() {
