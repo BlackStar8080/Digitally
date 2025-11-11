@@ -1882,52 +1882,7 @@ function createJerseyBadge(player, team) {
             resetSelection();
         }
 
-        // ✅ NEW: Yellow Card Handler
-        document.getElementById('yellowCardBtn').addEventListener('click', function() {
-            selectingTeam = true;
-            teamSelectCallback = handleYellowCard;
-            showTeamSelectModal('Which team receives a YELLOW CARD (warning)?');
-        });
-
-        function handleYellowCard(team) {
-            logEvent(team, 'TEAM', '⚠️ Yellow Card (Warning)', 0);
-            showNotification(`Yellow card issued to Team ${team} - WARNING`);
-            closeTeamSelectModal();
-        }
-
-        // ✅ NEW: Red Card Handler
-        document.getElementById('redCardBtn').addEventListener('click', function() {
-            selectingTeam = true;
-            teamSelectCallback = handleRedCard;
-            showTeamSelectModal('Which team receives a RED CARD (opponent scores)?');
-        });
-
-        function handleRedCard(team) {
-            const opponent = team === 'A' ? 'B' : 'A';
-            
-            // Opponent scores a point
-            if (opponent === 'A') {
-                scoreA++;
-            } else {
-                scoreB++;
-            }
-            
-            updateScoreDisplay();
-            logEvent(team, 'TEAM', '🟥 Red Card (Penalty Point)', 0);
-            logEvent(opponent, 'SYSTEM', `Point awarded (Red Card to Team ${team})`, 1);
-            
-            // Check if opponent gains serve
-            if (opponent !== serving) {
-                serving = opponent;
-                rotateTeamClockwise(opponent);
-                updateServingIndicator();
-                logEvent('GAME', 'SYSTEM', `Serve → Team ${opponent}`, 0);
-            }
-            
-            checkSetWin();
-            showNotification(`Red card issued to Team ${team} - Point awarded to Team ${opponent}`);
-            closeTeamSelectModal();
-        }
+        
 
 
 document.getElementById('penaltyBtn').addEventListener('click', function() {
