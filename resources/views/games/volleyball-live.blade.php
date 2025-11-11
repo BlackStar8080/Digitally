@@ -1413,7 +1413,14 @@
         <button class="action-btn btn-undo" id="undoBtn">↶ Undo</button>
     </div>
 </div>
-
+<!-- Timeout End Modal -->
+<div class="modal" id="timeoutEndModal">
+    <div class="modal-content" style="border: 4px solid #FF9800;">
+        <h2 class="modal-title" style="color: #FF9800;">⏰ TIMEOUT ENDED</h2>
+        <p class="modal-subtitle" style="font-size: 20px;">The 60-second timeout has expired</p>
+        <button class="modal-btn modal-btn-primary" onclick="closeTimeoutEndModal()">RESUME GAME</button>
+    </div>
+</div>
     <!-- Team Selection Modal -->
     <div class="modal" id="teamSelectModal">
         <div class="modal-content">
@@ -1714,6 +1721,7 @@
         let timeoutActive = false;
         let timeoutTime = 30;
         let timeoutInterval = null;
+        let currentTimeoutTeam = null;  // ✅ ADD THIS LINE
 
         // Game settings limits
         let maxTimeoutsA = 2;
@@ -1816,7 +1824,6 @@ function createJerseyBadge(player, team) {
             document.querySelectorAll('.action-btn').forEach(btn => btn.classList.remove('selected'));
             this.classList.add('selected');
             
-            showInstruction('Select a team first, then choose block type');
             selectingTeam = true;
             teamSelectCallback = handleBlockTeamSelect;
             showTeamSelectModal('Which team made the block?');
@@ -1981,12 +1988,16 @@ function handlePenaltyCardDrop(team, cardType) {
     
     closePenaltyModal();
 
-    if (cardType === 'yellow') {
-        logEvent(team, 'TEAM', '⚠️ Yellow Card (Warning)', 0);
-        showNotification(`Yellow card issued to Team ${team} - WARNING`, '#FDD835');
+   if (cardType === 'yellow') {
+    logEvent(team, 'TEAM', '⚠️ Yellow Card (Warning)', 0);
+    showNotification(`Yellow card issued to Team ${team} - WARNING`, '#FDD835');
+    
+    // ✅ ADD THIS - Reset flag after short delay
+    setTimeout(() => {
         penaltyProcessing = false;
-        return;
-    }
+    }, 500);
+    return;
+}
     
     if (cardType === 'red') {
         const opponent = team === 'A' ? 'B' : 'A';
@@ -2349,7 +2360,13 @@ function updateMainRoster() {
         playersBGrid.appendChild(createPlayerCard(player, 'B'));
     });
 }
+function showTimeoutEndModal() {
+    document.getElementById('timeoutEndModal').classList.add('show');
+}
 
+function closeTimeoutEndModal() {
+    document.getElementById('timeoutEndModal').classList.remove('show');
+}
 // Show substitution success
 function showSubstitutionSuccess(team, outNumber, inNumber) {
     const message = document.createElement('div');
@@ -2985,25 +3002,24 @@ document.addEventListener('click', function(e) {
         }
 
         function handleTimeoutTeamSelect(team) {
-            if (team === 'A' && timeoutsA >= maxTimeoutsA) {
-                alert('Team A has no timeouts remaining');
-                return;
-            }
-            if (team === 'B' && timeoutsB >= maxTimeoutsB) {
-                alert('Team B has no timeouts remaining');
-                return;
-            }
+    if (team === 'A' && timeoutsA >= maxTimeoutsA) {
+        alert('Team A has no timeouts remaining');
+        return;
+    }
+    if (team === 'B' && timeoutsB >= maxTimeoutsB) {
+        alert('Team B has no timeouts remaining');
+        return;
+    }
 
-            if (team === 'A') {
-                timeoutsA++;
-            } else {
-                timeoutsB++;
-            }
+    if (team === 'A') {
+        timeoutsA++;
+    } else {
+        timeoutsB++;
+    }
 
-            updateScoreboard();
-            logEvent(team, 'TEAM', 'Timeout', 0);
-            startTimeoutTimer();
-        }
+    updateScoreboard();
+    startTimeoutTimer(team);  // ✅ CHANGED - pass team parameter, removed logEvent
+}
 
         function handleErrorTeamSelect(team) {
             const opponent = team === 'A' ? 'B' : 'A';
@@ -3026,11 +3042,14 @@ document.addEventListener('click', function(e) {
             checkSetWin();
         }
 
-        function startTimeoutTimer() {
+       function startTimeoutTimer(team) {  // ✅ ADD team parameter
             timeoutActive = true;
-            timeoutTime = 30;
+            timeoutTime = 60;  // ✅ Changed from 30
+            currentTimeoutTeam = team;  // ✅ ADD THIS
             document.getElementById('timeoutTimer').classList.add('active');
             updateTimeoutDisplay();
+            
+            logEvent(team, 'TEAM', 'Timeout Started (60s)', 0);  // ✅ ADD THIS
 
             timeoutInterval = setInterval(() => {
                 timeoutTime--;
@@ -3042,11 +3061,19 @@ document.addEventListener('click', function(e) {
         }
 
         function endTimeout() {
-            timeoutActive = false;
-            clearInterval(timeoutInterval);
-            document.getElementById('timeoutTimer').classList.remove('active');
-            timeoutTime = 30;
-        }
+    timeoutActive = false;
+    clearInterval(timeoutInterval);
+    document.getElementById('timeoutTimer').classList.remove('active');
+    
+    // ✅ ADD THESE LINES
+    if (currentTimeoutTeam) {
+        logEvent(currentTimeoutTeam, 'TEAM', 'Timeout Ended', 0);
+        showTimeoutEndModal();
+    }
+    
+    timeoutTime = 60;  // ✅ Changed from 30
+    currentTimeoutTeam = null;  // ✅ ADD THIS
+}
 
         function updateTimeoutDisplay() {
             document.getElementById('timeoutTime').textContent = timeoutTime;
