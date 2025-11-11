@@ -388,15 +388,15 @@
         }
 
         /* Scoreboard */
-        .scoreboard {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            padding: 12px 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-shrink: 0;
-        }
+      .scoreboard {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    padding: 12px 20px 12px 80px;  /* ✅ CHANGED: added left padding */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
 
         .team-section {
             display: flex;
@@ -1956,37 +1956,48 @@ function setupPenaltyCardDragDrop() {
     });
 }
 
-// ✅ FIXED: Red Card Logic - Only awards 1 point per red card
-// Replace the handlePenaltyCardDrop function in your volleyball-live.blade.php with this version
-function handlePenaltyCardDrop(team, cardType) {
-    closePenaltyModal();
+let penaltyProcessing = false;
 
-    if (cardType === 'yellow') {
-        // Yellow card - warning only
-        logEvent(team, 'TEAM', '⚠️ Yellow Card (Warning)', 0);
-        showNotification(`Yellow card issued to Team ${team} - WARNING`, '#FDD835');
+// STEP 2: Replace handlePenaltyCardDrop with safeguards
+function handlePenaltyCardDrop(team, cardType) {
+    // ✅ PREVENT MULTIPLE SIMULTANEOUS CALLS
+    if (penaltyProcessing) {
+        console.warn('Penalty already processing, ignoring duplicate call');
         return;
     }
     
-    // Red card handling
+    penaltyProcessing = true;
+    console.log('=== PENALTY CARD DROPPED ===');
+    console.log('Team:', team, 'Card:', cardType);
+    console.log('Score BEFORE - A:', scoreA, 'B:', scoreB);
+    
+    closePenaltyModal();
+
+    if (cardType === 'yellow') {
+        logEvent(team, 'TEAM', '⚠️ Yellow Card (Warning)', 0);
+        showNotification(`Yellow card issued to Team ${team} - WARNING`, '#FDD835');
+        penaltyProcessing = false;
+        return;
+    }
+    
     if (cardType === 'red') {
         const opponent = team === 'A' ? 'B' : 'A';
         
-        // Award exactly 1 point to opponent
+        // Award exactly 1 point
         if (opponent === 'A') {
             scoreA++;
+            console.log('Team A score increased to:', scoreA);
         } else {
             scoreB++;
+            console.log('Team B score increased to:', scoreB);
         }
         
-        // Update display
         updateScoreDisplay();
-        
-        // Log the red card event
         logEvent(team, 'TEAM', '🟥 Red Card (Penalty Point)', 0);
         
-        // Only switch serve if opponent doesn't already have it
+        // Only switch serve if needed
         if (opponent !== serving) {
+            console.log('Switching serve to', opponent);
             serving = opponent;
             rotateTeamClockwise(opponent);
             
@@ -2004,12 +2015,17 @@ function handlePenaltyCardDrop(team, cardType) {
             logEvent('GAME', 'SYSTEM', `Serve → Team ${opponent}`, 0);
         }
         
-        // Check if this ends the set
         checkSetWin();
-        
-        // Show notification
         showNotification(`Red card to Team ${team} - 1 point to Team ${opponent}`, '#E53935');
     }
+    
+    console.log('FINAL Score - A:', scoreA, 'B:', scoreB);
+    console.log('=== PENALTY COMPLETE ===');
+    
+    // ✅ Reset the flag after a short delay
+    setTimeout(() => {
+        penaltyProcessing = false;
+    }, 500);
 }
 
         // ✅ Helper function for notifications
@@ -2844,6 +2860,24 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
+        // ✅ NEW: Global click handler to cancel action selection
+document.addEventListener('click', function(e) {
+    // Only handle if we're currently selecting
+    if (!selectingPlayer && !selectingTeam) return;
+    
+    // Check what was clicked
+    const clickedPlayerCard = e.target.closest('.player-card');
+    const clickedActionBtn = e.target.closest('.action-btn');
+    const clickedModal = e.target.closest('.modal-content');
+    const clickedBanner = e.target.closest('.instruction-banner');
+    
+    // If clicked outside all valid targets, cancel selection
+    if (!clickedPlayerCard && !clickedActionBtn && !clickedModal && !clickedBanner) {
+        console.log('Clicked outside - canceling action selection');
+        resetSelection();
+    }
+});
+
         function handlePlayerClick(team, player) {
             if (!selectingPlayer) return;
 
@@ -3341,6 +3375,9 @@ document.addEventListener('DOMContentLoaded', function() {
         function resetSelection() {
             selectedAction = null;
             selectingPlayer = false;
+             blockingTeam = null;        // ✅ ADD this line
+            pendingBlockType = null;    // ✅ ADD this line
+            teamSelectCallback = null;  // ✅ ADD this line
             document.querySelectorAll('.action-btn').forEach(btn => btn.classList.remove('selected'));
             document.querySelectorAll('.player-card').forEach(card => card.classList.remove('selecting'));
             hideInstruction();
