@@ -1956,6 +1956,9 @@ function setupPenaltyCardDragDrop() {
     });
 }
 
+// ✅ FIXED: Red Card Logic - Only awards 1 point per red card
+// Replace the handlePenaltyCardDrop function in your volleyball-live.blade.php with this version
+
 function handlePenaltyCardDrop(team, cardType) {
     closePenaltyModal();
 
@@ -1967,6 +1970,7 @@ function handlePenaltyCardDrop(team, cardType) {
         // Red card - opponent scores
         const opponent = team === 'A' ? 'B' : 'A';
         
+        // ✅ ONLY award 1 point to opponent
         if (opponent === 'A') {
             scoreA++;
         } else {
@@ -1975,9 +1979,8 @@ function handlePenaltyCardDrop(team, cardType) {
         
         updateScoreDisplay();
         logEvent(team, 'TEAM', '🟥 Red Card (Penalty Point)', 0);
-        logEvent(opponent, 'SYSTEM', `Point awarded (Red Card to Team ${team})`, 1);
         
-        // Check if opponent gains serve
+        // ✅ Only switch serve if opponent doesn't already have it
         if (opponent !== serving) {
             serving = opponent;
             rotateTeamClockwise(opponent);
@@ -1994,7 +1997,7 @@ function handlePenaltyCardDrop(team, cardType) {
         }
         
         checkSetWin();
-        showNotification(`Red card issued to Team ${team} - Point awarded to Team ${opponent}`, '#E53935');
+        showNotification(`Red card issued to Team ${team} - 1 point awarded to Team ${opponent}`, '#E53935');
     }
 }
 
