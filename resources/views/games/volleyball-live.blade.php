@@ -11,7 +11,7 @@
             padding: 0;
             box-sizing: border-box;
         }
-        body {
+              body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #1a1a1a;
             color: white;
@@ -580,24 +580,32 @@
             box-shadow: 0 8px 30px rgba(255,235,59,0.08);
         }
 
+        /* ✅ FIXED: Server badge visibility */
         .set-server-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: rgba(255,235,59,0.95);
-    color: #111;
-    border: none;
-    border-radius: 6px;
-    padding: 4px 6px;
-    font-weight: 700;
-    cursor: pointer;
-    font-size: 12px;
-    display: inline-block;
-}
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255,235,59,0.95);
+            color: #111;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 6px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 12px;
+            display: none !important;  /* ✅ Hidden by default with !important */
+            transition: all 0.2s;
+        }
 
-.player-card .set-server-btn {
-    display: inline-block;
-}
+        /* ✅ Show on hover */
+        .player-card:hover .set-server-btn {
+            display: inline-block !important;
+        }
+
+        /* ✅ Always show for current server */
+        .player-card.current-server .set-server-btn {
+            display: inline-block !important;
+        }
 
         .player-card:hover {
             background: #4d4d4d;

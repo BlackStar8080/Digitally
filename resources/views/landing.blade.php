@@ -1362,6 +1362,63 @@ html {
         page-break-inside: avoid;
     }
 }
+/* ✅ Mobile Menu Styling */
+.navbar-toggler {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.nav-menu-mobile {
+  display: none;
+  background: var(--primary-purple);
+  padding: 1rem;
+  list-style: none;
+  text-align: center;
+}
+
+.nav-menu-mobile a {
+  color: white;
+  display: block;
+  padding: 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.nav-menu-mobile a:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* ✅ Show hamburger on small screens */
+@media (max-width: 768px) {
+  .navbar-toggler {
+    display: block;
+  }
+  .admin-btn {
+    display: none; /* optional: hides admin button to save space */
+  }
+}
+
+/* ✅ Extra Mobile Grid Adjustments */
+@media (max-width: 992px) {
+  .games-grid, .tournaments-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 576px) {
+  .games-grid, .tournaments-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .game-card, .tournament-card {
+    padding: 1rem;
+  }
+}
+
+
     </style>
         @if(session('success'))
             {{-- Provide server-side data for toast JS --}}
@@ -1385,9 +1442,28 @@ html {
                 </ul>
             </nav>
             <button class="admin-btn" data-bs-toggle="modal" data-bs-target="#loginModal">
+
                 <i class="bi bi-shield-lock me-2"></i>
                 Admin Login
             </button>
+            <button class="navbar-toggler" type="button" id="mobileMenuBtn">
+            <i class="bi bi-list" style="font-size: 1.8rem; color: white;"></i>
+            </button>
+            <!-- ✅ Mobile Menu Toggle Button -->
+            <button class="navbar-toggler" type="button" id="mobileMenuBtn">
+                <i class="bi bi-list" style="font-size: 1.8rem; color: white;"></i>
+            </button>
+            <!-- ✅ Mobile Navigation Menu -->
+            <ul class="nav-menu-mobile" id="mobileMenu" style="display:none;">
+                <li><a href="{{ route('landing') }}" class="active">Home</a></li>
+                <li><a href="#games">Games</a></li>
+                <li><a href="#tournaments">Tournaments</a></li>
+                <li><a href="#results">Results</a></li>
+            </ul>
+
+
+
+
         </div>
     </header>
     @if(session()->has('pending_game_join'))
@@ -1960,6 +2036,20 @@ html {
             });
         })();
     </script>
+
+    <!-- ✅ Mobile Menu Toggle Script -->
+<script>
+document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+    const menu = document.getElementById('mobileMenu');
+    // Toggle the menu visibility
+    if (menu.style.display === 'none' || menu.style.display === '') {
+        menu.style.display = 'block';
+    } else {
+        menu.style.display = 'none';
+    }
+});
+</script>
+
 
     <script>
     @if(session('join_prompt'))
