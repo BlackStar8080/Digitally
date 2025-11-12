@@ -1870,37 +1870,38 @@ function createJerseyBadge(player, team) {
             resetSelection();
         }
 
-        // ✅ UPDATED: Handle Player Click for Blocks
         function handlePlayerClick(team, player) {
-            if (!selectingPlayer) return;
+    if (!selectingPlayer) return;
 
-            const playerNumber = player.number || '00';
-            
-            // Handle block action
-            if (selectedAction === 'block' && pendingBlockType) {
-                if (pendingBlockType === 'kill_block') {
-                    // Kill block: award point and record block
-                    handleScore(team, 'Kill Block', playerNumber);
-                } else {
-                    // Regular block: just record the stat
-                    logEvent(team, playerNumber, 'Block', 0);
-                }
-                
-                pendingBlockType = null;
-                blockingTeam = null;
-                resetSelection();
-                return;
-            }
-            
-            // Handle other actions (kill, ace, dig, assist)
-            if (selectedAction === 'kill' || selectedAction === 'ace' || selectedAction === 'block') {
-                handleScore(team, selectedAction, playerNumber);
-            } else if (selectedAction === 'dig' || selectedAction === 'assist') {
-                logEvent(team, playerNumber, selectedAction.charAt(0).toUpperCase() + selectedAction.slice(1), 0);
-            }
-
-            resetSelection();
+    const playerNumber = player.number || '00';
+    
+    // ✅ FIXED: Handle block action with pending block type
+    if (selectedAction === 'block' && pendingBlockType) {
+        if (pendingBlockType === 'kill_block') {
+            // Kill block: award point and record block
+            handleScore(team, 'Kill Block', playerNumber);
+            // Also log the block stat separately
+            logEvent(team, playerNumber, 'Block', 0);
+        } else {
+            // Regular block: just record the stat (no point)
+            logEvent(team, playerNumber, 'Block', 0);
         }
+        
+        pendingBlockType = null;
+        blockingTeam = null;
+        resetSelection();
+        return;
+    }
+    
+    // Handle other actions (kill, ace)
+    if (selectedAction === 'kill' || selectedAction === 'ace') {
+        handleScore(team, selectedAction, playerNumber);
+    } else if (selectedAction === 'dig' || selectedAction === 'assist') {
+        logEvent(team, playerNumber, selectedAction.charAt(0).toUpperCase() + selectedAction.slice(1), 0);
+    }
+
+    resetSelection();
+}
 
         
 
@@ -2928,7 +2929,11 @@ document.addEventListener('click', function(e) {
         return;
     }
 
-    const actionLabel = action.charAt(0).toUpperCase() + action.slice(1);
+    // ✅ Handle action label formatting
+    let actionLabel = action.charAt(0).toUpperCase() + action.slice(1);
+    if (action === 'Kill Block') {
+        actionLabel = 'Kill Block';
+    }
     
     if (team === 'A') {
         scoreA++;
@@ -2941,11 +2946,12 @@ document.addEventListener('click', function(e) {
     }
 
     if (team !== serving) {
-        // team gained the serve -> rotate that team's players (visual mapping)
+        // team gained the serve -> rotate that team's players
         serving = team;
         rotateTeamClockwise(team);
-        // update current server to the player in the server position (pos 1 -> index 5)
-        const serverIndexMap = {1:5,2:2,3:1,4:0,5:3,6:4};
+        
+        // update current server to the player in the server position
+        const serverIndexMap = {1:5, 2:2, 3:1, 4:0, 5:3, 6:4};
         const arr = team === 'A' ? activePlayers.A : activePlayers.B;
         const newServer = arr && arr[serverIndexMap[1]] ? arr[serverIndexMap[1]] : null;
         if (newServer) {
@@ -3085,13 +3091,19 @@ document.addEventListener('click', function(e) {
         }
 
         function handleTeamSelect(team) {
-            closeTeamSelectModal();
-            if (teamSelectCallback) {
-                teamSelectCallback(team);
-                teamSelectCallback = null;
-            }
-            selectingTeam = false;
-        }
+    if (teamSelectCallback) {
+        const callback = teamSelectCallback;
+        teamSelectCallback = null;
+        selectingTeam = false;
+        closeTeamSelectModal(); // Close first
+        
+        // Use setTimeout to ensure modal closes before callback shows new modal
+        setTimeout(() => callback(team), 100);
+    } else {
+        closeTeamSelectModal();
+        selectingTeam = false;
+    }
+}
 
         function showTeamSelectModal(prompt) {
             document.getElementById('teamSelectPrompt').textContent = prompt;
