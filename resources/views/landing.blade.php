@@ -1100,259 +1100,517 @@ html {
     left: 0;
 }
 
-/* Responsive Design */
-@media (max-width: 1200px) {
+/* ===== MOBILE NAVIGATION IMPROVEMENTS ===== */
+.navbar-toggler {
+    display: none;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.navbar-toggler:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+}
+
+.navbar-toggler i {
+    color: white;
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+/* Mobile menu dropdown - positioned absolutely below header */
+.nav-menu-mobile {
+    display: none;
+    background: var(--primary-purple);
+    list-style: none;
+    margin: 0;
+    padding: 1rem 0;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 99;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.nav-menu-mobile.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.nav-menu-mobile li {
+    margin: 0;
+}
+
+.nav-menu-mobile a {
+    color: rgba(255, 255, 255, 0.9);
+    display: block;
+    padding: 12px 2rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.nav-menu-mobile a:hover,
+.nav-menu-mobile a.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border-left-color: white;
+    transform: translateX(4px);
+}
+
+/* ===== RESPONSIVE TOURNAMENT TABS ===== */
+.tournament-tabs-wrapper {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-purple) rgba(0,0,0,0.1);
+    padding-bottom: 0.5rem;
+}
+
+/* Scrollbar styling */
+.tournament-tabs-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+
+.tournament-tabs-wrapper::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.05);
+    border-radius: 3px;
+}
+
+.tournament-tabs-wrapper::-webkit-scrollbar-thumb {
+    background: var(--primary-purple);
+    border-radius: 3px;
+}
+
+.tournament-tabs-wrapper::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-purple);
+}
+
+/* ===== RESPONSIVE TABLE WRAPPER ===== */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-top: 1rem;
+    border-radius: 12px;
+}
+
+.table-responsive .results-table {
+    min-width: 600px; /* Prevents squishing */
+}
+
+/* ===== IMPROVED MEDIA QUERIES ===== */
+
+/* LARGE DESKTOP (1200px and above) */
+@media (min-width: 1200px) {
     .games-grid {
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
+/* DESKTOP/TABLET (992px to 1199px) */
+@media (max-width: 1199px) {
+    .games-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* TABLET (768px to 991px) */
 @media (max-width: 992px) {
     .header-container {
-        padding: 0 1.5rem;
-    }
-
-    .carousel-control-prev.custom-arrow-btn { 
-        left: -50px; 
+        padding: 12px 24px;
     }
     
-    .carousel-control-next.custom-arrow-btn { 
-        right: -50px; 
+    .games-grid,
+    .tournaments-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     }
-
-    .tournament-tabs-carousel {
-        padding: 0 50px;
+    
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.15rem;
     }
 }
 
+/* MOBILE (up to 768px) */
 @media (max-width: 768px) {
+    /* HEADER & NAVIGATION */
     .nav-menu {
         display: none;
     }
-
+    
+    .navbar-toggler {
+        display: block;
+    }
+    
     .header-container {
-        padding: 0 1rem;
+        padding: 12px 16px;
+        gap: 12px;
     }
-
+    
     .logo {
-        font-size: 24px;
+        font-size: 1.25rem;
     }
-
+    
+    .admin-btn {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+    
+    /* On very small screens, show only icon */
+    .admin-btn span {
+        display: inline;
+    }
+    
+    /* HERO SECTION */
     .hero-section,
     .tournaments-section,
     .recent-results,
     .card-like {
         margin: 1rem;
         padding: 1.5rem;
+        border-radius: 16px;
     }
-
+    
     .hero-title {
-        font-size: 2.5rem;
+        font-size: 2rem;
+        letter-spacing: 1px;
     }
-
+    
     .hero-subtitle {
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
-
+    
     .hero-header {
-        padding: 3rem 1.5rem;
+        padding: 2.5rem 1.5rem;
     }
-
+    
     .hero-header::before,
     .hero-header::after {
-        font-size: 4rem;
+        font-size: 3.5rem;
     }
-
+    
+    /* GAMES & TOURNAMENTS */
     .games-grid,
     .tournaments-grid {
         grid-template-columns: 1fr;
-        gap: 1.25rem;
-    }
-
-    .section-title {
-        font-size: 1.5rem;
-    }
-
-    .results-table {
-        font-size: 0.85rem;
-    }
-
-    .results-table th,
-    .results-table td {
-        padding: 10px 8px;
-    }
-
-    .tournament-tabs-carousel {
-        padding: 0 40px;
-    }
-
-    .tournament-tab {
-        min-width: 240px;
-        padding: 1rem;
-    }
-
-    .tab-name {
-        font-size: 1rem;
-    }
-
-    .tab-meta {
-        font-size: 0.8rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .hero-title {
-        font-size: 2rem;
-        letter-spacing: -1px;
-    }
-
-    .hero-subtitle {
-        font-size: 1rem;
-    }
-
-    .hero-header {
-        padding: 2.5rem 1rem;
-    }
-
-    .hero-header::before,
-    .hero-header::after {
-        font-size: 3rem;
-    }
-
-    .carousel-control-prev.custom-arrow-btn { 
-        left: 8px;
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
+        gap: 1rem;
     }
     
-    .carousel-control-next.custom-arrow-btn { 
-        right: 8px;
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
-    }
-
-    .tournament-tabs-carousel {
-        padding: 0 50px;
-    }
-
-    .tournament-tab {
-        min-width: 200px;
-        padding: 0.875rem 1rem;
-    }
-
-    .game-card {
-        padding: 1.5rem;
-    }
-
-    .team-score {
-        font-size: 2rem;
-    }
-
-    .team-name {
-        font-size: 1rem;
-    }
-
-    .vs-divider {
-        margin: 0 1rem;
-        font-size: 1rem;
-        min-width: 40px;
-        height: 40px;
-    }
-
     .section-title {
         font-size: 1.35rem;
+    }
+    
+    .section-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
+        gap: 0.75rem;
     }
-
-    .admin-btn {
-        padding: 10px 18px;
-        font-size: 13px;
-    }
-
-    .admin-btn i {
-        display: none;
-    }
-
-    .results-table th,
-    .results-table td {
-        padding: 8px 6px;
-        font-size: 0.8rem;
-    }
-
-    .tournament-name {
-        font-size: 1.1rem;
-    }
-
-    .tournament-card {
-        padding: 1.5rem;
-    }
-}
-
-@media (max-width: 400px) {
-    .hero-title {
-        font-size: 1.75rem;
-    }
-
-    .hero-subtitle {
-        font-size: 0.9rem;
-    }
-
-    .games-grid {
-        grid-template-columns: 1fr;
-    }
-
+    
+    /* GAME CARDS */
     .game-card {
         padding: 1.25rem;
     }
+    
+    .team-score {
+        font-size: 2rem;
+    }
+    
+    .team-name {
+        font-size: 1rem;
+    }
+    
+    .vs-divider {
+        margin: 0 1rem;
+        min-width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+    
+    /* TOURNAMENT TABS */
+    .tournament-tabs-carousel {
+        padding: 0 1rem;
+    }
+    
+    .tournament-tab {
+        min-width: 220px;
+        flex-shrink: 0;
+    }
+    
+    /* TABLES */
+    .results-table {
+        font-size: 0.85rem;
+    }
+    
+    .results-table th,
+    .results-table td {
+        padding: 10px 8px;
+        white-space: nowrap;
+    }
+    
+    /* MODAL */
+    .login-modal .modal-dialog {
+        margin: 1rem;
+    }
+    
+    .form-container {
+        padding: 1.5rem;
+    }
+}
 
+/* SMALL MOBILE (up to 576px) */
+@media (max-width: 576px) {
+    /* HEADER */
+    .header-container {
+        padding: 10px 12px;
+    }
+    
+    .logo {
+        font-size: 1.15rem;
+    }
+    
+    /* Hide "Admin Login" text, show only icon */
+    .admin-btn {
+        padding: 10px;
+        min-width: auto;
+    }
+    
+    .admin-btn .me-2 {
+        margin-right: 0 !important;
+    }
+    
+    .admin-btn span:not(.bi) {
+        display: none;
+    }
+    
+    /* HERO */
+    .hero-title {
+        font-size: 1.75rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .hero-header {
+        padding: 2rem 1rem;
+    }
+    
+    .hero-header::before,
+    .hero-header::after {
+        font-size: 2.5rem;
+        opacity: 0.1;
+    }
+    
+    /* SECTIONS */
+    .hero-section,
+    .tournaments-section,
+    .recent-results,
+    .card-like {
+        margin: 0.75rem;
+        padding: 1.25rem;
+    }
+    
+    .section-title {
+        font-size: 1.25rem;
+    }
+    
+    .live-indicator {
+        font-size: 0.7rem;
+        padding: 4px 10px;
+    }
+    
+    /* TOURNAMENT TABS */
+    .tournament-tab {
+        min-width: 180px;
+        padding: 0.875rem;
+    }
+    
+    .tab-name {
+        font-size: 0.95rem;
+    }
+    
+    .tab-meta {
+        font-size: 0.75rem;
+    }
+    
+    /* GAME CARDS */
+    .game-card {
+        padding: 1rem;
+    }
+    
     .team-score {
         font-size: 1.75rem;
     }
-
+    
     .teams-matchup {
         padding: 1rem;
     }
+    
+    .vs-divider {
+        margin: 0 0.5rem;
+        min-width: 36px;
+        height: 36px;
+    }
+    
+    .game-details {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+        font-size: 0.8rem;
+    }
+    
+    /* TOURNAMENT CARDS */
+    .tournament-card {
+        padding: 1.25rem;
+    }
+    
+    .tournament-name {
+        font-size: 1.1rem;
+    }
+    
+    /* TABLES */
+    .results-table {
+        font-size: 0.8rem;
+        min-width: 500px;
+    }
+    
+    .results-table th,
+    .results-table td {
+        padding: 8px 6px;
+    }
+    
+    /* FOOTER */
+    .footer {
+        padding: 2rem 0 1rem;
+    }
+    
+    .footer-container {
+        padding: 0 1rem;
+    }
+    
+    .footer-title {
+        font-size: 1.5rem;
+    }
 }
 
-/* Loading States */
-.loading {
-    animation: shimmer 2s infinite;
-    background: linear-gradient(to right, #f0f0f0 4%, #e0e0e0 25%, #f0f0f0 36%);
-    background-size: 1000px 100%;
+/* EXTRA SMALL MOBILE (up to 400px) */
+@media (max-width: 400px) {
+    .hero-title {
+        font-size: 1.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.85rem;
+    }
+    
+    .hero-section,
+    .tournaments-section,
+    .recent-results,
+    .card-like {
+        margin: 0.5rem;
+        padding: 1rem;
+    }
+    
+    .game-card {
+        padding: 0.875rem;
+    }
+    
+    .team-score {
+        font-size: 1.5rem;
+    }
+    
+    .team-name {
+        font-size: 0.9rem;
+    }
+    
+    .teams-matchup {
+        padding: 0.75rem;
+    }
+    
+    .tournament-tab {
+        min-width: 160px;
+    }
+    
+    .section-title {
+        font-size: 1.15rem;
+    }
 }
 
-/* Utility Classes */
-.fade-in-up {
-    animation: fadeInUp 0.6s ease-out;
+/* ===== TOUCH DEVICE OPTIMIZATIONS ===== */
+@media (hover: none) and (pointer: coarse) {
+    /* Larger touch targets for mobile */
+    .nav-menu-mobile a,
+    .tournament-tab,
+    .game-card,
+    .view-tournament-btn {
+        min-height: 44px; /* Apple's recommended minimum */
+    }
+    
+    /* Remove hover effects on touch devices */
+    .game-card:hover,
+    .tournament-card:hover {
+        transform: none;
+    }
+    
+    /* Active state for better touch feedback */
+    .game-card:active,
+    .tournament-card:active {
+        transform: scale(0.98);
+        opacity: 0.9;
+    }
 }
 
-.fade-in {
-    animation: fadeIn 0.6s ease-out;
+/* ===== LANDSCAPE MOBILE ===== */
+@media (max-width: 768px) and (orientation: landscape) {
+    .hero-header {
+        padding: 1.5rem 2rem;
+    }
+    
+    .hero-title {
+        font-size: 1.75rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.95rem;
+    }
+    
+    .nav-menu-mobile {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
 }
 
-.slide-in {
-    animation: slideIn 0.6s ease-out;
-}
-
-/* Print Styles */
+/* ===== PRINT STYLES ===== */
 @media print {
     .header,
     .footer,
     .admin-btn,
+    .navbar-toggler,
+    .nav-menu-mobile,
     .custom-arrow-btn,
     .carousel-control-prev,
     .carousel-control-next {
         display: none;
     }
-
-    body {
-        background: white;
-    }
-
+    
     .hero-section,
     .tournaments-section,
     .recent-results,
@@ -1360,62 +1618,44 @@ html {
         box-shadow: none;
         border: 1px solid var(--border-color);
         page-break-inside: avoid;
+        margin: 1rem 0;
+    }
+    
+    .games-grid,
+    .tournaments-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
-/* ✅ Mobile Menu Styling */
-.navbar-toggler {
-  display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
+
+/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+
+/* Focus visible for keyboard navigation */
+*:focus-visible {
+    outline: 3px solid var(--primary-purple);
+    outline-offset: 2px;
 }
 
-.nav-menu-mobile {
-  display: none;
-  background: var(--primary-purple);
-  padding: 1rem;
-  list-style: none;
-  text-align: center;
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
 
-.nav-menu-mobile a {
-  color: white;
-  display: block;
-  padding: 10px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.nav-menu-mobile a:hover {
-  background: rgba(255,255,255,0.15);
-}
-
-/* ✅ Show hamburger on small screens */
-@media (max-width: 768px) {
-  .navbar-toggler {
-    display: block;
-  }
-  .admin-btn {
-    display: none; /* optional: hides admin button to save space */
-  }
-}
-
-/* ✅ Extra Mobile Grid Adjustments */
-@media (max-width: 992px) {
-  .games-grid, .tournaments-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
-}
-
-@media (max-width: 576px) {
-  .games-grid, .tournaments-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  .game-card, .tournament-card {
-    padding: 1rem;
-  }
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .header {
+        border-bottom: 2px solid white;
+    }
+    
+    .game-card,
+    .tournament-card {
+        border-width: 3px;
+    }
 }
 
 
@@ -1463,7 +1703,16 @@ html {
 
 
 
-        </div>
+        </div> <!-- header-container closes -->
+        
+        <!-- Mobile Navigation Menu -->
+        <ul class="nav-menu-mobile" id="mobileMenu">
+            <li><a href="{{ route('landing') }}">Home</a></li>
+            <li><a href="#games">Games</a></li>
+            <li><a href="#tournaments">Tournaments</a></li>
+            <li><a href="#results">Results</a></li>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Admin Login</a></li>
+        </ul>
     </header>
     @if(session()->has('pending_game_join'))
         <div style="background: linear-gradient(135deg, #4CAF50, #45a049); color: white; padding: 16px; text-align: center; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: slideDown 0.3s ease-out;">
@@ -1808,6 +2057,7 @@ html {
             </h2>
         </div>
         @if ($recentResults->count() > 0)
+        <div class="table-responsive">
             <table class="results-table">
                 <thead>
                     <tr>
@@ -1836,6 +2086,7 @@ html {
                     @endforeach
                 </tbody>
             </table>
+        </div>
         @else
             <div class="empty-state">
                 <div class="empty-icon">
@@ -2038,15 +2289,334 @@ html {
 
     <!-- ✅ Mobile Menu Toggle Script -->
 <script>
-document.getElementById('mobileMenuBtn').addEventListener('click', function() {
-    const menu = document.getElementById('mobileMenu');
-    // Toggle the menu visibility
-    if (menu.style.display === 'none' || menu.style.display === '') {
-        menu.style.display = 'block';
-    } else {
-        menu.style.display = 'none';
+/* ============================================
+   IMPROVED JAVASCRIPT FOR RESPONSIVE FEATURES
+   Replace your existing mobile menu script with this
+   ============================================ */
+
+// ===== MOBILE MENU TOGGLE =====
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    if (!mobileMenuBtn || !mobileMenu) {
+        console.warn('Mobile menu elements not found');
+        return;
+    }
+    
+    // Toggle menu on button click
+    mobileMenuBtn.addEventListener('click', function(e) {
+        e.stopPropagation(); // Prevent document click from firing
+        
+        const isOpen = mobileMenu.classList.contains('show');
+        const icon = this.querySelector('i');
+        
+        if (isOpen) {
+            // Close menu
+            mobileMenu.classList.remove('show');
+            icon.classList.remove('bi-x');
+            icon.classList.add('bi-list');
+        } else {
+            // Open menu
+            mobileMenu.classList.add('show');
+            icon.classList.remove('bi-list');
+            icon.classList.add('bi-x');
+        }
+    });
+    
+    // Close menu when clicking a link
+    const mobileLinks = mobileMenu.querySelectorAll('a');
+    mobileLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            mobileMenu.classList.remove('show');
+            const icon = mobileMenuBtn.querySelector('i');
+            icon.classList.remove('bi-x');
+            icon.classList.add('bi-list');
+        });
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const isClickInsideMenu = mobileMenu.contains(event.target);
+        const isClickOnButton = mobileMenuBtn.contains(event.target);
+        
+        if (!isClickInsideMenu && !isClickOnButton && mobileMenu.classList.contains('show')) {
+            mobileMenu.classList.remove('show');
+            const icon = mobileMenuBtn.querySelector('i');
+            icon.classList.remove('bi-x');
+            icon.classList.add('bi-list');
+        }
+    });
+    
+    // Close menu on ESC key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && mobileMenu.classList.contains('show')) {
+            mobileMenu.classList.remove('show');
+            const icon = mobileMenuBtn.querySelector('i');
+            icon.classList.remove('bi-x');
+            icon.classList.add('bi-list');
+            mobileMenuBtn.focus(); // Return focus to button
+        }
+    });
+});
+
+// ===== RESPONSIVE TOURNAMENT TABS SCROLL =====
+document.addEventListener('DOMContentLoaded', function() {
+    const tabsContainer = document.querySelector('.tournament-tabs-wrapper');
+    
+    if (tabsContainer) {
+        // Add smooth scroll behavior
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        
+        tabsContainer.addEventListener('mousedown', (e) => {
+            isDown = true;
+            tabsContainer.style.cursor = 'grabbing';
+            startX = e.pageX - tabsContainer.offsetLeft;
+            scrollLeft = tabsContainer.scrollLeft;
+        });
+        
+        tabsContainer.addEventListener('mouseleave', () => {
+            isDown = false;
+            tabsContainer.style.cursor = 'grab';
+        });
+        
+        tabsContainer.addEventListener('mouseup', () => {
+            isDown = false;
+            tabsContainer.style.cursor = 'grab';
+        });
+        
+        tabsContainer.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - tabsContainer.offsetLeft;
+            const walk = (x - startX) * 2;
+            tabsContainer.scrollLeft = scrollLeft - walk;
+        });
     }
 });
+
+// ===== SCROLL TO TOP BUTTON (Optional Enhancement) =====
+document.addEventListener('DOMContentLoaded', function() {
+    // Create scroll to top button
+    const scrollBtn = document.createElement('button');
+    scrollBtn.innerHTML = '<i class="bi bi-arrow-up-circle-fill"></i>';
+    scrollBtn.className = 'scroll-to-top';
+    scrollBtn.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+        color: white;
+        border: none;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        box-shadow: 0 4px 12px rgba(157, 78, 221, 0.3);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    `;
+    
+    document.body.appendChild(scrollBtn);
+    
+    // Show/hide button based on scroll position
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            scrollBtn.style.display = 'flex';
+        } else {
+            scrollBtn.style.display = 'none';
+        }
+    });
+    
+    // Scroll to top on click
+    scrollBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+    
+    // Add hover effect
+    scrollBtn.addEventListener('mouseenter', function() {
+        this.style.transform = 'scale(1.1) translateY(-3px)';
+        this.style.boxShadow = '0 6px 20px rgba(157, 78, 221, 0.4)';
+    });
+    
+    scrollBtn.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1) translateY(0)';
+        this.style.boxShadow = '0 4px 12px rgba(157, 78, 221, 0.3)';
+    });
+});
+
+// ===== VIEWPORT HEIGHT FIX FOR MOBILE (Optional) =====
+// Fixes 100vh issues on mobile browsers where address bar changes height
+document.addEventListener('DOMContentLoaded', function() {
+    function setVH() {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    
+    setVH();
+    window.addEventListener('resize', setVH);
+    window.addEventListener('orientationchange', setVH);
+});
+
+// ===== LAZY LOADING FOR IMAGES (Performance Enhancement) =====
+document.addEventListener('DOMContentLoaded', function() {
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.classList.remove('lazy');
+                    imageObserver.unobserve(img);
+                }
+            });
+        });
+        
+        const lazyImages = document.querySelectorAll('img.lazy');
+        lazyImages.forEach(img => imageObserver.observe(img));
+    }
+});
+
+// ===== TOUCH SWIPE FOR CAROUSELS (Mobile Enhancement) =====
+document.addEventListener('DOMContentLoaded', function() {
+    const carousels = document.querySelectorAll('.carousel');
+    
+    carousels.forEach(carousel => {
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        carousel.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        
+        carousel.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe(carousel);
+        }, { passive: true });
+        
+        function handleSwipe(element) {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                const carouselInstance = bootstrap.Carousel.getInstance(element);
+                if (carouselInstance) {
+                    if (diff > 0) {
+                        carouselInstance.next();
+                    } else {
+                        carouselInstance.prev();
+                    }
+                }
+            }
+        }
+    });
+});
+
+// ===== RESPONSIVE TABLE SCROLL INDICATOR =====
+document.addEventListener('DOMContentLoaded', function() {
+    const tableContainers = document.querySelectorAll('.table-responsive');
+    
+    tableContainers.forEach(container => {
+        const table = container.querySelector('table');
+        
+        if (table && table.offsetWidth > container.offsetWidth) {
+            // Add scroll indicator
+            const indicator = document.createElement('div');
+            indicator.className = 'scroll-indicator';
+            indicator.innerHTML = '<i class="bi bi-chevron-double-right"></i> Scroll';
+            indicator.style.cssText = `
+                position: absolute;
+                right: 10px;
+                top: 10px;
+                background: var(--primary-purple);
+                color: white;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+                animation: pulse 2s infinite;
+                pointer-events: none;
+            `;
+            
+            container.style.position = 'relative';
+            container.appendChild(indicator);
+            
+            // Hide indicator after scroll
+            container.addEventListener('scroll', function() {
+                if (this.scrollLeft > 20) {
+                    indicator.style.display = 'none';
+                }
+            }, { once: true });
+        }
+    });
+});
+
+// ===== PERFORMANCE: DEBOUNCE RESIZE EVENTS =====
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Use debounced resize for performance
+window.addEventListener('resize', debounce(function() {
+    // Your resize logic here
+    console.log('Window resized');
+}, 250));
+
+// ===== ACTIVE NAVIGATION LINK HIGHLIGHT =====
+document.addEventListener('DOMContentLoaded', function() {
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-menu a, .nav-menu-mobile a');
+    
+    function highlightNavigation() {
+        const scrollPosition = window.scrollY + 100;
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            const sectionId = section.getAttribute('id');
+            
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${sectionId}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }
+    
+    window.addEventListener('scroll', debounce(highlightNavigation, 100));
+});
+
+// ===== CONSOLE INFO (Remove in production) =====
+console.log('%c🏀 DigiTally Responsive Features Loaded! 🏐', 
+    'color: #9d4edd; font-size: 16px; font-weight: bold;');
+console.log('✅ Mobile menu enabled');
+console.log('✅ Touch swipe gestures enabled');
+console.log('✅ Scroll to top button added');
+console.log('✅ Responsive tables with scroll indicators');
+
+// ===== EXPORT FUNCTIONS (if using modules) =====
+// Uncomment if you're using ES6 modules
+// export { debounce };
 </script>
 
 
