@@ -1356,7 +1356,7 @@
             <span class="sets-score" id="setsB">0</span>
         </div>
         <div class="set-scores" id="setScoresDisplay"></div>
-        <div class="timeout-timer" id="timeoutTimer">TIMEOUT: <span id="timeoutTime">30</span>s</div>
+        <div class="timeout-timer" id="timeoutTimer">TIMEOUT: <span id="timeoutTime">60</span>s</div>
     </div>
 
     <!-- Team B Section -->
@@ -1696,6 +1696,9 @@
         };
 
         // Game state
+        // Block action tracking
+let blockingTeam = null;
+let pendingBlockType = null;
         let scoreA = 0, scoreB = 0;
         let currentSet = 1;
         let setsA = 0, setsB = 0;
@@ -1704,6 +1707,7 @@
         let substitutionsA = 0, substitutionsB = 0;
         let events = [];
         let eventCounter = 1;
+
        
         let setScores = {
             A: [0, 0, 0, 0, 0],
@@ -1714,12 +1718,14 @@
         let selectingPlayer = false;
         let selectingTeam = false;
         let teamSelectCallback = null;
+        let blockingTeam = null;           // ✅ ADD THIS LINE
+        let pendingBlockType = null;
     // Current server tracking
     let currentServerId = null;
     let currentServerTeam = null;
 
         let timeoutActive = false;
-        let timeoutTime = 30;
+        let timeoutTime = 60;
         let timeoutInterval = null;
         let currentTimeoutTeam = null;  // ✅ ADD THIS LINE
 
@@ -1728,6 +1734,7 @@
         let maxTimeoutsB = 2;
         let maxSubstitutionsA = 6;
         let maxSubstitutionsB = 6;
+
 
         // Hamburger menu functionality
         const hamburgerBtn = document.getElementById('hamburgerBtn');
