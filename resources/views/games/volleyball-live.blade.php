@@ -1718,8 +1718,6 @@ let pendingBlockType = null;
         let selectingPlayer = false;
         let selectingTeam = false;
         let teamSelectCallback = null;
-        let blockingTeam = null;           // ✅ ADD THIS LINE
-        let pendingBlockType = null;
     // Current server tracking
     let currentServerId = null;
     let currentServerTeam = null;
