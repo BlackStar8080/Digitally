@@ -1449,10 +1449,9 @@ html {
             <button class="navbar-toggler" type="button" id="mobileMenuBtn">
             <i class="bi bi-list" style="font-size: 1.8rem; color: white;"></i>
             </button>
-            <!-- ✅ Mobile Menu Toggle Button -->
-            <button class="navbar-toggler" type="button" id="mobileMenuBtn">
-                <i class="bi bi-list" style="font-size: 1.8rem; color: white;"></i>
-            </button>
+           <button class="navbar-toggler" type="button" id="mobileMenuBtn">
+    <i class="bi bi-list"></i>
+</button>
             <!-- ✅ Mobile Navigation Menu -->
             <ul class="nav-menu-mobile" id="mobileMenu" style="display:none;">
                 <li><a href="{{ route('landing') }}" class="active">Home</a></li>

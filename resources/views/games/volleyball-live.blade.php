@@ -1681,6 +1681,79 @@
     </div>
 </div>
 
+<!-- Set Summary Modal -->
+<div class="modal" id="setSummaryModal">
+    <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+        <h2 class="modal-title" style="color: #4CAF50;">📊 SET <span id="summarySetNumber">1</span> SUMMARY</h2>
+        
+        <!-- Final Score -->
+        <div class="modal-score" style="margin: 20px 0;">
+            <div class="modal-team">
+                <div class="modal-team-name" id="summaryTeamAName"></div>
+                <div class="modal-team-score" id="summaryScoreA">00</div>
+            </div>
+            <div class="modal-team">
+                <div class="modal-team-name" id="summaryTeamBName"></div>
+                <div class="modal-team-score" id="summaryScoreB">00</div>
+            </div>
+        </div>
+
+        <!-- Team A Stats -->
+        <div style="margin: 30px 0;">
+            <h3 style="color: #c33; margin-bottom: 15px; font-size: 20px; border-bottom: 2px solid #c33; padding-bottom: 8px;">
+                <span id="summaryTeamATitle"></span> STATISTICS
+            </h3>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; background: #3d3d3d; border-radius: 8px; overflow: hidden;">
+                    <thead style="background: #c33;">
+                        <tr>
+                            <th style="padding: 12px; text-align: left;">#</th>
+                            <th style="padding: 12px; text-align: left;">Player</th>
+                            <th style="padding: 12px; text-align: center;">Kills</th>
+                            <th style="padding: 12px; text-align: center;">Aces</th>
+                            <th style="padding: 12px; text-align: center;">Blocks</th>
+                            <th style="padding: 12px; text-align: center;">Digs</th>
+                            <th style="padding: 12px; text-align: center;">Sets</th>
+                            <th style="padding: 12px; text-align: center;">Errors</th>
+                        </tr>
+                    </thead>
+                    <tbody id="summaryTeamAStats">
+                        <!-- Will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Team B Stats -->
+        <div style="margin: 30px 0;">
+            <h3 style="color: #339; margin-bottom: 15px; font-size: 20px; border-bottom: 2px solid #339; padding-bottom: 8px;">
+                <span id="summaryTeamBTitle"></span> STATISTICS
+            </h3>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; background: #3d3d3d; border-radius: 8px; overflow: hidden;">
+                    <thead style="background: #339;">
+                        <tr>
+                            <th style="padding: 12px; text-align: left;">#</th>
+                            <th style="padding: 12px; text-align: left;">Player</th>
+                            <th style="padding: 12px; text-align: center;">Kills</th>
+                            <th style="padding: 12px; text-align: center;">Aces</th>
+                            <th style="padding: 12px; text-align: center;">Blocks</th>
+                            <th style="padding: 12px; text-align: center;">Digs</th>
+                            <th style="padding: 12px; text-align: center;">Sets</th>
+                            <th style="padding: 12px; text-align: center;">Errors</th>
+                        </tr>
+                    </thead>
+                    <tbody id="summaryTeamBStats">
+                        <!-- Will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <button class="modal-btn modal-btn-primary" onclick="closeSetSummaryModal()">CONTINUE TO NEXT SET</button>
+    </div>
+</div>
+
     <script>
         // Game data from Laravel
         const gameData = {
@@ -1876,32 +1949,43 @@ function handleBlockType(blockType) {
         }
 
      function handlePlayerClick(team, player) {
-    if (!selectingPlayer) return;
+    if (!selectingPlayer) {
+        console.log('Not selecting player, ignoring click');
+        return;
+    }
+
+    console.log('Player clicked:', team, player.number, 'Action:', selectedAction, 'BlockType:', pendingBlockType);
 
     const playerNumber = player.number || '00';
     
-    // ✅ Handle block action with pending block type
+    // ✅ PRIORITY: Handle block action with pending block type FIRST
     if (selectedAction === 'block' && pendingBlockType) {
+        console.log('Processing block with type:', pendingBlockType);
+        
         if (pendingBlockType === 'kill_block') {
             // Kill block: award point to the blocking team AND record block stat
             handleScore(team, 'kill', playerNumber);  // This awards the point
             logEvent(team, playerNumber, 'Block', 0);  // This records the block stat separately
+            console.log('Kill block recorded');
         } else if (pendingBlockType === 'regular_block') {
             // Regular block: just record the stat (no point)
             logEvent(team, playerNumber, 'Block', 0);
+            console.log('Regular block recorded');
         }
         
         // Reset block state
         pendingBlockType = null;
         blockingTeam = null;
         resetSelection();
-        return;
+        return; // ✅ CRITICAL: Exit here so we don't run the code below
     }
     
-    // Handle other actions (kill, ace)
+    // ✅ Handle other actions (kill, ace) - but NOT block anymore since it's handled above
     if (selectedAction === 'kill' || selectedAction === 'ace') {
+        console.log('Processing', selectedAction);
         handleScore(team, selectedAction, playerNumber);
     } else if (selectedAction === 'dig' || selectedAction === 'assist') {
+        console.log('Processing', selectedAction);
         logEvent(team, playerNumber, selectedAction.charAt(0).toUpperCase() + selectedAction.slice(1), 0);
     }
 
@@ -2897,6 +2981,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // ✅ NEW: Global click handler to cancel action selection
+// ✅ UPDATED: Global click handler to cancel action selection
 document.addEventListener('click', function(e) {
     // Only handle if we're currently selecting
     if (!selectingPlayer && !selectingTeam) return;
@@ -2906,9 +2991,11 @@ document.addEventListener('click', function(e) {
     const clickedActionBtn = e.target.closest('.action-btn');
     const clickedModal = e.target.closest('.modal-content');
     const clickedBanner = e.target.closest('.instruction-banner');
+    const clickedBlockTypeModal = e.target.closest('.block-type-modal'); // ✅ ADD THIS
+    const clickedBlockTypeBtn = e.target.closest('.block-type-btn'); // ✅ ADD THIS
     
     // If clicked outside all valid targets, cancel selection
-    if (!clickedPlayerCard && !clickedActionBtn && !clickedModal && !clickedBanner) {
+    if (!clickedPlayerCard && !clickedActionBtn && !clickedModal && !clickedBanner && !clickedBlockTypeModal && !clickedBlockTypeBtn) {
         console.log('Clicked outside - canceling action selection');
         resetSelection();
     }
@@ -3001,13 +3088,147 @@ document.addEventListener('click', function(e) {
     updateScoreboard();
     updateSetScoresDisplay();
 
-    // ✅ CRITICAL: Check if game is over IMMEDIATELY (first to 3 sets wins)
+    // ✅ Show set summary modal with stats
+    setTimeout(() => showSetSummaryModal(currentSet, scoreA, scoreB), 1000);
+}
+
+// Calculate stats for current set
+function calculateSetStats(setNumber) {
+    const stats = {
+        A: [],
+        B: []
+    };
+
+    // Initialize Team A players with zero stats
+    gameData.team1.players.forEach(player => {
+        stats.A.push({
+            id: player.id,
+            name: player.name || `Player ${player.number}`,
+            number: player.number || '00',
+            kills: 0,
+            aces: 0,
+            blocks: 0,
+            digs: 0,
+            assists: 0,
+            errors: 0
+        });
+    });
+
+    // Initialize Team B players with zero stats
+    gameData.team2.players.forEach(player => {
+        stats.B.push({
+            id: player.id,
+            name: player.name || `Player ${player.number}`,
+            number: player.number || '00',
+            kills: 0,
+            aces: 0,
+            blocks: 0,
+            digs: 0,
+            assists: 0,
+            errors: 0
+        });
+    });
+
+    // Count stats from events in this set
+    events.forEach(event => {
+        if (event.set !== setNumber) return;
+        if (event.player === 'TEAM' || event.player === 'SYSTEM') return;
+
+        const team = event.team;
+        const playerNumber = event.player.toString();
+
+        // Find the player in stats array
+        const playerStats = stats[team].find(p => p.number.toString() === playerNumber);
+        if (!playerStats) return;
+
+        const action = event.action.toLowerCase();
+        
+        if (action === 'kill' || action === 'kill block') {
+            playerStats.kills++;
+        } else if (action === 'ace') {
+            playerStats.aces++;
+        } else if (action === 'block') {
+            playerStats.blocks++;
+        } else if (action === 'dig') {
+            playerStats.digs++;
+        } else if (action === 'assist') {
+            playerStats.assists++;
+        } else if (action.includes('error')) {
+            playerStats.errors++;
+        }
+    });
+
+    return stats;
+}
+
+// Show set summary modal
+function showSetSummaryModal(setNumber, finalScoreA, finalScoreB) {
+    const stats = calculateSetStats(setNumber);
+
+    // Set header info
+    document.getElementById('summarySetNumber').textContent = setNumber;
+    document.getElementById('summaryTeamAName').textContent = gameData.team1.name;
+    document.getElementById('summaryTeamBName').textContent = gameData.team2.name;
+    document.getElementById('summaryTeamATitle').textContent = gameData.team1.name.toUpperCase();
+    document.getElementById('summaryTeamBTitle').textContent = gameData.team2.name.toUpperCase();
+    document.getElementById('summaryScoreA').textContent = finalScoreA.toString().padStart(2, '0');
+    document.getElementById('summaryScoreB').textContent = finalScoreB.toString().padStart(2, '0');
+
+    // Render Team A stats
+    const teamAStatsBody = document.getElementById('summaryTeamAStats');
+    teamAStatsBody.innerHTML = '';
+    
+    // ✅ FIXED: Use the array directly, not Object.values
+    stats.A.forEach(player => {
+        const row = document.createElement('tr');
+        row.style.borderBottom = '1px solid #2d2d2d';
+        row.innerHTML = `
+            <td style="padding: 12px; font-weight: bold;">${player.number}</td>
+            <td style="padding: 12px;">${player.name}</td>
+            <td style="padding: 12px; text-align: center;">${player.kills}</td>
+            <td style="padding: 12px; text-align: center;">${player.aces}</td>
+            <td style="padding: 12px; text-align: center;">${player.blocks}</td>
+            <td style="padding: 12px; text-align: center;">${player.digs}</td>
+            <td style="padding: 12px; text-align: center;">${player.assists}</td>
+            <td style="padding: 12px; text-align: center;">${player.errors}</td>
+        `;
+        teamAStatsBody.appendChild(row);
+    });
+
+    // Render Team B stats
+    const teamBStatsBody = document.getElementById('summaryTeamBStats');
+    teamBStatsBody.innerHTML = '';
+    
+    // ✅ FIXED: Use the array directly, not Object.values
+    stats.B.forEach(player => {
+        const row = document.createElement('tr');
+        row.style.borderBottom = '1px solid #2d2d2d';
+        row.innerHTML = `
+            <td style="padding: 12px; font-weight: bold;">${player.number}</td>
+            <td style="padding: 12px;">${player.name}</td>
+            <td style="padding: 12px; text-align: center;">${player.kills}</td>
+            <td style="padding: 12px; text-align: center;">${player.aces}</td>
+            <td style="padding: 12px; text-align: center;">${player.blocks}</td>
+            <td style="padding: 12px; text-align: center;">${player.digs}</td>
+            <td style="padding: 12px; text-align: center;">${player.assists}</td>
+            <td style="padding: 12px; text-align: center;">${player.errors}</td>
+        `;
+        teamBStatsBody.appendChild(row);
+    });
+
+    // Show modal
+    document.getElementById('setSummaryModal').classList.add('show');
+}
+
+// Close set summary modal and continue
+function closeSetSummaryModal() {
+    document.getElementById('setSummaryModal').classList.remove('show');
+    
+    // Check if game is over
     if (setsA >= 3 || setsB >= 3) {
-        // Game is over - show game end modal
-        setTimeout(() => showGameEndModal(), 1000);
+        setTimeout(() => showGameEndModal(), 500);
     } else {
-        // Game continues - show set end modal for next set
-        setTimeout(() => showSetEndModal(), 1000);
+        setTimeout(() => showSetEndModal(), 500);
     }
 }
 

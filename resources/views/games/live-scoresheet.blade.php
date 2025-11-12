@@ -18,11 +18,12 @@
             overflow: hidden;
             max-height: 100vh;
         }
+
         .foul-dot.tech {
-    background: #9C27B0;
-    border-color: #7B1FA2;
-    box-shadow: 0 0 4px rgba(156, 39, 176, 0.6);
-}
+            background: #9C27B0;
+            border-color: #7B1FA2;
+            box-shadow: 0 0 4px rgba(156, 39, 176, 0.6);
+        }
 
 
 
@@ -1757,34 +1758,392 @@
         }
 
         /* Technical Foul Indicator - Violet Circle */
-.tech-foul-indicator {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #9C27B0; /* Violet color */
-    border: 2px solid #7B1FA2;
-    box-shadow: 0 0 8px rgba(156, 39, 176, 0.6);
-    z-index: 10;
-    animation: techPulse 2s infinite;
+        .tech-foul-indicator {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #9C27B0;
+            /* Violet color */
+            border: 2px solid #7B1FA2;
+            box-shadow: 0 0 8px rgba(156, 39, 176, 0.6);
+            z-index: 10;
+            animation: techPulse 2s infinite;
+        }
+
+        @keyframes techPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        /* Make player card position relative to contain the indicator */
+        .player-card {
+            position: relative;
+            /* Add this if not already present */
+        }
+
+        /* Pulse effect for selected action button */
+        @keyframes actionPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+            }
+
+            50% {
+                box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+            }
+        }
+
+        .action-btn.selected {
+            animation: actionPulse 1.5s infinite;
+            outline: 3px solid #4CAF50;
+            outline-offset: 3px;
+        }
+
+        /* Pulse effect for player cards when action is selected */
+        @keyframes playerPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(255, 152, 0, 0);
+            }
+        }
+
+        .player-card.pulse-effect {
+            animation: playerPulse 1.5s infinite;
+            border-color: #FF9800 !important;
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+        }
+
+        /* Toast Notification Styles */
+        .toast-notification {
+            position: fixed;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 8px 24px rgba(255, 152, 0, 0.4);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: toastSlideIn 0.4s ease-out;
+        }
+
+        .toast-notification.success {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            box-shadow: 0 8px 24px rgba(76, 175, 80, 0.4);
+        }
+
+        .toast-notification.error {
+            background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+            box-shadow: 0 8px 24px rgba(244, 67, 54, 0.4);
+        }
+
+        .toast-notification i {
+            font-size: 1.5rem;
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        @keyframes toastSlideOut {
+            from {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+        }
+
+        /* Quarter Summary Modal */
+.quarter-summary-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9000;
+    overflow-y: auto;
 }
 
-@keyframes techPulse {
-    0%, 100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.1);
-        opacity: 0.8;
-    }
+.quarter-summary-content {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    width: 95%;
+    max-width: 1200px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 3px solid #4CAF50;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    animation: quarterModalAnimation 0.5s ease-out;
 }
 
-/* Make player card position relative to contain the indicator */
-.player-card {
-    position: relative; /* Add this if not already present */
+.summary-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #444;
+    padding-bottom: 1.5rem;
+}
+
+.summary-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #4CAF50;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.summary-subtitle {
+    font-size: 1.2rem;
+    color: #ccc;
+}
+
+/* Score Summary Section */
+.score-summary {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(76, 175, 80, 0.1);
+    border-radius: 12px;
+    border: 2px solid rgba(76, 175, 80, 0.3);
+}
+
+.team-score-box {
+    text-align: center;
+}
+
+.team-score-name {
+    font-size: 1.2rem;
+    color: #ccc;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.team-score-value {
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+    font-family: 'Courier New', monospace;
+}
+
+.team-score-value.winning {
+    color: #4CAF50;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.score-divider {
+    font-size: 3rem;
+    color: #666;
+    font-weight: bold;
+}
+
+/* Quarter-by-Quarter Breakdown */
+.quarter-breakdown {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.quarter-box {
+    background: #333;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    border: 2px solid #444;
+}
+
+.quarter-box.current {
+    border-color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.quarter-box-title {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.quarter-box-scores {
+    display: flex;
+    justify-content: space-around;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+}
+
+/* Stats Tables */
+.stats-section {
+    margin-bottom: 2rem;
+}
+
+.stats-section-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+}
+
+.stats-table thead {
+    background: #333;
+}
+
+.stats-table th {
+    padding: 0.75rem;
+    text-align: left;
+    color: #4CAF50;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #444;
+}
+
+.stats-table td {
+    padding: 0.75rem;
+    color: white;
+    border-bottom: 1px solid #333;
+}
+
+.stats-table tbody tr:hover {
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.player-number-cell {
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.stat-value {
+    text-align: center;
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+}
+
+.stat-value.highlight {
+    color: #FF9800;
+    font-weight: bold;
+}
+
+.no-stats-message {
+    text-align: center;
+    padding: 2rem;
+    color: #888;
+    font-style: italic;
+}
+
+/* Continue Button */
+.continue-btn {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    margin: 2rem auto 0;
+    padding: 1.25rem 2rem;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.continue-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .quarter-summary-content {
+        padding: 1.5rem;
+    }
+
+    .summary-title {
+        font-size: 1.5rem;
+    }
+
+    .score-summary {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .score-divider {
+        display: none;
+    }
+
+    .team-score-value {
+        font-size: 2.5rem;
+    }
+
+    .stats-table {
+        font-size: 0.85rem;
+    }
+
+    .stats-table th,
+    .stats-table td {
+        padding: 0.5rem 0.25rem;
+    }
 }
     </style>
 </head>
@@ -1894,44 +2253,59 @@
 
         {{-- ROLE-BASED UI SECTIONS --}}
 
-{{-- Show this if user is SCORER --}}
-@if($userRole === 'scorer')
-    <!-- SCORER UI - Only Scoring Actions -->
-    <div class="actions-section" id="scorerActions">
-        <div class="actions-header">⚡ SCORER PANEL</div>
-        <button class="action-btn free-throw" data-action="Free Throw" data-points="1">Free Throw</button>
-        <button class="action-btn two-points" data-action="2 Points" data-points="2">2 Points</button>
-        <button class="action-btn three-points" data-action="3 Points" data-points="3">3 Points</button>
-        <div class="foul-buttons-row">
-            <button class="action-btn foul" data-action="Foul">Foul</button>
-            <button class="action-btn tech" data-action="Tech Foul">Tech. F</button>
-        </div>
-        <button class="action-btn timeout" data-action="Timeout" id="timeoutBtn">Timeout</button>
-        <button class="action-btn substitution" data-action="Substitution">Substitution</button>
-        <button class="action-btn undo-btn" id="undoBtn">
-            <span>↶</span> Undo
-        </button>
-    </div>
-@endif
+        {{-- Show this if user is ALL-IN-ONE or SCORER --}}
+        @if ($userRole === 'all_in_one' || $userRole === 'scorer')
+            <!-- SCORER UI - Scoring Actions -->
+            <div class="actions-section" id="scorerActions">
+                @if ($userRole === 'all_in_one')
+                    <div class="actions-header">⚡ ALL ACTIONS</div>
+                @else
+                    <div class="actions-header">⚡ SCORER PANEL</div>
+                @endif
 
-{{-- Show this if user is STAT-KEEPER --}}
-@if($userRole === 'stat_keeper')
-    <!-- STAT-KEEPER UI - Only Stat Recording Actions -->
-    <div class="actions-section" id="statKeeperActions">
-        <div class="actions-header">📊 STAT-KEEPER PANEL</div>
-        <button class="action-btn assist" data-action="Assist">Assist</button>
-        <button class="action-btn steal" data-action="Steal">Steal</button>
-        <button class="action-btn rebound" data-action="Rebound">Rebound</button>
-        <button class="action-btn blocks" data-action="blocks">Block</button>
-        <button class="action-btn undo-btn" id="undoBtn">
-            <span>↶</span> Undo
-        </button>
-        
-        <div style="margin-top: 20px; padding: 15px; background: #333; border-radius: 8px; font-size: 12px; color: #aaa;">
-            <strong>📌 Info:</strong> Only record player stats here. Scoring actions are handled by the Scorer.
-        </div>
-    </div>
-@endif
+                <button class="action-btn free-throw" data-action="Free Throw" data-points="1">Free Throw</button>
+                <button class="action-btn two-points" data-action="2 Points" data-points="2">2 Points</button>
+                <button class="action-btn three-points" data-action="3 Points" data-points="3">3 Points</button>
+                <div class="foul-buttons-row">
+                    <button class="action-btn foul" data-action="Foul">Foul</button>
+                    <button class="action-btn tech" data-action="Tech Foul">Tech. F</button>
+                </div>
+                <button class="action-btn timeout" data-action="Timeout" id="timeoutBtn">Timeout</button>
+                <button class="action-btn substitution" data-action="Substitution">Substitution</button>
+
+                @if ($userRole === 'all_in_one')
+                    {{-- Show stat buttons in all-in-one mode --}}
+                    <button class="action-btn assist" data-action="Assist">Assist</button>
+                    <button class="action-btn steal" data-action="Steal">Steal</button>
+                    <button class="action-btn rebound" data-action="Rebound">Rebound</button>
+                    <button class="action-btn blocks" data-action="blocks">Block</button>
+                @endif
+
+                <button class="action-btn undo-btn" id="undoBtn">
+                    <span>↶</span> Undo
+                </button>
+            </div>
+        @endif
+
+        {{-- Show this if user is STAT-KEEPER --}}
+        @if ($userRole === 'stat_keeper')
+            <!-- STAT-KEEPER UI - Only Stat Recording Actions -->
+            <div class="actions-section" id="statKeeperActions">
+                <div class="actions-header">📊 STAT-KEEPER PANEL</div>
+                <button class="action-btn assist" data-action="Assist">Assist</button>
+                <button class="action-btn steal" data-action="Steal">Steal</button>
+                <button class="action-btn rebound" data-action="Rebound">Rebound</button>
+                <button class="action-btn blocks" data-action="blocks">Block</button>
+                <button class="action-btn undo-btn" id="undoBtn">
+                    <span>↶</span> Undo
+                </button>
+
+                <div
+                    style="margin-top: 20px; padding: 15px; background: #333; border-radius: 8px; font-size: 12px; color: #aaa;">
+                    <strong>📌 Info:</strong> Only record player stats here. Scoring actions are handled by the Scorer.
+                </div>
+            </div>
+        @endif
     </div>
 
     <!-- Free Throw Panel -->
@@ -2233,6 +2607,96 @@
         </div>
     </div>
 
+    <!-- Quarter Summary Modal -->
+<div class="quarter-summary-modal" id="quarterSummaryModal">
+    <div class="quarter-summary-content">
+        <div class="summary-header">
+            <div class="summary-title" id="summaryQuarterTitle">Quarter 1 Summary</div>
+            <div class="summary-subtitle">Review scores and player performance</div>
+        </div>
+
+        <!-- Score Summary -->
+        <div class="score-summary">
+            <div class="team-score-box">
+                <div class="team-score-name" id="summaryTeam1Name">Team A</div>
+                <div class="team-score-value" id="summaryTeam1Score">00</div>
+            </div>
+            <div class="score-divider">-</div>
+            <div class="team-score-box">
+                <div class="team-score-name" id="summaryTeam2Name">Team B</div>
+                <div class="team-score-value" id="summaryTeam2Score">00</div>
+            </div>
+        </div>
+
+        <!-- Quarter-by-Quarter Breakdown -->
+        <div class="quarter-breakdown" id="quarterBreakdown"></div>
+
+        <!-- Team A Stats -->
+        <div class="stats-section">
+            <div class="stats-section-title">
+                <i class="bi bi-bar-chart-fill"></i>
+                <span id="statsTeam1Title">Team A Statistics</span>
+            </div>
+            <div class="table-responsive">
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Player</th>
+                            <th>PTS</th>
+                            <th>FG</th>
+                            <th>3PT</th>
+                            <th>FT</th>
+                            <th>AST</th>
+                            <th>REB</th>
+                            <th>STL</th>
+                            <th>BLK</th>
+                            <th>PF</th>
+                        </tr>
+                    </thead>
+                    <tbody id="team1StatsBody">
+                        <!-- Stats will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Team B Stats -->
+        <div class="stats-section">
+            <div class="stats-section-title">
+                <i class="bi bi-bar-chart-fill"></i>
+                <span id="statsTeam2Title">Team B Statistics</span>
+            </div>
+            <div class="table-responsive">
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Player</th>
+                            <th>PTS</th>
+                            <th>FG</th>
+                            <th>3PT</th>
+                            <th>FT</th>
+                            <th>AST</th>
+                            <th>REB</th>
+                            <th>STL</th>
+                            <th>BLK</th>
+                            <th>PF</th>
+                        </tr>
+                    </thead>
+                    <tbody id="team2StatsBody">
+                        <!-- Stats will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <button class="continue-btn" id="continueSummaryBtn">
+            Continue to Next Quarter
+        </button>
+    </div>
+</div>
+
 
 
 
@@ -2258,70 +2722,369 @@
             bracketId: {{ $game->bracket_id ?? 'null' }}
         };
 
-        // ===== JAVASCRIPT CONDITIONAL LOGIC =====
+        // Calculate player stats from game events
+function calculatePlayerStats() {
+    const stats = {
+        A: {},
+        B: {}
+    };
 
-// Determine which role this user has
-const userRole = '{{ $userRole ?? 'viewer' }}';
+    // Initialize stats for all players
+    [...activePlayers.A, ...benchPlayers.A].forEach(player => {
+        const playerId = player.id;
+        stats.A[playerId] = {
+            number: player.number || '00',
+            name: player.name,
+            points: 0,
+            fieldGoalsMade: 0,
+            fieldGoalsAttempted: 0,
+            threePointsMade: 0,
+            threePointsAttempted: 0,
+            freeThrowsMade: 0,
+            freeThrowsAttempted: 0,
+            assists: 0,
+            rebounds: 0,
+            steals: 0,
+            blocks: 0,
+            fouls: player.fouls || 0
+        };
+    });
 
-// Disable actions based on role
-function applyRoleRestrictions() {
-    console.log('🔐 Applying role restrictions for:', userRole);
-    
-    if (userRole === 'scorer') {
-        // Scorer: disable stat buttons
-        const statOnlyButtons = ['Assist', 'Steal', 'Rebound', 'blocks'];
-        disableButtons(statOnlyButtons);
-        console.log('✅ Scorer mode: Stat buttons disabled');
+    [...activePlayers.B, ...benchPlayers.B].forEach(player => {
+        const playerId = player.id;
+        stats.B[playerId] = {
+            number: player.number || '00',
+            name: player.name,
+            points: 0,
+            fieldGoalsMade: 0,
+            fieldGoalsAttempted: 0,
+            threePointsMade: 0,
+            threePointsAttempted: 0,
+            freeThrowsMade: 0,
+            freeThrowsAttempted: 0,
+            assists: 0,
+            rebounds: 0,
+            steals: 0,
+            blocks: 0,
+            fouls: player.fouls || 0
+        };
+    });
+
+    // Process game events
+    gameEvents.forEach(event => {
+        if (event.player === 'TEAM' || event.player === 'SYSTEM') return;
+
+        const team = event.team;
+        const playerNumber = event.player;
         
-    } else if (userRole === 'stat_keeper') {
-        // Stat-keeper: disable scoring buttons
-        const scoringOnlyButtons = [
-            'Free Throw', '2 Points', '3 Points', 
-            'Foul', 'Tech Foul', 'Timeout', 'Substitution'
-        ];
-        disableButtons(scoringOnlyButtons);
-        console.log('✅ Stat-keeper mode: Scoring buttons disabled');
+        // Find player by number
+        const playerArrays = team === 'A' 
+            ? [...activePlayers.A, ...benchPlayers.A] 
+            : [...activePlayers.B, ...benchPlayers.B];
+        
+        const player = playerArrays.find(p => (p.number || '00').toString() === playerNumber.toString());
+        if (!player) return;
+
+        const playerId = player.id;
+        const action = event.action;
+
+        // Points
+        if (action.includes('Points') || action.includes('Made')) {
+            stats[team][playerId].points += event.points || 0;
+        }
+
+        // Field Goals (2-pointers)
+        if (action === '2 Points') {
+            stats[team][playerId].fieldGoalsMade++;
+            stats[team][playerId].fieldGoalsAttempted++;
+        }
+
+        // Three Pointers
+        if (action === '3 Points') {
+            stats[team][playerId].threePointsMade++;
+            stats[team][playerId].threePointsAttempted++;
+        }
+
+        // Free Throws
+        if (action.includes('Free Throw')) {
+            if (action.includes('Made')) {
+                stats[team][playerId].freeThrowsMade++;
+                stats[team][playerId].freeThrowsAttempted++;
+            } else if (action.includes('Miss')) {
+                stats[team][playerId].freeThrowsAttempted++;
+            }
+        }
+
+        // Assists
+        if (action === 'Assist') {
+            stats[team][playerId].assists++;
+        }
+
+        // Rebounds
+        if (action === 'Rebound') {
+            stats[team][playerId].rebounds++;
+        }
+
+        // Steals
+        if (action === 'Steal') {
+            stats[team][playerId].steals++;
+        }
+
+        // Blocks
+        if (action === 'blocks') {
+            stats[team][playerId].blocks++;
+        }
+    });
+
+    return stats;
+}
+
+// Show quarter summary modal
+function showQuarterSummary(quarter) {
+    const modal = document.getElementById('quarterSummaryModal');
+    const quarterTitle = document.getElementById('summaryQuarterTitle');
+    const team1Name = document.getElementById('summaryTeam1Name');
+    const team2Name = document.getElementById('summaryTeam2Name');
+    const team1Score = document.getElementById('summaryTeam1Score');
+    const team2Score = document.getElementById('summaryTeam2Score');
+    const quarterBreakdown = document.getElementById('quarterBreakdown');
+    const continueBtn = document.getElementById('continueSummaryBtn');
+
+    // Update title
+    const quarterNames = ['', '1st', '2nd', '3rd', '4th'];
+    quarterTitle.textContent = `${quarterNames[quarter]} Quarter Summary`;
+
+    // Update team names
+    team1Name.textContent = gameData.team1.name;
+    team2Name.textContent = gameData.team2.name;
+
+    // Update scores
+    team1Score.textContent = scoreA.toString().padStart(2, '0');
+    team2Score.textContent = scoreB.toString().padStart(2, '0');
+
+    // Highlight winning team
+    team1Score.classList.remove('winning');
+    team2Score.classList.remove('winning');
+    if (scoreA > scoreB) {
+        team1Score.classList.add('winning');
+    } else if (scoreB > scoreA) {
+        team2Score.classList.add('winning');
+    }
+
+    // Generate quarter breakdown
+    quarterBreakdown.innerHTML = '';
+    for (let q = 1; q <= quarter; q++) {
+        const quarterBox = document.createElement('div');
+        quarterBox.className = `quarter-box ${q === quarter ? 'current' : ''}`;
+        quarterBox.innerHTML = `
+            <div class="quarter-box-title">Quarter ${q}</div>
+            <div class="quarter-box-scores">
+                <span>${periodScores.teamA[q - 1] || 0}</span>
+                <span>-</span>
+                <span>${periodScores.teamB[q - 1] || 0}</span>
+            </div>
+        `;
+        quarterBreakdown.appendChild(quarterBox);
+    }
+
+    // Calculate and display stats
+    const stats = calculatePlayerStats();
+    populateStatsTable('team1StatsBody', stats.A, 'A');
+    populateStatsTable('team2StatsBody', stats.B, 'B');
+
+    // Update stats titles
+    document.getElementById('statsTeam1Title').textContent = `${gameData.team1.name} Statistics`;
+    document.getElementById('statsTeam2Title').textContent = `${gameData.team2.name} Statistics`;
+
+    // Show modal
+    modal.style.display = 'flex';
+
+    // Update continue button
+    if (quarter < maxQuarters) {
+        continueBtn.textContent = `Continue to ${quarterNames[quarter + 1]} Quarter`;
+        continueBtn.onclick = () => {
+            modal.style.display = 'none';
+            startNextQuarter();
+        };
+    } else {
+        continueBtn.textContent = 'Finish Game';
+        continueBtn.onclick = () => {
+            modal.style.display = 'none';
+            showGameEndModal();
+        };
     }
 }
 
-// Helper function to disable buttons
-function disableButtons(actionNames) {
-    document.querySelectorAll('.action-btn').forEach(btn => {
-        const action = btn.dataset.action;
-        if (actionNames.includes(action)) {
-            btn.disabled = true;
-            btn.style.opacity = '0.5';
-            btn.style.cursor = 'not-allowed';
-            btn.title = `Not available for ${userRole}`;
-        }
+// Populate stats table
+function populateStatsTable(tableBodyId, teamStats, team) {
+    const tbody = document.getElementById(tableBodyId);
+    tbody.innerHTML = '';
+
+    // Convert stats object to array and sort by points
+    const statsArray = Object.values(teamStats).sort((a, b) => b.points - a.points);
+
+    if (statsArray.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="11" class="no-stats-message">
+                    No statistics recorded yet
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    statsArray.forEach(player => {
+        const row = document.createElement('tr');
+        
+        // Determine field goal percentage
+        const fgPercentage = player.fieldGoalsAttempted > 0 
+            ? `${player.fieldGoalsMade}/${player.fieldGoalsAttempted}` 
+            : '0/0';
+        
+        const threePercentage = player.threePointsAttempted > 0 
+            ? `${player.threePointsMade}/${player.threePointsAttempted}` 
+            : '0/0';
+        
+        const ftPercentage = player.freeThrowsAttempted > 0 
+            ? `${player.freeThrowsMade}/${player.freeThrowsAttempted}` 
+            : '0/0';
+
+        // Highlight leading stats
+        const maxPoints = Math.max(...statsArray.map(p => p.points));
+        const pointsClass = player.points === maxPoints && player.points > 0 ? 'highlight' : '';
+
+        row.innerHTML = `
+            <td class="player-number-cell">${player.number}</td>
+            <td>${player.name}</td>
+            <td class="stat-value ${pointsClass}">${player.points}</td>
+            <td class="stat-value">${fgPercentage}</td>
+            <td class="stat-value">${threePercentage}</td>
+            <td class="stat-value">${ftPercentage}</td>
+            <td class="stat-value">${player.assists}</td>
+            <td class="stat-value">${player.rebounds}</td>
+            <td class="stat-value">${player.steals}</td>
+            <td class="stat-value">${player.blocks}</td>
+            <td class="stat-value">${player.fouls}</td>
+        `;
+        
+        tbody.appendChild(row);
     });
 }
 
-// Override the logEvent function to enforce role-based actions
-const originalLogEvent = window.logEvent;
-window.logEvent = function(team, player, action, points = 0) {
-    // Check if this action is allowed for this role
-    const scoringActions = ['Free Throw', '2 Points', '3 Points', 'Foul', 'Tech Foul', 'Timeout', 'Substitution', 'Personal Foul', 'Shooting Foul'];
-    const statActions = ['Assist', 'Steal', 'Rebound', 'blocks'];
-    
-    if (userRole === 'scorer' && statActions.includes(action)) {
-        console.warn('⛔ Scorer cannot record stat action:', action);
-        alert('⛔ Your role (Scorer) cannot record this stat. Only Stat-Keepers can record stats.');
-        return;
-    }
-    
-    if (userRole === 'stat_keeper' && scoringActions.includes(action)) {
-        console.warn('⛔ Stat-keeper cannot record scoring action:', action);
-        alert('⛔ Your role (Stat-Keeper) cannot record scoring. Only Scorers can record scores and fouls.');
-        return;
-    }
-    
-    // If role check passes, call original logEvent
-    return originalLogEvent(team, player, action, points);
-};
+        // Determine which role this user has
+        const userRole = '{{ $userRole ?? 'viewer' }}';
 
-// Apply restrictions when page loads
-document.addEventListener('DOMContentLoaded', applyRoleRestrictions);
+        // Disable actions based on role
+        function applyRoleRestrictions() {
+            console.log('🔐 Applying role restrictions for:', userRole);
+
+            // ✅ NEW: If all-in-one mode, show ALL buttons
+            if (userRole === 'all_in_one') {
+                console.log('✅ All-in-one mode: All actions enabled');
+                return; // Don't disable anything
+            }
+
+            if (userRole === 'scorer') {
+                // Scorer: disable stat buttons
+                const statOnlyButtons = ['Assist', 'Steal', 'Rebound', 'blocks'];
+                disableButtons(statOnlyButtons);
+                console.log('✅ Scorer mode: Stat buttons disabled');
+
+            } else if (userRole === 'stat_keeper') {
+                // Stat-keeper: disable scoring buttons
+                const scoringOnlyButtons = [
+                    'Free Throw', '2 Points', '3 Points',
+                    'Foul', 'Tech Foul', 'Timeout', 'Substitution'
+                ];
+                disableButtons(scoringOnlyButtons);
+                console.log('✅ Stat-keeper mode: Scoring buttons disabled');
+            }
+        }
+
+        // Helper function to disable buttons
+        function disableButtons(actionNames) {
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                const action = btn.dataset.action;
+                if (actionNames.includes(action)) {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                    btn.style.cursor = 'not-allowed';
+                    btn.title = `Not available for ${userRole}`;
+                }
+            });
+        }
+
+
+
+        // Toast notification system
+        function showToast(message, type = 'info', duration = 3000) {
+            // Remove any existing toast
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            // Create new toast
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${type}`;
+
+            // Add icon based on type
+            let icon = '📌';
+            if (type === 'success') icon = '✓';
+            if (type === 'error') icon = '⚠';
+            if (type === 'info') icon = 'ℹ️';
+
+            toast.innerHTML = `
+        <i>${icon}</i>
+        <span>${message}</span>
+    `;
+
+            document.body.appendChild(toast);
+
+            // Auto-remove after duration
+            setTimeout(() => {
+                toast.style.animation = 'toastSlideOut 0.4s ease-out';
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.remove();
+                    }
+                }, 400);
+            }, duration);
+        }
+
+        // Override the logEvent function to enforce role-based actions
+        const originalLogEvent = window.logEvent;
+        window.logEvent = function(team, player, action, points = 0) {
+            // ✅ NEW: Skip role checks in all-in-one mode
+            if (userRole === 'all_in_one') {
+                return originalLogEvent(team, player, action, points);
+            }
+
+            // Check if this action is allowed for this role
+            const scoringActions = ['Free Throw', '2 Points', '3 Points', 'Foul', 'Tech Foul', 'Timeout',
+                'Substitution', 'Personal Foul', 'Shooting Foul'
+            ];
+            const statActions = ['Assist', 'Steal', 'Rebound', 'blocks'];
+
+            if (userRole === 'scorer' && statActions.includes(action)) {
+                console.warn('⛔ Scorer cannot record stat action:', action);
+                alert('⛔ Your role (Scorer) cannot record this stat. Only Stat-Keepers can record stats.');
+                return;
+            }
+
+            if (userRole === 'stat_keeper' && scoringActions.includes(action)) {
+                console.warn('⛔ Stat-keeper cannot record scoring action:', action);
+                alert('⛔ Your role (Stat-Keeper) cannot record scoring. Only Scorers can record scores and fouls.');
+                return;
+            }
+
+            // If role check passes, call original logEvent
+            return originalLogEvent(team, player, action, points);
+        };
+
+        // Apply restrictions when page loads
+        document.addEventListener('DOMContentLoaded', applyRoleRestrictions);
 
         // Player roster management - UPDATED to use actual starter/roster data
         let activePlayers = {
@@ -2522,38 +3285,31 @@ document.addEventListener('DOMContentLoaded', applyRoleRestrictions);
 
         // UPDATED: Modified handleQuarterEnd to ensure proper game completion
         function handleQuarterEnd() {
-            // Calculate current quarter score before ending
-            if (currentQuarter <= 4) {
-                const startScore = currentQuarter === 1 ? 0 : quarterStartScores.teamA[currentQuarter - 1];
-                periodScores.teamA[currentQuarter - 1] = scoreA - startScore;
-                const startScoreB = currentQuarter === 1 ? 0 : quarterStartScores.teamB[currentQuarter - 1];
-                periodScores.teamB[currentQuarter - 1] = scoreB - startScoreB;
-            }
+    // Calculate current quarter score before ending
+    if (currentQuarter <= 4) {
+        const startScore = currentQuarter === 1 ? 0 : quarterStartScores.teamA[currentQuarter - 1];
+        periodScores.teamA[currentQuarter - 1] = scoreA - startScore;
+        const startScoreB = currentQuarter === 1 ? 0 : quarterStartScores.teamB[currentQuarter - 1];
+        periodScores.teamB[currentQuarter - 1] = scoreB - startScoreB;
+    }
 
-            // Pause the timer
-            if (isRunning) {
-                clearInterval(interval);
-                isRunning = false;
-                playPauseBtn.textContent = "▶";
-            }
-            // Pause and reset shot clock at quarter end
-            pauseShotClock();
-            resetShotClock(24);
+    // Pause the timer
+    if (isRunning) {
+        clearInterval(interval);
+        isRunning = false;
+        playPauseBtn.textContent = "▶";
+    }
+    
+    // Pause and reset shot clock at quarter end
+    pauseShotClock();
+    resetShotClock(24);
 
-            // Log quarter end event
-            logEvent('GAME', 'SYSTEM', `Quarter ${currentQuarter} Ended`, 0);
+    // Log quarter end event
+    logEvent('GAME', 'SYSTEM', `Quarter ${currentQuarter} Ended`, 0);
 
-            if (currentQuarter < maxQuarters) {
-                showQuarterEndModal();
-            } else if (currentQuarter === maxQuarters && scoreA === scoreB) {
-                // ✅ NEW: Check for tie after 4th quarter
-                showOvertimeModal();
-            } else {
-                // Game is complete - log final event and show end modal
-                logEvent('GAME', 'SYSTEM', 'Game Completed', 0);
-                showGameEndModal();
-            }
-        }
+    // ✅ SHOW QUARTER SUMMARY INSTEAD OF SIMPLE MODAL
+    showQuarterSummary(currentQuarter);
+}
 
         function showOvertimeModal() {
             const modal = document.getElementById('quarterModal');
@@ -3317,11 +4073,17 @@ document.addEventListener('DOMContentLoaded', applyRoleRestrictions);
         }
 
         // Close substitution modal
-        function closeSubstitutionModal() {
-            substitutionModal.style.display = 'none';
-            // Show styled resume modal after closing substitution modal (like after free throw)
-            showStyledResumeModal('Substitution completed. Resume game clock?');
-        }
+       function closeSubstitutionModal() {
+    substitutionModal.style.display = 'none';
+    
+    // ✅ REMOVE PULSE EFFECTS
+    document.querySelectorAll('.player-card').forEach(card => {
+        card.classList.remove('pulse-effect');
+    });
+    
+    // Show styled resume modal after closing substitution modal
+    showStyledResumeModal('Substitution completed. Resume game clock?');
+}
         // Styled resume modal (like after free throw)
         function showStyledResumeModal(message) {
             // Remove any existing modal
@@ -3636,7 +4398,7 @@ document.addEventListener('DOMContentLoaded', applyRoleRestrictions);
             // derive last name: prefer explicit last_name, fallback to last word of name
             const lastName = ((player.last_name || player.name || '') + '').trim().split(/\s+/).slice(-1)[0] || '';
 
-           card.innerHTML = `
+            card.innerHTML = `
                 ${player.technicalFouls > 0 ? '<div class="tech-foul-indicator"></div>' : ''}
                 <div class="player-number">${player.number || '00'}</div>
                 <div class="player-lastname">${lastName}</div>
@@ -3727,6 +4489,7 @@ document.addEventListener('DOMContentLoaded', applyRoleRestrictions);
         const foulClose = document.getElementById('foulClose');
 
         // Update the action button event listener to handle foul specially
+        // Update the action button event listener to handle foul specially and add visual feedback
         document.querySelectorAll(".action-btn:not(#undoBtn):not(#timeoutBtn)").forEach(btn => {
             btn.addEventListener("click", () => {
                 // Exit timeout mode if another action is selected
@@ -3736,13 +4499,28 @@ document.addEventListener('DOMContentLoaded', applyRoleRestrictions);
                     timeoutBtn.textContent = 'Timeout';
                 }
 
+                // Remove selection from all buttons
                 document.querySelectorAll(".action-btn").forEach(b => b.classList.remove("selected"));
+
+                // Add selection to clicked button
                 btn.classList.add("selected");
                 selectedAction = btn;
+
+                // ✅ ADD PULSE EFFECT TO ALL PLAYER CARDS
+                document.querySelectorAll('.player-card').forEach(card => {
+                    card.classList.add('pulse-effect');
+                });
+
+                // ✅ SHOW TOAST NOTIFICATION
+                const actionName = btn.dataset.action;
+                showToast(`👆 Select a player who committed: ${actionName}`, 'info', 5000);
 
                 // Handle foul button specially
                 if (btn.dataset.action === 'Foul') {
                     showFoulModal();
+                } else if (btn.dataset.action === 'Tech Foul') {
+                    // Show tech foul selection
+                    showToast('👆 Select a player who committed the Technical Foul', 'info', 5000);
                 }
             });
         });
@@ -3755,10 +4533,58 @@ document.addEventListener('DOMContentLoaded', applyRoleRestrictions);
             renderFoulingPlayers();
         }
 
+        // ✅ CLICK ANYWHERE TO CANCEL SELECTED ACTION
+document.addEventListener('click', function(e) {
+    // Only proceed if there's a selected action
+    if (!selectedAction) return;
+    
+    // Check if click is outside player cards and action buttons
+    const clickedPlayerCard = e.target.closest('.player-card');
+    const clickedActionBtn = e.target.closest('.action-btn');
+    const clickedModal = e.target.closest('.foul-modal, .substitution-modal, .free-throw-panel, .quarter-modal');
+    const clickedTeamSection = e.target.closest('.team-section'); // For timeout selection
+    
+    // If clicked outside relevant areas, cancel the selection
+    if (!clickedPlayerCard && !clickedActionBtn && !clickedModal && !clickedTeamSection) {
+        cancelActionSelection();
+    }
+});
+
+// Function to cancel action selection
+function cancelActionSelection() {
+    if (!selectedAction) return;
+    
+    // Remove selection from action button
+    selectedAction.classList.remove("selected");
+    selectedAction = null;
+    
+    // Remove pulse effects from all player cards
+    document.querySelectorAll('.player-card').forEach(card => {
+        card.classList.remove('pulse-effect');
+    });
+    
+    // Show cancellation toast
+    showToast('❌ Action cancelled', 'info', 2000);
+    
+    // Exit timeout mode if active
+    if (timeoutMode) {
+        exitTimeoutMode();
+        timeoutBtn.classList.remove('selected');
+        timeoutBtn.textContent = 'Timeout';
+    }
+    
+    console.log('Action selection cancelled');
+}
+
         // Hide foul modal
         function hideFoulModal() {
             foulModal.style.display = 'none';
             resetSelectedAction();
+            
+            // ✅ REMOVE PULSE EFFECTS
+            document.querySelectorAll('.player-card').forEach(card => {
+                card.classList.remove('pulse-effect');
+            });
         }
 
         // Reset foul modal to initial state
@@ -4252,6 +5078,36 @@ document.addEventListener('DOMContentLoaded', applyRoleRestrictions);
             startFreeThrowSequence();
         }
 
+        // Handle technical foul selection
+function handleTechnicalFoulSelection(team, playerNumber) {
+    const player = findPlayerByNumber(playerNumber, team);
+    
+    if (!player) {
+        showToast('⚠️ Player not found', 'error', 2000);
+        return;
+    }
+
+    // Remove pulse effects
+    document.querySelectorAll('.player-card').forEach(card => {
+        card.classList.remove('pulse-effect');
+    });
+
+    // Log technical foul
+    logEvent(team, playerNumber, 'Tech Foul', 0);
+    
+    // Add technical foul to player
+    addPlayerFoul(team, playerNumber, 'technical');
+    
+    // Show success toast
+    showToast(`✓ Technical Foul recorded for #${playerNumber}`, 'success', 2000);
+    
+    // Reset selected action
+    if (selectedAction) {
+        selectedAction.classList.remove('selected');
+        selectedAction = null;
+    }
+}
+
         // Log shooting foul
         function logShootingFoul() {
             const foulingPlayer = currentFoulData.foulingPlayer;
@@ -4287,9 +5143,10 @@ document.addEventListener('DOMContentLoaded', applyRoleRestrictions);
         let pendingFreeThrow = null;
 
         // Handle player clicks for actions - UPDATED
+        // Handle player clicks for actions - UPDATED with visual feedback
         function handlePlayerClick(e) {
             if (!selectedAction) {
-                alert("Select an action first!");
+                showToast("⚠️ Select an action first!", 'error', 2000);
                 return;
             }
 
@@ -4297,6 +5154,15 @@ document.addEventListener('DOMContentLoaded', applyRoleRestrictions);
             const number = e.currentTarget.dataset.number;
             const action = selectedAction.dataset.action;
             const points = parseInt(selectedAction.dataset.points || 0);
+
+            // ✅ REMOVE PULSE EFFECT FROM ALL PLAYER CARDS
+            document.querySelectorAll('.player-card').forEach(card => {
+                card.classList.remove('pulse-effect');
+            });
+
+            // ✅ SHOW SUCCESS TOAST
+            const playerName = e.currentTarget.querySelector('.player-lastname').textContent;
+            showToast(`✓ ${action} recorded for #${number} ${playerName}`, 'success', 2000);
 
             if (action === "Free Throw") {
                 pendingFreeThrow = {
@@ -4318,37 +5184,37 @@ document.addEventListener('DOMContentLoaded', applyRoleRestrictions);
 
         // Add player foul
         function addPlayerFoul(team, playerNumber, foulType = "personal") {
-    const playerArrays = team === 'A'
-        ? [...activePlayers.A, ...benchPlayers.A]
-        : [...activePlayers.B, ...benchPlayers.B];
+            const playerArrays = team === 'A' ? [...activePlayers.A, ...benchPlayers.A] : [...activePlayers.B, ...
+                benchPlayers.B
+            ];
 
-    const player = playerArrays.find(p => (p.number || '00').toString() === playerNumber.toString());
+            const player = playerArrays.find(p => (p.number || '00').toString() === playerNumber.toString());
 
-    if (player) {
-        if (!player.fouls) player.fouls = 0;
-        if (!player.techFouls) player.techFouls = 0;
+            if (player) {
+                if (!player.fouls) player.fouls = 0;
+                if (!player.techFouls) player.techFouls = 0;
 
-        if (foulType === "technical") {
-            player.techFouls++;
-            console.log(`🟣 Player ${playerNumber} got a TECHNICAL foul (${player.techFouls})`);
-        } else {
-            player.fouls++;
-            console.log(`🔴 Player ${playerNumber} now has ${player.fouls} fouls`);
+                if (foulType === "technical") {
+                    player.techFouls++;
+                    console.log(`🟣 Player ${playerNumber} got a TECHNICAL foul (${player.techFouls})`);
+                } else {
+                    player.fouls++;
+                    console.log(`🔴 Player ${playerNumber} now has ${player.fouls} fouls`);
+                }
+
+                // Check for warnings and foul-outs (only count total fouls)
+                const totalFouls = player.fouls + player.techFouls;
+                if (totalFouls === 4) {
+                    showFoulWarning(player, team);
+                } else if (totalFouls === 5) {
+                    handleFoulOut(player, team);
+                }
+
+                // Update visual display
+                updateMainRoster();
+                updateSubstitutionDisplay();
+            }
         }
-
-        // Check for warnings and foul-outs (only count total fouls)
-        const totalFouls = player.fouls + player.techFouls;
-        if (totalFouls === 4) {
-            showFoulWarning(player, team);
-        } else if (totalFouls === 5) {
-            handleFoulOut(player, team);
-        }
-
-        // Update visual display
-        updateMainRoster();
-        updateSubstitutionDisplay();
-    }
-}
 
 
         // Show 4th foul warning

@@ -226,24 +226,31 @@ public function live(Request $request, Game $game)
         return redirect()->back()->with('error', 'Game has not been started yet!');
     }
 
-    // ✅ PRIORITY 1: Check explicit role parameter from URL
-    $requestedRole = $request->query('role');
+    // ✅ FIX: Check game mode FIRST - if all-in-one, no role restrictions
+    $gameData = $game->game_data ?? [];
+    $interfaceMode = $gameData['interface_mode'] ?? 'all_in_one';
     
-    if ($requestedRole && in_array($requestedRole, ['scorer', 'stat_keeper'])) {
-        // Use the explicitly requested role from URL
-        $userRole = $requestedRole;
-        \Log::info("Live: Using explicit role from URL: $userRole");
+    if ($interfaceMode === 'all_in_one') {
+        // All-in-one mode: User has access to ALL actions
+        $userRole = 'all_in_one';
+        \Log::info("All-in-one mode detected - full access granted for game {$game->id}");
     } else {
-        // PRIORITY 2: Get role from database if not in URL
-        $userRole = 'viewer';
-        if (auth()->check()) {
-            $userRole = GameAssignmentController::getUserRole(auth()->user(), $game) ?? 'viewer';
-            \Log::info("Live: Got role from database: $userRole for user " . auth()->id());
+        // Separated mode: Check role from URL or database
+        $requestedRole = $request->query('role');
+        
+        if ($requestedRole && in_array($requestedRole, ['scorer', 'stat_keeper'])) {
+            $userRole = $requestedRole;
+            \Log::info("Separated mode - Using explicit role from URL: $userRole");
+        } else {
+            $userRole = 'viewer';
+            if (auth()->check()) {
+                $userRole = GameAssignmentController::getUserRole(auth()->user(), $game) ?? 'viewer';
+                \Log::info("Separated mode - Got role from database: $userRole for user " . auth()->id());
+            }
         }
     }
 
     \Log::info("Live method - Final userRole: $userRole for game {$game->id}");
-    
 
     // Get stored player data
     $team1Data = json_decode($game->team1_selected_players, true) ?? [];
@@ -281,7 +288,7 @@ public function live(Request $request, Game $game)
         'team2Roster', 
         'team1Starters', 
         'team2Starters',
-        'userRole'  // ✅ PASS userRole TO VIEW
+        'userRole'
     ));
 }
 
