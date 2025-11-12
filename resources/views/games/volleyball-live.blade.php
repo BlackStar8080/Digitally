@@ -1819,7 +1819,7 @@ function createJerseyBadge(player, team) {
 }
 
         document.getElementById('blockBtn').addEventListener('click', function() {
-            // Show block type modal instead of immediately selecting player
+         
             selectedAction = 'block';
             document.querySelectorAll('.action-btn').forEach(btn => btn.classList.remove('selected'));
             this.classList.add('selected');
