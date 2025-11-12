@@ -1292,9 +1292,717 @@
     width: 100%;
 }
 
-.team-jerseys {
-    display: none !important;
+@media (max-width: 1024px) {
+    /* Layout: 2 columns for rosters, event log full width below */
+    .container {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr auto;
+        gap: 2px;
+    }
+    
+    .roster-section:nth-child(1) {
+        grid-column: 1;
+        grid-row: 1;
+    }
+    
+    .log-section {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        max-height: 300px;
+    }
+    
+    .roster-section:nth-child(3) {
+        grid-column: 2;
+        grid-row: 1;
+    }
+    
+    /* Action buttons: 5 per row */
+    .actions-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+    }
+    
+    .action-btn {
+        padding: 14px 10px;
+        font-size: 12px;
+    }
+    
+    /* Player grid adjust */
+    .players-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
+
+/* ===== MOBILE (768px and below) ===== */
+@media (max-width: 768px) {
+    /* Full vertical stack */
+    .container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+    }
+    
+    .roster-section,
+    .log-section {
+        grid-column: 1;
+    }
+    
+    .log-section {
+        max-height: 250px;
+    }
+    
+    /* Scoreboard: vertical stacking */
+    .scoreboard {
+        padding: 12px 10px 12px 60px;
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+    
+    .team-section {
+        width: 100%;
+        gap: 10px;
+    }
+    
+    .team-section.left {
+        justify-content: flex-start;
+        flex-direction: row !important;
+    }
+    
+    .team-section.right {
+        justify-content: flex-end;
+        flex-direction: row-reverse !important;
+        order: 2;
+    }
+    
+    .center-panel {
+        width: 100%;
+        order: -1; /* Move to top */
+        margin-bottom: 10px;
+    }
+    
+    /* Smaller score displays */
+    .score-display {
+        font-size: 36px;
+        min-width: 60px;
+    }
+    
+    .team-name {
+        font-size: 12px;
+    }
+    
+    .team-stats {
+        font-size: 10px;
+        gap: 8px;
+    }
+    
+    .set-display {
+        font-size: 16px;
+    }
+    
+    .sets-score {
+        font-size: 24px;
+    }
+    
+    .serving-indicator {
+        width: 16px;
+        height: 16px;
+    }
+    
+    /* Jersey badges - keep visible but smaller */
+    .team-jerseys {
+        min-width: auto;
+        flex-wrap: wrap;
+        gap: 3px;
+        padding: 3px 6px;
+        max-width: 180px;
+    }
+    
+    .jersey-badge {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+        border-width: 2px;
+    }
+    
+    /* Player cards */
+    .players-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        padding: 12px;
+    }
+    
+    .player-card {
+        padding: 14px 10px;
+        min-height: 80px;
+        border-left-width: 3px;
+    }
+    
+    .player-number {
+        font-size: 18px;
+    }
+    
+    .player-position {
+        font-size: 11px;
+    }
+    
+    .set-server-btn {
+        padding: 3px 5px;
+        font-size: 11px;
+        top: 6px;
+        right: 6px;
+    }
+    
+    /* Action buttons: 3 per row */
+    .actions-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+    
+    .action-btn {
+        padding: 14px 8px;
+        font-size: 11px;
+        min-height: 44px;
+        letter-spacing: 0.3px;
+    }
+    
+    .actions-section {
+        padding: 12px;
+    }
+    
+    /* Hamburger menu */
+    .menu-container {
+        top: 10px;
+        left: 10px;
+    }
+    
+    .hamburger-btn {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .menu-dropdown {
+        max-height: 70vh;
+        overflow-y: auto;
+        min-width: 200px;
+        top: 54px;
+    }
+    
+    .menu-item {
+        padding: 14px 18px;
+    }
+    
+    .menu-item-icon {
+        font-size: 20px;
+    }
+    
+    .menu-item-text {
+        font-size: 14px;
+    }
+    
+    /* Modals - base adjustments */
+    .modal-content {
+        padding: 24px 20px;
+        width: 95%;
+        max-width: none;
+        border-radius: 12px;
+    }
+    
+    .modal-title {
+        font-size: 24px;
+        margin-bottom: 16px;
+    }
+    
+    .modal-subtitle {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+    
+    .modal-btn {
+        padding: 14px;
+        font-size: 16px;
+    }
+    
+    .modal-score {
+        margin: 20px 0;
+    }
+    
+    .modal-team-score {
+        font-size: 40px;
+    }
+    
+    /* Substitution modal */
+    .substitution-content {
+        padding: 24px 16px;
+        max-width: 100%;
+    }
+    
+    .sub-title {
+        font-size: 22px;
+    }
+    
+    .sub-teams {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .sub-team-section {
+        padding: 20px 16px;
+    }
+    
+    .sub-players-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    
+    .sub-player-card {
+        padding: 12px 10px;
+        min-height: 75px;
+    }
+    
+    .sub-player-number {
+        font-size: 18px;
+    }
+    
+    /* Block type modal */
+    .block-type-content {
+        padding: 30px 20px;
+    }
+    
+    .block-type-title {
+        font-size: 24px;
+    }
+    
+    .block-type-btn {
+        padding: 16px;
+        font-size: 16px;
+    }
+    
+    /* Penalty modal */
+    .penalty-content {
+        padding: 30px 20px;
+    }
+    
+    .penalty-title {
+        font-size: 26px;
+    }
+    
+    .penalty-cards-section {
+        flex-direction: row;
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    .penalty-card {
+        width: 110px;
+        height: 150px;
+    }
+    
+    .card-icon {
+        font-size: 40px;
+    }
+    
+    .card-label {
+        font-size: 16px;
+    }
+    
+    .penalty-teams-section {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .penalty-team-zone {
+        padding: 25px 16px;
+        min-height: 120px;
+    }
+    
+    .penalty-team-name {
+        font-size: 20px;
+    }
+    
+    /* Set summary modal */
+    #setSummaryModal .modal-content {
+        max-height: 85vh;
+        overflow-y: auto;
+    }
+    
+    #setSummaryModal h3 {
+        font-size: 18px;
+    }
+    
+    #setSummaryModal table {
+        font-size: 11px;
+    }
+    
+    #setSummaryModal th,
+    #setSummaryModal td {
+        padding: 10px 6px;
+    }
+    
+    /* Hotkeys modal */
+    .hotkey-item {
+        padding: 12px;
+    }
+    
+    #hotkeysModal .modal-content > div[style*="grid"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+    }
+    
+    /* Game settings modal */
+    #gameSettingsModal .modal-content > div[style*="grid"] {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+    
+    /* Event log */
+    .log-header {
+        padding: 12px 16px;
+        font-size: 13px;
+    }
+    
+    .log-entry {
+        font-size: 11px;
+        padding: 10px 8px;
+        grid-template-columns: 30px 45px 50px 1fr 50px 70px 30px;
+        gap: 6px;
+    }
+    
+    .entry-number {
+        font-size: 10px;
+    }
+    
+    .entry-team {
+        font-size: 13px;
+    }
+    
+    .entry-player {
+        font-size: 12px;
+    }
+    
+    .entry-action {
+        font-size: 11px;
+    }
+    
+    /* Instruction banner */
+    .instruction-banner {
+        bottom: 80px;
+        padding: 10px 20px;
+        font-size: 13px;
+        max-width: 90%;
+    }
+    
+    /* Team selection buttons */
+    .team-select-btn {
+        padding: 20px;
+        font-size: 18px;
+    }
+}
+
+/* ===== SMALL MOBILE (480px and below) ===== */
+@media (max-width: 480px) {
+    /* Scoreboard even more compact */
+    .scoreboard {
+        padding: 10px 8px 10px 55px;
+    }
+    
+    .score-display {
+        font-size: 32px;
+        min-width: 50px;
+    }
+    
+    .team-name {
+        font-size: 11px;
+    }
+    
+    .team-stats {
+        font-size: 9px;
+        gap: 6px;
+    }
+    
+    .team-info {
+        gap: 3px;
+    }
+    
+    /* Hide jerseys on very small screens to save space */
+    .team-jerseys {
+        display: none;
+    }
+    
+    /* Action buttons: 2 per row */
+    .actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+    
+    .action-btn {
+        padding: 12px 6px;
+        font-size: 10px;
+        letter-spacing: 0.2px;
+    }
+    
+    .actions-section {
+        padding: 10px;
+    }
+    
+    /* Player cards stay 2 columns */
+    .players-grid {
+        gap: 6px;
+        padding: 10px;
+    }
+    
+    .player-card {
+        padding: 12px 8px;
+        min-height: 75px;
+    }
+    
+    .player-number {
+        font-size: 16px;
+    }
+    
+    .player-position {
+        font-size: 10px;
+    }
+    
+    /* Hamburger menu */
+    .hamburger-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .hamburger-btn span {
+        width: 20px;
+    }
+    
+    .menu-dropdown {
+        min-width: 180px;
+    }
+    
+    .menu-item {
+        padding: 12px 16px;
+    }
+    
+    /* Modals */
+    .modal-content {
+        padding: 20px 16px;
+    }
+    
+    .modal-title {
+        font-size: 20px;
+    }
+    
+    .modal-subtitle {
+        font-size: 13px;
+    }
+    
+    .modal-btn {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    .modal-team-score {
+        font-size: 36px;
+    }
+    
+    /* Penalty cards stack vertically */
+    .penalty-cards-section {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .penalty-card {
+        width: 130px;
+        height: 160px;
+    }
+    
+    /* Sub players grid: 2 columns */
+    .sub-players-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    /* Set summary tables */
+    #setSummaryModal table {
+        font-size: 10px;
+    }
+    
+    #setSummaryModal th,
+    #setSummaryModal td {
+        padding: 8px 4px;
+    }
+    
+    /* Event log more compact */
+    .log-entry {
+        font-size: 10px;
+        padding: 8px 6px;
+        grid-template-columns: 25px 40px 45px 1fr 45px 65px 25px;
+        gap: 4px;
+    }
+    
+    .entry-check {
+        font-size: 14px;
+    }
+    
+    /* Instruction banner */
+    .instruction-banner {
+        bottom: 70px;
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+    
+    /* Hotkeys modal */
+    #hotkeysModal .modal-content > div[style*="grid"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ===== LANDSCAPE ORIENTATION ON MOBILE ===== */
+@media (max-width: 768px) and (orientation: landscape) {
+    /* Use horizontal space efficiently */
+    .container {
+        grid-template-columns: 1fr 2fr 1fr;
+        grid-template-rows: 1fr;
+        gap: 2px;
+    }
+    
+    .roster-section {
+        max-height: calc(100vh - 140px);
+    }
+    
+    .log-section {
+        max-height: calc(100vh - 140px);
+    }
+    
+    /* Scoreboard back to horizontal */
+    .scoreboard {
+        flex-direction: row;
+        padding: 8px 10px 8px 60px;
+        gap: 15px;
+    }
+    
+    .team-section.left,
+    .team-section.right {
+        width: auto;
+    }
+    
+    .center-panel {
+        order: 0;
+        width: auto;
+        flex: 1;
+    }
+    
+    /* Action buttons: 5 per row in landscape */
+    .actions-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+/* ===== TOUCH DEVICE OPTIMIZATIONS ===== */
+@media (hover: none) and (pointer: coarse) {
+    /* Ensure minimum touch target sizes */
+    .action-btn,
+    .player-card,
+    .jersey-badge,
+    .menu-item,
+    .modal-btn {
+        min-height: 44px;
+        min-width: 44px;
+        touch-action: manipulation;
+    }
+    
+    /* Remove hover effects on touch devices */
+    .player-card:hover,
+    .action-btn:hover,
+    .jersey-badge:hover {
+        transform: none;
+        background: inherit;
+    }
+    
+    /* Add tap feedback instead */
+    .player-card:active,
+    .action-btn:active {
+        transform: scale(0.97);
+        opacity: 0.8;
+        transition: all 0.1s;
+    }
+    
+    .jersey-badge:active {
+        transform: scale(0.95);
+    }
+    
+    /* Larger drag handles */
+    .sub-player-card[draggable="true"],
+    .penalty-card[draggable="true"] {
+        cursor: grab;
+    }
+    
+    .sub-player-card.dragging,
+    .penalty-card.dragging {
+        cursor: grabbing;
+    }
+}
+
+/* ===== HIGH CONTRAST MODE SUPPORT ===== */
+@media (prefers-contrast: high) {
+    .scoreboard {
+        border-bottom: 2px solid white;
+    }
+    
+    .player-card,
+    .action-btn {
+        border: 2px solid white;
+    }
+    
+    .jersey-badge {
+        border-width: 3px;
+    }
+}
+
+/* ===== REDUCED MOTION SUPPORT ===== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .serving-indicator {
+        animation: none;
+    }
+    
+    .timeout-timer {
+        animation: none;
+    }
+    
+    .player-card.selecting {
+        animation: none;
+    }
+}
+
+/* ===== VERY SMALL SCREENS (360px and below) ===== */
+@media (max-width: 360px) {
+    .score-display {
+        font-size: 28px;
+        min-width: 45px;
+    }
+    
+    .action-btn {
+        font-size: 9px;
+        padding: 10px 4px;
+    }
+    
+    .player-card {
+        padding: 10px 6px;
+    }
+    
+    .menu-dropdown {
+        min-width: 160px;
+    }
+}
+
+
     </style>
 </head>
 <body>
