@@ -1823,16 +1823,14 @@ function createJerseyBadge(player, team) {
     return badge;
 }
 
-        document.getElementById('blockBtn').addEventListener('click', function() {
-         
-            selectedAction = 'block';
-            document.querySelectorAll('.action-btn').forEach(btn => btn.classList.remove('selected'));
-            this.classList.add('selected');
-            
-            selectingTeam = true;
-            teamSelectCallback = handleBlockTeamSelect;
-            showTeamSelectModal('Which team made the block?');
-        });
+       document.getElementById('blockBtn').addEventListener('click', function() {
+    selectedAction = 'block';
+    document.querySelectorAll('.action-btn').forEach(btn => btn.classList.remove('selected'));
+    this.classList.add('selected');
+    
+    // ✅ Skip team selection - go directly to block type modal
+    document.getElementById('blockTypeModal').classList.add('show');
+});
 
         // ✅ NEW: Handle Block Team Selection
         function handleBlockTeamSelect(team) {
@@ -1844,24 +1842,31 @@ function createJerseyBadge(player, team) {
         }
 
         // ✅ NEW: Handle Block Type Selection
-        function handleBlockType(blockType) {
-            pendingBlockType = blockType;
-            document.getElementById('blockTypeModal').classList.remove('show');
-            
-            // Now select player
-            selectingPlayer = true;
-            document.querySelectorAll('.player-card').forEach(card => {
-                if (card.dataset.team === blockingTeam) {
-                    card.classList.add('selecting');
-                }
-            });
-            
-            if (blockType === 'kill_block') {
-                showInstruction(`Select ${blockingTeam === 'A' ? gameData.team1.name : gameData.team2.name} player who made the KILL BLOCK (will score point)`);
-            } else {
-                showInstruction(`Select ${blockingTeam === 'A' ? gameData.team1.name : gameData.team2.name} player who made the REGULAR BLOCK (no point)`);
-            }
-        }
+        // ✅ UPDATED: Handle Block Type Selection - skip team selection
+// ✅ FIXED: Handle Block Type Selection
+function handleBlockType(blockType) {
+    pendingBlockType = blockType;
+    blockingTeam = null; // We don't need this anymore, but keeping for compatibility
+    
+    // Close the block type modal
+    document.getElementById('blockTypeModal').classList.remove('show');
+    
+    // Set up player selection state
+    selectedAction = 'block';  // ✅ Make sure this is set
+    selectingPlayer = true;
+    
+    // Make ALL player cards selectable
+    document.querySelectorAll('.player-card').forEach(card => {
+        card.classList.add('selecting');
+    });
+    
+    // Show instruction based on block type
+    if (blockType === 'kill_block') {
+        showInstruction('Select player who made the KILL BLOCK (will score point + record block stat)');
+    } else {
+        showInstruction('Select player who made the REGULAR BLOCK (no point, only stat recorded)');
+    }
+}
 
         // ✅ NEW: Close Block Type Modal
         function closeBlockTypeModal() {
@@ -1870,23 +1875,23 @@ function createJerseyBadge(player, team) {
             resetSelection();
         }
 
-        function handlePlayerClick(team, player) {
+     function handlePlayerClick(team, player) {
     if (!selectingPlayer) return;
 
     const playerNumber = player.number || '00';
     
-    // ✅ FIXED: Handle block action with pending block type
+    // ✅ Handle block action with pending block type
     if (selectedAction === 'block' && pendingBlockType) {
         if (pendingBlockType === 'kill_block') {
-            // Kill block: award point and record block
-            handleScore(team, 'Kill Block', playerNumber);
-            // Also log the block stat separately
-            logEvent(team, playerNumber, 'Block', 0);
-        } else {
+            // Kill block: award point to the blocking team AND record block stat
+            handleScore(team, 'kill', playerNumber);  // This awards the point
+            logEvent(team, playerNumber, 'Block', 0);  // This records the block stat separately
+        } else if (pendingBlockType === 'regular_block') {
             // Regular block: just record the stat (no point)
             logEvent(team, playerNumber, 'Block', 0);
         }
         
+        // Reset block state
         pendingBlockType = null;
         blockingTeam = null;
         resetSelection();
