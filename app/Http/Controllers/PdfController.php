@@ -103,12 +103,12 @@ class PdfController extends Controller
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled' => true,
             'isPhpEnabled' => true,
-            'dpi' => 150,
+            'dpi' => 92,
             'enable_font_subsetting' => true,
         ]);
 
         $pdf->getDomPDF()->getOptions()->set('isUnicodeEnabled', true);
-        $pdf->setPaper('folio', 'portrait');
+        $pdf->setPaper('letter', 'portrait');
 
         $filename = sprintf(
             'basketball-scoresheet-%s-vs-%s-game%d.pdf',

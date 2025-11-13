@@ -5,13 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PADAYON CUP - Basketball Scoresheet</title>
     <style>
-        @font-face {
-            font-family: 'Varsity';
-            src: url('{{ public_path('fonts/Varsity-Regular.ttf') }}') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -20,22 +13,22 @@
 
         @page {
             size: 8.5in 13in portrait;
-            margin: 0.1in; /* Reduced margin to save space */
+            margin: 0.25in;
         }
 
         body {
             font-family: DejaVu Sans, Arial, sans-serif;
-            font-size: 7px; /* Reduced base font size */
+            font-size: 9px;
             background: white;
             padding: 0;
-            line-height: 1.1; /* Tightened line height */
+            line-height: 1.2;
         }
 
         .sheet {
-            width: 8.3in; /* Adjusted to fit within margins */
-            min-height: 12.8in;
+            width: 8in;
+            height: 12.5in;
             background: white;
-            padding: 0.1in; /* Reduced padding */
+            padding: 0.1in;
             border: 2px solid #000;
             margin: 0 auto;
         }
@@ -43,20 +36,20 @@
         /* Download buttons */
         .download-buttons {
             text-align: center;
-            padding: 10px; /* Reduced padding */
+            padding: 10px;
             background: #f8f9fa;
-            margin-bottom: 10px; /* Reduced margin */
+            margin-bottom: 10px;
             border-radius: 6px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .download-buttons a {
             display: inline-block;
-            padding: 8px 16px; /* Reduced padding */
+            padding: 8px 16px;
             margin: 0 6px;
             text-decoration: none;
             border-radius: 4px;
-            font-size: 12px; /* Reduced font size */
+            font-size: 12px;
             font-weight: 600;
             transition: all 0.3s;
         }
@@ -88,9 +81,9 @@
         /* Header with logos */
         .header {
             background: #FFFFFF;
-            padding: 10px 4px; /* Reduced padding */
-            border: 2px solid #000; /* Thinner border */
-            margin-bottom: 3px; /* Reduced margin */
+            padding: 10px 5px;
+            border: 2px solid #000;
+            margin-bottom: 4px;
         }
 
         .header-table {
@@ -105,7 +98,7 @@
         }
 
         .logo-cell {
-            width: 80px; /* Reduced width */
+            width: 80px;
             text-align: center;
         }
 
@@ -115,39 +108,37 @@
 
         .logo-left img,
         .logo-right img {
-            width: 60px; /* Reduced logo size */
-            height: 60px;
+            width: 65px;
+            height: 65px;
             object-fit: contain;
             display: block;
             margin: 0 auto;
         }
 
-        /* HEADER TEXT - VARSITY STYLE */
         .header h1 {
             font-family: Impact, 'Arial Black', sans-serif;
-            font-size: 36px; /* Reduced font size */
+            font-size: 40px;
             font-weight: 900;
-            letter-spacing: 6px;
+            letter-spacing: 8px;
             color: #8B4513;
             margin: 0;
             padding: 4px 0;
-            line-height: 1.05;
+            line-height: 1;
             text-transform: uppercase;
             text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15);
             -webkit-text-stroke: 0.8px #000;
         }
 
-        /* Rest of the styles */
         .meta-row {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 2px; /* Reduced margin */
-            font-size: 7px; /* Reduced font size */
+            margin-bottom: 3px;
+            font-size: 9px;
         }
 
         .meta-row td {
-            border: 1px solid #000;
-            padding: 3px 5px; /* Reduced padding */
+            border: 1.5px solid #000;
+            padding: 4px 6px;
         }
 
         .meta-label {
@@ -156,40 +147,40 @@
 
         .main-container {
             width: 100%;
-            height: 11.1in; /* Adjusted height */
+            height: 10.2in;
             border-collapse: collapse;
         }
 
         .main-container>tbody>tr>td {
             vertical-align: top;
-            border: 1.5px solid #000; /* Thinner border */
+            border: 1.5px solid #000;
         }
 
         .team-section {
-            padding: 4px; /* Reduced padding */
+            padding: 5px;
             background: white;
         }
 
         .team-header {
             font-weight: bold;
-            font-size: 8px; /* Reduced font size */
-            padding: 3px;
+            font-size: 9px;
+            padding: 4px;
             background: #e9ecef;
-            border: 1px solid #000;
-            margin-bottom: 2px;
+            border: 1.5px solid #000;
+            margin-bottom: 3px;
             text-align: center;
         }
 
         .timeout-row,
         .teamfoul-row {
-            margin: 2px 0; /* Reduced margin */
-            font-size: 7px; /* Reduced font size */
+            margin: 3px 0;
+            font-size: 8px;
         }
 
         .timeout-row strong,
         .teamfoul-row strong {
             display: inline-block;
-            width: 45px; /* Reduced width */
+            width: 52px;
             vertical-align: top;
         }
 
@@ -202,142 +193,151 @@
         .foul-boxes table {
             display: inline-table;
             border-collapse: collapse;
-            margin-left: 2px;
+            margin-left: 3px;
         }
 
         .timeout-boxes td,
         .foul-boxes td {
             border: 1px solid #000;
-            width: 10px; /* Reduced size */
-            height: 10px;
+            width: 13px;
+            height: 13px;
             text-align: center;
             padding: 0;
-            font-size: 6px; /* Reduced font size */
+            font-size: 7px;
         }
 
         .players-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 2px;
-            font-size: 6.5px; /* Reduced font size */
+            margin-top: 3px;
+            font-size: 8px;
         }
 
         .players-table th {
             background: #e9ecef;
             border: 1px solid #000;
-            padding: 1.5px; /* Reduced padding */
+            padding: 3px;
             font-weight: bold;
             text-align: center;
+            line-height: 1.1;
         }
 
         .players-table td {
             border: 1px solid #000;
-            padding: 1.5px;
+            padding: 2px;
             text-align: center;
-            height: 16px; /* Reduced height */
+            height: 18px;
         }
 
         .players-table td:nth-child(2) {
             text-align: left;
+            padding-left: 3px;
         }
 
         .coach-row {
-            margin-top: 2px;
-            font-size: 7px; /* Reduced font size */
-            padding: 1.5px;
+            margin-top: 3px;
+            font-size: 8px;
+            padding: 2px;
         }
 
         .running-score-section {
-            padding: 4px; /* Reduced padding */
+            padding: 5px;
         }
 
         .running-score-header {
             font-weight: bold;
-            font-size: 8px; /* Reduced font size */
+            font-size: 9px;
             text-align: center;
-            padding: 3px;
+            padding: 4px;
             background: #e9ecef;
-            border: 1px solid #000;
-            margin-bottom: 2px;
+            border: 1.5px solid #000;
+            margin-bottom: 3px;
         }
 
         .running-score-table {
             width: 100%;
-            height: 8.5in; /* Adjusted height */
+            height: 6.5in;
             border-collapse: collapse;
-            font-size: 6px; /* Reduced font size */
+            font-size: 7px;
         }
 
         .running-score-table th {
             background: #f8f9fa;
             border: 1px solid #000;
-            padding: 1.5px;
+            padding: 2px;
             font-weight: bold;
         }
 
         .running-score-table td {
             border: 1px solid #000;
-            height: 9px; /* Reduced height */
+            height: 11px;
             padding: 0;
             text-align: center;
+            font-size: 6.5px;
         }
 
         .scores-section {
-            margin-top: 2px;
-            padding: 4px; /* Reduced padding */
-            border: 1px solid #000;
+            margin-top: 3px;
+            padding: 5px;
+            border: 1.5px solid #000;
             background: #f8f9fa;
-            font-size: 7px; /* Reduced font size */
+            font-size: 8.5px;
         }
 
         .scores-section table {
             width: 100%;
-            height: 1in; /* Adjusted height */
             border-collapse: collapse;
         }
 
         .scores-section td {
-            padding: 1.5px; /* Reduced padding */
+            padding: 3px;
             border: none;
         }
 
         .final-score-row {
             font-weight: bold;
-            font-size: 7.5px; /* Reduced font size */
-            margin-top: 2px;
-            padding-top: 2px;
-            border-top: 1px solid #000;
+            font-size: 9px;
+            margin-top: 4px;
+            padding-top: 4px;
+            border-top: 1.5px solid #000;
         }
 
         .winning-team-box {
-            margin-top: 2px;
-            padding: 4px; /* Reduced padding */
-            
+            margin-top: 3px;
+            padding: 4px;
             background: #ffffff;
-            font-size: 7.5px; /* Reduced font size */
+            font-size: 8.5px;
         }
 
         .officials-section {
-            margin-top: 2px;
-            padding: 3px; /* Reduced padding */
-            border: 1px solid #000;
-            font-size: 7px; /* Reduced font size */
+            margin-top: 3px;
+            padding: 4px;
+            border: 1.5px solid #000;
+            font-size: 8px;
         }
 
         .officials-section div {
-            margin: 1.5px 0; /* Reduced margin */
+            margin: 3px 0;
         }
 
         .best-player-section {
-            margin-top: 2px;
-            padding: 4px; /* Reduced padding */
-            border: 1.5px solid #000;
+            margin-top: 3px;
+            padding: 5px;
+            border: 2px solid #000;
             background: #ffffff;
-            font-size: 9px; /* Reduced font size */
+            font-size: 9px;
         }
 
         .best-player-section strong {
-            font-size: 8px; /* Reduced font size */
+            font-size: 9px;
+        }
+
+        .best-player-section table {
+            margin-top: 2px;
+        }
+
+        .best-player-section table td {
+            font-size: 8px;
         }
 
         @media print {
@@ -352,10 +352,16 @@
                 box-shadow: none;
                 margin: 0;
                 padding: 0.1in;
+                page-break-after: avoid;
+                page-break-inside: avoid;
             }
 
             .download-buttons {
                 display: none !important;
+            }
+
+            .main-container {
+                page-break-inside: avoid;
             }
         }
     </style>
@@ -428,10 +434,10 @@
         </table>
 
         <!-- Main Layout: Team A + Running Score -->
-        <table class="main-container" style="margin-top: 2px;">
+        <table class="main-container" style="margin-top: 3px;">
             <tr>
                 <!-- LEFT: Team A -->
-                <td style="width: 48%; padding: 0;">
+                <td style="width: 46%; padding: 0;">
                     <div class="team-section">
                         <div class="team-header">Team A {{ strtoupper($game->team1->team_name) }}</div>
 
@@ -441,8 +447,8 @@
                             <div class="timeout-boxes">
                                 <table>
                                     <tr>
-                                        <td colspan="4" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000; font-size: 6px;">Period ①</td>
-                                        <td colspan="4" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000; font-size: 6px;">Period ②</td>
+                                        <td colspan="4" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000;">Period ①</td>
+                                        <td colspan="4" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000;">Period ②</td>
                                     </tr>
                                     <tr>
                                         @php $team1Timeouts = $liveData['team1_timeouts'] ?? 0; @endphp
@@ -455,12 +461,12 @@
                         </div>
 
                         <div class="timeout-row">
-                            <div style="display: inline-block; width: 45px;"></div>
+                            <div style="display: inline-block; width: 52px;"></div>
                             <div class="timeout-boxes">
                                 <table>
                                     <tr>
-                                        <td colspan="4" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000; font-size: 6px;">Period ③</td>
-                                        <td colspan="4" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000; font-size: 6px;">Period ④</td>
+                                        <td colspan="4" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000;">Period ③</td>
+                                        <td colspan="4" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000;">Period ④</td>
                                     </tr>
                                     <tr>
                                         @for ($i = 0; $i < 8; $i++)
@@ -471,8 +477,8 @@
                             </div>
                         </div>
 
-                        <div class="timeout-row" style="margin-top: 1px; margin-bottom: 2px;">
-                            <div style="display: inline-block; width: 45px;"></div>
+                        <div class="timeout-row" style="margin-top: 2px; margin-bottom: 3px;">
+                            <div style="display: inline-block; width: 52px;"></div>
                             <strong style="width: auto;">Extra periods</strong>
                         </div>
 
@@ -499,7 +505,7 @@
                                 <table>
                                     <tr>
                                         @foreach ([1, 2, 3, 4] as $q)
-                                            <td colspan="5" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000; font-size: 6px;">Period {{ $q }}</td>
+                                            <td colspan="5" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000;">Period {{ $q }}</td>
                                         @endforeach
                                     </tr>
                                     <tr>
@@ -517,13 +523,13 @@
                         <table class="players-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 12px;">Ln</th>
+                                    <th style="width: 16px;">Ln<br>no.</th>
                                     <th>Players</th>
-                                    <th style="width: 20px;">No.</th>
-                                    <th style="width: 10px;">①</th>
-                                    <th style="width: 10px;">②</th>
-                                    <th style="width: 10px;">③</th>
-                                    <th style="width: 10px;">④</th>
+                                    <th style="width: 24px;">No.</th>
+                                    <th style="width: 13px;">①</th>
+                                    <th style="width: 13px;">②</th>
+                                    <th style="width: 13px;">③</th>
+                                    <th style="width: 13px;">④</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -543,7 +549,7 @@
                                 @foreach ($team1Players as $index => $player)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
-                                        <td style="text-align: left; padding-left: 2px;">{{ $player->name }}</td>
+                                        <td style="text-align: left;">{{ $player->name }}</td>
                                         <td><strong>{{ $player->number ?? '00' }}</strong></td>
                                         @php $fouls = $team1FoulCounts[$player->number] ?? 0; @endphp
                                         <td>{!! $fouls >= 1 ? '/' : '&nbsp;' !!}</td>
@@ -552,7 +558,7 @@
                                         <td>{!! $fouls >= 4 ? '/' : '&nbsp;' !!}</td>
                                     </tr>
                                 @endforeach
-                                @for ($i = count($team1Players); $i < 12; $i++) <!-- Reduced rows to save space -->
+                                @for ($i = count($team1Players); $i < 15; $i++)
                                     <tr>
                                         <td>{{ $i + 1 }}</td>
                                         <td></td>
@@ -567,13 +573,13 @@
                         </table>
 
                         <div class="coach-row">
-                            <div><strong>Coach:</strong> {{ $game->team1->coach_name ?? '___________________' }}</div>
-                            <div><strong>Assistant Coach:</strong> _________________</div>
+                            <div><strong>Coach:</strong> {{ $game->team1->coach_name ?? '_____________________' }}</div>
+                            <div><strong>Assistant Coach:</strong> _____________________</div>
                         </div>
                     </div>
                 </td>
                 <!-- RIGHT: Running Score (Full Height) -->
-                <td style="width: 52%; padding: 0;" rowspan="2">
+                <td style="width: 54%; padding: 0;" rowspan="2">
                     <div class="running-score-section">
                         <div class="running-score-header">RUNNING SCORE</div>
 
@@ -637,10 +643,10 @@
                             @endphp
                             <table>
                                 <tr>
-                                    <td style="width: 22%;"><strong>Scores</strong></td>
-                                    <td style="width: 18%;"><strong>Period ①</strong></td>
-                                    <td style="width: 18%;"><strong>A</strong> {{ $periodScores['team1'][0] ?? 0 }}</td>
-                                    <td style="width: 18%;"><strong>B</strong> {{ $periodScores['team2'][0] ?? 0 }}</td>
+                                    <td style="width: 20%;"><strong>Scores</strong></td>
+                                    <td style="width: 24%;"><strong>Period ①</strong></td>
+                                    <td style="width: 14%;"><strong>A</strong> {{ $periodScores['team1'][0] ?? 0 }}</td>
+                                    <td style="width: 14%;"><strong>B</strong> {{ $periodScores['team2'][0] ?? 0 }}</td>
                                 </tr>
                                 <tr>
                                     <td></td>
@@ -670,12 +676,12 @@
 
                             <div class="final-score-row">
                                 <strong>Final Score</strong>
-                                <span style="margin-left: 10px;">Team A <u>{{ $liveData['team1_score'] ?? 0 }}</u></span>
-                                <span style="margin-left: 20px;">Team B <u>{{ $liveData['team2_score'] ?? 0 }}</u></span>
-                            
+                                <span style="margin-left: 20px;">Team A <u>{{ $liveData['team1_score'] ?? 0 }}</u></span>
+                                <span style="margin-left: 30px;">Team B <u>{{ $liveData['team2_score'] ?? 0 }}</u></span>
+                            </div>
 
                             <div class="winning-team-box">
-                                <strong>Name of winning team:</strong>
+                                <strong>Name of winning team</strong>
                                 @if (($liveData['team1_score'] ?? 0) > ($liveData['team2_score'] ?? 0))
                                     {{ $game->team1->team_name }}
                                 @elseif (($liveData['team2_score'] ?? 0) > ($liveData['team1_score'] ?? 0))
@@ -684,12 +690,11 @@
                                     ________________
                                 @endif
                             </div>
-                            </div>
 
                             <!-- Best Player Section -->
                             <div class="best-player-section">
                                 @if (isset($mvpPlayer) && $mvpPlayer)
-                                    <div style="margin-bottom: 2px;">
+                                    <div style="margin-bottom: 3px;">
                                         <strong>BEST PLAYER:</strong>
                                         <span style="text-decoration: underline;">
                                             {{ $mvpPlayer->player->name ?? 'Unknown Player' }}
@@ -698,38 +703,38 @@
                                     </div>
                                     <table style="width: 100%; border: none;">
                                         <tr>
-                                            <td style="border: none; text-align: left; padding: 1.5px;">
+                                            <td style="border: none; text-align: left; padding: 2px;">
                                                 <strong>Score:</strong> <u>{{ $mvpPlayer->points ?? 0 }}</u>
                                             </td>
-                                            <td style="border: none; text-align: left; padding: 1.5px;">
+                                            <td style="border: none; text-align: left; padding: 2px;">
                                                 <strong>Assist:</strong> <u>{{ $mvpPlayer->assists ?? 0 }}</u>
                                             </td>
-                                            <td style="border: none; text-align: left; padding: 1.5px;">
+                                            <td style="border: none; text-align: left; padding: 2px;">
                                                 <strong>Rebound:</strong> <u>{{ $mvpPlayer->rebounds ?? 0 }}</u>
                                             </td>
-                                            <td style="border: none; text-align: left; padding: 1.5px;">
+                                            <td style="border: none; text-align: left; padding: 2px;">
                                                 <strong>Blocks:</strong> <u>{{ $mvpPlayer->blocks ?? 0 }}</u>
                                             </td>
-                                            <td style="border: none; text-align: left; padding: 1.5px;">
+                                            <td style="border: none; text-align: left; padding: 2px;">
                                                 <strong>Steal:</strong> <u>{{ $mvpPlayer->steals ?? 0 }}</u>
                                             </td>
                                         </tr>
                                     </table>
                                 @else
-                                    <div style="margin-bottom: 2px;">
+                                    <div style="margin-bottom: 3px;">
                                         <strong>BEST PLAYER:</strong> ___________________________________
                                     </div>
                                     <table style="width: 100%; border: none;">
                                         <tr>
-                                            <td style="border: none; text-align: left; padding: 1.5px;">
+                                            <td style="border: none; text-align: left; padding: 2px;">
                                                 <strong>Score:</strong> _____</td>
-                                            <td style="border: none; text-align: left; padding: 1.5px;">
+                                            <td style="border: none; text-align: left; padding: 2px;">
                                                 <strong>Assist:</strong> _____</td>
-                                            <td style="border: none; text-align: left; padding: 1.5px;">
+                                            <td style="border: none; text-align: left; padding: 2px;">
                                                 <strong>Rebound:</strong> _____</td>
-                                            <td style="border: none; text-align: left; padding: 1.5px;">
+                                            <td style="border: none; text-align: left; padding: 2px;">
                                                 <strong>Blocks:</strong> _____</td>
-                                            <td style="border: none; text-align: left; padding: 1.5px;">
+                                            <td style="border: none; text-align: left; padding: 2px;">
                                                 <strong>Steal:</strong> _____</td>
                                         </tr>
                                     </table>
@@ -742,7 +747,7 @@
 
             <!-- BOTTOM ROW: Team B -->
             <tr>
-                <td style="width: 48%; padding: 0;">
+                <td style="width: 46%; padding: 0;">
                     <div class="team-section">
                         <div class="team-header">Team B {{ strtoupper($game->team2->team_name) }}</div>
 
@@ -752,8 +757,8 @@
                             <div class="timeout-boxes">
                                 <table>
                                     <tr>
-                                        <td colspan="4" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000; font-size: 6px;">Period ①</td>
-                                        <td colspan="4" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000; font-size: 6px;">Period ②</td>
+                                        <td colspan="4" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000;">Period ①</td>
+                                        <td colspan="4" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000;">Period ②</td>
                                     </tr>
                                     <tr>
                                         @php $team2Timeouts = $liveData['team2_timeouts'] ?? 0; @endphp
@@ -766,12 +771,12 @@
                         </div>
 
                         <div class="timeout-row">
-                            <div style="display: inline-block; width: 45px;"></div>
+                            <div style="display: inline-block; width: 52px;"></div>
                             <div class="timeout-boxes">
                                 <table>
                                     <tr>
-                                        <td colspan="4" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000; font-size: 6px;">Period ③</td>
-                                        <td colspan="4" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000; font-size: 6px;">Period ④</td>
+                                        <td colspan="4" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000;">Period ③</td>
+                                        <td colspan="4" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000;">Period ④</td>
                                     </tr>
                                     <tr>
                                         @for ($i = 0; $i < 8; $i++)
@@ -782,8 +787,8 @@
                             </div>
                         </div>
 
-                        <div class="timeout-row" style="margin-top: 1px; margin-bottom: 2px;">
-                            <div style="display: inline-block; width: 45px;"></div>
+                        <div class="timeout-row" style="margin-top: 2px; margin-bottom: 3px;">
+                            <div style="display: inline-block; width: 52px;"></div>
                             <strong style="width: auto;">Extra periods</strong>
                         </div>
 
@@ -810,7 +815,7 @@
                                 <table>
                                     <tr>
                                         @foreach ([1, 2, 3, 4] as $q)
-                                            <td colspan="5" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000; font-size: 6px;">Period {{ $q }}</td>
+                                            <td colspan="5" style="text-align: center; font-weight: bold; border-bottom: 1px solid #000;">Period {{ $q }}</td>
                                         @endforeach
                                     </tr>
                                     <tr>
@@ -828,13 +833,13 @@
                         <table class="players-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 12px;">Ln</th>
+                                    <th style="width: 16px;">Ln<br>no.</th>
                                     <th>Players</th>
-                                    <th style="width: 20px;">No.</th>
-                                    <th style="width: 10px;">①</th>
-                                    <th style="width: 10px;">②</th>
-                                    <th style="width: 10px;">③</th>
-                                    <th style="width: 10px;">④</th>
+                                    <th style="width: 24px;">No.</th>
+                                    <th style="width: 13px;">①</th>
+                                    <th style="width: 13px;">②</th>
+                                    <th style="width: 13px;">③</th>
+                                    <th style="width: 13px;">④</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -854,7 +859,7 @@
                                 @foreach ($team2Players as $index => $player)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
-                                        <td style="text-align: left; padding-left: 2px;">{{ $player->name }}</td>
+                                        <td style="text-align: left;">{{ $player->name }}</td>
                                         <td><strong>{{ $player->number ?? '00' }}</strong></td>
                                         @php $fouls = $team2FoulCounts[$player->number] ?? 0; @endphp
                                         <td>{!! $fouls >= 1 ? '/' : '&nbsp;' !!}</td>
@@ -863,7 +868,7 @@
                                         <td>{!! $fouls >= 4 ? '/' : '&nbsp;' !!}</td>
                                     </tr>
                                 @endforeach
-                                @for ($i = count($team2Players); $i < 12; $i++) <!-- Reduced rows to save space -->
+                                @for ($i = count($team2Players); $i < 15; $i++)
                                     <tr>
                                         <td>{{ $i + 1 }}</td>
                                         <td></td>
@@ -878,22 +883,22 @@
                         </table>
 
                         <div class="coach-row">
-                            <div><strong>Coach:</strong> {{ $game->team2->coach_name ?? '___________________' }}</div>
-                            <div><strong>Assistant Coach:</strong> _________________</div>
+                            <div><strong>Coach:</strong> {{ $game->team2->coach_name ?? '_____________________' }}</div>
+                            <div><strong>Assistant Coach:</strong> _____________________</div>
                         </div>
 
                         <!-- Officials Section -->
                         <div class="officials-section">
-                            <div><strong>Scorekeeper:</strong> _______________________</div>
-                            <div><strong>Assistant Scorekeeper:</strong> _______________________</div>
-                            <div><strong>Timekeeper:</strong> _______________________</div>
-                            <div><strong>24" operator:</strong> _______________________</div>
+                            <div><strong>Scorekeeper:</strong> _________________________</div>
+                            <div><strong>Assistant Scorekeeper:</strong> _________________________</div>
+                            <div><strong>Timekeeper:</strong> _________________________</div>
+                            <div><strong>24" operator:</strong> _________________________</div>
                         </div>
 
-                        <div class="officials-section" style="margin-top: 1.5px;">
-                            <div><strong>Referee:</strong> {{ $game->referee ?? '_______________________' }}</div>
-                            <div><strong>Umpire 1:</strong> {{ $game->assistant_referee_1 ?? '_______________________' }}</div>
-                            <div><strong>Umpire 2:</strong> {{ $game->assistant_referee_2 ?? '_______________________' }}</div>
+                        <div class="officials-section" style="margin-top: 3px;">
+                            <div><strong>Referee:</strong> {{ $game->referee ?? '_________________________' }}</div>
+                            <div><strong>Umpire 1:</strong> {{ $game->assistant_referee_1 ?? '_________________________' }}</div>
+                            <div><strong>Umpire 2:</strong> {{ $game->assistant_referee_2 ?? '_________________________' }}</div>
                         </div>
                     </div>
                 </td>
