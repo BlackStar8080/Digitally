@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Live Volleyball - {{ $game->team1->team_name }} vs {{ $game->team2->team_name }}</title>
     <style>
@@ -1856,46 +1858,71 @@
     }
 }
 
-/* ===== LANDSCAPE ORIENTATION ON MOBILE ===== */
-@media (max-width: 768px) and (orientation: landscape) {
-    /* Use horizontal space efficiently */
+/* ===== LANDSCAPE MODE FIX FOR MOBILE/TABLET ===== */
+@media (max-width: 1024px) and (orientation: landscape) {
+    html, body {
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* Full-width grid layout */
     .container {
-        grid-template-columns: 1fr 2fr 1fr;
+        display: grid;
+        grid-template-columns: 1fr 1.5fr 1fr; /* Left roster | Center log | Right roster */
         grid-template-rows: 1fr;
-        gap: 2px;
+        height: calc(100vh - 160px);
+        gap: 4px;
+        overflow: hidden;
     }
-    
-    .roster-section {
-        max-height: calc(100vh - 140px);
+
+    .roster-section, .log-section {
+        max-height: 100%;
+        overflow-y: auto;
     }
-    
-    .log-section {
-        max-height: calc(100vh - 140px);
-    }
-    
-    /* Scoreboard back to horizontal */
+
+    /* Scoreboard stretches fully */
     .scoreboard {
         flex-direction: row;
-        padding: 8px 10px 8px 60px;
-        gap: 15px;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 8px 12px 8px 70px;
+        font-size: 0.9em;
     }
-    
-    .team-section.left,
-    .team-section.right {
-        width: auto;
-    }
-    
-    .center-panel {
-        order: 0;
-        width: auto;
+
+    .team-section {
         flex: 1;
+        gap: 10px;
     }
-    
-    /* Action buttons: 5 per row in landscape */
+
+    .center-panel {
+        flex: 0 0 260px;
+        text-align: center;
+    }
+
+    /* Make action buttons tighter and visible horizontally */
+    .actions-section {
+        padding: 8px 12px;
+    }
+
     .actions-grid {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+    }
+
+    .action-btn {
+        padding: 10px 6px;
+        font-size: 11px;
+        min-height: 40px;
+    }
+
+    /* Optional: hide non-critical UI for clarity */
+    .instruction-banner {
+        display: none !important;
     }
 }
+
 
 /* ===== TOUCH DEVICE OPTIMIZATIONS ===== */
 @media (hover: none) and (pointer: coarse) {
