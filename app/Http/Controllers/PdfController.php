@@ -103,12 +103,12 @@ class PdfController extends Controller
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled' => true,
             'isPhpEnabled' => true,
-            'dpi' => 92,
+            'dpi' => 114,
             'enable_font_subsetting' => true,
         ]);
 
         $pdf->getDomPDF()->getOptions()->set('isUnicodeEnabled', true);
-        $pdf->setPaper('letter', 'portrait');
+        $pdf->setPaper('legal', 'portrait');
 
         $filename = sprintf(
             'basketball-scoresheet-%s-vs-%s-game%d.pdf',
@@ -212,19 +212,16 @@ class PdfController extends Controller
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled' => true,
             'isPhpEnabled' => true,
-            'dpi' => 150,
+            'dpi' => 114,
             'enable_font_subsetting' => true,
         ]);
 
         $pdf->getDomPDF()->getOptions()->set('isUnicodeEnabled', true);
-        $pdf->setPaper('folio', 'portrait');
+        $pdf->setPaper('legal', 'portrait');
 
         return $pdf->stream('basketball-scoresheet-game-' . $game->id . '.pdf');
     }
 
-    /**
- * Stream volleyball scoresheet (view in browser)
- */
 /**
  * Download volleyball scoresheet as PDF
  */
