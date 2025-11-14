@@ -3130,16 +3130,16 @@
                                                     <div class="game-header"
                                                         style="background: linear-gradient(135deg, #2196F3, #1976D2);">
                                                         <div class="game-league">{{ $tournament->name }}</div>
-                                                        <div class="game-date">
-    @if ($game->scheduled_at)
-        {{ $game->scheduled_at->format('M j, Y g:i A') }}
-    @else
-        {{ $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('M j, Y') : 'Date TBD' }}
-    @endif
-    @if($game->venue)
-        <br><small><i class="bi bi-geo-alt"></i> {{ $game->venue }}</small>
-    @endif
-</div>
+                                                            <div class="game-date">
+                                                            @if ($game->scheduled_at)
+                                                                {{ $game->scheduled_at->format('M j, Y g:i A') }}
+                                                            @else
+                                                                {{ $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('M j, Y') : 'Date TBD' }}
+                                                            @endif
+                                                            @if($game->venue)
+                                                                <br><small><i class="bi bi-geo-alt"></i> {{ $game->venue }}</small>
+                                                            @endif
+                                                        </div>
                                                         <h6 class="game-round">
                                                             @if ($game->round == $bracket->getTotalRounds())
                                                                 🏆 Finals
@@ -3200,12 +3200,15 @@
                                                             {{ $tournament->name }}
                                                         </div>
                                                         <div class="game-date">
-                                                            @if ($game->scheduled_at)
-                                                                {{ $game->scheduled_at->format('M j, Y g:i A') }}
-                                                            @else
-                                                                {{ $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('M j, Y') : 'Date TBD' }}
-                                                            @endif
-                                                        </div>
+    @if ($game->scheduled_at)
+        {{ $game->scheduled_at->format('M j, Y g:i A') }}
+    @else
+        {{ $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('M j, Y') : 'Date TBD' }}
+    @endif
+    @if($game->venue)
+        <br><small><i class="bi bi-geo-alt"></i> {{ $game->venue }}</small>
+    @endif
+</div>
                                                         <h6 class="game-round">
                                                             @if ($game->round == ($game->bracket ? $game->bracket->getTotalRounds() : 0))
                                                                 🏆 Finals
