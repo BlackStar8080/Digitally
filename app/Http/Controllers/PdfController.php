@@ -225,6 +225,9 @@ class PdfController extends Controller
 /**
  * Download volleyball scoresheet as PDF
  */
+/**
+ * Download volleyball scoresheet as PDF
+ */
 public function volleyballScoresheet($gameId)
 {
     $game = \App\Models\Game::with([
@@ -265,6 +268,23 @@ public function volleyballScoresheet($gameId)
         ];
     }
 
+    // ✅ NEW: Calculate statistics
+    $gameController = new \App\Http\Controllers\GameController();
+    $team1Stats = $gameController->calculateVolleyballTeamStats($game, $game->team1_id);
+    $team2Stats = $gameController->calculateVolleyballTeamStats($game, $game->team2_id);
+
+    $team1PlayerStats = $game->volleyballPlayerStats()
+        ->where('team_id', $game->team1_id)
+        ->with('player')
+        ->get()
+        ->keyBy('player_id');
+
+    $team2PlayerStats = $game->volleyballPlayerStats()
+        ->where('team_id', $game->team2_id)
+        ->with('player')
+        ->get()
+        ->keyBy('player_id');
+
     $isPdf = true; // ✅ Flag to hide download button in PDF
 
     $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('games.volleyball-scoresheet', compact(
@@ -272,7 +292,11 @@ public function volleyballScoresheet($gameId)
         'team1Players',
         'team2Players',
         'liveData',
-        'isPdf' // ✅ Pass the flag
+        'isPdf',
+        'team1Stats',
+        'team2Stats',
+        'team1PlayerStats',
+        'team2PlayerStats'
     ))->setOptions([
         'defaultFont' => 'DejaVu Sans',
         'isHtml5ParserEnabled' => true,
@@ -293,6 +317,9 @@ public function volleyballScoresheet($gameId)
     return $pdf->download($filename);
 }
 
+/**
+ * View volleyball scoresheet in browser (with download button)
+ */
 /**
  * View volleyball scoresheet in browser (with download button)
  */
@@ -335,6 +362,23 @@ public function viewVolleyballScoresheet($gameId)
         ];
     }
 
+    // ✅ NEW: Calculate statistics
+    $gameController = new \App\Http\Controllers\GameController();
+    $team1Stats = $gameController->calculateVolleyballTeamStats($game, $game->team1_id);
+    $team2Stats = $gameController->calculateVolleyballTeamStats($game, $game->team2_id);
+
+    $team1PlayerStats = $game->volleyballPlayerStats()
+        ->where('team_id', $game->team1_id)
+        ->with('player')
+        ->get()
+        ->keyBy('player_id');
+
+    $team2PlayerStats = $game->volleyballPlayerStats()
+        ->where('team_id', $game->team2_id)
+        ->with('player')
+        ->get()
+        ->keyBy('player_id');
+
     $isPdf = false; // ✅ Show download button in browser view
 
     return view('games.volleyball-scoresheet', compact(
@@ -342,7 +386,11 @@ public function viewVolleyballScoresheet($gameId)
         'team1Players',
         'team2Players',
         'liveData',
-        'isPdf' // ✅ Pass the flag
+        'isPdf',
+        'team1Stats',
+        'team2Stats',
+        'team1PlayerStats',
+        'team2PlayerStats'
     ));
 }
 

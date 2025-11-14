@@ -245,18 +245,18 @@
         }
 
         .running-score-header {
-            font-weight: bold;
-            font-size: 9px;
-            text-align: center;
-            padding: 4px;
-            background: #e9ecef;
-            border: 1.5px solid #000;
-            margin-bottom: 3px;
-        }
+    font-weight: bold;
+    font-size: 9px;
+    text-align: center;
+    padding: 4px;
+    background: #e9ecef;
+    border: 1.5px solid #000;
+    margin-bottom: 3px;  /* Change to 1px or 2px */
+}
 
         .running-score-table {
             width: 100%;
-            height: 6.5in;
+            height: 6.5in;  /* Change to 7.2in or 7.3in */
             border-collapse: collapse;
             font-size: 7px;
         }
@@ -270,14 +270,14 @@
 
         .running-score-table td {
             border: 1px solid #000;
-            height: 11px;
+            height: 20px;
             padding: 0;
             text-align: center;
             font-size: 6.5px;
         }
 
         .scores-section {
-            margin-top: 3px;
+            margin-top: 3px;  /* Change to 0px or 1px */
             padding: 5px;
             border: 1.5px solid #000;
             background: #f8f9fa;

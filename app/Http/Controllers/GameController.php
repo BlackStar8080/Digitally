@@ -299,18 +299,21 @@ public function updateSchedule(Request $request, Game $game)
 {
     $validated = $request->validate([
         'scheduled_at' => 'required|date|after_or_equal:today',
+        'venue' => 'nullable|string|max:255', // ✅ ADD THIS
     ]);
 
     try {
         $game->update([
-            'scheduled_at' => $validated['scheduled_at']
+            'scheduled_at' => $validated['scheduled_at'],
+            'venue' => $validated['venue'] ?? null, // ✅ ADD THIS
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Game schedule updated successfully!',
+            'message' => 'Game schedule and venue updated successfully!',
             'scheduled_at' => $game->scheduled_at->format('M j, Y g:i A'),
             'scheduled_at_iso' => $game->scheduled_at->toIso8601String(),
+            'venue' => $game->venue, // ✅ ADD THIS
         ]);
     } catch (\Exception $e) {
         return response()->json([
@@ -1227,6 +1230,9 @@ private function processVolleyballRunningScores(array $events)
 /**
  * Show volleyball scoresheet (for printing/viewing)
  */
+/**
+ * Show volleyball scoresheet (for printing/viewing)
+ */
 public function volleyballScoresheet(Game $game, Request $request)
 {
     // Get live data if passed from the game interface
@@ -1242,7 +1248,7 @@ public function volleyballScoresheet(Game $game, Request $request)
                 'team2_score' => $tallysheet->team2_sets_won,
                 'set_scores' => $tallysheet->set_scores,
                 'events' => $tallysheet->game_events,
-                'running_scores' => $tallysheet->running_scores,  // ✅ ADD THIS LINE
+                'running_scores' => $tallysheet->running_scores,
                 'team1_timeouts' => $tallysheet->team1_timeouts ?? 0,
                 'team2_timeouts' => $tallysheet->team2_timeouts ?? 0,
                 'team1_substitutions' => $tallysheet->team1_substitutions ?? 0,
@@ -1257,7 +1263,7 @@ public function volleyballScoresheet(Game $game, Request $request)
     $team1Data = json_decode($game->team1_selected_players, true) ?? [];
     $team2Data = json_decode($game->team2_selected_players, true) ?? [];
 
-    $game->load(['team1.players', 'team2.players', 'bracket.tournament']);
+    $game->load(['team1.players', 'team2.players', 'bracket.tournament', 'volleyballPlayerStats.player']);
     
     $team1RosterIds = $team1Data['roster'] ?? [];
     $team2RosterIds = $team2Data['roster'] ?? [];
@@ -1270,6 +1276,23 @@ public function volleyballScoresheet(Game $game, Request $request)
         return in_array($player->id, $team2RosterIds);
     })->sortBy('number');
 
+    // ✅ NEW: Calculate team statistics
+    $team1Stats = $this->calculateVolleyballTeamStats($game, $game->team1_id);
+    $team2Stats = $this->calculateVolleyballTeamStats($game, $game->team2_id);
+
+    // ✅ NEW: Get individual player stats
+    $team1PlayerStats = $game->volleyballPlayerStats()
+        ->where('team_id', $game->team1_id)
+        ->with('player')
+        ->get()
+        ->keyBy('player_id');
+
+    $team2PlayerStats = $game->volleyballPlayerStats()
+        ->where('team_id', $game->team2_id)
+        ->with('player')
+        ->get()
+        ->keyBy('player_id');
+
     $isPdf = false; // ✅ For browser view
     
     return view('games.volleyball-scoresheet', compact(
@@ -1277,7 +1300,11 @@ public function volleyballScoresheet(Game $game, Request $request)
         'team1Players',
         'team2Players',
         'liveData',
-        'isPdf'
+        'isPdf',
+        'team1Stats',
+        'team2Stats',
+        'team1PlayerStats',
+        'team2PlayerStats'
     ));
 }
 
@@ -1766,6 +1793,115 @@ public function recordSubstitution(Request $request, Game $game)
         'message' => 'Substitution recorded',
         'event' => $event,
     ]);
+}
+
+/**
+ * Calculate volleyball team statistics
+ */
+public function calculateVolleyballTeamStats(Game $game, $teamId)
+{
+    $stats = $game->volleyballPlayerStats()
+        ->where('team_id', $teamId)
+        ->selectRaw('
+            SUM(kills) as total_kills,
+            SUM(aces) as total_aces,
+            SUM(blocks) as total_blocks,
+            SUM(digs) as total_digs,
+            SUM(assists) as total_assists,
+            SUM(errors) as total_errors,
+            SUM(service_errors) as total_service_errors,
+            SUM(attack_attempts) as total_attack_attempts
+        ')
+        ->first();
+
+    // Calculate opponent errors (points scored by opponent's errors)
+    $events = $game->volleyballTallysheet->game_events ?? [];
+    $opponentTeam = $teamId === $game->team1_id ? 'B' : 'A';
+    
+    $opponentErrors = collect($events)->filter(function($event) use ($opponentTeam) {
+        return isset($event['team']) && 
+               $event['team'] === $opponentTeam && 
+               isset($event['action']) && 
+               stripos($event['action'], 'error') !== false;
+    })->count();
+
+    // Find best scorer (kills + aces + blocks)
+    $bestScorer = $game->volleyballPlayerStats()
+        ->where('team_id', $teamId)
+        ->with('player')
+        ->orderByRaw('(kills + aces + blocks) DESC')
+        ->first();
+
+    // Get top performers for each skill
+    $topKiller = $game->volleyballPlayerStats()
+        ->where('team_id', $teamId)
+        ->with('player')
+        ->orderBy('kills', 'DESC')
+        ->first();
+
+    $topBlocker = $game->volleyballPlayerStats()
+        ->where('team_id', $teamId)
+        ->with('player')
+        ->orderBy('blocks', 'DESC')
+        ->first();
+
+    $topServer = $game->volleyballPlayerStats()
+        ->where('team_id', $teamId)
+        ->with('player')
+        ->orderBy('aces', 'DESC')
+        ->first();
+
+    $topDigger = $game->volleyballPlayerStats()
+        ->where('team_id', $teamId)
+        ->with('player')
+        ->orderBy('digs', 'DESC')
+        ->first();
+
+    $topSetter = $game->volleyballPlayerStats()
+        ->where('team_id', $teamId)
+        ->with('player')
+        ->orderBy('assists', 'DESC')
+        ->first();
+
+    return [
+        'total_kills' => $stats->total_kills ?? 0,
+        'total_aces' => $stats->total_aces ?? 0,
+        'total_blocks' => $stats->total_blocks ?? 0,
+        'total_digs' => $stats->total_digs ?? 0,
+        'total_assists' => $stats->total_assists ?? 0,
+        'total_errors' => $stats->total_errors ?? 0,
+        'total_service_errors' => $stats->total_service_errors ?? 0,
+        'total_attack_attempts' => $stats->total_attack_attempts ?? 0,
+        'opponent_errors' => $opponentErrors,
+        'best_scorer' => $bestScorer ? [
+            'number' => $bestScorer->player->number ?? '00',
+            'name' => $bestScorer->player->name ?? 'Unknown',
+            'points' => $bestScorer->kills + $bestScorer->aces + $bestScorer->blocks
+        ] : null,
+        'top_killer' => $topKiller ? [
+            'number' => $topKiller->player->number ?? '00',
+            'kills' => $topKiller->kills,
+            'attempts' => $topKiller->attack_attempts
+        ] : null,
+        'top_blocker' => $topBlocker ? [
+            'number' => $topBlocker->player->number ?? '00',
+            'blocks' => $topBlocker->blocks
+        ] : null,
+        'top_server' => $topServer ? [
+            'number' => $topServer->player->number ?? '00',
+            'aces' => $topServer->aces
+        ] : null,
+        'top_digger' => $topDigger ? [
+            'number' => $topDigger->player->number ?? '00',
+            'digs' => $topDigger->digs,
+            'attempts' => $topDigger->digs // You can track this separately if needed
+        ] : null,
+        'top_setter' => $topSetter ? [
+            'number' => $topSetter->player->number ?? '00',
+            'assists' => $topSetter->assists,
+            'attempts' => $topSetter->assists // You can track this separately if needed
+        ] : null,
+    ];
 }
 
 }

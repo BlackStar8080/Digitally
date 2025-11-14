@@ -19,313 +19,347 @@
         body { 
             font-family: 'DejaVu Sans', Arial, sans-serif; 
             background: white;
-            line-height: 1.2;
+            line-height: 1.4;
         }
 
-        /* Download buttons - EXACTLY like tallysheet */
-        .download-buttons {
-            text-align: center;
-            padding: 15px;
-            background: #f8f9fa;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .download-buttons a {
-            display: inline-block;
-            padding: 12px 24px;
-            margin: 0 10px;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-download {
-            background: #28a745;
-            color: white;
-            border: 2px solid #28a745;
-        }
-
-        .btn-download:hover {
-            background: #218838;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
-        }
-
-        /* Bracket Styles - Matches your image */
+        /* Bracket Container */
         .bracket-container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 20px;
-            background: #000;
-            border-radius: 12px;
-            position: relative;
+            background: white;
         }
 
+        /* Header */
         .header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             padding: 20px;
-            background: linear-gradient(135deg, #1e90ff, #00bfff);
-            border-radius: 12px;
-            color: white;
+            border-bottom: 3px solid #000;
+        }
+
+        .header-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 15px;
         }
 
         .header img {
-            max-height: 80px;
-            margin: 0 20px;
+            max-height: 60px;
         }
 
         .header h1 {
-            font-size: 32px;
-            margin: 15px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 28px;
+            margin: 10px 0 5px;
+            color: #000;
+            font-weight: bold;
         }
 
+        .header .subtitle {
+            font-size: 14px;
+            color: #333;
+            margin: 5px 0;
+        }
+
+        /* Bracket Info Bar */
+        .bracket-info {
+            background: #000;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .bracket-info h2 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .bracket-info p {
+            font-size: 12px;
+            margin: 0;
+        }
+
+        /* Round Headers */
+        .round-headers {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+
+        .round-header {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background: #f0f0f0;
+            border: 2px solid #000;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        /* Horizontal bracket layout */
         .bracket-wrapper {
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            padding: 20px 0;
             position: relative;
-            min-height: 800px;
         }
 
         .bracket {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
+            gap: 80px;
             position: relative;
-            max-width: 1200px;
         }
 
+        /* Each round is a column */
         .round {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            margin: 30px 0;
+            justify-content: space-around;
             position: relative;
+            min-width: 200px;
         }
 
-        .round-title {
-            font-size: 20px;
-            color: #1e90ff;
-            margin-bottom: 25px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .matches-column {
-            display: flex;
-            gap: 40px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .match-column {
+        .matches-container {
             display: flex;
             flex-direction: column;
-            gap: 25px;
-            align-items: center;
+            gap: 40px;
         }
 
-        .match {
-            width: 220px;
-            background: linear-gradient(145deg, #333, #222);
-            border: 3px solid #555;
-            border-radius: 12px;
-            padding: 15px;
-            box-shadow: 
-                0 8px 20px rgba(0,0,0,0.5),
-                inset 0 1px 0 rgba(255,255,255,0.1);
+        /* Quarterfinals spacing */
+        .round-1 .matches-container {
+            gap: 20px;
+        }
+
+        /* Semifinals spacing */
+        .round-2 .matches-container {
+            gap: 100px;
+        }
+
+        /* Finals spacing */
+        .round-3 .matches-container {
+            gap: 0;
+        }
+
+        .match-wrapper {
             position: relative;
-            overflow: hidden;
         }
 
-        .match::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #1e90ff, #ffd700, #1e90ff);
+        /* Match box */
+        .match {
+            width: 180px;
+            background: #c9daf8;
+            border: 2px solid #000;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
         }
 
         .team {
-            padding: 10px 8px;
-            text-align: center;
-            border-bottom: 2px solid #444;
-            font-size: 14px;
-            font-weight: 500;
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 2px solid #000;
+            font-size: 13px;
+            font-weight: 600;
+            color: #000;
+            background: #c9daf8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .team:last-child {
             border-bottom: none;
-            font-weight: bold;
-            color: #1e90ff;
-            background: rgba(30,144,255,0.1);
-            border-radius: 6px;
-            margin-top: 5px;
+        }
+
+        .team-name {
+            flex: 1;
         }
 
         .score {
-            color: #ffd700;
+            color: #000;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 14px;
             margin-left: 8px;
         }
 
-        .connector {
-            width: 4px;
-            height: 50px;
-            background: linear-gradient(to bottom, #555, #1e90ff, #ffd700);
-            border-radius: 2px;
-            margin: 0 auto 20px;
-            position: relative;
+        .match-status {
+            font-size: 10px;
+            text-align: center;
+            padding: 5px;
+            background: #f0f0f0;
+            border-top: 1px solid #ccc;
+            color: #666;
         }
 
-        .connector::after {
+        /* Connector lines */
+        .match-wrapper::after {
             content: '';
             position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 20px;
-            background: #1e90ff;
-            border-radius: 50%;
-            border: 3px solid #ffd700;
+            left: 100%;
+            top: 50%;
+            width: 40px;
+            height: 2px;
+            background: #000;
+            z-index: 1;
+        }
+
+        /* Remove connector from Finals */
+        .round-3 .match-wrapper::after {
+            display: none;
+        }
+
+        /* Champion box */
+        .champion-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 200px;
         }
 
         .final-winner {
-            background: linear-gradient(145deg, #ffd700, #ffed4e);
-            border: 4px solid #1e90ff;
-            padding: 30px 40px;
-            border-radius: 20px;
-            font-size: 24px;
-            font-weight: bold;
+            background: #ffd966;
+            border: 3px solid #000;
+            padding: 25px 30px;
+            border-radius: 8px;
             text-align: center;
-            margin-top: 50px;
-            box-shadow: 
-                0 15px 35px rgba(255,215,0,0.4),
-                inset 0 1px 0 rgba(255,255,255,0.3);
-            color: #1e90ff;
-            position: relative;
-            overflow: hidden;
+            color: #000;
+            min-width: 180px;
         }
 
-        .final-winner::before {
-            content: '🏆';
-            position: absolute;
-            top: -20px;
-            right: -20px;
-            font-size: 60px;
-            opacity: 0.3;
+        .final-winner .label {
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            font-weight: bold;
         }
 
-        .final-winner::after {
-            content: '🏆';
-            position: absolute;
-            bottom: -20px;
-            left: -20px;
-            font-size: 60px;
-            opacity: 0.3;
-        }
-
-        .trophy {
-            font-size: 48px;
-            display: block;
-            margin-top: 15px;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        .final-winner .winner-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 5px;
         }
 
         @media print {
-            .download-buttons {
-                display: none !important;
-            }
             body {
                 background: white !important;
+            }
+            .bracket-container {
+                background: white !important;
+            }
+            @page {
+                margin: 0.3in;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Download Buttons - EXACTLY like tallysheet -->
-    <div class="download-buttons">
-        <a href="{{ route('tournament.bracket.pdf', $tournament->id) }}" class="btn-download">
-            ⬇️ Download PDF
-        </a>
-    </div>
-
     <div class="bracket-container">
-        <!-- Header - EXACTLY like tallysheet -->
+        <!-- Header -->
         <div class="header">
-            @if($logoLeft)
-                <img src="data:image/png;base64,{{ $logoLeft }}" alt="Logo Left">
-            @else
-                <img src="{{ asset('images/logo/tagoloan-flag.png') }}" alt="Logo Left">
-            @endif
-            
-            <h1>{{ $tournament->name }}<br><small>TOURNAMENT BRACKET</small></h1>
-            
-            @if($logoRight)
-                <img src="data:image/png;base64,{{ $logoRight }}" alt="Logo Right">
-            @else
-                <img src="{{ asset('images/logo/mayor-logo.png') }}" alt="Logo Right">
-            @endif
+            <div class="header-logos">
+                @if($logoLeft)
+                    <img src="data:image/png;base64,{{ $logoLeft }}" alt="Logo Left">
+                @endif
+                
+                <div>
+                    <h1>{{ $tournament->name }}</h1>
+                    <p class="subtitle">Division: {{ $tournament->division ?? 'Open' }}</p>
+                    <p class="subtitle">Date: {{ \Carbon\Carbon::parse($tournament->date)->format('F d, Y') }}</p>
+                </div>
+                
+                @if($logoRight)
+                    <img src="data:image/png;base64,{{ $logoRight }}" alt="Logo Right">
+                @endif
+            </div>
         </div>
 
         @foreach ($brackets as $bracket)
             @php
                 $gamesByRound = $bracket->games->groupBy('round')->sortKeys();
-                $finalGame = $gamesByRound->last()->last();
-                $champion = $finalGame->winner_id == $finalGame->team1->id ? 
-                    $finalGame->team1->team_name : $finalGame->team2->team_name;
+                $totalTeams = $bracket->teams->count() ?? 8;
+                $totalGames = $bracket->games->count();
+                
+                // Determine champion
+                $finalRound = $gamesByRound->keys()->max();
+                $finalGame = $gamesByRound->get($finalRound)?->first();
+                $champion = 'TBD';
+                
+                if ($finalGame && isset($finalGame->winner_id)) {
+                    if ($finalGame->winner_id == $finalGame->team1_id) {
+                        $champion = $finalGame->team1->team_name ?? 'TBD';
+                    } else {
+                        $champion = $finalGame->team2->team_name ?? 'TBD';
+                    }
+                }
             @endphp
 
+            <!-- Bracket Info -->
+            <div class="bracket-info">
+                <h2>{{ $bracket->name ?? 'Main Bracket' }}</h2>
+                <p>{{ ucwords(str_replace('-', ' ', $bracket->type)) }} • {{ $totalTeams }} Teams • {{ $totalGames }} Games</p>
+            </div>
+
+            <!-- Round Headers -->
+            <div class="round-headers">
+                @foreach ($gamesByRound as $roundNum => $roundGames)
+                    <div class="round-header">
+                        @if($roundNum == 1) QUARTERFINALS
+                        @elseif($roundNum == 2) SEMIFINALS
+                        @elseif($roundNum == 3) FINALS
+                        @else ROUND {{ $roundNum }}
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Bracket -->
             <div class="bracket-wrapper">
                 <div class="bracket">
                     @foreach ($gamesByRound as $roundNum => $roundGames)
-                        <div class="round">
-                            <div class="round-title">
-                                @if($roundNum == 1) Quarterfinals
-                                @elseif($roundNum == 2) Semifinals
-                                @elseif($roundNum == 3) Championship
-                                @endif
-                            </div>
-                            
-                            <div class="matches-column">
+                        <div class="round round-{{ $roundNum }}">
+                            <div class="matches-container">
                                 @foreach ($roundGames as $game)
-                                    <div class="match-column">
+                                    <div class="match-wrapper">
                                         <div class="match">
                                             <div class="team">
-                                                {{ $game->team1->team_name ?? 'TBD' }}
+                                                <span class="team-name">{{ $game->team1->team_name ?? 'TBD' }}</span>
                                                 @if(isset($game->team1_score)) 
                                                     <span class="score">{{ $game->team1_score }}</span>
                                                 @endif
                                             </div>
                                             <div class="team">
-                                                {{ $game->team2->team_name ?? 'TBD' }}
+                                                <span class="team-name">{{ $game->team2->team_name ?? 'TBD' }}</span>
                                                 @if(isset($game->team2_score)) 
                                                     <span class="score">{{ $game->team2_score }}</span>
                                                 @endif
                                             </div>
+                                            <div class="match-status">
+                                                Game #{{ $game->match_number ?? $loop->iteration }} | 
+                                                {{ strtoupper($game->status ?? 'PENDING') }}
+                                            </div>
                                         </div>
-                                        <div class="connector"></div>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
                     @endforeach
 
-                    <div class="final-winner">
-                        CHAMPION<br>
-                        <strong>{{ $champion }}</strong>
-                        <span class="trophy">🏆</span>
+                    <!-- Champion -->
+                    <div class="champion-wrapper">
+                        <div class="final-winner">
+                            <div class="label">CHAMPION</div>
+                            <div class="winner-name">{{ $champion }}</div>
+                        </div>
                     </div>
                 </div>
             </div>

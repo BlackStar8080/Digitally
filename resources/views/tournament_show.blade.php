@@ -391,8 +391,8 @@
         }
 
         /* When toggled, present the customizer as a fixed-top panel so it stays above the page
-               instead of moving to the left side of the interface. We compute top via JS to sit
-               below the page header, but provide sensible defaults here. */
+                   instead of moving to the left side of the interface. We compute top via JS to sit
+                   below the page header, but provide sensible defaults here. */
         .bracket-customizer.fixed-top {
             position: fixed;
             top: 120px;
@@ -465,8 +465,8 @@
         }
 
         /* Allow direct children to shrink when the container is constrained (fixes overlap)
-               This avoids the left column content forcing the grid to overflow and overlap nearby
-               UI like action buttons. */
+                   This avoids the left column content forcing the grid to overflow and overlap nearby
+                   UI like action buttons. */
         .customizer-container>* {
             min-width: 0;
         }
@@ -2345,9 +2345,9 @@
             width: 16px;
             /* Fixed icon width */
             text-align: center;
-        }`
+        }
 
-        
+        `
     </style>
 @endpush
 
@@ -3131,12 +3131,15 @@
                                                         style="background: linear-gradient(135deg, #2196F3, #1976D2);">
                                                         <div class="game-league">{{ $tournament->name }}</div>
                                                         <div class="game-date">
-                                                            @if ($game->scheduled_at)
-                                                                {{ $game->scheduled_at->format('M j, Y g:i A') }}
-                                                            @else
-                                                                {{ $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('M j, Y') : 'Date TBD' }}
-                                                            @endif
-                                                        </div>
+    @if ($game->scheduled_at)
+        {{ $game->scheduled_at->format('M j, Y g:i A') }}
+    @else
+        {{ $tournament->start_date ? \Carbon\Carbon::parse($tournament->start_date)->format('M j, Y') : 'Date TBD' }}
+    @endif
+    @if($game->venue)
+        <br><small><i class="bi bi-geo-alt"></i> {{ $game->venue }}</small>
+    @endif
+</div>
                                                         <h6 class="game-round">
                                                             @if ($game->round == $bracket->getTotalRounds())
                                                                 🏆 Finals
@@ -3292,15 +3295,18 @@
                                                                     data-team1="{{ addslashes($game->team1 ? $game->team1->team_name : 'TBD') }}"
                                                                     data-team2="{{ addslashes($game->team2 ? $game->team2->team_name : 'TBD') }}"
                                                                     data-scheduled="{{ $game->scheduled_at ? $game->scheduled_at->format('Y-m-d\TH:i') : '' }}"
+                                                                    data-venue="{{ $game->venue ?? '' }}"
                                                                     onclick="openEditScheduleModal(
-                                                                    '{{ $game->id }}', 
-                                                                    '{{ addslashes($game->getDisplayName()) }}', 
-                                                                    '{{ addslashes($game->team1 ? $game->team1->team_name : 'TBD') }}', 
-                                                                    '{{ addslashes($game->team2 ? $game->team2->team_name : 'TBD') }}', 
-                                                                    '{{ $game->scheduled_at ? $game->scheduled_at->format('Y-m-d\TH:i') : '' }}'
-                                                                )">
+                                                                        '{{ $game->id }}', 
+                                                                        '{{ addslashes($game->getDisplayName()) }}', 
+                                                                        '{{ addslashes($game->team1 ? $game->team1->team_name : 'TBD') }}', 
+                                                                        '{{ addslashes($game->team2 ? $game->team2->team_name : 'TBD') }}', 
+                                                                        '{{ $game->scheduled_at ? $game->scheduled_at->format('Y-m-d\TH:i') : '' }}',
+                                                                        '{{ $game->venue ?? '' }}'
+                                                                    )">
                                                                     <i class="bi bi-calendar-event"></i>
-                                                                    {{ $game->scheduled_at ? 'Edit' : 'Set' }} Schedule
+                                                                    {{ $game->scheduled_at || $game->venue ? 'Edit' : 'Set' }}
+                                                                    Schedule & Venue
                                                                 </button>
                                                             @endif
                                                         @endif
@@ -3326,35 +3332,35 @@
                                                                 @endif
                                                             @endif
                                                         @endif
-                                                        @if($game->status === 'completed')
-                                                        @if (!session('is_guest') && isset($game) && $game)
+                                                        @if ($game->status === 'completed')
+                                                            @if (!session('is_guest') && isset($game) && $game)
+                                                                @if ($game->isVolleyball())
+                                                                    <a href="javascript:void(0);"
+                                                                        class="tally-sheet-btn btn btn-info"
+                                                                        onclick="openTallySheet({{ $game->id }}, 'volleyball')">
+                                                                        <i class="bi bi-clipboard-data"></i> Tallysheet
+                                                                    </a>
+                                                                @else
+                                                                    <a href="javascript:void(0);"
+                                                                        class="tally-sheet-btn btn btn-info"
+                                                                        onclick="openTallySheet({{ $game->id }}, 'basketball')">
+                                                                        <i class="bi bi-clipboard-data"></i> Tallysheet
+                                                                    </a>
+                                                                @endif
+                                                            @endif
+
+
                                                             @if ($game->isVolleyball())
-                                                                <a href="javascript:void(0);"
-                                                                    class="tally-sheet-btn btn btn-info"
-                                                                    onclick="openTallySheet({{ $game->id }}, 'volleyball')">
-                                                                    <i class="bi bi-clipboard-data"></i> Tallysheet
+                                                                <a href="{{ route('games.volleyball-box-score', $game->id) }}"
+                                                                    class="box-score-btn btn btn-info">
+                                                                    <i class="bi bi-table"></i> Box Score
                                                                 </a>
                                                             @else
-                                                                <a href="javascript:void(0);"
-                                                                    class="tally-sheet-btn btn btn-info"
-                                                                    onclick="openTallySheet({{ $game->id }}, 'basketball')">
-                                                                    <i class="bi bi-clipboard-data"></i> Tallysheet
+                                                                <a href="{{ route('games.box-score', $game->id) }}"
+                                                                    class="box-score-btn btn btn-info">
+                                                                    <i class="bi bi-table"></i> Box Score
                                                                 </a>
                                                             @endif
-                                                        @endif
-                                                        
-
-                                                        @if ($game->isVolleyball())
-                                                            <a href="{{ route('games.volleyball-box-score', $game->id) }}"
-                                                                class="box-score-btn btn btn-info">
-                                                                <i class="bi bi-table"></i> Box Score
-                                                            </a>
-                                                         @else
-                                                            <a href="{{ route('games.box-score', $game->id) }}"
-                                                                class="box-score-btn btn btn-info">
-                                                                <i class="bi bi-table"></i> Box Score
-                                                            </a>
-                                                        @endif
                                                         @endif
                                                     </div>
                                                 </div>
@@ -3677,45 +3683,50 @@
     </div>
 
     <!-- Schedule Edit Modal -->
-    <div class="modal fade" id="editScheduleModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content tournament-page">
-                <form id="scheduleForm" onsubmit="return handleScheduleSubmit(event)">
-                    @csrf
-                    @method('PATCH')
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            <i class="bi bi-calendar-event"></i>
-                            Edit Game Schedule
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Game Details</label>
-                            <div class="alert alert-info">
-                                <div id="gameDetailsDisplay">Loading...</div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="scheduleDateTime" class="form-label">Schedule Date & Time</label>
-                            <input type="datetime-local" class="form-control" id="scheduleDateTime" name="scheduled_at"
-                                required>
-                            <small class="text-muted">Select the date and time for this game</small>
+<div class="modal fade" id="editScheduleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content tournament-page">
+            <form id="scheduleForm" onsubmit="return handleScheduleSubmit(event)">
+                @csrf
+                @method('PATCH')
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-calendar-event"></i>
+                        Edit Game Schedule & Venue
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Game Details</label>
+                        <div class="alert alert-info">
+                            <div id="gameDetailsDisplay">Loading...</div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="bi bi-x-circle"></i> Cancel
-                        </button>
-                        <button type="submit" class="btn btn-primary" id="saveScheduleBtn">
-                            <i class="bi bi-check2"></i> Save Schedule
-                        </button>
+                    <div class="mb-3">
+                        <label for="scheduleDateTime" class="form-label">Schedule Date & Time</label>
+                        <input type="datetime-local" class="form-control" id="scheduleDateTime" name="scheduled_at" required>
+                        <small class="text-muted">Select the date and time for this game</small>
                     </div>
-                </form>
-            </div>
+                    <!-- ✅ ADD VENUE INPUT -->
+                    <div class="mb-3">
+                        <label for="venueInput" class="form-label">Venue</label>
+                        <input type="text" class="form-control" id="venueInput" name="venue" placeholder="e.g., Main Gymnasium, Court 1">
+                        <small class="text-muted">Enter the location where this game will be played</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="saveScheduleBtn">
+                        <i class="bi bi-check2"></i> Save Schedule & Venue
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
 @endsection
 
@@ -3727,51 +3738,56 @@
     let scheduleModalInstance = null;
 
     // Open modal function (called by onclick)
-    function openEditScheduleModal(gameId, gameTitle, team1, team2, scheduledAt) {
-        console.log('Opening modal for game:', gameId);
+    // Update the openEditScheduleModal function signature
+function openEditScheduleModal(gameId, gameTitle, team1, team2, scheduledAt, venue) {
+    console.log('Opening modal for game:', gameId);
 
-        currentScheduleGameId = gameId;
+    currentScheduleGameId = gameId;
 
-        // Update game details
-        const detailsDiv = document.getElementById('gameDetailsDisplay');
-        detailsDiv.innerHTML = `
+    // Update game details
+    const detailsDiv = document.getElementById('gameDetailsDisplay');
+    detailsDiv.innerHTML = `
         <strong>${gameTitle}</strong><br>
         <small class="text-muted">${team1} vs ${team2}</small>
     `;
 
-        // Set datetime input
-        const scheduleInput = document.getElementById('scheduleDateTime');
-        if (scheduledAt && scheduledAt !== '') {
-            scheduleInput.value = scheduledAt;
-        } else {
-            // Set to current date/time if no schedule exists
-            const now = new Date();
-            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-            scheduleInput.value = now.toISOString().slice(0, 16);
-        }
+    // Set datetime input
+    const scheduleInput = document.getElementById('scheduleDateTime');
+    if (scheduledAt && scheduledAt !== '') {
+        scheduleInput.value = scheduledAt;
+    } else {
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        scheduleInput.value = now.toISOString().slice(0, 16);
+    }
 
-        // Set minimum date to today
-        const minDate = new Date();
-        minDate.setMinutes(minDate.getMinutes() - minDate.getTimezoneOffset());
-        scheduleInput.setAttribute('min', minDate.toISOString().slice(0, 16));
+    // ✅ ADD: Set venue input
+    const venueInput = document.getElementById('venueInput');
+    if (venueInput) {
+        venueInput.value = venue || '';
+    }
 
-        // Show modal
-        if (scheduleModalInstance) {
+    // Set minimum date to today
+    const minDate = new Date();
+    minDate.setMinutes(minDate.getMinutes() - minDate.getTimezoneOffset());
+    scheduleInput.setAttribute('min', minDate.toISOString().slice(0, 16));
+
+    // Show modal
+    if (scheduleModalInstance) {
+        scheduleModalInstance.show();
+        console.log('Modal shown successfully');
+    } else {
+        const modalElement = document.getElementById('editScheduleModal');
+        if (modalElement) {
+            scheduleModalInstance = new bootstrap.Modal(modalElement);
             scheduleModalInstance.show();
-            console.log('Modal shown successfully');
+            console.log('Modal initialized and shown');
         } else {
-            // Try to initialize modal now if not done yet
-            const modalElement = document.getElementById('editScheduleModal');
-            if (modalElement) {
-                scheduleModalInstance = new bootstrap.Modal(modalElement);
-                scheduleModalInstance.show();
-                console.log('Modal initialized and shown');
-            } else {
-                console.error('Modal element not found');
-                alert('Error: Modal not found. Please refresh the page.');
-            }
+            console.error('Modal element not found');
+            alert('Error: Modal not found. Please refresh the page.');
         }
     }
+}
 
     // Handle form submission
     function handleScheduleSubmit(event) {
@@ -4205,35 +4221,38 @@
     let placedTeamsData = new Map();
 
     function toggleBracketCustomizer(bracketId) {
-    const customizer = document.getElementById(`bracketCustomizer${bracketId}`);
-    const actions = document.getElementById(`bracketActions${bracketId}`);
-    const card = document.getElementById(`bracketCard${bracketId}`);
-    const header = document.getElementById(`bracketHeader${bracketId}`);
-    const emptyState = document.getElementById(`bracketEmpty${bracketId}`);
+        const customizer = document.getElementById(`bracketCustomizer${bracketId}`);
+        const actions = document.getElementById(`bracketActions${bracketId}`);
+        const card = document.getElementById(`bracketCard${bracketId}`);
+        const header = document.getElementById(`bracketHeader${bracketId}`);
+        const emptyState = document.getElementById(`bracketEmpty${bracketId}`);
 
-    if (customizer.style.display === 'none' || customizer.style.display === '') {
-        // Show customizer
-        customizer.style.display = 'block';
+        if (customizer.style.display === 'none' || customizer.style.display === '') {
+            // Show customizer
+            customizer.style.display = 'block';
 
-        // Hide header and actions
-        if (header) header.style.display = 'none';
-        if (actions) actions.style.display = 'none';
-        if (emptyState) emptyState.style.display = 'none';
+            // Hide header and actions
+            if (header) header.style.display = 'none';
+            if (actions) actions.style.display = 'none';
+            if (emptyState) emptyState.style.display = 'none';
 
-        // Mark card as customizing for CSS fallback
-        if (card) card.classList.add('customizing');
+            // Mark card as customizing for CSS fallback
+            if (card) card.classList.add('customizing');
 
-        initializeBracketCustomizer(bracketId);
-        customizer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-        // Hide customizer
-        customizer.style.display = 'none';
-        if (actions) actions.style.display = '';
-        if (header) header.style.display = '';
-        if (emptyState) emptyState.style.display = '';
-        if (card) card.classList.remove('customizing');
+            initializeBracketCustomizer(bracketId);
+            customizer.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        } else {
+            // Hide customizer
+            customizer.style.display = 'none';
+            if (actions) actions.style.display = '';
+            if (header) header.style.display = '';
+            if (emptyState) emptyState.style.display = '';
+            if (card) card.classList.remove('customizing');
+        }
     }
-}
 
     function initializeBracketCustomizer(bracketId) {
         if (!placedTeamsData.has(bracketId)) {
