@@ -20,6 +20,7 @@ class Game extends Model
         'team2_score',
         'status',
         'scheduled_at',
+        'venue',
         'started_at',
         'completed_at',
         'game_details',

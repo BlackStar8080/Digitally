@@ -682,6 +682,603 @@
                 gap: 0.5rem;
             }
         }
+
+              /* ============================================
+           ENHANCED RESPONSIVE DESIGN
+           ============================================ */
+
+        /* Tablet (768px - 1024px) */
+        @media (max-width: 1024px) {
+            .dashboard-grid.active {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .recent-games {
+                grid-column: 1;
+            }
+
+            .games-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+
+            .welcome-header {
+                padding: 1.5rem;
+            }
+
+            .welcome-header::before {
+                font-size: 4rem;
+                right: 1rem;
+            }
+
+            .dashboard-card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Mobile Landscape & Small Tablets (481px - 768px) */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 0.75rem;
+            }
+
+            /* Welcome Header */
+            .welcome-header {
+                padding: 1.25rem;
+                margin-bottom: 1.5rem;
+                border-radius: 12px;
+            }
+
+            .welcome-header h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .welcome-header p {
+                font-size: 0.9rem;
+            }
+
+            .welcome-header::before {
+                font-size: 3rem;
+                right: 0.75rem;
+                opacity: 0.15;
+            }
+
+            /* Tournament Selector */
+            .tournament-selector {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+                border-radius: 12px;
+            }
+
+            .selector-title {
+                font-size: 1rem;
+            }
+
+            .tournament-tabs {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .tournament-tab {
+                width: 100%;
+                min-width: auto;
+                padding: 0.875rem 1rem;
+            }
+
+            .tab-name {
+                font-size: 0.95rem;
+            }
+
+            .tab-sport {
+                font-size: 0.75rem;
+            }
+
+            /* Dashboard Cards */
+            .dashboard-card {
+                padding: 1.25rem;
+                border-radius: 12px;
+            }
+
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .card-title {
+                font-size: 1.1rem;
+            }
+
+            .card-subtitle {
+                font-size: 0.8rem;
+            }
+
+            /* Team Rankings */
+            .ranking-item {
+                padding: 1rem;
+                flex-wrap: wrap;
+            }
+
+            .rank-position {
+                font-size: 1.5rem;
+                min-width: 50px;
+                padding: 0.4rem;
+            }
+
+            .team-info {
+                flex: 1;
+                min-width: 150px;
+                padding: 0 0.75rem;
+            }
+
+            .team-name {
+                font-size: 1rem;
+            }
+
+            .team-stats {
+                font-size: 0.8rem;
+            }
+
+            .team-record {
+                width: 100%;
+                justify-content: flex-start;
+                margin-top: 0.5rem;
+                gap: 0.5rem;
+            }
+
+            /* MVP Card */
+            .mvp-carousel {
+                padding: 0 35px;
+            }
+
+            .mvp-avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
+
+            .mvp-name {
+                font-size: 1.2rem;
+            }
+
+            .mvp-team {
+                font-size: 0.9rem;
+            }
+
+            .mvp-game-info {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .mvp-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            .mvp-stat {
+                padding: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .stat-label {
+                font-size: 0.75rem;
+            }
+
+            .carousel-btn {
+                width: 35px;
+                height: 35px;
+            }
+
+            /* Recent Games */
+            .games-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .game-card {
+                padding: 1.25rem;
+            }
+
+            .game-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .teams-matchup {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .team {
+                width: 100%;
+            }
+
+            .vs-divider {
+                margin: 0.5rem 0;
+                transform: rotate(90deg);
+            }
+
+            .team-score {
+                font-size: 2rem;
+            }
+        }
+
+        /* Mobile Portrait (320px - 480px) */
+        @media (max-width: 480px) {
+            .dashboard-page {
+                padding: 1rem 0;
+            }
+
+            .container {
+                padding: 0 0.5rem;
+            }
+
+            /* Welcome Header */
+            .welcome-header {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .welcome-header h1 {
+                font-size: 1.25rem;
+            }
+
+            .welcome-header p {
+                font-size: 0.85rem;
+                line-height: 1.4;
+            }
+
+            .welcome-header::before {
+                font-size: 2.5rem;
+                right: 0.5rem;
+            }
+
+            /* Tournament Selector */
+            .tournament-selector {
+                padding: 0.875rem;
+                margin-bottom: 1rem;
+            }
+
+            .selector-header {
+                margin-bottom: 0.75rem;
+            }
+
+            .selector-title {
+                font-size: 0.95rem;
+            }
+
+            .tournament-tab {
+                padding: 0.75rem 0.875rem;
+            }
+
+            .tab-name {
+                font-size: 0.9rem;
+            }
+
+            .tab-sport {
+                font-size: 0.7rem;
+            }
+
+            /* Dashboard Cards */
+            .dashboard-card {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .card-header {
+                margin-bottom: 0.875rem;
+                padding-bottom: 0.75rem;
+            }
+
+            .card-title {
+                font-size: 1rem;
+            }
+
+            .card-title i {
+                font-size: 1rem;
+            }
+
+            .card-subtitle {
+                font-size: 0.75rem;
+                padding: 0.2rem 0.6rem;
+            }
+
+            /* Team Rankings */
+            .rankings-list {
+                gap: 0.5rem;
+            }
+
+            .ranking-item {
+                padding: 0.875rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .rank-position {
+                font-size: 1.25rem;
+                min-width: 45px;
+                padding: 0.35rem;
+                align-self: flex-start;
+            }
+
+            .team-info {
+                width: 100%;
+                padding: 0;
+            }
+
+            .team-name {
+                font-size: 0.95rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .team-stats {
+                font-size: 0.75rem;
+            }
+
+            .team-record {
+                width: 100%;
+                gap: 0.5rem;
+                margin-top: 0.5rem;
+            }
+
+            .wins, .losses {
+                font-size: 0.85rem;
+                padding: 0.3rem 0.6rem;
+            }
+
+            /* MVP Card */
+            .mvp-carousel {
+                padding: 0 30px;
+            }
+
+            .mvp-carousel-container {
+                min-height: 400px;
+            }
+
+            .mvp-avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 2rem;
+                margin: 0.75rem auto;
+            }
+
+            .mvp-name {
+                font-size: 1.1rem;
+                margin-bottom: 0.375rem;
+            }
+
+            .mvp-team {
+                font-size: 0.85rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .mvp-game-info {
+                font-size: 0.75rem;
+                padding: 0.35rem 0.7rem;
+                margin-bottom: 1rem;
+            }
+
+            .mvp-stats {
+                grid-template-columns: 1fr;
+                gap: 0.625rem;
+                margin-top: 1rem;
+            }
+
+            .mvp-stat {
+                padding: 0.875rem;
+            }
+
+            .stat-value {
+                font-size: 1.75rem;
+            }
+
+            .stat-label {
+                font-size: 0.7rem;
+            }
+
+            .carousel-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 0.875rem;
+            }
+
+            .carousel-btn.prev {
+                left: 0;
+            }
+
+            .carousel-btn.next {
+                right: 0;
+            }
+
+            .carousel-indicators {
+                gap: 6px;
+                margin-top: 1rem;
+            }
+
+            .indicator {
+                width: 8px;
+                height: 8px;
+            }
+
+            .indicator.active {
+                width: 20px;
+            }
+
+            /* Recent Games */
+            .games-grid {
+                gap: 0.875rem;
+            }
+
+            .game-card {
+                padding: 1rem;
+            }
+
+            .game-status {
+                font-size: 0.75rem;
+                padding: 0.2rem 0.6rem;
+            }
+
+            .game-date {
+                font-size: 0.75rem;
+            }
+
+            .team-name-small {
+                font-size: 0.9rem;
+                margin-bottom: 0.375rem;
+            }
+
+            .team-score {
+                font-size: 1.75rem;
+            }
+
+            .vs-divider {
+                font-size: 1rem;
+                margin: 0.375rem 0;
+            }
+
+            /* Empty States */
+            .empty-state {
+                padding: 2rem 1rem;
+            }
+
+            .empty-icon {
+                font-size: 3rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .empty-state p {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Extra Small Devices (max-width: 360px) */
+        @media (max-width: 360px) {
+            .welcome-header h1 {
+                font-size: 1.1rem;
+            }
+
+            .welcome-header p {
+                font-size: 0.8rem;
+            }
+
+            .card-title {
+                font-size: 0.95rem;
+            }
+
+            .mvp-avatar {
+                width: 70px;
+                height: 70px;
+                font-size: 1.75rem;
+            }
+
+            .mvp-name {
+                font-size: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .team-name-small {
+                font-size: 0.85rem;
+            }
+
+            .team-score {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Landscape Orientation Fixes */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .welcome-header {
+                padding: 0.75rem 1rem;
+            }
+
+            .welcome-header h1 {
+                font-size: 1.25rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .welcome-header p {
+                font-size: 0.85rem;
+            }
+
+            .dashboard-card {
+                padding: 1rem;
+            }
+
+            .mvp-carousel-container {
+                min-height: 350px;
+            }
+
+            .mvp-avatar {
+                width: 70px;
+                height: 70px;
+                font-size: 1.75rem;
+                margin: 0.5rem auto;
+            }
+
+            .mvp-stats {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 0.5rem;
+                margin-top: 0.75rem;
+            }
+
+            .mvp-stat {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            /* Increase tap targets for mobile */
+            .tournament-tab {
+                padding: 1rem 1.25rem;
+                min-height: 50px;
+            }
+
+            .carousel-btn {
+                width: 44px;
+                height: 44px;
+            }
+
+            .indicator {
+                width: 12px;
+                height: 12px;
+            }
+
+            .indicator.active {
+                width: 32px;
+            }
+
+            /* Disable hover effects on touch devices */
+            .ranking-item:hover,
+            .game-card:hover,
+            .mvp-stat:hover,
+            .tournament-tab:hover {
+                transform: none;
+            }
+
+            /* But keep active/pressed states */
+            .ranking-item:active {
+                transform: scale(0.98);
+            }
+
+            .game-card:active {
+                transform: scale(0.98);
+            }
+
+            .tournament-tab:active {
+                transform: scale(0.98);
+            }
+        }
     </style>
 @endpush
 

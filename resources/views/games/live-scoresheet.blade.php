@@ -4382,53 +4382,58 @@ function populateStatsTable(tableBodyId, teamStats, team) {
         }
 
         function createPlayerCard(player, team) {
-            const card = document.createElement('div');
-            card.className = `player-card team-${team.toLowerCase()}`;
-            card.dataset.team = team;
-            card.dataset.number = player.number || '00';
-            card.dataset.playerId = player.id;
+    const card = document.createElement('div');
+    card.className = `player-card team-${team.toLowerCase()}`;
+    card.dataset.team = team;
+    card.dataset.number = player.number || '00';
+    card.dataset.playerId = player.id;
 
-            // Add warning or foul-out classes
-            if (player.fouls >= 5) {
-                card.classList.add('fouled-out');
-            } else if (player.fouls >= 4) {
-                card.classList.add('warning-fouls');
+    // Add warning or foul-out classes
+    const totalFouls = (player.fouls || 0) + (player.techFouls || 0);
+    if (totalFouls >= 5) {
+        card.classList.add('fouled-out');
+    } else if (totalFouls >= 4) {
+        card.classList.add('warning-fouls');
+    }
+
+    const lastName = ((player.last_name || player.name || '') + '').trim().split(/\s+/).slice(-1)[0] || '';
+
+    card.innerHTML = `
+        <div class="player-number">${player.number || '00'}</div>
+        <div class="player-lastname">${lastName}</div>
+        <div class="player-position">${player.position || 'P'}</div>
+        ${createFoulIndicator(player.fouls || 0, player.techFouls || 0)}
+    `;
+
+    // Only add click listener if player is not fouled out
+    if (totalFouls < 5) {
+        card.addEventListener('click', handlePlayerClick);
+    }
+
+    return card;
+}
+
+        function createFoulIndicator(foulCount, techFoulCount = 0) {
+    let dots = '';
+    const totalFouls = foulCount + techFoulCount;
+    
+    for (let i = 0; i < 5; i++) {
+        let dotClass = 'foul-dot';
+        
+        if (i < totalFouls) {
+            // Show violet for tech fouls (last dots)
+            if (i >= foulCount && techFoulCount > 0) {
+                dotClass += ' tech';
+            } else if (totalFouls >= 4 && i >= 3) {
+                dotClass += ' warning';
+            } else {
+                dotClass += ' active';
             }
-
-            // derive last name: prefer explicit last_name, fallback to last word of name
-            const lastName = ((player.last_name || player.name || '') + '').trim().split(/\s+/).slice(-1)[0] || '';
-
-            card.innerHTML = `
-                ${player.technicalFouls > 0 ? '<div class="tech-foul-indicator"></div>' : ''}
-                <div class="player-number">${player.number || '00'}</div>
-                <div class="player-lastname">${lastName}</div>
-                <div class="player-position">${player.position || 'P'}</div>
-                ${createFoulIndicator(player.fouls)}
-            `;
-
-            // Only add click listener if player is not fouled out
-            if (player.fouls < 5) {
-                card.addEventListener('click', handlePlayerClick);
-            }
-
-            return card;
         }
-
-        function createFoulIndicator(foulCount) {
-            let dots = '';
-            for (let i = 0; i < 5; i++) {
-                let dotClass = 'foul-dot';
-                if (i < foulCount) {
-                    if (foulCount >= 4 && i >= 3) {
-                        dotClass += ' warning';
-                    } else {
-                        dotClass += ' active';
-                    }
-                }
-                dots += `<div class="${dotClass}"></div>`;
-            }
-            return `<div class="foul-indicator">${dots}</div>`;
-        }
+        dots += `<div class="${dotClass}"></div>`;
+    }
+    return `<div class="foul-indicator">${dots}</div>`;
+}
 
         // Show substitution success message
         function showSubstitutionSuccess(team, outNumber, inNumber, reason = null) {
@@ -5145,76 +5150,81 @@ function handleTechnicalFoulSelection(team, playerNumber) {
         // Handle player clicks for actions - UPDATED
         // Handle player clicks for actions - UPDATED with visual feedback
         function handlePlayerClick(e) {
-            if (!selectedAction) {
-                showToast("⚠️ Select an action first!", 'error', 2000);
-                return;
-            }
+    if (!selectedAction) {
+        showToast("⚠️ Select an action first!", 'error', 2000);
+        return;
+    }
 
-            const team = e.currentTarget.dataset.team;
-            const number = e.currentTarget.dataset.number;
-            const action = selectedAction.dataset.action;
-            const points = parseInt(selectedAction.dataset.points || 0);
+    const team = e.currentTarget.dataset.team;
+    const number = e.currentTarget.dataset.number;
+    const action = selectedAction.dataset.action;
+    const points = parseInt(selectedAction.dataset.points || 0);
 
-            // ✅ REMOVE PULSE EFFECT FROM ALL PLAYER CARDS
-            document.querySelectorAll('.player-card').forEach(card => {
-                card.classList.remove('pulse-effect');
-            });
+    // ✅ REMOVE PULSE EFFECT FROM ALL PLAYER CARDS
+    document.querySelectorAll('.player-card').forEach(card => {
+        card.classList.remove('pulse-effect');
+    });
 
-            // ✅ SHOW SUCCESS TOAST
-            const playerName = e.currentTarget.querySelector('.player-lastname').textContent;
-            showToast(`✓ ${action} recorded for #${number} ${playerName}`, 'success', 2000);
+    // ✅ SHOW SUCCESS TOAST
+    const playerName = e.currentTarget.querySelector('.player-lastname').textContent;
+    showToast(`✓ ${action} recorded for #${number} ${playerName}`, 'success', 2000);
 
-            if (action === "Free Throw") {
-                pendingFreeThrow = {
-                    team,
-                    number,
-                    action,
-                    attempts: [],
-                    totalAttempts: 3
-                };
-                showFreeThrowPanel();
-            } else {
-                logEvent(team, number, action, points);
-            }
+    // ✅ ADD THIS: Handle tech foul specially
+    if (action === 'Tech Foul') {
+        handleTechnicalFoulSelection(team, number);
+        selectedAction.classList.remove("selected");
+        selectedAction = null;
+        return;
+    }
 
-            // Reset selection
-            selectedAction.classList.remove("selected");
-            selectedAction = null;
-        }
+    if (action === "Free Throw") {
+        pendingFreeThrow = {
+            team,
+            number,
+            action,
+            attempts: [],
+            totalAttempts: 3
+        };
+        showFreeThrowPanel();
+    } else {
+        logEvent(team, number, action, points);
+    }
 
-        // Add player foul
+    // Reset selection
+    selectedAction.classList.remove("selected");
+    selectedAction = null;
+}
+
         function addPlayerFoul(team, playerNumber, foulType = "personal") {
-            const playerArrays = team === 'A' ? [...activePlayers.A, ...benchPlayers.A] : [...activePlayers.B, ...
-                benchPlayers.B
-            ];
-
-            const player = playerArrays.find(p => (p.number || '00').toString() === playerNumber.toString());
-
-            if (player) {
-                if (!player.fouls) player.fouls = 0;
-                if (!player.techFouls) player.techFouls = 0;
-
-                if (foulType === "technical") {
-                    player.techFouls++;
-                    console.log(`🟣 Player ${playerNumber} got a TECHNICAL foul (${player.techFouls})`);
-                } else {
-                    player.fouls++;
-                    console.log(`🔴 Player ${playerNumber} now has ${player.fouls} fouls`);
-                }
-
-                // Check for warnings and foul-outs (only count total fouls)
-                const totalFouls = player.fouls + player.techFouls;
-                if (totalFouls === 4) {
-                    showFoulWarning(player, team);
-                } else if (totalFouls === 5) {
-                    handleFoulOut(player, team);
-                }
-
-                // Update visual display
-                updateMainRoster();
-                updateSubstitutionDisplay();
-            }
+    const playerArrays = team === 'A' ? [...activePlayers.A, ...benchPlayers.A] : [...activePlayers.B, ...benchPlayers.B];
+    
+    const player = playerArrays.find(p => (p.number || '00').toString() === playerNumber.toString());
+    
+    if (player) {
+        if (!player.fouls) player.fouls = 0;
+        if (!player.techFouls) player.techFouls = 0;
+        
+        if (foulType === "technical") {
+            player.techFouls++;
+            console.log(`🟣 Player ${playerNumber} got a TECHNICAL foul (${player.techFouls})`);
+        } else {
+            player.fouls++;
+            console.log(`🔴 Player ${playerNumber} now has ${player.fouls} fouls`);
         }
+        
+        // Check for warnings and foul-outs (count total fouls)
+        const totalFouls = player.fouls + player.techFouls;
+        if (totalFouls === 4) {
+            showFoulWarning(player, team);
+        } else if (totalFouls === 5) {
+            handleFoulOut(player, team);
+        }
+        
+        // Update visual display
+        updateMainRoster();
+        updateSubstitutionDisplay();
+    }
+}
 
 
         // Show 4th foul warning
