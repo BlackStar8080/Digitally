@@ -1890,261 +1890,547 @@
         }
 
         /* Quarter Summary Modal */
-.quarter-summary-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.95);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 9000;
-    overflow-y: auto;
-}
+        .quarter-summary-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9000;
+            overflow-y: auto;
+        }
 
-.quarter-summary-content {
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-    border-radius: 20px;
-    padding: 2rem;
-    width: 95%;
-    max-width: 1200px;
-    max-height: 90vh;
-    overflow-y: auto;
-    border: 3px solid #4CAF50;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-    animation: quarterModalAnimation 0.5s ease-out;
-}
+        .quarter-summary-content {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 95%;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 3px solid #4CAF50;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            animation: quarterModalAnimation 0.5s ease-out;
+        }
 
-.summary-header {
-    text-align: center;
-    margin-bottom: 2rem;
-    border-bottom: 2px solid #444;
-    padding-bottom: 1.5rem;
-}
+        .summary-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #444;
+            padding-bottom: 1.5rem;
+        }
 
-.summary-title {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #4CAF50;
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
+        .summary-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
 
-.summary-subtitle {
-    font-size: 1.2rem;
-    color: #ccc;
-}
+        .summary-subtitle {
+            font-size: 1.2rem;
+            color: #ccc;
+        }
 
-/* Score Summary Section */
-.score-summary {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 2rem;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background: rgba(76, 175, 80, 0.1);
-    border-radius: 12px;
-    border: 2px solid rgba(76, 175, 80, 0.3);
-}
+        /* Score Summary Section */
+        .score-summary {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 2rem;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 12px;
+            border: 2px solid rgba(76, 175, 80, 0.3);
+        }
 
-.team-score-box {
-    text-align: center;
-}
+        .team-score-box {
+            text-align: center;
+        }
 
-.team-score-name {
-    font-size: 1.2rem;
-    color: #ccc;
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
+        .team-score-name {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-.team-score-value {
-    font-size: 3rem;
-    font-weight: bold;
-    color: white;
-    font-family: 'Courier New', monospace;
-}
+        .team-score-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            font-family: 'Courier New', monospace;
+        }
 
-.team-score-value.winning {
-    color: #4CAF50;
-    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
-}
+        .team-score-value.winning {
+            color: #4CAF50;
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
 
-.score-divider {
-    font-size: 3rem;
-    color: #666;
-    font-weight: bold;
-}
+        .score-divider {
+            font-size: 3rem;
+            color: #666;
+            font-weight: bold;
+        }
 
-/* Quarter-by-Quarter Breakdown */
-.quarter-breakdown {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
+        /* Quarter-by-Quarter Breakdown */
+        .quarter-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
 
-.quarter-box {
-    background: #333;
-    padding: 1rem;
-    border-radius: 8px;
-    text-align: center;
-    border: 2px solid #444;
-}
+        .quarter-box {
+            background: #333;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #444;
+        }
 
-.quarter-box.current {
-    border-color: #4CAF50;
-    background: rgba(76, 175, 80, 0.1);
-}
+        .quarter-box.current {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
 
-.quarter-box-title {
-    font-size: 0.9rem;
-    color: #888;
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
+        .quarter-box-title {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-.quarter-box-scores {
-    display: flex;
-    justify-content: space-around;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: white;
-}
+        .quarter-box-scores {
+            display: flex;
+            justify-content: space-around;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
 
-/* Stats Tables */
-.stats-section {
-    margin-bottom: 2rem;
-}
+        /* Stats Tables */
+        .stats-section {
+            margin-bottom: 2rem;
+        }
 
-.stats-section-title {
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: white;
-    margin-bottom: 1rem;
-    padding: 0.75rem 1rem;
-    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
+        .stats-section-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
-.stats-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 1rem;
-}
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
 
-.stats-table thead {
-    background: #333;
-}
+        .stats-table thead {
+            background: #333;
+        }
 
-.stats-table th {
-    padding: 0.75rem;
-    text-align: left;
-    color: #4CAF50;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 2px solid #444;
-}
+        .stats-table th {
+            padding: 0.75rem;
+            text-align: left;
+            color: #4CAF50;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #444;
+        }
 
-.stats-table td {
-    padding: 0.75rem;
-    color: white;
-    border-bottom: 1px solid #333;
-}
+        .stats-table td {
+            padding: 0.75rem;
+            color: white;
+            border-bottom: 1px solid #333;
+        }
 
-.stats-table tbody tr:hover {
-    background: rgba(76, 175, 80, 0.1);
-}
+        .stats-table tbody tr:hover {
+            background: rgba(76, 175, 80, 0.1);
+        }
 
-.player-number-cell {
-    font-weight: bold;
-    color: #4CAF50;
-}
+        .player-number-cell {
+            font-weight: bold;
+            color: #4CAF50;
+        }
 
-.stat-value {
-    text-align: center;
-    font-weight: 600;
-    font-family: 'Courier New', monospace;
-}
+        .stat-value {
+            text-align: center;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
 
-.stat-value.highlight {
-    color: #FF9800;
-    font-weight: bold;
-}
+        .stat-value.highlight {
+            color: #FF9800;
+            font-weight: bold;
+        }
 
-.no-stats-message {
-    text-align: center;
-    padding: 2rem;
-    color: #888;
-    font-style: italic;
-}
+        .no-stats-message {
+            text-align: center;
+            padding: 2rem;
+            color: #888;
+            font-style: italic;
+        }
 
-/* Continue Button */
-.continue-btn {
-    display: block;
-    width: 100%;
-    max-width: 400px;
-    margin: 2rem auto 0;
-    padding: 1.25rem 2rem;
-    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
+        /* Continue Button */
+        .continue-btn {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 2rem auto 0;
+            padding: 1.25rem 2rem;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-.continue-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
-}
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .quarter-summary-content {
-        padding: 1.5rem;
-    }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .quarter-summary-content {
+                padding: 1.5rem;
+            }
 
-    .summary-title {
-        font-size: 1.5rem;
-    }
+            .summary-title {
+                font-size: 1.5rem;
+            }
 
-    .score-summary {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
+            .score-summary {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
 
-    .score-divider {
-        display: none;
-    }
+            .score-divider {
+                display: none;
+            }
 
-    .team-score-value {
-        font-size: 2.5rem;
-    }
+            .team-score-value {
+                font-size: 2.5rem;
+            }
 
-    .stats-table {
-        font-size: 0.85rem;
-    }
+            .stats-table {
+                font-size: 0.85rem;
+            }
 
-    .stats-table th,
-    .stats-table td {
-        padding: 0.5rem 0.25rem;
-    }
-}
+            .stats-table th,
+            .stats-table td {
+                padding: 0.5rem 0.25rem;
+            }
+        }
+
+        /* Technical Foul Modal Styles */
+        .tech-foul-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3500;
+        }
+
+        .tech-foul-content {
+            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+            border-radius: 16px;
+            padding: 35px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            border: 3px solid #9C27B0;
+            box-shadow: 0 10px 40px rgba(156, 39, 176, 0.5);
+        }
+
+        .tech-foul-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #9C27B0;
+            padding-bottom: 15px;
+        }
+
+        .tech-foul-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #9C27B0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tech-foul-close {
+            background: #666;
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+
+        .tech-foul-close:hover {
+            background: #777;
+            transform: scale(1.05);
+        }
+
+        /* Tech Foul Steps */
+        .tech-foul-step {
+            display: none;
+        }
+
+        .tech-foul-step.active {
+            display: block;
+            animation: fadeInStep 0.3s ease-in;
+        }
+
+        @keyframes fadeInStep {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tech-foul-step h3 {
+            color: #9C27B0;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Tech Foul Type Selection */
+        .tech-type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .tech-type-card {
+            background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+            padding: 25px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            text-align: center;
+        }
+
+        .tech-type-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(156, 39, 176, 0.4);
+            border-color: #CE93D8;
+        }
+
+        .tech-type-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .tech-type-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .tech-type-desc {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.4;
+        }
+
+        /* Tech Consequence Selection */
+        .tech-consequence-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .tech-consequence-card {
+            background: #3d3d3d;
+            padding: 30px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            text-align: center;
+        }
+
+        .tech-consequence-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .tech-consequence-card.free-throws {
+            border-color: #4CAF50;
+        }
+
+        .tech-consequence-card.free-throws:hover {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: #66BB6A;
+        }
+
+        .tech-consequence-card.ejection {
+            border-color: #F44336;
+        }
+
+        .tech-consequence-card.ejection:hover {
+            background: rgba(244, 67, 54, 0.1);
+            border-color: #EF5350;
+        }
+
+        .consequence-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .consequence-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .consequence-desc {
+            font-size: 13px;
+            color: #aaa;
+            line-height: 1.5;
+        }
+
+        /* Tech Foul Info Display */
+        .tech-foul-info-box {
+            background: rgba(156, 39, 176, 0.1);
+            border: 2px solid #9C27B0;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .tech-foul-info-box .info-label {
+            color: #CE93D8;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .tech-foul-info-box .info-value {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Player Selection for Tech Foul */
+        .tech-players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .tech-player-card {
+            background: #4d4d4d;
+            padding: 15px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+            text-align: center;
+        }
+
+        .tech-player-card:hover {
+            background: #5d5d5d;
+            transform: translateY(-3px);
+            border-color: #9C27B0;
+            box-shadow: 0 6px 20px rgba(156, 39, 176, 0.3);
+        }
+
+        .tech-player-number {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .tech-player-name {
+            font-size: 12px;
+            color: #ddd;
+            margin-bottom: 4px;
+        }
+
+        .tech-player-position {
+            font-size: 11px;
+            color: #aaa;
+        }
+
+        /* Ejection Substitution Section */
+        .ejection-sub-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(244, 67, 54, 0.1);
+            border: 2px solid #F44336;
+            border-radius: 10px;
+        }
+
+        .ejection-sub-title {
+            color: #F44336;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .ejection-info {
+            text-align: center;
+            color: #EF5350;
+            font-size: 14px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(244, 67, 54, 0.2);
+            border-radius: 6px;
+        }
     </style>
 </head>
 
@@ -2608,94 +2894,187 @@
     </div>
 
     <!-- Quarter Summary Modal -->
-<div class="quarter-summary-modal" id="quarterSummaryModal">
-    <div class="quarter-summary-content">
-        <div class="summary-header">
-            <div class="summary-title" id="summaryQuarterTitle">Quarter 1 Summary</div>
-            <div class="summary-subtitle">Review scores and player performance</div>
+    <div class="quarter-summary-modal" id="quarterSummaryModal">
+        <div class="quarter-summary-content">
+            <div class="summary-header">
+                <div class="summary-title" id="summaryQuarterTitle">Quarter 1 Summary</div>
+                <div class="summary-subtitle">Review scores and player performance</div>
+            </div>
+
+            <!-- Score Summary -->
+            <div class="score-summary">
+                <div class="team-score-box">
+                    <div class="team-score-name" id="summaryTeam1Name">Team A</div>
+                    <div class="team-score-value" id="summaryTeam1Score">00</div>
+                </div>
+                <div class="score-divider">-</div>
+                <div class="team-score-box">
+                    <div class="team-score-name" id="summaryTeam2Name">Team B</div>
+                    <div class="team-score-value" id="summaryTeam2Score">00</div>
+                </div>
+            </div>
+
+            <!-- Quarter-by-Quarter Breakdown -->
+            <div class="quarter-breakdown" id="quarterBreakdown"></div>
+
+            <!-- Team A Stats -->
+            <div class="stats-section">
+                <div class="stats-section-title">
+                    <i class="bi bi-bar-chart-fill"></i>
+                    <span id="statsTeam1Title">Team A Statistics</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="stats-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Player</th>
+                                <th>PTS</th>
+                                <th>FG</th>
+                                <th>3PT</th>
+                                <th>FT</th>
+                                <th>AST</th>
+                                <th>REB</th>
+                                <th>STL</th>
+                                <th>BLK</th>
+                                <th>PF</th>
+                            </tr>
+                        </thead>
+                        <tbody id="team1StatsBody">
+                            <!-- Stats will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Team B Stats -->
+            <div class="stats-section">
+                <div class="stats-section-title">
+                    <i class="bi bi-bar-chart-fill"></i>
+                    <span id="statsTeam2Title">Team B Statistics</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="stats-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Player</th>
+                                <th>PTS</th>
+                                <th>FG</th>
+                                <th>3PT</th>
+                                <th>FT</th>
+                                <th>AST</th>
+                                <th>REB</th>
+                                <th>STL</th>
+                                <th>BLK</th>
+                                <th>PF</th>
+                            </tr>
+                        </thead>
+                        <tbody id="team2StatsBody">
+                            <!-- Stats will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <button class="continue-btn" id="continueSummaryBtn">
+                Continue to Next Quarter
+            </button>
         </div>
-
-        <!-- Score Summary -->
-        <div class="score-summary">
-            <div class="team-score-box">
-                <div class="team-score-name" id="summaryTeam1Name">Team A</div>
-                <div class="team-score-value" id="summaryTeam1Score">00</div>
-            </div>
-            <div class="score-divider">-</div>
-            <div class="team-score-box">
-                <div class="team-score-name" id="summaryTeam2Name">Team B</div>
-                <div class="team-score-value" id="summaryTeam2Score">00</div>
-            </div>
-        </div>
-
-        <!-- Quarter-by-Quarter Breakdown -->
-        <div class="quarter-breakdown" id="quarterBreakdown"></div>
-
-        <!-- Team A Stats -->
-        <div class="stats-section">
-            <div class="stats-section-title">
-                <i class="bi bi-bar-chart-fill"></i>
-                <span id="statsTeam1Title">Team A Statistics</span>
-            </div>
-            <div class="table-responsive">
-                <table class="stats-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Player</th>
-                            <th>PTS</th>
-                            <th>FG</th>
-                            <th>3PT</th>
-                            <th>FT</th>
-                            <th>AST</th>
-                            <th>REB</th>
-                            <th>STL</th>
-                            <th>BLK</th>
-                            <th>PF</th>
-                        </tr>
-                    </thead>
-                    <tbody id="team1StatsBody">
-                        <!-- Stats will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Team B Stats -->
-        <div class="stats-section">
-            <div class="stats-section-title">
-                <i class="bi bi-bar-chart-fill"></i>
-                <span id="statsTeam2Title">Team B Statistics</span>
-            </div>
-            <div class="table-responsive">
-                <table class="stats-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Player</th>
-                            <th>PTS</th>
-                            <th>FG</th>
-                            <th>3PT</th>
-                            <th>FT</th>
-                            <th>AST</th>
-                            <th>REB</th>
-                            <th>STL</th>
-                            <th>BLK</th>
-                            <th>PF</th>
-                        </tr>
-                    </thead>
-                    <tbody id="team2StatsBody">
-                        <!-- Stats will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <button class="continue-btn" id="continueSummaryBtn">
-            Continue to Next Quarter
-        </button>
     </div>
-</div>
+
+    <!-- Technical Foul Modal -->
+    <div class="tech-foul-modal" id="techFoulModal">
+        <div class="tech-foul-content">
+            <div class="tech-foul-header">
+                <div class="tech-foul-title">⚠️ Technical Foul</div>
+                <button class="tech-foul-close" id="techFoulClose">&times;</button>
+            </div>
+
+            <!-- Step 1: Select Tech Foul Type -->
+            <div class="tech-foul-step active" id="techTypeStep">
+                <h3>Select Technical Foul Type</h3>
+                <div class="tech-type-grid">
+                    <div class="tech-type-card" data-type="unsportsmanlike">
+                        <div class="tech-type-icon">🤬</div>
+                        <div class="tech-type-title">Unsportsmanlike Behavior</div>
+                        <div class="tech-type-desc">Taunting, excessive arguing, or disrespectful conduct</div>
+                    </div>
+                    <div class="tech-type-card" data-type="bench">
+                        <div class="tech-type-icon">👥</div>
+                        <div class="tech-type-title">Bench/Coach Violations</div>
+                        <div class="tech-type-desc">Coach misconduct, illegal bench participation</div>
+                    </div>
+                    <div class="tech-type-card" data-type="administrative">
+                        <div class="tech-type-icon">📋</div>
+                        <div class="tech-type-title">Administrative</div>
+                        <div class="tech-type-desc">Delay of game, illegal substitution, violations</div>
+                    </div>
+                    <div class="tech-type-card" data-type="other">
+                        <div class="tech-type-icon">⚠️</div>
+                        <div class="tech-type-title">Other Technicals</div>
+                        <div class="tech-type-desc">Hanging on rim, fighting, or other infractions</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Select Player Who Committed Tech -->
+            <div class="tech-foul-step" id="techPlayerStep">
+                <div class="tech-foul-info-box">
+                    <div class="info-label">Selected Type</div>
+                    <div class="info-value" id="selectedTechType">-</div>
+                </div>
+                <h3>Who Committed the Technical Foul?</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <!-- Team A -->
+                    <div>
+                        <h4 style="color: #c33; text-align: center; margin-bottom: 15px;" id="techTeamATitle">Team A
+                        </h4>
+                        <div class="tech-players-grid" id="techPlayersA"></div>
+                    </div>
+                    <!-- Team B -->
+                    <div>
+                        <h4 style="color: #339; text-align: center; margin-bottom: 15px;" id="techTeamBTitle">Team B
+                        </h4>
+                        <div class="tech-players-grid" id="techPlayersB"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Choose Consequence -->
+            <div class="tech-foul-step" id="techConsequenceStep">
+                <div class="tech-foul-info-box">
+                    <div class="info-label">Player Committing Foul</div>
+                    <div class="info-value" id="selectedTechPlayer">-</div>
+                </div>
+                <h3>Select Consequence</h3>
+                <div class="tech-consequence-grid">
+                    <div class="tech-consequence-card free-throws" id="techFreeThrowsOption">
+                        <div class="consequence-icon">🏀</div>
+                        <div class="consequence-title">2 Free Throws</div>
+                        <div class="consequence-desc">Opposing team shoots 2 free throws. Player remains in game.</div>
+                    </div>
+                    <div class="tech-consequence-card ejection" id="techEjectionOption">
+                        <div class="consequence-icon">🚫</div>
+                        <div class="consequence-title">Ejection</div>
+                        <div class="consequence-desc">Player is ejected from the game. Opposing team shoots 2 free
+                            throws. Requires substitution.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Ejection Substitution (if ejection chosen) -->
+            <div class="tech-foul-step" id="techEjectionSubStep">
+                <div class="ejection-info">
+                    <strong id="ejectedPlayerInfo">Player #X</strong> has been ejected from the game
+                </div>
+                <div class="ejection-sub-section">
+                    <div class="ejection-sub-title">Select Replacement Player</div>
+                    <div class="tech-players-grid" id="techSubstitutePlayers"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -2723,160 +3102,160 @@
         };
 
         // Calculate player stats from game events
-function calculatePlayerStats() {
-    const stats = {
-        A: {},
-        B: {}
-    };
+        function calculatePlayerStats() {
+            const stats = {
+                A: {},
+                B: {}
+            };
 
-    // Initialize stats for all players
-    [...activePlayers.A, ...benchPlayers.A].forEach(player => {
-        const playerId = player.id;
-        stats.A[playerId] = {
-            number: player.number || '00',
-            name: player.name,
-            points: 0,
-            fieldGoalsMade: 0,
-            fieldGoalsAttempted: 0,
-            threePointsMade: 0,
-            threePointsAttempted: 0,
-            freeThrowsMade: 0,
-            freeThrowsAttempted: 0,
-            assists: 0,
-            rebounds: 0,
-            steals: 0,
-            blocks: 0,
-            fouls: player.fouls || 0
-        };
-    });
+            // Initialize stats for all players
+            [...activePlayers.A, ...benchPlayers.A].forEach(player => {
+                const playerId = player.id;
+                stats.A[playerId] = {
+                    number: player.number || '00',
+                    name: player.name,
+                    points: 0,
+                    fieldGoalsMade: 0,
+                    fieldGoalsAttempted: 0,
+                    threePointsMade: 0,
+                    threePointsAttempted: 0,
+                    freeThrowsMade: 0,
+                    freeThrowsAttempted: 0,
+                    assists: 0,
+                    rebounds: 0,
+                    steals: 0,
+                    blocks: 0,
+                    fouls: player.fouls || 0
+                };
+            });
 
-    [...activePlayers.B, ...benchPlayers.B].forEach(player => {
-        const playerId = player.id;
-        stats.B[playerId] = {
-            number: player.number || '00',
-            name: player.name,
-            points: 0,
-            fieldGoalsMade: 0,
-            fieldGoalsAttempted: 0,
-            threePointsMade: 0,
-            threePointsAttempted: 0,
-            freeThrowsMade: 0,
-            freeThrowsAttempted: 0,
-            assists: 0,
-            rebounds: 0,
-            steals: 0,
-            blocks: 0,
-            fouls: player.fouls || 0
-        };
-    });
+            [...activePlayers.B, ...benchPlayers.B].forEach(player => {
+                const playerId = player.id;
+                stats.B[playerId] = {
+                    number: player.number || '00',
+                    name: player.name,
+                    points: 0,
+                    fieldGoalsMade: 0,
+                    fieldGoalsAttempted: 0,
+                    threePointsMade: 0,
+                    threePointsAttempted: 0,
+                    freeThrowsMade: 0,
+                    freeThrowsAttempted: 0,
+                    assists: 0,
+                    rebounds: 0,
+                    steals: 0,
+                    blocks: 0,
+                    fouls: player.fouls || 0
+                };
+            });
 
-    // Process game events
-    gameEvents.forEach(event => {
-        if (event.player === 'TEAM' || event.player === 'SYSTEM') return;
+            // Process game events
+            gameEvents.forEach(event => {
+                if (event.player === 'TEAM' || event.player === 'SYSTEM') return;
 
-        const team = event.team;
-        const playerNumber = event.player;
-        
-        // Find player by number
-        const playerArrays = team === 'A' 
-            ? [...activePlayers.A, ...benchPlayers.A] 
-            : [...activePlayers.B, ...benchPlayers.B];
-        
-        const player = playerArrays.find(p => (p.number || '00').toString() === playerNumber.toString());
-        if (!player) return;
+                const team = event.team;
+                const playerNumber = event.player;
 
-        const playerId = player.id;
-        const action = event.action;
+                // Find player by number
+                const playerArrays = team === 'A' ?
+                    [...activePlayers.A, ...benchPlayers.A] :
+                    [...activePlayers.B, ...benchPlayers.B];
 
-        // Points
-        if (action.includes('Points') || action.includes('Made')) {
-            stats[team][playerId].points += event.points || 0;
+                const player = playerArrays.find(p => (p.number || '00').toString() === playerNumber.toString());
+                if (!player) return;
+
+                const playerId = player.id;
+                const action = event.action;
+
+                // Points
+                if (action.includes('Points') || action.includes('Made')) {
+                    stats[team][playerId].points += event.points || 0;
+                }
+
+                // Field Goals (2-pointers)
+                if (action === '2 Points') {
+                    stats[team][playerId].fieldGoalsMade++;
+                    stats[team][playerId].fieldGoalsAttempted++;
+                }
+
+                // Three Pointers
+                if (action === '3 Points') {
+                    stats[team][playerId].threePointsMade++;
+                    stats[team][playerId].threePointsAttempted++;
+                }
+
+                // Free Throws
+                if (action.includes('Free Throw')) {
+                    if (action.includes('Made')) {
+                        stats[team][playerId].freeThrowsMade++;
+                        stats[team][playerId].freeThrowsAttempted++;
+                    } else if (action.includes('Miss')) {
+                        stats[team][playerId].freeThrowsAttempted++;
+                    }
+                }
+
+                // Assists
+                if (action === 'Assist') {
+                    stats[team][playerId].assists++;
+                }
+
+                // Rebounds
+                if (action === 'Rebound') {
+                    stats[team][playerId].rebounds++;
+                }
+
+                // Steals
+                if (action === 'Steal') {
+                    stats[team][playerId].steals++;
+                }
+
+                // Blocks
+                if (action === 'blocks') {
+                    stats[team][playerId].blocks++;
+                }
+            });
+
+            return stats;
         }
 
-        // Field Goals (2-pointers)
-        if (action === '2 Points') {
-            stats[team][playerId].fieldGoalsMade++;
-            stats[team][playerId].fieldGoalsAttempted++;
-        }
+        // Show quarter summary modal
+        function showQuarterSummary(quarter) {
+            const modal = document.getElementById('quarterSummaryModal');
+            const quarterTitle = document.getElementById('summaryQuarterTitle');
+            const team1Name = document.getElementById('summaryTeam1Name');
+            const team2Name = document.getElementById('summaryTeam2Name');
+            const team1Score = document.getElementById('summaryTeam1Score');
+            const team2Score = document.getElementById('summaryTeam2Score');
+            const quarterBreakdown = document.getElementById('quarterBreakdown');
+            const continueBtn = document.getElementById('continueSummaryBtn');
 
-        // Three Pointers
-        if (action === '3 Points') {
-            stats[team][playerId].threePointsMade++;
-            stats[team][playerId].threePointsAttempted++;
-        }
+            // Update title
+            const quarterNames = ['', '1st', '2nd', '3rd', '4th'];
+            quarterTitle.textContent = `${quarterNames[quarter]} Quarter Summary`;
 
-        // Free Throws
-        if (action.includes('Free Throw')) {
-            if (action.includes('Made')) {
-                stats[team][playerId].freeThrowsMade++;
-                stats[team][playerId].freeThrowsAttempted++;
-            } else if (action.includes('Miss')) {
-                stats[team][playerId].freeThrowsAttempted++;
+            // Update team names
+            team1Name.textContent = gameData.team1.name;
+            team2Name.textContent = gameData.team2.name;
+
+            // Update scores
+            team1Score.textContent = scoreA.toString().padStart(2, '0');
+            team2Score.textContent = scoreB.toString().padStart(2, '0');
+
+            // Highlight winning team
+            team1Score.classList.remove('winning');
+            team2Score.classList.remove('winning');
+            if (scoreA > scoreB) {
+                team1Score.classList.add('winning');
+            } else if (scoreB > scoreA) {
+                team2Score.classList.add('winning');
             }
-        }
 
-        // Assists
-        if (action === 'Assist') {
-            stats[team][playerId].assists++;
-        }
-
-        // Rebounds
-        if (action === 'Rebound') {
-            stats[team][playerId].rebounds++;
-        }
-
-        // Steals
-        if (action === 'Steal') {
-            stats[team][playerId].steals++;
-        }
-
-        // Blocks
-        if (action === 'blocks') {
-            stats[team][playerId].blocks++;
-        }
-    });
-
-    return stats;
-}
-
-// Show quarter summary modal
-function showQuarterSummary(quarter) {
-    const modal = document.getElementById('quarterSummaryModal');
-    const quarterTitle = document.getElementById('summaryQuarterTitle');
-    const team1Name = document.getElementById('summaryTeam1Name');
-    const team2Name = document.getElementById('summaryTeam2Name');
-    const team1Score = document.getElementById('summaryTeam1Score');
-    const team2Score = document.getElementById('summaryTeam2Score');
-    const quarterBreakdown = document.getElementById('quarterBreakdown');
-    const continueBtn = document.getElementById('continueSummaryBtn');
-
-    // Update title
-    const quarterNames = ['', '1st', '2nd', '3rd', '4th'];
-    quarterTitle.textContent = `${quarterNames[quarter]} Quarter Summary`;
-
-    // Update team names
-    team1Name.textContent = gameData.team1.name;
-    team2Name.textContent = gameData.team2.name;
-
-    // Update scores
-    team1Score.textContent = scoreA.toString().padStart(2, '0');
-    team2Score.textContent = scoreB.toString().padStart(2, '0');
-
-    // Highlight winning team
-    team1Score.classList.remove('winning');
-    team2Score.classList.remove('winning');
-    if (scoreA > scoreB) {
-        team1Score.classList.add('winning');
-    } else if (scoreB > scoreA) {
-        team2Score.classList.add('winning');
-    }
-
-    // Generate quarter breakdown
-    quarterBreakdown.innerHTML = '';
-    for (let q = 1; q <= quarter; q++) {
-        const quarterBox = document.createElement('div');
-        quarterBox.className = `quarter-box ${q === quarter ? 'current' : ''}`;
-        quarterBox.innerHTML = `
+            // Generate quarter breakdown
+            quarterBreakdown.innerHTML = '';
+            for (let q = 1; q <= quarter; q++) {
+                const quarterBox = document.createElement('div');
+                quarterBox.className = `quarter-box ${q === quarter ? 'current' : ''}`;
+                quarterBox.innerHTML = `
             <div class="quarter-box-title">Quarter ${q}</div>
             <div class="quarter-box-scores">
                 <span>${periodScores.teamA[q - 1] || 0}</span>
@@ -2884,77 +3263,77 @@ function showQuarterSummary(quarter) {
                 <span>${periodScores.teamB[q - 1] || 0}</span>
             </div>
         `;
-        quarterBreakdown.appendChild(quarterBox);
-    }
+                quarterBreakdown.appendChild(quarterBox);
+            }
 
-    // Calculate and display stats
-    const stats = calculatePlayerStats();
-    populateStatsTable('team1StatsBody', stats.A, 'A');
-    populateStatsTable('team2StatsBody', stats.B, 'B');
+            // Calculate and display stats
+            const stats = calculatePlayerStats();
+            populateStatsTable('team1StatsBody', stats.A, 'A');
+            populateStatsTable('team2StatsBody', stats.B, 'B');
 
-    // Update stats titles
-    document.getElementById('statsTeam1Title').textContent = `${gameData.team1.name} Statistics`;
-    document.getElementById('statsTeam2Title').textContent = `${gameData.team2.name} Statistics`;
+            // Update stats titles
+            document.getElementById('statsTeam1Title').textContent = `${gameData.team1.name} Statistics`;
+            document.getElementById('statsTeam2Title').textContent = `${gameData.team2.name} Statistics`;
 
-    // Show modal
-    modal.style.display = 'flex';
+            // Show modal
+            modal.style.display = 'flex';
 
-    // Update continue button
-    if (quarter < maxQuarters) {
-        continueBtn.textContent = `Continue to ${quarterNames[quarter + 1]} Quarter`;
-        continueBtn.onclick = () => {
-            modal.style.display = 'none';
-            startNextQuarter();
-        };
-    } else {
-        continueBtn.textContent = 'Finish Game';
-        continueBtn.onclick = () => {
-            modal.style.display = 'none';
-            showGameEndModal();
-        };
-    }
-}
+            // Update continue button
+            if (quarter < maxQuarters) {
+                continueBtn.textContent = `Continue to ${quarterNames[quarter + 1]} Quarter`;
+                continueBtn.onclick = () => {
+                    modal.style.display = 'none';
+                    startNextQuarter();
+                };
+            } else {
+                continueBtn.textContent = 'Finish Game';
+                continueBtn.onclick = () => {
+                    modal.style.display = 'none';
+                    showGameEndModal();
+                };
+            }
+        }
 
-// Populate stats table
-function populateStatsTable(tableBodyId, teamStats, team) {
-    const tbody = document.getElementById(tableBodyId);
-    tbody.innerHTML = '';
+        // Populate stats table
+        function populateStatsTable(tableBodyId, teamStats, team) {
+            const tbody = document.getElementById(tableBodyId);
+            tbody.innerHTML = '';
 
-    // Convert stats object to array and sort by points
-    const statsArray = Object.values(teamStats).sort((a, b) => b.points - a.points);
+            // Convert stats object to array and sort by points
+            const statsArray = Object.values(teamStats).sort((a, b) => b.points - a.points);
 
-    if (statsArray.length === 0) {
-        tbody.innerHTML = `
+            if (statsArray.length === 0) {
+                tbody.innerHTML = `
             <tr>
                 <td colspan="11" class="no-stats-message">
                     No statistics recorded yet
                 </td>
             </tr>
         `;
-        return;
-    }
+                return;
+            }
 
-    statsArray.forEach(player => {
-        const row = document.createElement('tr');
-        
-        // Determine field goal percentage
-        const fgPercentage = player.fieldGoalsAttempted > 0 
-            ? `${player.fieldGoalsMade}/${player.fieldGoalsAttempted}` 
-            : '0/0';
-        
-        const threePercentage = player.threePointsAttempted > 0 
-            ? `${player.threePointsMade}/${player.threePointsAttempted}` 
-            : '0/0';
-        
-        const ftPercentage = player.freeThrowsAttempted > 0 
-            ? `${player.freeThrowsMade}/${player.freeThrowsAttempted}` 
-            : '0/0';
+            statsArray.forEach(player => {
+                const row = document.createElement('tr');
 
-        // Highlight leading stats
-        const maxPoints = Math.max(...statsArray.map(p => p.points));
-        const pointsClass = player.points === maxPoints && player.points > 0 ? 'highlight' : '';
+                // Determine field goal percentage
+                const fgPercentage = player.fieldGoalsAttempted > 0 ?
+                    `${player.fieldGoalsMade}/${player.fieldGoalsAttempted}` :
+                    '0/0';
 
-        row.innerHTML = `
+                const threePercentage = player.threePointsAttempted > 0 ?
+                    `${player.threePointsMade}/${player.threePointsAttempted}` :
+                    '0/0';
+
+                const ftPercentage = player.freeThrowsAttempted > 0 ?
+                    `${player.freeThrowsMade}/${player.freeThrowsAttempted}` :
+                    '0/0';
+
+                // Highlight leading stats
+                const maxPoints = Math.max(...statsArray.map(p => p.points));
+                const pointsClass = player.points === maxPoints && player.points > 0 ? 'highlight' : '';
+
+                row.innerHTML = `
             <td class="player-number-cell">${player.number}</td>
             <td>${player.name}</td>
             <td class="stat-value ${pointsClass}">${player.points}</td>
@@ -2967,10 +3346,10 @@ function populateStatsTable(tableBodyId, teamStats, team) {
             <td class="stat-value">${player.blocks}</td>
             <td class="stat-value">${player.fouls}</td>
         `;
-        
-        tbody.appendChild(row);
-    });
-}
+
+                tbody.appendChild(row);
+            });
+        }
 
         // Determine which role this user has
         const userRole = '{{ $userRole ?? 'viewer' }}';
@@ -3285,31 +3664,31 @@ function populateStatsTable(tableBodyId, teamStats, team) {
 
         // UPDATED: Modified handleQuarterEnd to ensure proper game completion
         function handleQuarterEnd() {
-    // Calculate current quarter score before ending
-    if (currentQuarter <= 4) {
-        const startScore = currentQuarter === 1 ? 0 : quarterStartScores.teamA[currentQuarter - 1];
-        periodScores.teamA[currentQuarter - 1] = scoreA - startScore;
-        const startScoreB = currentQuarter === 1 ? 0 : quarterStartScores.teamB[currentQuarter - 1];
-        periodScores.teamB[currentQuarter - 1] = scoreB - startScoreB;
-    }
+            // Calculate current quarter score before ending
+            if (currentQuarter <= 4) {
+                const startScore = currentQuarter === 1 ? 0 : quarterStartScores.teamA[currentQuarter - 1];
+                periodScores.teamA[currentQuarter - 1] = scoreA - startScore;
+                const startScoreB = currentQuarter === 1 ? 0 : quarterStartScores.teamB[currentQuarter - 1];
+                periodScores.teamB[currentQuarter - 1] = scoreB - startScoreB;
+            }
 
-    // Pause the timer
-    if (isRunning) {
-        clearInterval(interval);
-        isRunning = false;
-        playPauseBtn.textContent = "▶";
-    }
-    
-    // Pause and reset shot clock at quarter end
-    pauseShotClock();
-    resetShotClock(24);
+            // Pause the timer
+            if (isRunning) {
+                clearInterval(interval);
+                isRunning = false;
+                playPauseBtn.textContent = "▶";
+            }
 
-    // Log quarter end event
-    logEvent('GAME', 'SYSTEM', `Quarter ${currentQuarter} Ended`, 0);
+            // Pause and reset shot clock at quarter end
+            pauseShotClock();
+            resetShotClock(24);
 
-    // ✅ SHOW QUARTER SUMMARY INSTEAD OF SIMPLE MODAL
-    showQuarterSummary(currentQuarter);
-}
+            // Log quarter end event
+            logEvent('GAME', 'SYSTEM', `Quarter ${currentQuarter} Ended`, 0);
+
+            // ✅ SHOW QUARTER SUMMARY INSTEAD OF SIMPLE MODAL
+            showQuarterSummary(currentQuarter);
+        }
 
         function showOvertimeModal() {
             const modal = document.getElementById('quarterModal');
@@ -3962,9 +4341,7 @@ function populateStatsTable(tableBodyId, teamStats, team) {
                 if (team === "A") {
                     scoreA += points;
                     scoreADisplay.textContent = scoreA.toString().padStart(2, '0');
-                    // Reset shot clock on score and keep possession change logic if needed
                     resetShotClock(24);
-                    // Optionally, shot clock should start if main clock is running
                     if (isRunning) startShotClock();
                 } else {
                     scoreB += points;
@@ -3990,7 +4367,9 @@ function populateStatsTable(tableBodyId, teamStats, team) {
                 // Add individual player foul
                 const currentEvent = gameEvents[0];
                 if (currentEvent && currentEvent.player !== 'TEAM') {
-                    addPlayerFoul(team, currentEvent.player);
+                    // ✅ Determine if it's a technical foul
+                    const foulType = action === 'Tech Foul' ? 'technical' : 'personal';
+                    addPlayerFoul(team, currentEvent.player, foulType);
                 }
             }
 
@@ -4073,17 +4452,17 @@ function populateStatsTable(tableBodyId, teamStats, team) {
         }
 
         // Close substitution modal
-       function closeSubstitutionModal() {
-    substitutionModal.style.display = 'none';
-    
-    // ✅ REMOVE PULSE EFFECTS
-    document.querySelectorAll('.player-card').forEach(card => {
-        card.classList.remove('pulse-effect');
-    });
-    
-    // Show styled resume modal after closing substitution modal
-    showStyledResumeModal('Substitution completed. Resume game clock?');
-}
+        function closeSubstitutionModal() {
+            substitutionModal.style.display = 'none';
+
+            // ✅ REMOVE PULSE EFFECTS
+            document.querySelectorAll('.player-card').forEach(card => {
+                card.classList.remove('pulse-effect');
+            });
+
+            // Show styled resume modal after closing substitution modal
+            showStyledResumeModal('Substitution completed. Resume game clock?');
+        }
         // Styled resume modal (like after free throw)
         function showStyledResumeModal(message) {
             // Remove any existing modal
@@ -4382,58 +4761,58 @@ function populateStatsTable(tableBodyId, teamStats, team) {
         }
 
         function createPlayerCard(player, team) {
-    const card = document.createElement('div');
-    card.className = `player-card team-${team.toLowerCase()}`;
-    card.dataset.team = team;
-    card.dataset.number = player.number || '00';
-    card.dataset.playerId = player.id;
+            const card = document.createElement('div');
+            card.className = `player-card team-${team.toLowerCase()}`;
+            card.dataset.team = team;
+            card.dataset.number = player.number || '00';
+            card.dataset.playerId = player.id;
 
-    // Add warning or foul-out classes
-    const totalFouls = (player.fouls || 0) + (player.techFouls || 0);
-    if (totalFouls >= 5) {
-        card.classList.add('fouled-out');
-    } else if (totalFouls >= 4) {
-        card.classList.add('warning-fouls');
-    }
+            // Add warning or foul-out classes
+            const totalFouls = (player.fouls || 0) + (player.techFouls || 0);
+            if (totalFouls >= 5) {
+                card.classList.add('fouled-out');
+            } else if (totalFouls >= 4) {
+                card.classList.add('warning-fouls');
+            }
 
-    const lastName = ((player.last_name || player.name || '') + '').trim().split(/\s+/).slice(-1)[0] || '';
+            const lastName = ((player.last_name || player.name || '') + '').trim().split(/\s+/).slice(-1)[0] || '';
 
-    card.innerHTML = `
+            card.innerHTML = `
         <div class="player-number">${player.number || '00'}</div>
         <div class="player-lastname">${lastName}</div>
         <div class="player-position">${player.position || 'P'}</div>
         ${createFoulIndicator(player.fouls || 0, player.techFouls || 0)}
     `;
 
-    // Only add click listener if player is not fouled out
-    if (totalFouls < 5) {
-        card.addEventListener('click', handlePlayerClick);
-    }
+            // Only add click listener if player is not fouled out
+            if (totalFouls < 5) {
+                card.addEventListener('click', handlePlayerClick);
+            }
 
-    return card;
-}
+            return card;
+        }
 
         function createFoulIndicator(foulCount, techFoulCount = 0) {
-    let dots = '';
-    const totalFouls = foulCount + techFoulCount;
-    
-    for (let i = 0; i < 5; i++) {
-        let dotClass = 'foul-dot';
-        
-        if (i < totalFouls) {
-            // Show violet for tech fouls (last dots)
-            if (i >= foulCount && techFoulCount > 0) {
-                dotClass += ' tech';
-            } else if (totalFouls >= 4 && i >= 3) {
-                dotClass += ' warning';
-            } else {
-                dotClass += ' active';
+            let dots = '';
+            const totalFouls = foulCount + techFoulCount;
+
+            for (let i = 0; i < 5; i++) {
+                let dotClass = 'foul-dot';
+
+                if (i < totalFouls) {
+                    // Show violet for tech fouls (last dots)
+                    if (i >= foulCount && techFoulCount > 0) {
+                        dotClass += ' tech';
+                    } else if (totalFouls >= 4 && i >= 3) {
+                        dotClass += ' warning';
+                    } else {
+                        dotClass += ' active';
+                    }
+                }
+                dots += `<div class="${dotClass}"></div>`;
             }
+            return `<div class="foul-indicator">${dots}</div>`;
         }
-        dots += `<div class="${dotClass}"></div>`;
-    }
-    return `<div class="foul-indicator">${dots}</div>`;
-}
 
         // Show substitution success message
         function showSubstitutionSuccess(team, outNumber, inNumber, reason = null) {
@@ -4521,11 +4900,12 @@ function populateStatsTable(tableBodyId, teamStats, team) {
                 showToast(`👆 Select a player who committed: ${actionName}`, 'info', 5000);
 
                 // Handle foul button specially
+                // Handle foul button specially
                 if (btn.dataset.action === 'Foul') {
                     showFoulModal();
                 } else if (btn.dataset.action === 'Tech Foul') {
-                    // Show tech foul selection
-                    showToast('👆 Select a player who committed the Technical Foul', 'info', 5000);
+                    // ✅ NEW: Show tech foul modal instead
+                    showTechFoulModal();
                 }
             });
         });
@@ -4539,53 +4919,54 @@ function populateStatsTable(tableBodyId, teamStats, team) {
         }
 
         // ✅ CLICK ANYWHERE TO CANCEL SELECTED ACTION
-document.addEventListener('click', function(e) {
-    // Only proceed if there's a selected action
-    if (!selectedAction) return;
-    
-    // Check if click is outside player cards and action buttons
-    const clickedPlayerCard = e.target.closest('.player-card');
-    const clickedActionBtn = e.target.closest('.action-btn');
-    const clickedModal = e.target.closest('.foul-modal, .substitution-modal, .free-throw-panel, .quarter-modal');
-    const clickedTeamSection = e.target.closest('.team-section'); // For timeout selection
-    
-    // If clicked outside relevant areas, cancel the selection
-    if (!clickedPlayerCard && !clickedActionBtn && !clickedModal && !clickedTeamSection) {
-        cancelActionSelection();
-    }
-});
+        document.addEventListener('click', function(e) {
+            // Only proceed if there's a selected action
+            if (!selectedAction) return;
 
-// Function to cancel action selection
-function cancelActionSelection() {
-    if (!selectedAction) return;
-    
-    // Remove selection from action button
-    selectedAction.classList.remove("selected");
-    selectedAction = null;
-    
-    // Remove pulse effects from all player cards
-    document.querySelectorAll('.player-card').forEach(card => {
-        card.classList.remove('pulse-effect');
-    });
-    
-    // Show cancellation toast
-    showToast('❌ Action cancelled', 'info', 2000);
-    
-    // Exit timeout mode if active
-    if (timeoutMode) {
-        exitTimeoutMode();
-        timeoutBtn.classList.remove('selected');
-        timeoutBtn.textContent = 'Timeout';
-    }
-    
-    console.log('Action selection cancelled');
-}
+            // Check if click is outside player cards and action buttons
+            const clickedPlayerCard = e.target.closest('.player-card');
+            const clickedActionBtn = e.target.closest('.action-btn');
+            const clickedModal = e.target.closest(
+                '.foul-modal, .substitution-modal, .free-throw-panel, .quarter-modal');
+            const clickedTeamSection = e.target.closest('.team-section'); // For timeout selection
+
+            // If clicked outside relevant areas, cancel the selection
+            if (!clickedPlayerCard && !clickedActionBtn && !clickedModal && !clickedTeamSection) {
+                cancelActionSelection();
+            }
+        });
+
+        // Function to cancel action selection
+        function cancelActionSelection() {
+            if (!selectedAction) return;
+
+            // Remove selection from action button
+            selectedAction.classList.remove("selected");
+            selectedAction = null;
+
+            // Remove pulse effects from all player cards
+            document.querySelectorAll('.player-card').forEach(card => {
+                card.classList.remove('pulse-effect');
+            });
+
+            // Show cancellation toast
+            showToast('❌ Action cancelled', 'info', 2000);
+
+            // Exit timeout mode if active
+            if (timeoutMode) {
+                exitTimeoutMode();
+                timeoutBtn.classList.remove('selected');
+                timeoutBtn.textContent = 'Timeout';
+            }
+
+            console.log('Action selection cancelled');
+        }
 
         // Hide foul modal
         function hideFoulModal() {
             foulModal.style.display = 'none';
             resetSelectedAction();
-            
+
             // ✅ REMOVE PULSE EFFECTS
             document.querySelectorAll('.player-card').forEach(card => {
                 card.classList.remove('pulse-effect');
@@ -5084,33 +5465,458 @@ function cancelActionSelection() {
         }
 
         // Handle technical foul selection
-function handleTechnicalFoulSelection(team, playerNumber) {
-    const player = findPlayerByNumber(playerNumber, team);
-    
-    if (!player) {
-        showToast('⚠️ Player not found', 'error', 2000);
-        return;
-    }
+        function handleTechnicalFoulSelection(team, playerNumber) {
+            // This function is now replaced by the modal flow
+            // But we keep it for backward compatibility
+            showTechFoulModal();
+        }
 
+        // =============== TECHNICAL FOUL MODAL SYSTEM =================
+let currentTechFoulData = {
+    type: '',
+    typeLabel: '',
+    team: '',
+    playerNumber: '',
+    playerName: '',
+    consequence: '', // 'free-throws' or 'ejection'
+    substituteNumber: ''
+};
+
+const techFoulModal = document.getElementById('techFoulModal');
+const techFoulClose = document.getElementById('techFoulClose');
+
+// Show technical foul modal
+function showTechFoulModal() {
+    resetTechFoulModal();
+    techFoulModal.style.display = 'flex';
+    showTechStep('techTypeStep');
+    setupTechFoulListeners();
+}
+
+// Hide technical foul modal
+function hideTechFoulModal() {
+    techFoulModal.style.display = 'none';
+    resetTechFoulModal();
+    
     // Remove pulse effects
     document.querySelectorAll('.player-card').forEach(card => {
         card.classList.remove('pulse-effect');
     });
-
-    // Log technical foul
-    logEvent(team, playerNumber, 'Tech Foul', 0);
-    
-    // Add technical foul to player
-    addPlayerFoul(team, playerNumber, 'technical');
-    
-    // Show success toast
-    showToast(`✓ Technical Foul recorded for #${playerNumber}`, 'success', 2000);
     
     // Reset selected action
     if (selectedAction) {
         selectedAction.classList.remove('selected');
         selectedAction = null;
     }
+}
+
+// Reset technical foul modal
+function resetTechFoulModal() {
+    currentTechFoulData = {
+        type: '',
+        typeLabel: '',
+        team: '',
+        playerNumber: '',
+        playerName: '',
+        consequence: '',
+        substituteNumber: ''
+    };
+    
+    // Hide all steps
+    document.querySelectorAll('.tech-foul-step').forEach(step => {
+        step.classList.remove('active');
+    });
+}
+
+// Show specific tech foul step
+function showTechStep(stepId) {
+    document.querySelectorAll('.tech-foul-step').forEach(step => {
+        step.classList.remove('active');
+    });
+    document.getElementById(stepId).classList.add('active');
+}
+
+// Setup tech foul event listeners
+function setupTechFoulListeners() {
+    // Close button
+    techFoulClose.onclick = hideTechFoulModal;
+    
+    // Click outside to close
+    techFoulModal.onclick = (e) => {
+        if (e.target === techFoulModal) {
+            hideTechFoulModal();
+        }
+    };
+    
+    // Type selection
+    document.querySelectorAll('.tech-type-card').forEach(card => {
+        card.onclick = () => handleTechTypeSelection(card);
+    });
+}
+
+// Handle tech type selection
+function handleTechTypeSelection(card) {
+    const type = card.dataset.type;
+    const typeLabels = {
+        'unsportsmanlike': 'Unsportsmanlike Behavior',
+        'bench': 'Bench/Coach Violations',
+        'administrative': 'Administrative Technical',
+        'other': 'Other Technical Foul'
+    };
+    
+    currentTechFoulData.type = type;
+    currentTechFoulData.typeLabel = typeLabels[type];
+    
+    // Update display
+    document.getElementById('selectedTechType').textContent = typeLabels[type];
+    
+    // Render player selection
+    renderTechPlayerSelection();
+    
+    // Show player selection step
+    showTechStep('techPlayerStep');
+}
+
+// Render player selection for tech foul
+function renderTechPlayerSelection() {
+    const playersAGrid = document.getElementById('techPlayersA');
+    const playersBGrid = document.getElementById('techPlayersB');
+    
+    // Update team titles
+    document.getElementById('techTeamATitle').textContent = gameData.team1.name;
+    document.getElementById('techTeamBTitle').textContent = gameData.team2.name;
+    
+    // Clear existing
+    playersAGrid.innerHTML = '';
+    playersBGrid.innerHTML = '';
+    
+    // Render Team A players (active + bench)
+    [...activePlayers.A, ...benchPlayers.A].forEach(player => {
+        const card = createTechPlayerCard(player, 'A');
+        playersAGrid.appendChild(card);
+    });
+    
+    // Render Team B players (active + bench)
+    [...activePlayers.B, ...benchPlayers.B].forEach(player => {
+        const card = createTechPlayerCard(player, 'B');
+        playersBGrid.appendChild(card);
+    });
+}
+
+// Create tech player card
+function createTechPlayerCard(player, team) {
+    const card = document.createElement('div');
+    card.className = 'tech-player-card';
+    
+    const lastName = ((player.last_name || player.name || '') + '').trim().split(/\s+/).slice(-1)[0] || '';
+    
+    card.innerHTML = `
+        <div class="tech-player-number">${player.number || '00'}</div>
+        <div class="tech-player-name">${lastName}</div>
+        <div class="tech-player-position">${player.position || 'P'}</div>
+    `;
+    
+    card.onclick = () => handleTechPlayerSelection(player, team);
+    
+    return card;
+}
+
+// Handle tech player selection
+function handleTechPlayerSelection(player, team) {
+    currentTechFoulData.team = team;
+    currentTechFoulData.playerNumber = player.number || '00';
+    currentTechFoulData.playerName = player.name || `Player ${player.number}`;
+    
+    // Update display
+    document.getElementById('selectedTechPlayer').textContent = 
+        `#${currentTechFoulData.playerNumber} ${currentTechFoulData.playerName} (Team ${team})`;
+    
+    // Setup consequence listeners
+    document.getElementById('techFreeThrowsOption').onclick = () => handleTechConsequence('free-throws');
+    document.getElementById('techEjectionOption').onclick = () => handleTechConsequence('ejection');
+    
+    // Show consequence selection
+    showTechStep('techConsequenceStep');
+}
+
+// Handle tech consequence selection
+function handleTechConsequence(consequence) {
+    currentTechFoulData.consequence = consequence;
+    
+    if (consequence === 'free-throws') {
+        // Just free throws, no ejection
+        finalizeTechFoul();
+    } else if (consequence === 'ejection') {
+        // Ejection - need to select substitute
+        showEjectionSubstitution();
+    }
+}
+
+// Show ejection substitution
+function showEjectionSubstitution() {
+    const team = currentTechFoulData.team;
+    const ejectedPlayer = findPlayerByNumber(currentTechFoulData.playerNumber, team);
+    
+    // Update ejected player info
+    document.getElementById('ejectedPlayerInfo').textContent = 
+        `Player #${currentTechFoulData.playerNumber} ${currentTechFoulData.playerName}`;
+    
+    // Get available bench players
+    const availableBench = benchPlayers[team].filter(p => {
+        const totalFouls = (p.fouls || 0) + (p.techFouls || 0);
+        return totalFouls < 5; // Not fouled out
+    });
+    
+    const substituteGrid = document.getElementById('techSubstitutePlayers');
+    substituteGrid.innerHTML = '';
+    
+    if (availableBench.length === 0) {
+        substituteGrid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; color: #F44336; padding: 20px;">
+                ⚠️ No available substitute players! Team must continue with fewer players.
+            </div>
+        `;
+        
+        // Show button to continue without substitute
+        const continueBtn = document.createElement('button');
+        continueBtn.textContent = 'Continue Without Substitute';
+        continueBtn.style.cssText = `
+            padding: 12px 24px;
+            background: #F44336;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: bold;
+        `;
+        continueBtn.onclick = () => finalizeTechFoul();
+        substituteGrid.appendChild(continueBtn);
+    } else {
+        availableBench.forEach(player => {
+            const card = createTechPlayerCard(player, team);
+            card.onclick = () => {
+                currentTechFoulData.substituteNumber = player.number || '00';
+                finalizeTechFoul();
+            };
+            substituteGrid.appendChild(card);
+        });
+    }
+    
+    showTechStep('techEjectionSubStep');
+}
+
+// Finalize technical foul
+function finalizeTechFoul() {
+    const { type, typeLabel, team, playerNumber, playerName, consequence, substituteNumber } = currentTechFoulData;
+    
+    // Log the technical foul
+    const techDescription = `Tech Foul (${typeLabel})`;
+    logEvent(team, playerNumber, techDescription, 0);
+    
+    // Add technical foul to player
+    addPlayerFoul(team, playerNumber, 'technical');
+    
+    // Handle ejection if needed
+    if (consequence === 'ejection') {
+        handleTechEjection(team, playerNumber, substituteNumber);
+    }
+    
+    // Award 2 free throws to opposing team
+    const opposingTeam = team === 'A' ? 'B' : 'A';
+    showTechFreeThrowSelection(opposingTeam, typeLabel);
+    
+    // Close modal
+    hideTechFoulModal();
+}
+
+// Handle technical foul ejection
+function handleTechEjection(team, playerNumber, substituteNumber) {
+    const ejectedPlayer = findPlayerByNumber(playerNumber, team);
+    
+    if (!ejectedPlayer) return;
+    
+    // Mark player as ejected
+    ejectedPlayer.ejected = true;
+    
+    // Log ejection
+    logEvent(team, playerNumber, 'Player Ejected (Technical Foul)', 0);
+    
+    // If player is active and we have a substitute
+    if (substituteNumber && activePlayers[team].some(p => (p.number || '00').toString() === playerNumber.toString())) {
+        const substitute = findPlayerByNumber(substituteNumber, team);
+        
+        if (substitute) {
+            // Perform substitution
+            const activeIndex = activePlayers[team].findIndex(p => (p.number || '00').toString() === playerNumber.toString());
+            const benchIndex = benchPlayers[team].findIndex(p => (p.number || '00').toString() === substituteNumber.toString());
+            
+            if (activeIndex !== -1 && benchIndex !== -1) {
+                activePlayers[team][activeIndex] = substitute;
+                benchPlayers[team][benchIndex] = ejectedPlayer;
+                
+                // Log substitution
+                logEvent(team, `${playerNumber}→${substituteNumber}`, 'Forced Substitution (Ejection)', 0);
+                
+                updateMainRoster();
+                updateSubstitutionDisplay();
+                
+                showSubstitutionSuccess(team, playerNumber, substituteNumber, 'Forced substitution due to ejection');
+            }
+        }
+    }
+    
+    // Show ejection notification
+    showEjectionNotification(ejectedPlayer, team);
+}
+
+// Show ejection notification
+function showEjectionNotification(player, team) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+        color: white;
+        padding: 30px 40px;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(244, 67, 54, 0.6);
+        z-index: 9500;
+        text-align: center;
+        font-weight: bold;
+        animation: ejectionPulse 0.5s ease-out;
+        border: 3px solid white;
+    `;
+    
+    notification.innerHTML = `
+        <div style="font-size: 48px; margin-bottom: 15px;">🚫</div>
+        <div style="font-size: 24px; margin-bottom: 10px;">PLAYER EJECTED</div>
+        <div style="font-size: 18px;">Player #${player.number || '00'} (Team ${team})</div>
+        <div style="font-size: 14px; margin-top: 10px; opacity: 0.9;">
+            Ejected due to Technical Foul
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        document.body.removeChild(notification);
+    }, 4000);
+}
+
+// Show tech free throw selection
+function showTechFreeThrowSelection(team, techType) {
+    const modal = document.createElement('div');
+    modal.id = 'techFreeThrowModal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    `;
+    
+    const content = document.createElement('div');
+    content.style.cssText = `
+        background: #2d2d2d;
+        border-radius: 16px;
+        padding: 35px;
+        width: 90%;
+        max-width: 700px;
+        text-align: center;
+        border: 3px solid #9C27B0;
+    `;
+    
+    const teamName = team === 'A' ? gameData.team1.name : gameData.team2.name;
+    const activePlayersTeam = team === 'A' ? activePlayers.A : activePlayers.B;
+    
+    content.innerHTML = `
+        <h3 style="color: #9C27B0; margin-bottom: 15px; font-size: 24px;">⚠️ TECHNICAL FOUL FREE THROWS</h3>
+        <div style="color: white; margin-bottom: 25px; font-size: 16px;">
+            ${teamName} gets 2 free throws<br>
+            <small style="color: #CE93D8;">${techType}</small>
+        </div>
+        <div style="color: #aaa; margin-bottom: 20px; font-size: 14px;">Select shooter:</div>
+        <div id="techShooterGrid" style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        "></div>
+        <button onclick="document.body.removeChild(document.getElementById('techFreeThrowModal'))"
+            style="background: #666; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px;">
+            Cancel
+        </button>
+    `;
+    
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // Populate shooter options
+    const shooterGrid = content.querySelector('#techShooterGrid');
+    activePlayersTeam.forEach(player => {
+        const totalFouls = (player.fouls || 0) + (player.techFouls || 0);
+        if (totalFouls < 5 && !player.ejected) {
+            const card = document.createElement('div');
+            card.style.cssText = `
+                background: #4d4d4d;
+                padding: 18px 12px;
+                border-radius: 10px;
+                cursor: pointer;
+                color: white;
+                transition: all 0.2s;
+                border: 3px solid transparent;
+            `;
+            
+            const lastName = ((player.last_name || player.name || '') + '').trim().split(/\s+/).slice(-1)[0] || '';
+            
+            card.innerHTML = `
+                <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">#${player.number || '00'}</div>
+                <div style="font-size: 12px; color: #ddd;">${lastName}</div>
+                <div style="font-size: 11px; color: #aaa; margin-top: 4px;">${player.position || 'P'}</div>
+            `;
+            
+            card.addEventListener('click', () => {
+                startTechFreeThrows(team, player.number || '00', techType);
+                document.body.removeChild(modal);
+            });
+            
+            card.addEventListener('mouseenter', () => {
+                card.style.background = '#5d5d5d';
+                card.style.borderColor = '#9C27B0';
+                card.style.transform = 'translateY(-3px)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.background = '#4d4d4d';
+                card.style.borderColor = 'transparent';
+                card.style.transform = 'translateY(0)';
+            });
+            
+            shooterGrid.appendChild(card);
+        }
+    });
+}
+
+// Start technical foul free throws
+function startTechFreeThrows(team, playerNumber, techType) {
+    pendingFreeThrow = {
+        team: team,
+        number: playerNumber,
+        action: `Tech Free Throw (${techType})`,
+        attempts: [],
+        totalAttempts: 2
+    };
+    
+    console.log('Starting technical free throws:', pendingFreeThrow);
+    showFreeThrowPanel();
 }
 
         // Log shooting foul
@@ -5150,81 +5956,91 @@ function handleTechnicalFoulSelection(team, playerNumber) {
         // Handle player clicks for actions - UPDATED
         // Handle player clicks for actions - UPDATED with visual feedback
         function handlePlayerClick(e) {
-    if (!selectedAction) {
-        showToast("⚠️ Select an action first!", 'error', 2000);
-        return;
-    }
+            if (!selectedAction) {
+                showToast("⚠️ Select an action first!", 'error', 2000);
+                return;
+            }
 
-    const team = e.currentTarget.dataset.team;
-    const number = e.currentTarget.dataset.number;
-    const action = selectedAction.dataset.action;
-    const points = parseInt(selectedAction.dataset.points || 0);
+            const team = e.currentTarget.dataset.team;
+            const number = e.currentTarget.dataset.number;
+            const action = selectedAction.dataset.action;
+            const points = parseInt(selectedAction.dataset.points || 0);
 
-    // ✅ REMOVE PULSE EFFECT FROM ALL PLAYER CARDS
-    document.querySelectorAll('.player-card').forEach(card => {
-        card.classList.remove('pulse-effect');
-    });
+            // ✅ REMOVE PULSE EFFECT FROM ALL PLAYER CARDS
+            document.querySelectorAll('.player-card').forEach(card => {
+                card.classList.remove('pulse-effect');
+            });
 
-    // ✅ SHOW SUCCESS TOAST
-    const playerName = e.currentTarget.querySelector('.player-lastname').textContent;
-    showToast(`✓ ${action} recorded for #${number} ${playerName}`, 'success', 2000);
+            // ✅ SHOW SUCCESS TOAST
+            const playerName = e.currentTarget.querySelector('.player-lastname').textContent;
+            showToast(`✓ ${action} recorded for #${number} ${playerName}`, 'success', 2000);
 
-    // ✅ ADD THIS: Handle tech foul specially
-    if (action === 'Tech Foul') {
-        handleTechnicalFoulSelection(team, number);
-        selectedAction.classList.remove("selected");
-        selectedAction = null;
-        return;
-    }
+            // ✅ ADD THIS: Handle tech foul specially
+            if (action === 'Tech Foul') {
+                handleTechnicalFoulSelection(team, number);
+                selectedAction.classList.remove("selected");
+                selectedAction = null;
+                return;
+            }
 
-    if (action === "Free Throw") {
-        pendingFreeThrow = {
-            team,
-            number,
-            action,
-            attempts: [],
-            totalAttempts: 3
-        };
-        showFreeThrowPanel();
-    } else {
-        logEvent(team, number, action, points);
-    }
+            if (action === "Free Throw") {
+                pendingFreeThrow = {
+                    team,
+                    number,
+                    action,
+                    attempts: [],
+                    totalAttempts: 3
+                };
+                showFreeThrowPanel();
+            } else {
+                logEvent(team, number, action, points);
+            }
 
-    // Reset selection
-    selectedAction.classList.remove("selected");
-    selectedAction = null;
-}
+            // Reset selection
+            selectedAction.classList.remove("selected");
+            selectedAction = null;
+        }
 
         function addPlayerFoul(team, playerNumber, foulType = "personal") {
-    const playerArrays = team === 'A' ? [...activePlayers.A, ...benchPlayers.A] : [...activePlayers.B, ...benchPlayers.B];
-    
-    const player = playerArrays.find(p => (p.number || '00').toString() === playerNumber.toString());
-    
-    if (player) {
-        if (!player.fouls) player.fouls = 0;
-        if (!player.techFouls) player.techFouls = 0;
-        
-        if (foulType === "technical") {
-            player.techFouls++;
-            console.log(`🟣 Player ${playerNumber} got a TECHNICAL foul (${player.techFouls})`);
-        } else {
-            player.fouls++;
-            console.log(`🔴 Player ${playerNumber} now has ${player.fouls} fouls`);
+            const playerArrays = team === 'A' ? [...activePlayers.A, ...benchPlayers.A] : [...activePlayers.B, ...
+                benchPlayers.B
+            ];
+
+            const player = playerArrays.find(p => (p.number || '00').toString() === playerNumber.toString());
+
+            if (player) {
+                if (!player.fouls) player.fouls = 0;
+                if (!player.techFouls) player.techFouls = 0;
+
+                if (foulType === "technical") {
+                    player.techFouls++;
+                    console.log(`🟣 Player ${playerNumber} got a TECHNICAL foul (${player.techFouls})`);
+                } else {
+                    player.fouls++;
+                    console.log(`🔴 Player ${playerNumber} now has ${player.fouls} fouls`);
+                }
+
+                // Check for warnings and foul-outs (count total fouls)
+                const totalFouls = player.fouls + player.techFouls;
+                if (totalFouls === 4) {
+                    showFoulWarning(player, team);
+                } else if (totalFouls === 5) {
+                    handleFoulOut(player, team);
+                }
+
+                // Update visual display
+                updateMainRoster();
+                updateSubstitutionDisplay();
+            }
         }
-        
-        // Check for warnings and foul-outs (count total fouls)
-        const totalFouls = player.fouls + player.techFouls;
-        if (totalFouls === 4) {
-            showFoulWarning(player, team);
-        } else if (totalFouls === 5) {
-            handleFoulOut(player, team);
+
+        // Helper function to find player by number
+        function findPlayerByNumber(playerNumber, team) {
+            const playerArrays = team === 'A' ? [...activePlayers.A, ...benchPlayers.A] : [...activePlayers.B, ...
+                benchPlayers.B
+            ];
+            return playerArrays.find(p => (p.number || '00').toString() === playerNumber.toString());
         }
-        
-        // Update visual display
-        updateMainRoster();
-        updateSubstitutionDisplay();
-    }
-}
 
 
         // Show 4th foul warning
