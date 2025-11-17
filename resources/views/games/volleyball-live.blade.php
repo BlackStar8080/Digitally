@@ -2264,7 +2264,7 @@
                 <span class="menu-item-icon">🏆</span>
                 <span class="menu-item-text">Back to Tournament</span>
             </a>
-            <a href="/games/{{ $game->id }}/volleyball-scoresheet" class="menu-item">
+            <a href="/games/{{ $game->id }}/volleyball-scoresheet" class="menu-item">sdsad
                 <span class="menu-item-icon">📄</span>
                 <span class="menu-item-text">View Scoresheet</span>
             </a>
