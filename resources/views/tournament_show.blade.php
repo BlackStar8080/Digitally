@@ -2414,75 +2414,77 @@
                 </div>
 
                 <!-- Team Management Section -->
-                <div class="info-card">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="section-title mb-0">Team Management ({{ $tournament->teams->count() }})</h5>
-                        @if (!session('is_guest'))
-                            @if (isset($availableTeams) && $availableTeams->count() > 0)
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#assignTeamModal">
-                                    <i class="bi bi-plus-circle"></i>
-                                    Add Team
-                                </button>
-                            @endif
-                        @endif
+                <!-- Team Management Section -->
+<div class="info-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="section-title mb-0">Team Management ({{ $tournament->teams->count() }})</h5>
+        @if (!session('is_guest'))
+            {{-- Only show Add Team button if no bracket is created yet --}}
+            @if ($tournament->brackets->isEmpty() && isset($availableTeams) && $availableTeams->count() > 0)
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                    data-bs-target="#assignTeamModal">
+                    <i class="bi bi-plus-circle"></i>
+                    Add Team
+                </button>
+            @endif
+        @endif
+    </div>
+
+    <!-- Current Teams -->
+    @if ($tournament->teams->count() > 0)
+        <div class="team-grid mb-3">
+            @foreach ($tournament->teams as $team)
+                <div class="team-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="team-name">{{ $team->team_name }}</div>
+                        <small class="text-muted">
+                            <i class="bi bi-person"></i>
+                            Coach: {{ $team->coach_name ?? 'N/A' }}
+                        </small>
                     </div>
-
-                    <!-- Current Teams -->
-                    @if ($tournament->teams->count() > 0)
-                        <div class="team-grid mb-3">
-                            @foreach ($tournament->teams as $team)
-                                <div class="team-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <div class="team-name">{{ $team->team_name }}</div>
-                                        <small class="text-muted">
-                                            <i class="bi bi-person"></i>
-                                            Coach: {{ $team->coach_name ?? 'N/A' }}
-                                        </small>
-                                    </div>
-                                    @if (!session('is_guest'))
-                                        @if ($tournament->brackets()->where('status', 'active')->doesntExist())
-                                            <form
-                                                action="{{ route('tournaments.remove-team', [$tournament->id, $team->id]) }}"
-                                                method="POST"
-                                                onsubmit="return confirm('Remove {{ $team->team_name }} from this tournament?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm">
-                                                    <i class="bi bi-x-circle"></i>
-                                                </button>
-                                            </form>
-                                        @endif
-                                    @endif
-                                </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="empty-state">
-                            <i class="bi bi-people"></i>
-                            <p>No teams assigned yet.</p>
-                            @if (isset($availableTeams) && $availableTeams->count() > 0)
-                            @else
-                                <p class="text-muted small">
-                                    <a href="{{ route('teams.index') }}" class="text-decoration-none">
-                                        Create teams first in the Teams section →
-                                    </a>
-                                </p>
-                            @endif
-                        </div>
-                    @endif
-
-                    <!-- Available Teams Info -->
-                    @if (isset($availableTeams) && $availableTeams->count() > 0)
-                        <div class="alert alert-info">
-                            <small>
-                                <i class="bi bi-info-circle"></i>
-                                {{ $availableTeams->count() }} {{ $tournament->sport->sports_name ?? 'Sport' }} teams
-                                available to assign.
-                            </small>
-                        </div>
+                    @if (!session('is_guest'))
+                        @if ($tournament->brackets()->where('status', 'active')->doesntExist())
+                            <form
+                                action="{{ route('tournaments.remove-team', [$tournament->id, $team->id]) }}"
+                                method="POST"
+                                onsubmit="return confirm('Remove {{ $team->team_name }} from this tournament?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                            </form>
+                        @endif
                     @endif
                 </div>
+            @endforeach
+        </div>
+    @else
+        <div class="empty-state">
+            <i class="bi bi-people"></i>
+            <p>No teams assigned yet.</p>
+            @if (isset($availableTeams) && $availableTeams->count() > 0)
+            @else
+                <p class="text-muted small">
+                    <a href="{{ route('teams.index') }}" class="text-decoration-none">
+                        Create teams first in the Teams section →
+                    </a>
+                </p>
+            @endif
+        </div>
+    @endif
+
+    <!-- Available Teams Info - Only show if no bracket is created yet -->
+    @if ($tournament->brackets->isEmpty() && isset($availableTeams) && $availableTeams->count() > 0)
+        <div class="alert alert-info">
+            <small>
+                <i class="bi bi-info-circle"></i>
+                {{ $availableTeams->count() }} {{ $tournament->sport->sports_name ?? 'Sport' }} teams
+                available to assign.
+            </small>
+        </div>
+    @endif
+</div>
                 @foreach ($tournament->brackets as $bracket)
                     <div class="info-card" id="bracketCard{{ $bracket->id }}">
                         <div id="bracketHeader{{ $bracket->id }}"
