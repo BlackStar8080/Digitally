@@ -2431,6 +2431,22 @@
             background: rgba(244, 67, 54, 0.2);
             border-radius: 6px;
         }
+
+        .sub-player-status.fouled-out {
+    background: #F44336;
+    color: white;
+}
+
+.sub-player-card[data-ejected="true"] {
+    opacity: 0.4;
+    cursor: not-allowed !important;
+    background: #2a1a1a !important;
+    border: 2px solid #F44336 !important;
+}
+
+.sub-player-card[data-ejected="true"]:hover {
+    transform: none !important;
+}
     </style>
 </head>
 
@@ -2519,8 +2535,8 @@
         <!-- Player Roster -->
         <div class="roster-section">
             <div class="roster-header">
-                <div class="team-tab team-a active" data-team="A">A</div>
-                <div class="team-tab team-b" data-team="B">B</div>
+                <div class="team-tab team-a active" data-team="A">{{($game->team1->team_name)}}</div>
+                <div class="team-tab team-b" data-team="B">{{($game->team2->team_name)}}</div>
             </div>
             <div class="players-grid" id="playersGrid">
                 <!-- Team A -->
@@ -4556,34 +4572,60 @@
         }
 
         // Create substitution player card
-        function createSubPlayerCard(player, team, isActive) {
-            const card = document.createElement('div');
-            card.className = `sub-player-card ${isActive ? 'active-player' : 'bench-player'}`;
-            card.draggable = true;
-            card.dataset.team = team;
-            card.dataset.number = player.number || '00';
-            card.dataset.isActive = isActive;
+        // Create substitution player card
+function createSubPlayerCard(player, team, isActive) {
+    const card = document.createElement('div');
+    
+    // Check if player is ejected or fouled out
+    const totalFouls = (player.fouls || 0) + (player.techFouls || 0);
+    const isEjected = player.ejected || totalFouls >= 5;
+    
+    card.className = `sub-player-card ${isActive ? 'active-player' : 'bench-player'}`;
+    
+    // Only make draggable if not ejected/fouled out
+    if (!isEjected) {
+        card.draggable = true;
+    } else {
+        card.style.opacity = '0.4';
+        card.style.cursor = 'not-allowed';
+        card.style.background = '#2a1a1a';
+        card.style.border = '2px solid #F44336';
+    }
+    
+    card.dataset.team = team;
+    card.dataset.number = player.number || '00';
+    card.dataset.isActive = isActive;
+    card.dataset.ejected = isEjected ? 'true' : 'false';
 
-            // derive last name: prefer explicit last_name, fallback to last word of name
-            const lastName = ((player.last_name || player.name || '') + '').trim().split(/\s+/).slice(-1)[0] || '';
+    const lastName = ((player.last_name || player.name || '') + '').trim().split(/\s+/).slice(-1)[0] || '';
 
-            card.innerHTML = `
-                <div class="sub-player-number">${player.number || '00'}</div>
-                <div class="sub-player-lastname">${lastName}</div>
-                <div class="sub-player-position">${player.position || 'P'}</div>
-                <div class="sub-player-status ${isActive ? 'active' : 'bench'}">${isActive ? 'Active' : 'Bench'}</div>
-            `;
+    let statusText = isActive ? 'Active' : 'Bench';
+    let statusClass = isActive ? 'active' : 'bench';
+    
+    if (isEjected) {
+        statusText = totalFouls >= 5 ? 'Fouled Out' : 'Ejected';
+        statusClass = 'fouled-out';
+    }
 
-            // Add drag event listeners
-            card.addEventListener('dragstart', handleDragStart);
-            card.addEventListener('dragend', handleDragEnd);
-            card.addEventListener('dragover', handleDragOver);
-            card.addEventListener('drop', handleDrop);
-            card.addEventListener('dragenter', handleDragEnter);
-            card.addEventListener('dragleave', handleDragLeave);
+    card.innerHTML = `
+        <div class="sub-player-number">${player.number || '00'}</div>
+        <div class="sub-player-lastname">${lastName}</div>
+        <div class="sub-player-position">${player.position || 'P'}</div>
+        <div class="sub-player-status ${statusClass}">${statusText}</div>
+    `;
 
-            return card;
-        }
+    // Only add drag event listeners if not ejected
+    if (!isEjected) {
+        card.addEventListener('dragstart', handleDragStart);
+        card.addEventListener('dragend', handleDragEnd);
+        card.addEventListener('dragover', handleDragOver);
+        card.addEventListener('drop', handleDrop);
+        card.addEventListener('dragenter', handleDragEnter);
+        card.addEventListener('dragleave', handleDragLeave);
+    }
+
+    return card;
+}
 
         // Drag and drop event handlers - FIXED VERSION
         let draggedElement = null;
@@ -4642,53 +4684,43 @@
         }
 
         // Check if a player can be dropped on another - ENHANCED VERSION
-        function canDropOn(source, target) {
-            if (!source || !target) {
-                console.log('canDropOn: Missing source or target');
-                return false;
-            }
+        // Auto-substitute fouled out player
+function autoSubstituteFouledOutPlayer(fouledOutPlayer, team) {
+    // Find available bench players (not fouled out and not ejected)
+    const availableBench = benchPlayers[team].filter(p => {
+        const totalFouls = (p.fouls || 0) + (p.techFouls || 0);
+        return totalFouls < 5 && !p.ejected;
+    });
 
-            if (source === target) {
-                console.log('canDropOn: Same element');
-                return false;
-            }
+    if (availableBench.length === 0) {
+        alert(`⚠️ No available substitutes for Team ${team}!\nAll bench players are either fouled out or ejected.\nGame may need to continue with fewer players.`);
+        return;
+    }
 
-            // Get the actual card elements if we clicked on child elements
-            const sourceCard = source.closest('.sub-player-card') || source;
-            const targetCard = target.closest('.sub-player-card') || target;
+    // Get the first available bench player
+    const substitutePlayer = availableBench[0];
 
-            if (!sourceCard || !targetCard) {
-                console.log('canDropOn: Not valid player cards');
-                return false;
-            }
+    // Perform the substitution
+    const activeIndex = activePlayers[team].findIndex(p => p.id === fouledOutPlayer.id);
+    const benchIndex = benchPlayers[team].findIndex(p => p.id === substitutePlayer.id);
 
-            const sourceTeam = sourceCard.dataset.team;
-            const targetTeam = targetCard.dataset.team;
-            const sourceActive = sourceCard.dataset.isActive === 'true';
-            const targetActive = targetCard.dataset.isActive === 'true';
+    if (activeIndex !== -1 && benchIndex !== -1) {
+        // Swap players
+        activePlayers[team][activeIndex] = substitutePlayer;
+        benchPlayers[team][benchIndex] = fouledOutPlayer;
 
-            console.log('canDropOn check:', {
-                sourceTeam,
-                targetTeam,
-                sourceActive,
-                targetActive
-            });
+        // Log the forced substitution
+        logEvent(team, `${fouledOutPlayer.number}→${substitutePlayer.number}`, 'Foul Out Substitution', 0);
 
-            // Can only substitute within the same team
-            if (sourceTeam !== targetTeam) {
-                console.log('canDropOn: Different teams');
-                return false;
-            }
+        // Update displays
+        updateMainRoster();
+        updateSubstitutionDisplay();
 
-            // Can only substitute bench player with active player
-            if (sourceActive || !targetActive) {
-                console.log('canDropOn: Invalid active/bench combination');
-                return false;
-            }
-
-            console.log('canDropOn: Valid substitution');
-            return true;
-        }
+        // Show substitution notification
+        showSubstitutionSuccess(team, fouledOutPlayer.number, substitutePlayer.number,
+            'Automatic substitution due to foul out');
+    }
+}
 
         // Enhanced substitution function with better error handling
         function makeSubstitution(benchCard, activeCard) {
@@ -5661,10 +5693,10 @@ function showEjectionSubstitution() {
     document.getElementById('ejectedPlayerInfo').textContent = 
         `Player #${currentTechFoulData.playerNumber} ${currentTechFoulData.playerName}`;
     
-    // Get available bench players
+    // Get available bench players (not fouled out and not ejected)
     const availableBench = benchPlayers[team].filter(p => {
         const totalFouls = (p.fouls || 0) + (p.techFouls || 0);
-        return totalFouls < 5; // Not fouled out
+        return totalFouls < 5 && !p.ejected;
     });
     
     const substituteGrid = document.getElementById('techSubstitutePlayers');
