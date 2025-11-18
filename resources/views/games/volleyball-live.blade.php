@@ -2248,6 +2248,47 @@
     }
 }
 
+/* Libero styling */
+.player-card.is-libero {
+    border-left-color: #9C27B0 !important;
+    border-left-width: 6px !important;
+    position: relative;
+}
+
+.player-card.is-libero::before {
+    content: 'L';
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #9C27B0;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+    z-index: 1;
+}
+
+.jersey-badge.is-libero {
+    border-color: #9C27B0 !important;
+    background: linear-gradient(135deg, #9C27B0, #7B1FA2) !important;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
 
     </style>
 </head>
@@ -2760,6 +2801,13 @@ let pendingBlockType = null;
         let maxSubstitutionsA = 6;
         let maxSubstitutionsB = 6;
 
+        // ✅ UPDATED: Track libero role, not just ID
+        let liberoA = null; // Original libero player ID for team A
+        let liberoB = null; // Original libero player ID for team B
+        let currentLiberoA = null; // Currently active libero for team A (can change via sub)
+        let currentLiberoB = null; // Currently active libero for team B (can change via sub)
+        let quickSubPanelOpen = false;
+
 
         // Hamburger menu functionality
         const hamburgerBtn = document.getElementById('hamburgerBtn');
@@ -2848,6 +2896,294 @@ function createJerseyBadge(player, team) {
     }
 
     return badge;
+}
+
+// ✅ UPDATED: Identify liberos and set both original and current
+function identifyLiberos() {
+    // Team A - find player with position "Libero"
+    const liberoPlayerA = gameData.team1.players.find(p => 
+        p.position && (p.position.toLowerCase() === 'libero' || p.position.toLowerCase() === 'l')
+    );
+    if (liberoPlayerA) {
+        liberoA = liberoPlayerA.id;
+        currentLiberoA = liberoPlayerA.id; // Set current as well
+        console.log('✅ Team A Libero identified:', liberoPlayerA.number, liberoPlayerA.name);
+    }
+    
+    // Team B - find player with position "Libero"
+    const liberoPlayerB = gameData.team2.players.find(p => 
+        p.position && (p.position.toLowerCase() === 'libero' || p.position.toLowerCase() === 'l')
+    );
+    if (liberoPlayerB) {
+        liberoB = liberoPlayerB.id;
+        currentLiberoB = liberoPlayerB.id; // Set current as well
+        console.log('✅ Team B Libero identified:', liberoPlayerB.number, liberoPlayerB.name);
+    }
+    
+    // Update visual indicators
+    updateLiberoVisuals();
+}
+
+// ✅ ADD: Update visuals to show who is libero
+// ✅ UPDATED: Update visuals based on CURRENT libero (not original)
+function updateLiberoVisuals() {
+    // Clear existing libero styling
+    document.querySelectorAll('.player-card').forEach(card => {
+        card.classList.remove('is-libero');
+    });
+    
+    document.querySelectorAll('.jersey-badge').forEach(badge => {
+        badge.classList.remove('is-libero');
+    });
+    
+    // Mark Team A current libero (whoever is currently playing as libero)
+    if (currentLiberoA) {
+        const cardA = document.querySelector(`.player-card[data-player-id="${currentLiberoA}"]`);
+        if (cardA) {
+            cardA.classList.add('is-libero');
+            console.log('Applied libero visual to Team A player:', currentLiberoA);
+        }
+    }
+    
+    // Mark Team B current libero
+    if (currentLiberoB) {
+        const cardB = document.querySelector(`.player-card[data-player-id="${currentLiberoB}"]`);
+        if (cardB) {
+            cardB.classList.add('is-libero');
+            console.log('Applied libero visual to Team B player:', currentLiberoB);
+        }
+    }
+}
+
+// ✅ FIXED: Only check if libero is actually on court
+function checkLiberoPosition(team) {
+    const currentLiberoId = team === 'A' ? currentLiberoA : currentLiberoB;
+    
+    // ✅ CRITICAL: If no current libero, don't check at all
+    if (!currentLiberoId) {
+        console.log(`No active libero on court for team ${team} - skipping check`);
+        return;
+    }
+    
+    const arr = team === 'A' ? activePlayers.A : activePlayers.B;
+    
+    // Check if current libero is actually in the active players array
+    const liberoIndex = arr.findIndex(p => p && p.id.toString() === currentLiberoId.toString());
+    
+    // ✅ CRITICAL: If libero not found in active players, they're benched
+    if (liberoIndex === -1) {
+        console.log(`Current libero for team ${team} is not in active roster (benched)`);
+        // Clear the current libero since they're not on court
+        if (team === 'A') {
+            currentLiberoA = null;
+        } else {
+            currentLiberoB = null;
+        }
+        return;
+    }
+    
+    // Position mapping: index 0->pos4, 1->pos3, 2->pos2 (front row)
+    const frontRowIndices = [0, 1, 2];
+    
+    console.log(`Team ${team} libero check:`, {
+        currentLiberoId,
+        liberoIndex,
+        isFrontRow: frontRowIndices.includes(liberoIndex),
+        currentPosition: liberoIndex
+    });
+    
+    if (frontRowIndices.includes(liberoIndex)) {
+        const liberoPlayer = arr[liberoIndex];
+        console.log('⚠️ LIBERO IN FRONT ROW!', liberoPlayer);
+        showLiberoSubWarning(team, liberoPlayer);
+    }
+}
+// ✅ ADD: Show libero substitution warning
+function showLiberoSubWarning(team, liberoPlayer) {
+    if (quickSubPanelOpen) return;
+    
+    quickSubPanelOpen = true;
+    
+    const panel = document.createElement('div');
+    panel.id = 'quickSubPanel';
+    panel.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+        border-radius: 16px;
+        padding: 30px;
+        z-index: 10001;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        min-width: 400px;
+        max-width: 90vw;
+        animation: slideIn 0.3s ease-out;
+    `;
+    
+    const teamName = team === 'A' ? gameData.team1.name : gameData.team2.name;
+    
+    panel.innerHTML = `
+        <div style="text-align: center; margin-bottom: 20px;">
+            <div style="font-size: 28px; font-weight: bold; color: white; margin-bottom: 8px;">
+                ⚠️ LIBERO IN FRONT ROW
+            </div>
+            <div style="font-size: 16px; color: rgba(255,255,255,0.9);">
+                ${teamName} - Player #${liberoPlayer.number} must be substituted
+            </div>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+            <div style="color: rgba(255,255,255,0.8); font-size: 14px; margin-bottom: 15px; text-align: center;">
+                SELECT REPLACEMENT PLAYER
+            </div>
+            <div id="quickSubPlayers" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                <!-- Players will be populated here -->
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button onclick="closeQuickSubPanel()" style="
+                padding: 12px 24px;
+                background: rgba(255,255,255,0.2);
+                border: 2px solid white;
+                color: white;
+                border-radius: 8px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.2s;
+            ">
+                Cancel
+            </button>
+            <button onclick="openFullSubModal('${team}')" style="
+                padding: 12px 24px;
+                background: white;
+                border: none;
+                color: #9C27B0;
+                border-radius: 8px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.2s;
+            ">
+                Open Full Sub Menu
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(panel);
+    
+    // Populate available players
+    const benchArr = team === 'A' ? benchPlayers.A : benchPlayers.B;
+    const playersContainer = document.getElementById('quickSubPlayers');
+    
+    benchArr.forEach(player => {
+        const card = document.createElement('div');
+        card.style.cssText = `
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        `;
+        
+        card.innerHTML = `
+            <div style="font-size: 24px; font-weight: bold; color: white; margin-bottom: 4px;">
+                ${player.number || '00'}
+            </div>
+            <div style="font-size: 12px; color: rgba(255,255,255,0.8);">
+                ${player.position || 'P'}
+            </div>
+        `;
+        
+        card.onmouseover = function() {
+            this.style.background = 'rgba(255,255,255,0.3)';
+            this.style.borderColor = 'white';
+            this.style.transform = 'translateY(-2px)';
+        };
+        card.onmouseout = function() {
+            this.style.background = 'rgba(255,255,255,0.15)';
+            this.style.borderColor = 'transparent';
+            this.style.transform = 'translateY(0)';
+        };
+        
+        card.onclick = () => quickSubLibero(team, liberoPlayer.id, player.id);
+        
+        playersContainer.appendChild(card);
+    });
+}
+
+// ✅ FIXED: When quick-subbing libero out, clear the current libero
+function quickSubLibero(team, liberoId, replacementId) {
+    const arr = team === 'A' ? activePlayers.A : activePlayers.B;
+    const bench = team === 'A' ? benchPlayers.A : benchPlayers.B;
+    
+    const activeIndex = arr.findIndex(p => p.id.toString() === liberoId.toString());
+    const benchIndex = bench.findIndex(p => p.id.toString() === replacementId.toString());
+    
+    if (activeIndex === -1 || benchIndex === -1) {
+        alert('Error: Players not found');
+        return;
+    }
+    
+    const currentSubs = team === 'A' ? substitutionsA : substitutionsB;
+    const maxSubs = team === 'A' ? maxSubstitutionsA : maxSubstitutionsB;
+    
+    if (currentSubs >= maxSubs) {
+        alert(`Team ${team} has no more substitutions remaining this set`);
+        closeQuickSubPanel();
+        return;
+    }
+    
+    // Swap players
+    const liberoPlayer = arr[activeIndex];
+    const replacementPlayer = bench[benchIndex];
+    
+    bench[benchIndex] = liberoPlayer;
+    arr[activeIndex] = replacementPlayer;
+    
+    // ✅ FIXED: When libero is subbed out, clear current libero (don't transfer to replacement)
+    if (team === 'A') {
+        currentLiberoA = null;
+        console.log('Team A libero REMOVED from court via quick sub');
+    } else {
+        currentLiberoB = null;
+        console.log('Team B libero REMOVED from court via quick sub');
+    }
+    
+    // Update substitution count
+    if (team === 'A') {
+        substitutionsA++;
+        document.getElementById('substitutionsA').textContent = substitutionsA;
+    } else {
+        substitutionsB++;
+        document.getElementById('substitutionsB').textContent = substitutionsB;
+    }
+    
+    logEvent(team, `${liberoPlayer.number}→${replacementPlayer.number}`, 'Libero Sub', 0);
+    
+    renderSubstitutionPlayers();
+    renderTeamJerseys();
+    updateMainRoster();
+    
+    closeQuickSubPanel();
+    showNotification(`Libero substituted: #${liberoPlayer.number} → #${replacementPlayer.number}`, '#4CAF50');
+}
+
+// ✅ ADD: Close quick sub panel
+function closeQuickSubPanel() {
+    const panel = document.getElementById('quickSubPanel');
+    if (panel) {
+        panel.remove();
+    }
+    quickSubPanelOpen = false;
+}
+
+// ✅ ADD: Open full sub modal
+function openFullSubModal(team) {
+    closeQuickSubPanel();
+    openSubstitutionModal();
 }
 
        document.getElementById('blockBtn').addEventListener('click', function() {
@@ -3169,19 +3505,13 @@ function highlightServerBadge() {
 
 // Rotate a team's active players clockwise (used when they gain serve)
 function rotateTeamClockwise(team) {
-    // Use the court layout mapping so rotation matches visual positions.
-    // positions layout (visual):
-    // [4, 3, 2]
-    // [5, 6, 1]
-    // array indices map: index 0->pos4, 1->pos3, 2->pos2, 3->pos5, 4->pos6, 5->pos1
     const posIndex = {1:5,2:2,3:1,4:0,5:3,6:4};
     const arr = team === 'A' ? activePlayers.A : activePlayers.B;
-    if (!arr || arr.length < 6) return; // require full 6 players to rotate
+    if (!arr || arr.length < 6) return;
 
     const old = arr.slice();
     const newArr = new Array(6);
-    // For each position p (1..6), new occupant at p becomes the old occupant at p_next (clockwise next)
-    // Based on desired mapping: new[pos] = old[nextPos], where nextPos = (pos % 6) + 1
+    
     for (let pos = 1; pos <= 6; pos++) {
         const nextPos = pos % 6 + 1;
         const newIndex = posIndex[pos];
@@ -3189,13 +3519,18 @@ function rotateTeamClockwise(team) {
         newArr[newIndex] = old[oldIndex];
     }
 
-    // copy back into original array
     for (let i = 0; i < 6; i++) arr[i] = newArr[i];
 
-    // After rotation, re-render UI
     renderTeamJerseys();
     updateMainRoster();
     renderSubstitutionPlayers();
+    updateLiberoVisuals(); // ✅ ADD THIS LINE
+    
+    // ✅ ADD: Check libero position after rotation
+    setTimeout(() => {
+        console.log(`Checking libero position for team ${team} after rotation`);
+        checkLiberoPosition(team);
+    }, 200);
 }
 
 // Substitution Modal Functions
@@ -3342,7 +3677,7 @@ function canDropOn(source, target) {
     return sourceTeam === targetTeam && !sourceActive && targetActive;
 }
 
-// Make substitution
+// ✅ COMPLETELY FIXED: Proper libero tracking during substitutions
 function makeSubstitution(benchCard, activeCard) {
     const team = benchCard.dataset.team;
     const benchPlayerId = benchCard.dataset.playerId;
@@ -3365,12 +3700,49 @@ function makeSubstitution(benchCard, activeCard) {
         return;
     }
 
-    // Swap players
+    // Get player objects
     const benchPlayer = benchPlayers[team][benchPlayerIndex];
     const activePlayer = activePlayers[team][activePlayerIndex];
+    
+    // Get original libero ID for this team
+    const originalLiberoId = team === 'A' ? liberoA : liberoB;
 
+    // ✅ CRITICAL: Track libero status BEFORE the swap
+    console.log('=== SUBSTITUTION DEBUG ===');
+    console.log('Team:', team);
+    console.log('Active player going out:', activePlayer.number, 'ID:', activePlayerId);
+    console.log('Bench player coming in:', benchPlayer.number, 'ID:', benchPlayerId);
+    console.log('Original libero ID:', originalLiberoId);
+    console.log('Current libero ID before swap:', team === 'A' ? currentLiberoA : currentLiberoB);
+
+    // Perform the swap
     benchPlayers[team][benchPlayerIndex] = activePlayer;
     activePlayers[team][activePlayerIndex] = benchPlayer;
+
+    // ✅ NOW update libero tracking after swap
+    
+    // Case 1: Original libero is being subbed OUT
+    if (originalLiberoId && activePlayerId === originalLiberoId.toString()) {
+        if (team === 'A') {
+            currentLiberoA = null;
+        } else {
+            currentLiberoB = null;
+        }
+        console.log(`✅ Original libero REMOVED from court for team ${team}`);
+    }
+    
+    // Case 2: Original libero is being subbed IN
+    if (originalLiberoId && benchPlayerId === originalLiberoId.toString()) {
+        if (team === 'A') {
+            currentLiberoA = originalLiberoId;
+        } else {
+            currentLiberoB = originalLiberoId;
+        }
+        console.log(`✅ Original libero BROUGHT BACK to court for team ${team}`);
+    }
+    
+    console.log('Current libero ID after swap:', team === 'A' ? currentLiberoA : currentLiberoB);
+    console.log('=== END SUBSTITUTION DEBUG ===');
 
     // Update substitution count
     if (team === 'A') {
@@ -3387,7 +3759,7 @@ function makeSubstitution(benchCard, activeCard) {
     // Update displays
     renderSubstitutionPlayers();
     renderTeamJerseys();
-    updateMainRoster();
+    updateMainRoster(); // This calls updateLiberoVisuals() inside
 
     // Show success message
     showSubstitutionSuccess(team, activePlayer.number, benchPlayer.number);
@@ -3408,6 +3780,9 @@ function updateMainRoster() {
     activePlayers.B.forEach(player => {
         playersBGrid.appendChild(createPlayerCard(player, 'B'));
     });
+    
+    // ✅ ADD THIS LINE
+    updateLiberoVisuals();
 }
 function showTimeoutEndModal() {
     document.getElementById('timeoutEndModal').classList.add('show');
@@ -3510,6 +3885,7 @@ substitutionModal.addEventListener('click', (e) => {
         function init() {
             initializePlayerRosters(); // populate activePlayers/benchPlayers
             // render from activePlayers so draggable reordering is based on that state
+            identifyLiberos();
             updateMainRoster();
             updateScoreboard();
             updateServingIndicator();

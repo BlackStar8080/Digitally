@@ -11,6 +11,97 @@ class PdfController extends Controller
     /**
      * Download basketball scoresheet as PDF
      */
+    /**
+ * Download tournament information as PDF
+ */
+/**
+ * Preview tournament information in browser
+ */
+public function previewTournamentInfo($tournamentId)
+{
+    $tournament = Tournament::with([
+        'sport',
+        'teams.players' => function($query) {
+            $query->orderBy('number');
+        }
+    ])->findOrFail($tournamentId);
+
+    $logoLeft = '';
+    $logoRight = '';
+    
+    $leftPath = public_path('images/logo/tagoloan-flag.png');
+    $rightPath = public_path('images/logo/mayor-logo.png');
+    
+    if (file_exists($leftPath)) {
+        $logoLeft = base64_encode(file_get_contents($leftPath));
+    }
+    
+    if (file_exists($rightPath)) {
+        $logoRight = base64_encode(file_get_contents($rightPath));
+    }
+
+    $isPdf = false; // Show download button in preview
+
+    return view('tournaments.info-pdf', compact(
+        'tournament',
+        'logoLeft',
+        'logoRight',
+        'isPdf'
+    ));
+}
+
+/**
+ * Download tournament information as PDF
+ */
+public function downloadTournamentInfo($tournamentId)
+{
+    $tournament = Tournament::with([
+        'sport',
+        'teams.players' => function($query) {
+            $query->orderBy('number');
+        }
+    ])->findOrFail($tournamentId);
+
+    $logoLeft = '';
+    $logoRight = '';
+    
+    $leftPath = public_path('images/logo/tagoloan-flag.png');
+    $rightPath = public_path('images/logo/mayor-logo.png');
+    
+    if (file_exists($leftPath)) {
+        $logoLeft = base64_encode(file_get_contents($leftPath));
+    }
+    
+    if (file_exists($rightPath)) {
+        $logoRight = base64_encode(file_get_contents($rightPath));
+    }
+
+    $isPdf = true;
+
+    $pdf = Pdf::loadView('tournaments.info-pdf', compact(
+        'tournament',
+        'logoLeft',
+        'logoRight',
+        'isPdf'
+    ))->setOptions([
+        'defaultFont' => 'DejaVu Sans',
+        'isHtml5ParserEnabled' => true,
+        'isRemoteEnabled' => true,
+        'isPhpEnabled' => true,
+        'dpi' => 96,
+        'enable_font_subsetting' => true,
+    ]);
+
+    $pdf->getDomPDF()->getOptions()->set('isUnicodeEnabled', true);
+    $pdf->setPaper('legal', 'portrait');
+
+    $filename = sprintf(
+        'tournament-info-%s.pdf',
+        str_replace(' ', '-', strtolower($tournament->name))
+    );
+
+    return $pdf->download($filename);
+}
 
     
     public function basketballScoresheet($gameId)

@@ -2372,46 +2372,57 @@
                     </a>
                 </div>
             </div>
+            
+
+
 
             <div class="content-section">
 
                 <!-- Tournament Info -->
-                <div class="info-card">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h5 class="section-title">Tournament Information</h5>
-                            <p><strong>Teams Registered:</strong> {{ $tournament->teams->count() }}</p>
-                            <p><strong>Status:</strong>
-                                @if ($tournament->brackets->isNotEmpty())
-                                    <span class="badge bg-success">Active</span>
-                                @else
-                                    <span class="badge bg-warning">Setup</span>
-                                @endif
-                            </p>
-                        </div>
-                        @if ($tournament->brackets->isEmpty())
-                            <div class="col-md-6">
-                                <h5 class="section-title">Quick Actions</h5>
-                                @if (!session('is_guest'))
-                                    @if ($tournament->teams->count() >= 3)
-                                        <button class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#createBracketModal">
-                                            <i class="bi bi-diagram-3"></i>
-                                            Create Bracket
-                                        </button>
-                                    @else
-                                        <p class="text-muted">
-                                            <i class="bi bi-info-circle"></i>
-                                            Add at least 3 teams to create a bracket ({{ $tournament->teams->count() }}/3
-                                            teams
-                                            registered)
-                                        </p>
-                                    @endif
-                                @endif
-                            </div>
-                        @endif
-                    </div>
-                </div>
+<div class="info-card">
+    <div class="row">
+        <div class="col-md-6">
+            <h5 class="section-title">Tournament Information</h5>
+            <p><strong>Teams Registered:</strong> {{ $tournament->teams->count() }}</p>
+            <p><strong>Status:</strong>
+                @if ($tournament->brackets->isNotEmpty())
+                    <span class="badge bg-success">Active</span>
+                @else
+                    <span class="badge bg-warning">Setup</span>
+                @endif
+            </p>
+        </div>
+        <div class="col-md-6">
+            <h5 class="section-title">Quick Actions</h5>
+            @if (!session('is_guest'))
+                {{-- Download Tournament Info Button - Always visible --}}
+                <a href="{{ route('tournaments.info.preview', $tournament->id) }}" 
+                   class="btn btn-primary mb-2" 
+                   target="_blank">
+                    <i class="bi bi-file-earmark-text"></i>
+                    Download Tournament Info
+                </a>
+                
+                {{-- Create Bracket Button - Only show if no brackets exist --}}
+                @if ($tournament->brackets->isEmpty())
+                    @if ($tournament->teams->count() >= 3)
+                        <button class="btn btn-success" data-bs-toggle="modal"
+                            data-bs-target="#createBracketModal">
+                            <i class="bi bi-diagram-3"></i>
+                            Create Bracket
+                        </button>
+                    @else
+                        <p class="text-muted">
+                            <i class="bi bi-info-circle"></i>
+                            Add at least 3 teams to create a bracket ({{ $tournament->teams->count() }}/3 teams
+                            registered)
+                        </p>
+                    @endif
+                @endif
+            @endif
+        </div>
+    </div>
+</div>
 
                 <!-- Team Management Section -->
                 <!-- Team Management Section -->
