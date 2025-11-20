@@ -23,7 +23,15 @@ public function previewTournamentInfo($tournamentId)
         'sport',
         'teams.players' => function($query) {
             $query->orderBy('number');
+        },
+        'brackets.games' => function($query) {  // ✅ ADD THIS
+            $query->with(['team1', 'team2'])
+                  ->orderBy('scheduled_at', 'asc')
+                  ->orderBy('round', 'asc')
+                  ->orderBy('match_number', 'asc');
         }
+
+        
     ])->findOrFail($tournamentId);
 
     $logoLeft = '';
@@ -59,6 +67,12 @@ public function downloadTournamentInfo($tournamentId)
         'sport',
         'teams.players' => function($query) {
             $query->orderBy('number');
+        },
+        'brackets.games' => function($query) {  // ✅ ADD THIS
+            $query->with(['team1', 'team2'])
+                  ->orderBy('scheduled_at', 'asc')
+                  ->orderBy('round', 'asc')
+                  ->orderBy('match_number', 'asc');
         }
     ])->findOrFail($tournamentId);
 

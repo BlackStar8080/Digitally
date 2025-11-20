@@ -796,9 +796,7 @@ function hideToast() {
 
 document.addEventListener('DOMContentLoaded', function () {
     // Check for Laravel success message
-    @if(session('success'))
-        showToast("{{ session('success') }}");
-    @endif
+   
 
     // Store tournaments data
     const tournaments = @json($tournaments);

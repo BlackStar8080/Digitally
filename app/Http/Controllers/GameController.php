@@ -1904,4 +1904,107 @@ public function calculateVolleyballTeamStats(Game $game, $teamId)
     ];
 }
 
+/**
+ * Auto-save game state during live game
+ */
+public function autoSave(Request $request, Game $game)
+{
+    try {
+        // Get the live state data from the request
+        $liveState = $request->all();
+        
+        // Get existing game_data
+        $gameData = $game->game_data ?? [];
+        
+        // Update the live_state section within game_data
+        $gameData['live_state'] = [
+            'team1_score' => $liveState['team1_score'] ?? 0,
+            'team2_score' => $liveState['team2_score'] ?? 0,
+            'team1_fouls' => $liveState['team1_fouls'] ?? 0,
+            'team2_fouls' => $liveState['team2_fouls'] ?? 0,
+            'team1_timeouts' => $liveState['team1_timeouts'] ?? 0,
+            'team2_timeouts' => $liveState['team2_timeouts'] ?? 0,
+            'current_quarter' => $liveState['current_quarter'] ?? 1,
+            'time_remaining' => $liveState['time_remaining'] ?? 0,
+            'shot_clock' => $liveState['shot_clock'] ?? 24,
+            'game_events' => $liveState['game_events'] ?? [],
+            'period_scores' => $liveState['period_scores'] ?? [],
+            'active_players' => $liveState['active_players'] ?? [],
+            'bench_players' => $liveState['bench_players'] ?? [],
+            'possession' => $liveState['possession'] ?? 'A',
+            'is_running' => $liveState['is_running'] ?? false,
+            'last_auto_save' => now()->toDateTimeString(),
+        ];
+        
+        // Save to database
+        $game->game_data = $gameData;
+        $game->save();
+        
+        \Log::info("Game {$game->id} auto-saved successfully");
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Game state saved',
+            'saved_at' => now()->toDateTimeString()
+        ]);
+        
+    } catch (\Exception $e) {
+        \Log::error("Auto-save failed for game {$game->id}: " . $e->getMessage());
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to save game state',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
+/**
+ * Load saved game state
+ */
+public function loadState(Game $game)
+{
+    try {
+        $gameData = $game->game_data ?? [];
+        $liveState = $gameData['live_state'] ?? null;
+        
+        if ($liveState) {
+            \Log::info("Loading saved state for game {$game->id}");
+            
+            return response()->json([
+                'has_saved_state' => true,
+                'team1_score' => $liveState['team1_score'] ?? 0,
+                'team2_score' => $liveState['team2_score'] ?? 0,
+                'team1_fouls' => $liveState['team1_fouls'] ?? 0,
+                'team2_fouls' => $liveState['team2_fouls'] ?? 0,
+                'team1_timeouts' => $liveState['team1_timeouts'] ?? 0,
+                'team2_timeouts' => $liveState['team2_timeouts'] ?? 0,
+                'current_quarter' => $liveState['current_quarter'] ?? 1,
+                'time_remaining' => $liveState['time_remaining'] ?? 0,
+                'shot_clock' => $liveState['shot_clock'] ?? 24,
+                'game_events' => $liveState['game_events'] ?? [],
+                'period_scores' => $liveState['period_scores'] ?? [],
+                'active_players' => $liveState['active_players'] ?? [],
+                'bench_players' => $liveState['bench_players'] ?? [],
+                'possession' => $liveState['possession'] ?? 'A',
+                'is_running' => $liveState['is_running'] ?? false,
+                'last_saved' => $liveState['last_auto_save'] ?? null,
+            ]);
+        }
+        
+        return response()->json([
+            'has_saved_state' => false,
+            'message' => 'No saved state found'
+        ]);
+        
+    } catch (\Exception $e) {
+        \Log::error("Failed to load state for game {$game->id}: " . $e->getMessage());
+        
+        return response()->json([
+            'has_saved_state' => false,
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
 }

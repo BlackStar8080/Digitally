@@ -4103,6 +4103,8 @@
                 });
         }
 
+        
+
         // NEW: Collect player statistics from game events
         // Collect player statistics from game events
         function collectPlayerStats() {
@@ -4653,9 +4655,9 @@ function createSubPlayerCard(player, team, isActive) {
 
         function handleDragEnter(e) {
             e.preventDefault(); // CRITICAL: This is required to allow dropping
-            if (canDropOn(draggedElement, e.target)) {
-                e.target.classList.add('drag-over');
-            }
+           if (draggedElement && draggedElement !== dropTarget && canDropOn(draggedElement, dropTarget)) {
+    makeSubstitution(draggedElement, dropTarget);
+}
             return false;
         }
 
@@ -4665,6 +4667,38 @@ function createSubPlayerCard(player, team, isActive) {
                 e.target.classList.remove('drag-over');
             }
         }
+
+
+// ✅ ADD THIS FUNCTION
+function canDropOn(draggedCard, targetCard) {
+    if (!draggedCard || !targetCard) return false;
+    
+    // Get the closest .sub-player-card elements
+    const dragged = draggedCard.closest('.sub-player-card');
+    const target = targetCard.closest('.sub-player-card');
+    
+    if (!dragged || !target) return false;
+    
+    // Can't drop on yourself
+    if (dragged === target) return false;
+    
+    // Must be same team
+    if (dragged.dataset.team !== target.dataset.team) return false;
+    
+    // ✅ Check if either player is ejected or fouled out
+    if (dragged.dataset.ejected === 'true' || target.dataset.ejected === 'true') {
+        return false;
+    }
+    
+    // Can only swap: bench → active or active → bench
+    const draggedIsActive = dragged.dataset.isActive === 'true';
+    const targetIsActive = target.dataset.isActive === 'true';
+    
+    // One must be active, one must be bench
+    return draggedIsActive !== targetIsActive;
+}
+
+// Check if a player can be dropped on another - ENHANCED VERSION
 
         function handleDrop(e) {
             e.preventDefault();
@@ -4943,12 +4977,19 @@ function autoSubstituteFouledOutPlayer(fouledOutPlayer, team) {
         });
 
         // Show foul modal
-        function showFoulModal() {
-            resetFoulModal();
-            foulModal.style.display = 'flex';
-            setupFoulEventListeners();
-            renderFoulingPlayers();
-        }
+        // Show foul modal
+function showFoulModal() {
+    // ✅ Pause game timer when foul modal opens
+    pauseTimer('foul');
+    
+    // ✅ Pause shot clock when foul modal opens
+    pauseShotClock();
+    
+    resetFoulModal();
+    foulModal.style.display = 'flex';
+    setupFoulEventListeners();
+    renderFoulingPlayers();
+}
 
         // ✅ CLICK ANYWHERE TO CANCEL SELECTED ACTION
         document.addEventListener('click', function(e) {
@@ -6724,6 +6765,192 @@ function startTechFreeThrows(team, playerNumber, techType) {
         updatePeriodDisplay(); // Initialize quarter display
         updatePenaltyStatus();
         console.log('Game loaded:', gameData);
+
+        // Load saved game state on page load
+function loadSavedGameState() {
+    fetch(`/games/${gameData.id}/load-state`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.has_saved_state) {
+                console.log('📥 Loading saved game state from:', data.last_saved);
+                
+                // Restore scores
+                scoreA = data.team1_score || 0;
+                scoreB = data.team2_score || 0;
+                scoreADisplay.textContent = scoreA.toString().padStart(2, '0');
+                scoreBDisplay.textContent = scoreB.toString().padStart(2, '0');
+                
+                // Restore fouls
+                foulsA = data.team1_fouls || 0;
+                foulsB = data.team2_fouls || 0;
+                foulsADisplay.textContent = foulsA;
+                foulsBDisplay.textContent = foulsB;
+                
+                // Restore timeouts
+                timeoutsA = data.team1_timeouts || 0;
+                timeoutsB = data.team2_timeouts || 0;
+                timeoutsADisplay.textContent = timeoutsA;
+                timeoutsBDisplay.textContent = timeoutsB;
+                
+                // Restore quarter and time
+                currentQuarter = data.current_quarter || 1;
+                time = data.time_remaining || quarterLength;
+                shotTime = data.shot_clock || 24;
+                
+                // Restore events
+                if (data.game_events && data.game_events.length > 0) {
+                    gameEvents = data.game_events;
+                    eventCounter = gameEvents.length + 1;
+                    renderLog();
+                }
+                
+                // Restore period scores
+                if (data.period_scores) {
+                    periodScores.teamA = data.period_scores.team1 || [0, 0, 0, 0];
+                    periodScores.teamB = data.period_scores.team2 || [0, 0, 0, 0];
+                }
+                
+                // ✅ FIX: Only restore player fouls/status, NOT the entire roster
+                if (data.active_players) {
+                    // Update Team A active players - only fouls and status
+                    if (data.active_players.teamA && Array.isArray(data.active_players.teamA)) {
+                        data.active_players.teamA.forEach(savedPlayer => {
+                            const player = activePlayers.A.find(p => p.id === savedPlayer.id);
+                            if (player) {
+                                player.fouls = savedPlayer.fouls || 0;
+                                player.techFouls = savedPlayer.techFouls || 0;
+                                player.ejected = savedPlayer.ejected || false;
+                            }
+                        });
+                    }
+                    
+                    // Update Team B active players - only fouls and status
+                    if (data.active_players.teamB && Array.isArray(data.active_players.teamB)) {
+                        data.active_players.teamB.forEach(savedPlayer => {
+                            const player = activePlayers.B.find(p => p.id === savedPlayer.id);
+                            if (player) {
+                                player.fouls = savedPlayer.fouls || 0;
+                                player.techFouls = savedPlayer.techFouls || 0;
+                                player.ejected = savedPlayer.ejected || false;
+                            }
+                        });
+                    }
+                }
+                
+                // ✅ FIX: Restore bench players fouls - only fouls and status
+                if (data.bench_players) {
+                    if (data.bench_players.teamA && Array.isArray(data.bench_players.teamA)) {
+                        data.bench_players.teamA.forEach(savedPlayer => {
+                            const player = benchPlayers.A.find(p => p.id === savedPlayer.id);
+                            if (player) {
+                                player.fouls = savedPlayer.fouls || 0;
+                                player.techFouls = savedPlayer.techFouls || 0;
+                                player.ejected = savedPlayer.ejected || false;
+                            }
+                        });
+                    }
+                    
+                    if (data.bench_players.teamB && Array.isArray(data.bench_players.teamB)) {
+                        data.bench_players.teamB.forEach(savedPlayer => {
+                            const player = benchPlayers.B.find(p => p.id === savedPlayer.id);
+                            if (player) {
+                                player.fouls = savedPlayer.fouls || 0;
+                                player.techFouls = savedPlayer.techFouls || 0;
+                                player.ejected = savedPlayer.ejected || false;
+                            }
+                        });
+                    }
+                }
+                
+                // Restore possession
+                if (data.possession) {
+                    currentPossession = data.possession;
+                    updatePossessionDisplay(currentPossession);
+                }
+                
+                // ✅ FIX: Re-render the roster with updated foul data
+                updateMainRoster();
+                
+                // Update all displays
+                updateTimer();
+                updateShotClockDisplay();
+                updatePeriodDisplay();
+                updatePenaltyStatus();
+                
+                console.log('✅ Game state fully restored!');
+                showToast('Game restored from last save', 'success', 3000);
+            } else {
+                console.log('ℹ️ No saved state found - starting fresh');
+            }
+        })
+        .catch(error => {
+            console.error('❌ Failed to load saved state:', error);
+            // Even if loading fails, make sure roster is displayed
+            updateMainRoster();
+        });
+}
+
+setTimeout(() => {
+    loadSavedGameState();
+}, 500);
+
+// Auto-save game state every 5 seconds
+setInterval(function() {
+    if (isRunning || gameEvents.length > 0) {
+        saveGameState();
+    }
+}, 5000); // Save every 5 seconds
+
+// Function to save current game state
+function saveGameState() {
+    const gameStateData = {
+        team1_score: scoreA,
+        team2_score: scoreB,
+        team1_fouls: foulsA,
+        team2_fouls: foulsB,
+        team1_timeouts: timeoutsA,
+        team2_timeouts: timeoutsB,
+        current_quarter: currentQuarter,
+        time_remaining: time,
+        shot_clock: shotTime,
+        game_events: gameEvents,
+        period_scores: periodScores,
+        active_players: {
+            teamA: activePlayers.A,
+            teamB: activePlayers.B
+        },
+        bench_players: {
+            teamA: benchPlayers.A,
+            teamB: benchPlayers.B
+        },
+        possession: currentPossession,
+        is_running: isRunning
+    };
+
+    fetch(`/games/${gameData.id}/auto-save`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify(gameStateData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('✅ Game state auto-saved at:', data.saved_at);
+        }
+    })
+    .catch(error => {
+        console.error('❌ Auto-save failed:', error);
+    });
+}
+
+// Save on page unload
+window.addEventListener('beforeunload', function() {
+    saveGameState();
+});
+        
 
         // ==================== REAL-TIME SYNC WITH POLLING ====================
         (function() {

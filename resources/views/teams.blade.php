@@ -4,50 +4,48 @@
 
 @push('styles')
 <style>
+/* Centered top toast */
 .toast-container {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: 30px;               /* Move down a bit */
+    left: 50%;               /* Center horizontally */
+    transform: translateX(-50%);
     z-index: 9999;
 }
 
+/* Bigger toast */
 .toast-notification {
     background: white;
-    border-radius: 12px;
-    padding: 1rem 1.5rem;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    border-radius: 16px;     /* bigger rounding */
+    padding: 1.5rem 2rem;    /* bigger padding */
+    box-shadow: 0 12px 50px rgba(0, 0, 0, 0.18);
     display: flex;
     align-items: center;
-    gap: 1rem;
-    min-width: 320px;
-    max-width: 400px;
+    gap: 1.5rem;
+    min-width: 420px;        /* bigger width */
+    max-width: 500px;
     opacity: 0;
-    transform: translateX(400px);
-    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    border-left: 4px solid #28a745;
+    transform: translateY(-40px);  /* slide down from top */
+    transition: all 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);
+    border-left: 5px solid #28a745;
 }
 
+/* Animation states */
 .toast-notification.show {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0);
 }
 
 .toast-notification.hide {
     opacity: 0;
-    transform: translateX(400px);
+    transform: translateY(-40px);
 }
 
+/* Larger icon */
 .toast-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #28a745, #20c997);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 20px;
-    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    font-size: 26px;
 }
 
 .toast-content {
@@ -505,46 +503,14 @@ body {
     display: none;
 }
 
+
+
 @media (max-width: 768px) {
-    .container {
-        padding: 0 0.5rem;
-    }
-    
-    .page-header {
-        padding: 1.5rem;
-    }
-    
-    .page-title {
-        font-size: 24px;
-    }
-    
-    .page-content {
-        padding: 1.5rem;
-    }
-    
-    .controls-section {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 1rem;
-    }
-    
-    .filters-group,
-    .actions-group {
-        justify-content: center;
-    }
-    
-    .search-container {
-        width: 100%;
-        max-width: 300px;
-    }
-
-    .team-actions {
-        opacity: 1;
-    }
-
     .toast-container {
-        left: 10px;
-        right: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        right: auto;
+        padding: 0 10px; /* optional for some spacing on small screens */
     }
 
     .toast-notification {
@@ -552,18 +518,21 @@ body {
         max-width: 100%;
     }
 }
-
-@media (max-width: 480px) {
-    .filters-group {
-        flex-direction: column;
-        width: 100%;
-    }
+.team-emoji {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 24px;
     
-    .filter-select {
-        width: 100%;
-        min-width: auto;
-    }
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   
+    z-index: 5;
 }
+
+
 </style>
 @endpush
 
@@ -900,9 +869,7 @@ function hideToast() {
 
 (function () {
     // Check for Laravel success message
-    @if(session('success'))
-        showToast("{{ session('success') }}");
-    @endif
+    
 
     function escapeHtml(str = '') {
         return String(str)
@@ -964,6 +931,9 @@ function hideToast() {
             return `
                 <div class="team-card fade-in-card" style="animation-delay: ${index * 0.05}s">
                     ${actionsHtml}
+                    <div class="team-emoji">
+            ${getTeamEmoji(team)}
+        </div>
                     <a href="/teams/${team.id}" style="text-decoration: none; color: inherit; display: block;">
                         <div class="team-header">
                             <div class="team-logo">
@@ -1078,5 +1048,15 @@ document.addEventListener('DOMContentLoaded', function () {
         teamModal.show();
     @endif
 });
+function getTeamEmoji(team) {
+    switch((team.sport?.sports_name || '').toLowerCase()) {
+        case 'basketball':
+            return '🏀';
+        case 'volleyball':
+            return '🏐';
+       
+    }
+}
+
 </script>
 @endsection

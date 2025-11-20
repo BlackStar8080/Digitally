@@ -328,6 +328,64 @@
         @endif
     </div>
 
+    <!-- ✅ NEW: Match Schedule Section -->
+    @php
+        $allGames = collect();
+        foreach($tournament->brackets as $bracket) {
+            $allGames = $allGames->merge($bracket->games);
+        }
+        $allGames = $allGames->sortBy('scheduled_at');
+    @endphp
+
+    @if($allGames->count() > 0)
+        <div class="page-break"></div>
+        
+        <div class="teams-section" style="margin-top: 40px;">
+            <h2 class="section-title">Match Schedule</h2>
+
+            <table class="players-table" style="margin-top: 20px;">
+                <thead>
+                    <tr>
+                        <th style="width: 12%;">Date</th>
+                        <th style="width: 10%;">Time (JST)</th>
+                        <th style="width: 48%;">Team</th>
+                        <th style="width: 30%;">Venue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($allGames as $game)
+                        <tr>
+                            <td style="text-align: center;">
+                                @if($game->scheduled_at)
+                                    {{ $game->scheduled_at->format('n-j-y') }}
+                                @else
+                                    TBD
+                                @endif
+                            </td>
+                            <td style="text-align: center;">
+                                @if($game->scheduled_at)
+                                    {{ $game->scheduled_at->format('g:i A') }}
+                                @else
+                                    -
+                                @endif
+                            </td>
+                            <td>
+                                <strong>
+                                    {{ $game->team1->team_name ?? 'TBD' }} 
+                                    vs 
+                                    {{ $game->team2->team_name ?? 'TBD' }}
+                                </strong>
+                            </td>
+                            <td style="text-align: center;">
+                                {{ $game->venue ?? '-' }}
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
+
     <!-- Footer -->
     <div class="footer">
         <p>Generated on {{ now()->format('F j, Y g:i A') }}</p>

@@ -23,11 +23,6 @@ return new class extends Migration
                   ->on('sports')
                   ->onDelete('restrict');
             
-            $table->unsignedBigInteger('tournament_id')->nullable();
-            $table->foreign('tournament_id')
-                  ->references('id')
-                  ->on('tournaments')
-                  ->onDelete('cascade');
         });
     }
 

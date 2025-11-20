@@ -122,6 +122,9 @@ Route::middleware(['auth.or.guest', 'guest.restrict'])->group(function () {
     
     // ✅ GENERAL GAME ROUTES - AFTER SPECIFIC ROUTES
     Route::get('/games/{game}/live', [GameController::class, 'live'])->name('games.live');
+    // Add these routes with your other game routes
+Route::post('/games/{game}/auto-save', [GameController::class, 'autoSave'])->name('games.auto-save');
+Route::get('/games/{game}/load-state', [GameController::class, 'loadState'])->name('games.load-state');
     Route::patch('/games/{game}/update-schedule', [GameController::class, 'updateSchedule'])->name('games.update-schedule');
     Route::get('/games/{game}/volleyball-live', [GameController::class, 'volleyballLive'])->name('games.volleyball-live');
     Route::post('/games/{game}/volleyball-complete', [GameController::class, 'completeVolleyballGame'])->name('games.volleyball-complete');

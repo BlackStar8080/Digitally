@@ -41,6 +41,17 @@
             }
         }
 
+        @keyframes scaleIn {
+            from { 
+                transform: scale(0.7);
+                opacity: 0;
+            }
+            to { 
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -1686,6 +1697,8 @@
                 border-width: 3px;
             }
         }
+
+     
     </style>
     @if (session('success'))
         {{-- Provide server-side data for toast JS --}}
@@ -2296,48 +2309,60 @@
     </script>
 
     <!-- Global toast for landing page (shows logout/login success) -->
-    <div id="landingToastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: none;">
-        <div id="landingToast"
-            style="background: white; border-radius: 12px; padding: 1rem 1.25rem; box-shadow: 0 10px 40px rgba(0,0,0,0.15); display:flex; gap:0.75rem; align-items:center; min-width:300px; border-left:4px solid #28a745;">
-            <div
-                style="width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#28a745,#20c997); display:flex; align-items:center; justify-content:center; color:white; font-size:18px; flex-shrink:0;">
-                <i class="bi bi-check-circle-fill"></i>
+   <div class="global-toast-overlay" id="landingToastOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 9998; display: none; align-items: center; justify-content: center;">
+        <div class="global-toast-modal" style="background: linear-gradient(135deg, #e8f5e9, #f1f8f4); border-radius: 24px; padding: 40px 32px 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); min-width: 340px; max-width: 400px; text-align: center; animation: scaleIn 0.3s ease forwards; border: 3px solid #e0e0e0;">
+            <div style="width: 80px; height: 80px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 24px rgba(76, 175, 80, 0.2);">
+                <i class="bi bi-check-circle-fill" style="font-size: 48px; color: #4caf50;"></i>
             </div>
-            <div style="flex:1">
-                <div id="landingToastTitle" style="font-weight:700; color:#212529; font-size:14px;">Success</div>
-                <div id="landingToastMessage" style="color:#6c757d; font-size:13px;">Operation completed successfully.
-                </div>
-            </div>
-            <button id="landingToastClose"
-                style="background:none; border:none; color:#6c757d; font-size:18px; cursor:pointer;">&times;</button>
+            <h3 id="landingToastTitle" style="font-weight: 700; color: #2e7d32; font-size: 24px; margin-bottom: 12px;">Success!</h3>
+            <p id="landingToastMessage" style="color: #5a5a5a; font-size: 15px; margin-bottom: 28px; line-height: 1.5;">Operation completed successfully</p>
+            <button id="landingToastClose" style="background: white; color: #5a5a5a; border: 2px solid #e0e0e0; padding: 12px 28px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s;">
+                Close
+            </button>
         </div>
     </div>
 
     <script>
         (function() {
-            function showLandingToast(message, title = 'Success', duration = 4000) {
-                try {
-                    var container = document.getElementById('landingToastContainer');
-                    var toast = document.getElementById('landingToast');
-                    var msgEl = document.getElementById('landingToastMessage');
-                    var titleEl = document.getElementById('landingToastTitle');
-                    var closeBtn = document.getElementById('landingToastClose');
-                    if (!container || !toast || !msgEl) return;
-                    titleEl.textContent = title;
-                    msgEl.textContent = message;
-                    container.style.display = 'block';
-                    toast.classList.add('show');
-
-                    function hide() {
-                        toast.classList.remove('show');
-                        container.style.display = 'none';
-                    }
-                    closeBtn.onclick = hide;
-                    setTimeout(hide, duration);
-                } catch (err) {
-                    console.error(err);
-                }
+            function showLandingToast(message, title = 'Success!', duration = 4000) {
+    try {
+        var overlay = document.getElementById('landingToastOverlay');
+        var msgEl = document.getElementById('landingToastMessage');
+        var titleEl = document.getElementById('landingToastTitle');
+        var closeBtn = document.getElementById('landingToastClose');
+        
+        if (!overlay || !msgEl || !titleEl) return;
+        
+        titleEl.textContent = title;
+        msgEl.textContent = message;
+        overlay.style.display = 'flex';
+        
+        function hide() {
+            overlay.style.display = 'none';
+        }
+        
+        closeBtn.onclick = hide;
+        
+        // Close on overlay click
+        overlay.onclick = function(e) {
+            if (e.target === overlay) {
+                hide();
             }
+        };
+        
+        // Close on Escape key
+        document.addEventListener('keydown', function escHandler(e) {
+            if (e.key === 'Escape') {
+                hide();
+                document.removeEventListener('keydown', escHandler);
+            }
+        });
+        
+        setTimeout(hide, duration);
+    } catch (err) {
+        console.error(err);
+    }
+}
 
             document.addEventListener('DOMContentLoaded', function() {
                 if (window.__serverSuccessMessage) {

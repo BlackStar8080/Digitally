@@ -779,16 +779,17 @@
                                 </tbody>
                             </table>
                         </div>
+                        @if ($players->total() > 15)
+                        <div style="margin-top: 20px; text-align: center;">
+                            {{ $players->appends(request()->query())->links('pagination::bootstrap-5') }}
+                        </div>
+                    @endif
                     </div>
                 </div>
             </div>
         </div>
 
-        @if ($players->total() > 15)
-            <div style="margin-top: 20px; text-align: center;">
-                {{ $players->appends(request()->query())->links('pagination::bootstrap-5') }}
-            </div>
-        @endif
+        
 
 
         <!-- Player Modal -->
@@ -1018,9 +1019,7 @@
 
             document.addEventListener('DOMContentLoaded', function() {
                 // Check for Laravel success message
-                @if (session('success'))
-                    showToast("{{ session('success') }}");
-                @endif
+                
 
                 const playerModalEl = document.getElementById('playerModal');
                 const bsPlayerModal = new bootstrap.Modal(playerModalEl);

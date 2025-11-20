@@ -132,24 +132,24 @@
         }
 
         .dropdown-menu-custom li a {
-    display: flex;
-    align-items: center;
-    padding: 12px 16px;
-    color: #9d4edd !important;    /* ✅ PURPLE TEXT */
-    text-decoration: none;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-    font-size: 14px;
-    font-weight: 600;
-    white-space: nowrap;
-    width: 100%;
-}
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: #9d4edd !important;    /* ✅ PURPLE TEXT */
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            width: 100%;
+        }
 
-.dropdown-menu-custom li a:hover {
-    background: #f3e8ff !important;    /* ✅ LIGHT PURPLE HOVER */
-    color: #7c3aed !important;    /* ✅ DARKER PURPLE ON HOVER */
-    transform: translateX(4px);
-}
+        .dropdown-menu-custom li a:hover {
+            background: #f3e8ff !important;    /* ✅ LIGHT PURPLE HOVER */
+            color: #7c3aed !important;    /* ✅ DARKER PURPLE ON HOVER */
+            transform: translateX(4px);
+        }
 
         .dropdown-menu-custom li a i {
             font-size: 16px;
@@ -429,6 +429,168 @@
             box-shadow: var(--shadow-sm);
             border: 1px solid #e2e8f0;
         }
+
+        /* 🎉 NEW: Centered Modal-Style Toast Notifications */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from { 
+                transform: scale(0.7);
+                opacity: 0;
+            }
+            to { 
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .global-toast-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 9998;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .global-toast-overlay.show {
+            display: flex;
+        }
+
+        .global-toast-modal {
+            background: linear-gradient(135deg, #e8f5e9, #f1f8f4);
+            border-radius: 24px;
+            padding: 40px 32px 32px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            min-width: 340px;
+            max-width: 400px;
+            text-align: center;
+            transform: scale(0.9);
+            animation: scaleIn 0.3s ease forwards;
+            border: 3px solid #e0e0e0;
+        }
+
+        .toast-icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            box-shadow: 0 8px 24px rgba(76, 175, 80, 0.2);
+        }
+
+        .toast-icon-circle i {
+            font-size: 48px;
+            color: #4caf50;
+        }
+
+        .toast-title {
+            font-weight: 700;
+            color: #2e7d32;
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .toast-message {
+            color: #5a5a5a;
+            font-size: 15px;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        .toast-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .toast-btn-primary {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .toast-btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+        }
+
+        .toast-btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .toast-btn-secondary {
+            background: white;
+            color: #5a5a5a;
+            border: 2px solid #e0e0e0;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toast-btn-secondary:hover {
+            background: #f5f5f5;
+            border-color: #bdbdbd;
+            transform: translateY(-2px);
+        }
+
+        .toast-btn-secondary:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive adjustments for toast */
+        @media (max-width: 480px) {
+            .global-toast-modal {
+                min-width: 300px !important;
+                padding: 32px 24px 24px !important;
+                margin: 0 16px;
+            }
+
+            .toast-title {
+                font-size: 20px;
+            }
+
+            .toast-message {
+                font-size: 14px;
+            }
+
+            .toast-actions {
+                flex-direction: column;
+            }
+
+            .toast-btn-primary,
+            .toast-btn-secondary {
+                width: 100%;
+            }
+        }
     </style>
 
     @stack('styles')
@@ -496,17 +658,22 @@
         @yield('content')
     </div>
 
-    {{-- Global toast (shows messages like successful login) --}}
-    <div class="global-toast-container" id="globalToastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: none;">
-        <div class="global-toast" id="globalToast" style="background: white; border-radius: 12px; padding: 1rem 1.25rem; box-shadow: 0 10px 40px rgba(0,0,0,0.15); display:flex; gap:0.75rem; align-items:center; min-width:300px; border-left:4px solid #28a745;">
-            <div style="width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#28a745,#20c997); display:flex; align-items:center; justify-content:center; color:white; font-size:18px; flex-shrink:0;">
-                <i class="bi bi-check-circle-fill"></i>
+    {{-- 🎉 NEW: Centered Modal-Style Toast Notification --}}
+    <div class="global-toast-overlay" id="globalToastOverlay">
+        <div class="global-toast-modal" id="globalToastModal">
+            <div class="toast-icon-circle">
+                <i class="bi bi-check-circle-fill" id="globalToastIcon"></i>
             </div>
-            <div style="flex:1">
-                <div id="globalToastTitle" style="font-weight:700; color:#212529; font-size:14px;">Success</div>
-                <div id="globalToastMessage" style="color:#6c757d; font-size:13px;">Operation completed successfully.</div>
+            <h3 class="toast-title" id="globalToastTitle">Success!</h3>
+            <p class="toast-message" id="globalToastMessage">Your scoresheet has been created successfully</p>
+            <div class="toast-actions">
+                <button class="toast-btn-primary" id="globalToastViewDetails" style="display: none;">
+                    View Details
+                </button>
+                <button class="toast-btn-secondary" id="globalToastClose">
+                    Close
+                </button>
             </div>
-            <button id="globalToastClose" style="background:none; border:none; color:#6c757d; font-size:18px; cursor:pointer;">&times;</button>
         </div>
     </div>
 
@@ -567,6 +734,9 @@
                 if (logoutModal) {
                     logoutModal.hide();
                 }
+                
+                // Also close toast on Escape
+                hideGlobalToast();
             }
         });
 
@@ -603,39 +773,63 @@
                 }
             });
         });
-    </script>
 
-    {{-- Page-specific scripts --}}
-    @yield('scripts')
-    @stack('scripts')
-
-    <script>
-        // Global toast helper (used for login success and other global messages)
-        function showGlobalToast(message, title = 'Success', duration = 4000) {
+        // 🎉 NEW: Global Toast Functions
+        function showGlobalToast(message, title = 'Success!', options = {}) {
             try {
-                var container = document.getElementById('globalToastContainer');
-                var toast = document.getElementById('globalToast');
-                var msgEl = document.getElementById('globalToastMessage');
-                var titleEl = document.getElementById('globalToastTitle');
-                var closeBtn = document.getElementById('globalToastClose');
+                const overlay = document.getElementById('globalToastOverlay');
+                const titleEl = document.getElementById('globalToastTitle');
+                const messageEl = document.getElementById('globalToastMessage');
+                const closeBtn = document.getElementById('globalToastClose');
+                const viewDetailsBtn = document.getElementById('globalToastViewDetails');
+                const iconEl = document.getElementById('globalToastIcon');
 
-                if (!container || !toast || !msgEl) return;
+                if (!overlay || !titleEl || !messageEl) return;
 
+                // Set content
                 titleEl.textContent = title;
-                msgEl.textContent = message;
-                container.style.display = 'block';
-                toast.classList.add('show');
+                messageEl.textContent = message;
 
-                function hide() {
-                    toast.classList.remove('show');
-                    container.style.display = 'none';
+                // Handle icon (optional customization)
+                if (options.icon) {
+                    iconEl.className = `bi bi-${options.icon}`;
                 }
 
-                closeBtn.onclick = hide;
+                // Handle view details button
+                if (options.onViewDetails) {
+                    viewDetailsBtn.style.display = 'inline-block';
+                    viewDetailsBtn.onclick = options.onViewDetails;
+                } else {
+                    viewDetailsBtn.style.display = 'none';
+                }
 
-                setTimeout(hide, duration);
+                // Show overlay
+                overlay.classList.add('show');
+
+                // Close button handler
+                closeBtn.onclick = hideGlobalToast;
+
+                // Optional auto-hide
+                if (options.autoHide !== false) {
+                    const duration = options.duration || 4000;
+                    setTimeout(hideGlobalToast, duration);
+                }
+
+                // Close on overlay click
+                overlay.onclick = function(e) {
+                    if (e.target === overlay) {
+                        hideGlobalToast();
+                    }
+                };
             } catch (err) {
                 console.error('Toast error', err);
+            }
+        }
+
+        function hideGlobalToast() {
+            const overlay = document.getElementById('globalToastOverlay');
+            if (overlay) {
+                overlay.classList.remove('show');
             }
         }
 
@@ -646,5 +840,9 @@
             @endif
         });
     </script>
+
+    {{-- Page-specific scripts --}}
+    @yield('scripts')
+    @stack('scripts')
 </body>
 </html>
