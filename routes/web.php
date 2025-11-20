@@ -25,6 +25,8 @@ Route::get('/', [LandingController::class, 'index'])->name('landing');
 
 // Guest Login - MUST be outside auth middleware
 Route::post('/guest-login', [AuthController::class, 'guestLogin'])->name('guest.login');
+Route::get('/games/{game}/join', [GameAssignmentController::class, 'join'])->name('games.join');
+
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
@@ -33,6 +35,7 @@ Route::post('/admin/login', [AuthController::class, 'login'])->name('admin.login
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/admin/register', [AuthController::class, 'register'])->name('admin.register');
+
 
 Route::post('/logout', function () {
     Auth::logout();
@@ -78,6 +81,7 @@ Route::middleware(['auth.or.guest'])->group(function () { // ✅ Changed from 'a
 
     // API route for live scores
     Route::get('/api/live-scores', [LandingController::class, 'getLiveScores'])->name('api.live-scores');
+
 });
 
 /*
@@ -117,7 +121,6 @@ Route::middleware(['auth.or.guest', 'guest.restrict'])->group(function () {
     // ✅ SPECIFIC GAME ROUTES - MUST BE BEFORE /games/{game}/live
     Route::post('/games/{game}/generate-invite', [GameAssignmentController::class, 'generateInvite'])->name('games.generate-invite');
     Route::get('/games/{game}/invite', [GameAssignmentController::class, 'showInvite'])->name('games.invite');
-    Route::get('/games/{game}/join', [GameAssignmentController::class, 'join'])->name('games.join');
     Route::get('/games/{game}/connected-users', [GameAssignmentController::class, 'getConnectedUsers'])->name('games.connected-users');
     
     // ✅ GENERAL GAME ROUTES - AFTER SPECIFIC ROUTES
@@ -156,6 +159,13 @@ Route::get('/games/{game}/load-state', [GameController::class, 'loadState'])->na
    // Inside the guest-restricted middleware group (around line 80)
     Route::get('/tournaments/{tournament}/info/preview', [PdfController::class, 'previewTournamentInfo'])->name('tournaments.info.preview');
     Route::get('/tournaments/{tournament}/info/download', [PdfController::class, 'downloadTournamentInfo'])->name('tournaments.info.download');
+
+    // ✅ NEW: Waiting lobby for stat-keeper
+    Route::get('/games/{game}/waiting-lobby', [GameAssignmentController::class, 'waitingLobby'])
+        ->name('games.waiting-lobby');
+
+    Route::get('/games/{game}/check-start-status', [GameAssignmentController::class, 'checkStartStatus'])
+    ->name('games.check-start-status');
 });
 
 // ✅ API Routes - With Role-Based Permission Checks

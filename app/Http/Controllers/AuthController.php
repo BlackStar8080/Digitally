@@ -16,46 +16,61 @@ class AuthController extends Controller
         'password' => 'required',
     ]);
 
-    // ✅ SAVE PENDING JOIN DATA BEFORE SESSION REGENERATION
-    $pendingJoin = session('pending_game_join');
+    // ✅ CRITICAL: Get pending join data BEFORE any session operations
+    $pendingJoin = session()->get('pending_game_join');
+    
+    // ✅ Log what we have
+    \Log::info('🔍 Login attempt', [
+        'has_pending_join_in_session' => session()->has('pending_game_join'),
+        'pending_join_data' => $pendingJoin,
+        'all_session_data' => session()->all(),
+    ]);
     
     if (Auth::attempt($request->only('email', 'password'))) {
-        $request->session()->regenerate();
-        
-        // ✅ RESTORE PENDING JOIN DATA AFTER REGENERATION
+        // ✅ Don't regenerate session yet if we have pending join
         if ($pendingJoin) {
-            session(['pending_game_join' => $pendingJoin]);
+            // Just refresh the session ID without clearing data
+            $request->session()->migrate();
+            
+            \Log::info('✅ Session migrated (not regenerated) due to pending join');
+        } else {
+            // Normal regeneration for regular login
+            $request->session()->regenerate();
+            
+            \Log::info('✅ Session regenerated (normal login)');
         }
         
         // Clear guest session
         session()->forget('is_guest');
         session()->forget('guest_name');
         
-        // ✅ CHECK IF USER WAS TRYING TO JOIN A GAME
-        if (session()->has('pending_game_join')) {
-            $joinData = session('pending_game_join');
-            
-            // Clear the session
-            session()->forget('pending_game_join');
-            
-            \Log::info('✅ Redirecting user to join game after login', [
+        // ✅ Check again after session operations
+        $pendingJoinAfter = session()->get('pending_game_join') ?? $pendingJoin;
+        
+        if ($pendingJoinAfter) {
+            \Log::info('🎯 Redirecting to games.join', [
                 'user_id' => auth()->id(),
-                'game_id' => $joinData['game_id']
+                'game_id' => $pendingJoinAfter['game_id'],
+                'token' => $pendingJoinAfter['token'],
             ]);
             
-            // Redirect back to join route with token
+            // Redirect to join route
             return redirect()->route('games.join', [
-                'game' => $joinData['game_id'],
-                'token' => $joinData['token']
-            ])->with('success', 'Joining game as Stat-keeper...');
+                'game' => $pendingJoinAfter['game_id'],
+                'token' => $pendingJoinAfter['token']
+            ]);
         }
+        
+        \Log::info('✅ Normal login - no pending game join', [
+            'user_id' => auth()->id()
+        ]);
         
         return redirect()->route('dashboard')->with('success', 'Logged in successfully');
     }
 
     return back()->withErrors([
         'email' => 'The provided credentials do not match our records.',
-    ])->with('form_type', 'login');
+    ])->withInput()->with('form_type', 'login');
 }
 
     public function register(Request $request)
@@ -80,7 +95,7 @@ class AuthController extends Controller
     if (!$registrationCode) {
         return back()->withErrors([
             'registration_code' => 'Invalid registration code.'
-        ])->with('form_type', 'register')->withInput();
+        ])->withInput()->with('form_type', 'register');
     }
 
     if (!$registrationCode->isValid()) {
@@ -95,11 +110,18 @@ class AuthController extends Controller
 
         return back()->withErrors([
             'registration_code' => $reason ?: 'Invalid registration code.'
-        ])->with('form_type', 'register')->withInput();
+        ])->withInput()->with('form_type', 'register');
     }
 
     // ✅ SAVE PENDING JOIN DATA BEFORE CREATING USER
     $pendingJoin = session('pending_game_join');
+    
+    // ✅ DEBUG LOG
+    if ($pendingJoin) {
+        \Log::info('🔵 Pending game join data found BEFORE registration', [
+            'pending_join' => $pendingJoin
+        ]);
+    }
 
     // Create user
     $user = User::create([
@@ -115,6 +137,11 @@ class AuthController extends Controller
     // ✅ RESTORE PENDING JOIN DATA AFTER LOGIN
     if ($pendingJoin) {
         session(['pending_game_join' => $pendingJoin]);
+        
+        \Log::info('✅ Restored pending join data AFTER registration', [
+            'user_id' => auth()->id(),
+            'pending_join' => $pendingJoin
+        ]);
     }
     
     // Clear guest session
@@ -125,18 +152,24 @@ class AuthController extends Controller
     if (session()->has('pending_game_join')) {
         $joinData = session('pending_game_join');
         
-        session()->forget('pending_game_join');
-        
-        \Log::info('✅ Redirecting new user to join game after registration', [
+        \Log::info('🎯 New user registered with pending game join', [
             'user_id' => auth()->id(),
-            'game_id' => $joinData['game_id']
+            'game_id' => $joinData['game_id'],
+            'token' => $joinData['token']
         ]);
+        
+        // ✅ DON'T clear the session yet - let games.join handle it
+        // session()->forget('pending_game_join'); // REMOVED THIS
         
         return redirect()->route('games.join', [
             'game' => $joinData['game_id'],
             'token' => $joinData['token']
-        ])->with('success', 'Account created! Joining game as Stat-keeper...');
+        ]);
     }
+
+    \Log::info('✅ Normal registration - no pending game join', [
+        'user_id' => auth()->id()
+    ]);
 
     return redirect()->route('dashboard')->with('success', 'Account created and logged in successfully');
 }

@@ -1805,39 +1805,46 @@
                     </div>
                     <div class="form-container">
                         <!-- Login Tab -->
-                        <div id="loginTab" class="tab-content active">
-                            @if (session()->has('pending_game_join'))
-                                <div
-                                    style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(69, 160, 73, 0.1)); border: 2px solid #4CAF50; border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: center;">
-                                    <div style="color: #4CAF50; font-size: 18px; margin-bottom: 8px;">
-                                        <i class="bi bi-basketball"></i>
-                                        <strong>Join Game as Stat-Keeper</strong>
-                                    </div>
-                                    <div style="color: var(--text-dark); font-weight: 600; margin-bottom: 4px;">
-                                        {{ session('pending_game_join.game_name') }}
-                                    </div>
-                                    <small style="color: var(--text-muted);">Log in to continue to the game</small>
-                                </div>
-                            @endif
-                            @if ($errors->any() && session('form_type') === 'login')
-                                <div class="error-list">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-                            <form action="{{ route('login') }}" method="POST" id="loginForm">
-                                @csrf
-                                <input type="hidden" name="form_type" value="login">
-                                <input type="email" name="email" class="form-input" placeholder="Email Address"
-                                    required pattern="^[a-zA-Z0-9@.]+$" title="No special characters allowed"
-                                    value="{{ old('email') }}">
-                                <input type="password" name="password" class="form-input" placeholder="Password"
-                                    required pattern="^[a-zA-Z0-9]+$" title="No special characters allowed">
-                                <button type="submit" class="form-submit-button">Login</button>
-                            </form>
+<div id="loginTab" class="tab-content active">
+    @if (session()->has('pending_game_join'))
+        <div style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(69, 160, 73, 0.1)); border: 2px solid #4CAF50; border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: center;">
+            <div style="color: #4CAF50; font-size: 18px; margin-bottom: 8px;">
+                <i class="bi bi-basketball"></i>
+                <strong>Join Game as Stat-Keeper</strong>
+            </div>
+            <div style="color: var(--text-dark); font-weight: 600; margin-bottom: 4px;">
+                {{ session('pending_game_join.game_name') }}
+            </div>
+            <small style="color: var(--text-muted);">Log in to continue to the game</small>
+        </div>
+    @endif
+    
+    @if ($errors->any() && session('form_type') === 'login')
+        <div class="error-list">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    
+    <form action="{{ route('login') }}" method="POST" id="loginForm">
+        @csrf
+        <input type="hidden" name="form_type" value="login">
+        
+        <!-- ✅ ADD THIS HIDDEN INPUT TO PRESERVE SESSION -->
+        @if(session()->has('pending_game_join'))
+            <input type="hidden" name="has_pending_join" value="1">
+        @endif
+        
+        <input type="email" name="email" class="form-input" placeholder="Email Address"
+            required pattern="^[a-zA-Z0-9@.]+$" title="No special characters allowed"
+            value="{{ old('email') }}">
+        <input type="password" name="password" class="form-input" placeholder="Password"
+            required pattern="^[a-zA-Z0-9]+$" title="No special characters allowed">
+        <button type="submit" class="form-submit-button">Login</button>
+    </form>
                             <div class="guest-login-section">
                                 <p class="guest-login-text">Don't have an account?</p>
                                 <button type="button" class="guest-login-btn" onclick="continueAsGuest()">
@@ -2211,6 +2218,16 @@
             }, 5000);
         });
 
+        // ✅ ADD THIS DEBUG CODE TEMPORARILY
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    console.log('🔍 Form submitting...');
+    console.log('Session has pending_game_join:', {{ session()->has('pending_game_join') ? 'true' : 'false' }});
+    
+    @if(session()->has('pending_game_join'))
+        console.log('Pending join data:', {!! json_encode(session('pending_game_join')) !!});
+    @endif
+});
+
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             const name = this.name.value;
             const email = this.email.value;
@@ -2306,6 +2323,7 @@
             document.body.appendChild(form);
             form.submit();
         }
+        
     </script>
 
     <!-- Global toast for landing page (shows logout/login success) -->
