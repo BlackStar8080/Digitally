@@ -9,64 +9,76 @@ use App\Models\RegistrationCode;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+public function login(Request $request)
 {
     $request->validate([
         'email' => 'required|email',
         'password' => 'required',
     ]);
 
-    // ✅ CRITICAL: Get pending join data BEFORE any session operations
-    $pendingJoin = session()->get('pending_game_join');
-    
-    // ✅ Log what we have
-    \Log::info('🔍 Login attempt', [
-        'has_pending_join_in_session' => session()->has('pending_game_join'),
-        'pending_join_data' => $pendingJoin,
-        'all_session_data' => session()->all(),
+    \Log::info('🔵 Login attempt started', [
+        'email' => $request->email,
+        'session_id_before' => session()->getId(),
+        'has_pending_join_before' => session()->has('pending_game_join'),
+        'pending_join_before' => session('pending_game_join'),
     ]);
     
     if (Auth::attempt($request->only('email', 'password'))) {
-        // ✅ Don't regenerate session yet if we have pending join
+        
+        // ✅ CRITICAL: Save pending join BEFORE regenerating session
+        $pendingJoin = session('pending_game_join');
+        
+        \Log::info('✅ Login successful', [
+            'user_id' => auth()->id(),
+            'pending_join_captured' => $pendingJoin,
+        ]);
+        
+        // Regenerate session for security
+        $request->session()->regenerate();
+        
+        \Log::info('🔄 Session regenerated', [
+            'new_session_id' => session()->getId(),
+            'pending_join_after_regenerate' => session('pending_game_join'),
+        ]);
+        
+        // ✅ Restore pending join data if it was there
         if ($pendingJoin) {
-            // Just refresh the session ID without clearing data
-            $request->session()->migrate();
+            session(['pending_game_join' => $pendingJoin]);
+            session()->save(); // Force save
             
-            \Log::info('✅ Session migrated (not regenerated) due to pending join');
-        } else {
-            // Normal regeneration for regular login
-            $request->session()->regenerate();
-            
-            \Log::info('✅ Session regenerated (normal login)');
+            \Log::info('✅ Restored pending join after regeneration', [
+                'restored_data' => $pendingJoin,
+                'session_now_has_key' => session()->has('pending_game_join'),
+            ]);
         }
         
         // Clear guest session
         session()->forget('is_guest');
         session()->forget('guest_name');
         
-        // ✅ Check again after session operations
-        $pendingJoinAfter = session()->get('pending_game_join') ?? $pendingJoin;
-        
-        if ($pendingJoinAfter) {
+        // Check if we have pending game join
+        if (session()->has('pending_game_join')) {
+            $joinData = session('pending_game_join');
+            
             \Log::info('🎯 Redirecting to games.join', [
                 'user_id' => auth()->id(),
-                'game_id' => $pendingJoinAfter['game_id'],
-                'token' => $pendingJoinAfter['token'],
+                'join_data' => $joinData,
             ]);
             
-            // Redirect to join route
             return redirect()->route('games.join', [
-                'game' => $pendingJoinAfter['game_id'],
-                'token' => $pendingJoinAfter['token']
+                'game' => $joinData['game_id'],
+                'token' => $joinData['token']
             ]);
         }
         
-        \Log::info('✅ Normal login - no pending game join', [
+        \Log::info('✅ Normal login - redirecting to dashboard', [
             'user_id' => auth()->id()
         ]);
         
         return redirect()->route('dashboard')->with('success', 'Logged in successfully');
     }
+
+    \Log::warning('❌ Login failed - invalid credentials');
 
     return back()->withErrors([
         'email' => 'The provided credentials do not match our records.',
