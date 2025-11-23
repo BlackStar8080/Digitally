@@ -41,34 +41,100 @@
 
         }
 
-        /* Hamburger Menu */
-        .hamburger-menu {
-            position: relative;
-            z-index: 1000;
+        /* Hamburger/Menu (volleyball-style) */
+        .menu-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10000;
         }
 
-        .hamburger-icon {
+        .hamburger-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            cursor: pointer;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            width: 24px;
-            height: 18px;
-            cursor: pointer;
-            padding: 8px;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+            transition: all 0.3s;
         }
 
-        .hamburger-icon span {
-            display: block;
-            height: 2px;
-            width: 100%;
+        .hamburger-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+        }
+
+        .hamburger-btn span {
+            width: 25px;
+            height: 3px;
             background: white;
-            border-radius: 1px;
-            transition: all 0.3s ease;
+            border-radius: 2px;
+            transition: all 0.3s;
+            display: block;
         }
 
-        .hamburger-icon:hover span {
-            background: #4CAF50;
+        .hamburger-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(7px, 7px);
         }
+
+        .hamburger-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        .menu-dropdown {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            background: #2d2d2d;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+            min-width: 240px;
+            border: 1px solid #444;
+        }
+
+        .menu-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 20px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.2s;
+            border-bottom: 1px solid #3d3d3d;
+            background: none;
+        }
+
+        .menu-item:last-child { border-bottom: none; }
+
+        .menu-item:hover {
+            background: #3d3d3d;
+            padding-left: 25px;
+        }
+
+        .menu-item-icon { font-size: 22px; width: 28px; text-align: center; }
+
+        .menu-item-text { font-size: 15px; font-weight: 600; }
 
         .team-info {
             display: flex;
@@ -76,60 +142,7 @@
             gap: 4px;
         }
 
-        /* Dropdown Menu */
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: #2d2d2d;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            padding: 8px 0;
-            min-width: 150px;
-            display: none;
-            z-index: 1001;
-            border: 1px solid #444;
-            text-decoration: none;
-            /* ADD THIS LINE */
-        }
-
-        .dropdown-item:hover {
-            background: #4CAF50;
-        }
-
-        .dropdown-menu.show {
-            display: block;
-            animation: dropdownFadeIn 0.2s ease-out;
-        }
-
-        @keyframes dropdownFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .dropdown-item {
-            display: block;
-            width: 100%;
-            padding: 12px 16px;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 14px;
-            text-align: left;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .dropdown-item:hover {
-            background: #4CAF50;
-        }
+        /* Dropdown replaced by volleyball-style menu-dropdown above */
 
 
         /* Improved team section alignment */
@@ -2459,22 +2472,31 @@
 
     <!-- Updated Scoreboard with Hamburger Menu -->
     <div class="scoreboard">
-        <!-- Hamburger Menu -->
-        <div class="hamburger-menu" id="hamburgerMenu">
-            <div class="hamburger-icon">
+        <!-- Hamburger Menu (volleyball-style) -->
+        <div class="menu-container" id="hamburgerMenu">
+            <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
                 <span></span>
                 <span></span>
                 <span></span>
-            </div>
-            <!-- Dropdown Menu -->
-            <div class="dropdown-menu" id="dropdownMenu">
-                <a href="/tournaments/{{ $game->tournament_id }}" class="dropdown-item">
-                    Back to Tournament
-                </a>
-                <button class="dropdown-item" id="tallysheetBtn">Tallysheet</button>
-                <button class="dropdown-item" id="hotkeysBtn">Customize Hotkeys</button>
-                <button class="dropdown-item" id="gameSettingsBtn"> Game Settings</button>
+            </button>
 
+            <div class="menu-dropdown" id="dropdownMenu">
+                <a href="/tournaments/{{ $game->tournament_id }}" class="menu-item">
+                    <span class="menu-item-icon">🏆</span>
+                    <span class="menu-item-text">Back to Tournament</span>
+                </a>
+                <button class="menu-item" id="tallysheetBtn">
+                    <span class="menu-item-icon">🧾</span>
+                    <span class="menu-item-text">Tallysheet</span>
+                </button>
+                <button class="menu-item" id="hotkeysBtn">
+                    <span class="menu-item-icon">⌨️</span>
+                    <span class="menu-item-text">Customize Hotkeys</span>
+                </button>
+                <button class="menu-item" id="gameSettingsBtn">
+                    <span class="menu-item-icon">⚙️</span>
+                    <span class="menu-item-text">Game Settings</span>
+                </button>
             </div>
         </div>
 
@@ -5368,22 +5390,27 @@ function showFoulModal() {
         // Hamburger Menu Functionality
         document.addEventListener('DOMContentLoaded', function() {
             const hamburgerMenu = document.getElementById('hamburgerMenu');
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
             const dropdownMenu = document.getElementById('dropdownMenu');
             const tallysheetBtn = document.getElementById('tallysheetBtn');
 
             // ✅ NULL CHECK - prevents the crash
             if (!hamburgerMenu || !dropdownMenu) return;
 
-            // Toggle dropdown menu
+            // Toggle dropdown menu and button active state
             hamburgerMenu.addEventListener('click', function(e) {
                 e.stopPropagation();
                 dropdownMenu.classList.toggle('show');
+                if (hamburgerBtn) hamburgerBtn.classList.toggle('active');
             });
 
-            // Close dropdown when clicking outside
+            // Close dropdown when clicking outside and reset button
             document.addEventListener('click', function(e) {
                 if (!hamburgerMenu.contains(e.target)) {
                     dropdownMenu.classList.remove('show');
+                    const hamburgerBtn = document.getElementById('hamburgerBtn');
+                    if (hamburgerBtn) hamburgerBtn.classList.remove('active');
+                    if (hamburgerBtn) hamburgerBtn.classList.remove('active');
                 }
             });
 
@@ -5391,6 +5418,8 @@ function showFoulModal() {
             if (tallysheetBtn) {
                 tallysheetBtn.addEventListener('click', function() {
                     dropdownMenu.classList.remove('show');
+                    const hamburgerBtn = document.getElementById('hamburgerBtn');
+                    if (hamburgerBtn) hamburgerBtn.classList.remove('active');
                     handleTallysheet();
                 });
             }
@@ -5441,6 +5470,8 @@ function showFoulModal() {
                 hotkeysBtn.addEventListener('click', function() {
                     const dropdownMenu = document.getElementById('dropdownMenu');
                     dropdownMenu.classList.remove('show');
+                    const hamburgerBtn = document.getElementById('hamburgerBtn');
+                    if (hamburgerBtn) hamburgerBtn.classList.remove('active');
                     openHotkeysModal();
                 });
             }
@@ -5451,6 +5482,8 @@ function showFoulModal() {
                 gameSettingsBtn.addEventListener('click', function() {
                     const dropdownMenu = document.getElementById('dropdownMenu');
                     dropdownMenu.classList.remove('show');
+                    const hamburgerBtn = document.getElementById('hamburgerBtn');
+                    if (hamburgerBtn) hamburgerBtn.classList.remove('active');
                     gameSettingsModal.style.display = 'flex';
                 });
             }
@@ -6654,7 +6687,10 @@ function startTechFreeThrows(team, playerNumber, techType) {
             const hotkeysBtn = document.getElementById('hotkeysBtn');
             if (hotkeysBtn) {
                 hotkeysBtn.addEventListener('click', function() {
-                    dropdownMenu.classList.remove('show');
+                    const dropdownMenu = document.getElementById('dropdownMenu');
+                    const hamburgerBtn = document.getElementById('hamburgerBtn');
+                    if (dropdownMenu) dropdownMenu.classList.remove('show');
+                    if (hamburgerBtn) hamburgerBtn.classList.remove('active');
                     openHotkeysModal();
                 });
             }
