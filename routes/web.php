@@ -13,6 +13,7 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\GameAssignmentController;
+use App\Http\Controllers\ScorekeeperController;
 
 /*
 |--------------------------------------------------------------------------
@@ -145,6 +146,12 @@ Route::get('/games/{game}/load-state', [GameController::class, 'loadState'])->na
     Route::put('/players/{player}', [PlayersController::class, 'update'])->name('players.update');
     Route::delete('/players/{player}', [PlayersController::class, 'destroy'])->name('players.destroy');
     Route::resource('/players', PlayersController::class)->except(['index', 'show']);
+
+    // Scorekeeper Management (blocked for guests)
+Route::get('/scorekeepers', [ScorekeeperController::class, 'index'])->name('scorekeepers.index');
+Route::post('/scorekeepers', [ScorekeeperController::class, 'store'])->name('scorekeepers.store');
+Route::put('/scorekeepers/{scorekeeper}', [ScorekeeperController::class, 'update'])->name('scorekeepers.update');
+Route::delete('/scorekeepers/{scorekeeper}', [ScorekeeperController::class, 'destroy'])->name('scorekeepers.destroy');
     
     // Tournament Management (create/edit/delete)
     Route::post('/tournaments', [TournamentController::class, 'store'])->name('tournaments.store');

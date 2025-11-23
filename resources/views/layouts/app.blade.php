@@ -636,11 +636,15 @@
                     <span>Tournaments</span>
                 </a></li>
                 @if(!session('is_guest'))
-                    <li><a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? 'active' : '' }}">
-                        <i class="bi bi-bar-chart me-1"></i>
-                        <span>Reports</span>
-                    </a></li>
-                @endif
+    <li><a href="{{ route('scorekeepers.index') }}" class="{{ request()->routeIs('scorekeepers.*') ? 'active' : '' }}">
+        <i class="bi bi-person-badge me-1"></i>
+        <span>Scorekeeper Panel</span>
+    </a></li>
+    <li><a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? 'active' : '' }}">
+        <i class="bi bi-bar-chart me-1"></i>
+        <span>Reports</span>
+    </a></li>
+@endif
             </ul>
             
             <div class="nav-actions">

@@ -1801,7 +1801,7 @@
                     </div>
                     <div class="tab-buttons">
                         <button class="tab-button active" onclick="switchTab('login', event)">LOGIN</button>
-                        <button class="tab-button" onclick="switchTab('register', event)">REGISTER</button>
+     
                     </div>
                     <div class="form-container">
                         <!-- Login Tab -->
@@ -1855,57 +1855,7 @@
                         </div>
                         <!-- Register Tab -->
                         <!-- Register Tab -->
-                        <div id="registerTab" class="tab-content" style="display: none;">
-                            @if (session()->has('pending_game_join'))
-                                <div
-                                    style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(69, 160, 73, 0.1)); border: 2px solid #4CAF50; border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: center;">
-                                    <div style="color: #4CAF50; font-size: 18px; margin-bottom: 8px;">
-                                        <i class="bi bi-basketball"></i>
-                                        <strong>Join Game as Stat-Keeper</strong>
-                                    </div>
-                                    <div style="color: var(--text-dark); font-weight: 600; margin-bottom: 4px;">
-                                        {{ session('pending_game_join.game_name') }}
-                                    </div>
-                                    <small style="color: var(--text-muted);">Create an account to continue to the
-                                        game</small>
-                                </div>
-                            @endif
-                            @if ($errors->any() && session('form_type') === 'register')
-                                <div class="error-list">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-                            <form action="{{ route('register') }}" method="POST" id="registerForm">
-                                @csrf
-                                <input type="hidden" name="form_type" value="register">
-                                <input type="text" name="name" class="form-input" placeholder="Full Name"
-                                    required pattern="^[a-zA-Z0-9 ]+$" title="No special characters allowed"
-                                    value="{{ old('name') }}">
-                                <input type="email" name="email" class="form-input" placeholder="Email Address"
-                                    required pattern="^[a-zA-Z0-9@.]+$" title="No special characters allowed"
-                                    value="{{ old('email') }}">
-
-                                <!-- ✅ NEW: Registration Code Field -->
-                                <input type="text" name="registration_code" class="form-input"
-                                    placeholder="Registration Code" required value="{{ old('registration_code') }}"
-                                    style="text-transform: uppercase;">
-                                <small
-                                    style="display: block; margin-top: -12px; margin-bottom: 12px; color: var(--text-muted); font-size: 12px;">
-                                    <i class="bi bi-info-circle"></i> Enter your registration code to create an account
-                                </small>
-
-                                <input type="password" name="password" class="form-input" placeholder="Password"
-                                    required pattern="^[a-zA-Z0-9]+$" title="No special characters allowed">
-                                <input type="password" name="password_confirmation" class="form-input"
-                                    placeholder="Confirm Password" required pattern="^[a-zA-Z0-9]+$"
-                                    title="No special characters allowed">
-                                <button type="submit" class="form-submit-button">Register</button>
-                            </form>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
