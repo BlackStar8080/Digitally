@@ -780,16 +780,16 @@
                             </table>
                         </div>
                         @if ($players->total() > 15)
-                        <div style="margin-top: 20px; text-align: center;">
-                            {{ $players->appends(request()->query())->links('pagination::bootstrap-5') }}
-                        </div>
-                    @endif
+                            <div style="margin-top: 20px; text-align: center;">
+                                {{ $players->appends(request()->query())->links('pagination::bootstrap-5') }}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
 
-        
+
 
 
         <!-- Player Modal -->
@@ -819,20 +819,43 @@
                                         @error('name')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
-
                                     </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Filter by Sport</label>
+                                        <select id="sportFilter" class="form-select">
+                                            <option value="">All Sports</option>
+                                            @foreach ($sports as $sport)
+                                                <option value="{{ $sport->sports_id }}">{{ $sport->sports_name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
                                     <div class="form-group">
                                         <label class="form-label">Team</label>
                                         <select name="team_id" id="playerTeam" class="form-select" required>
                                             <option value="">Select team</option>
                                             @foreach ($teams as $team)
-                                                <option value="{{ $team->id }}" data-sport="{{ $team->sport_id }}">
+                                                <option value="{{ $team->id }}" data-sport="{{ $team->sport_id }}"
+                                                    data-sport-name="{{ $team->sport->sports_name ?? '' }}">
                                                     {{ $team->team_name }}
                                                 </option>
                                             @endforeach
                                         </select>
-
                                     </div>
+
+                                    <!-- Hidden field to store sport_id -->
+                                    <input type="hidden" name="sport_id" id="sportIdHidden">
+                                </div>
+                                <div style="flex:1; min-width: 0;">
+                                    <div class="form-group">
+                                        <label class="form-label">Position</label>
+                                        <select name="position" id="positionSelect" class="form-select" required>
+                                            <option value="">Select position</option>
+                                        </select>
+                                    </div>
+
                                     <div class="form-group">
                                         <label class="form-label">Jersey Number</label>
                                         <input type="number" name="number" id="playerNumber" class="form-control"
@@ -841,24 +864,7 @@
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
-                                </div>
-                                <div style="flex:1; min-width: 0;">
-                                    <div class="form-group">
-                                        <label class="form-label">Sport</label>
-                                        <select name="sport_id" id="sportSelect" class="form-select" required>
-                                            <option value="">Select sport</option>
-                                            @foreach ($sports as $sport)
-                                                <option value="{{ $sport->sports_id }}">{{ $sport->sports_name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Position</label>
-                                        <select name="position" id="positionSelect" class="form-select" required>
-                                            <option value="">Select position</option>
-                                        </select>
-                                    </div>
+
                                     <div class="form-group">
                                         <label class="form-label">Birthday</label>
                                         <input type="date" name="birthday" id="playerBirthday" class="form-control"
@@ -937,28 +943,16 @@
             });
 
 
-            document.addEventListener('DOMContentLoaded', function() {
-                const teamSelect = document.getElementById('playerTeam');
-                const sportSelect = document.getElementById('sportSelect');
-
-                teamSelect.addEventListener('change', function() {
-                    const selectedOption = teamSelect.options[teamSelect.selectedIndex];
-                    const sportId = selectedOption.getAttribute('data-sport');
-
-                    if (sportId) {
-                        sportSelect.value = sportId; // auto-select the correct sport
-                    } else {
-                        sportSelect.value = ''; // reset if none
-                    }
-                });
-            });
 
             document.addEventListener('DOMContentLoaded', function() {
+                const sportFilter = document.getElementById('sportFilter');
                 const teamSelect = document.getElementById('playerTeam');
-                const sportSelect = document.getElementById('sportSelect');
+                const sportIdHidden = document.getElementById('sportIdHidden');
                 const positionSelect = document.getElementById('positionSelect');
 
-                // Define positions by sport name or sport_id
+                const allTeamOptions = Array.from(teamSelect.options).slice(1); // Store all teams except first option
+
+                // Define positions by sport name
                 const positionsBySport = {
                     basketball: ["Point Guard", "Shooting Guard", "Small Forward", "Power Forward", "Center"],
                     volleyball: ["Setter", "Libero", "Outside Hitter", "Middle Blocker", "Opposite Hitter",
@@ -966,33 +960,51 @@
                     ],
                 };
 
-                // Update sport automatically when team is chosen
+                // Filter teams by sport
+                sportFilter.addEventListener('change', function() {
+                    const selectedSportId = this.value;
+
+                    // Clear current team options except the first one
+                    teamSelect.innerHTML = '<option value="">Select team</option>';
+
+                    // Add filtered teams
+                    allTeamOptions.forEach(option => {
+                        const teamSportId = option.getAttribute('data-sport');
+                        if (!selectedSportId || teamSportId === selectedSportId) {
+                            teamSelect.appendChild(option.cloneNode(true));
+                        }
+                    });
+
+                    // Reset team selection
+                    teamSelect.value = '';
+                    sportIdHidden.value = '';
+                    positionSelect.innerHTML = '<option value="">Select position</option>';
+                });
+
+                // When team is selected, auto-fill sport and update positions
                 teamSelect.addEventListener('change', function() {
                     const selectedOption = teamSelect.options[teamSelect.selectedIndex];
                     const sportId = selectedOption.getAttribute('data-sport');
-                    sportSelect.value = sportId || '';
-                    updatePositions();
-                });
+                    const sportName = selectedOption.getAttribute('data-sport-name')?.toLowerCase();
 
-                // Also update when user changes sport manually
-                sportSelect.addEventListener('change', updatePositions);
+                    // Set hidden sport_id field
+                    sportIdHidden.value = sportId || '';
 
-                function updatePositions() {
-                    const selectedSportText = sportSelect.options[sportSelect.selectedIndex]?.text?.toLowerCase() || '';
-                    const positions = positionsBySport[selectedSportText] || [];
-
-                    // Clear current options
+                    // Update positions based on sport
                     positionSelect.innerHTML = '<option value="">Select position</option>';
 
-                    // Populate new ones
-                    positions.forEach(pos => {
-                        const opt = document.createElement('option');
-                        opt.value = pos;
-                        opt.textContent = pos;
-                        positionSelect.appendChild(opt);
-                    });
-                }
+                    if (sportName && positionsBySport[sportName]) {
+                        positionsBySport[sportName].forEach(pos => {
+                            const opt = document.createElement('option');
+                            opt.value = pos;
+                            opt.textContent = pos;
+                            positionSelect.appendChild(opt);
+                        });
+                    }
+                });
             });
+
+
             // Toast Notification Functions
             function showToast(message) {
                 const toast = document.getElementById('successToast');
@@ -1019,7 +1031,7 @@
 
             document.addEventListener('DOMContentLoaded', function() {
                 // Check for Laravel success message
-                
+
 
                 const playerModalEl = document.getElementById('playerModal');
                 const bsPlayerModal = new bootstrap.Modal(playerModalEl);
@@ -1031,71 +1043,81 @@
                 const playerName = document.getElementById('playerName');
                 const playerTeam = document.getElementById('playerTeam');
                 const playerNumber = document.getElementById('playerNumber');
-                const sportSelect = document.getElementById('sportSelect');
                 const positionSelect = document.getElementById('positionSelect');
                 const playerBirthday = document.getElementById('playerBirthday');
 
-                const positions = {
-                    Basketball: ["Point Guard", "Shooting Guard", "Small Forward", "Power Forward", "Center"],
-                    Volleyball: ["Setter", "Middle Blocker", "Outside Hitter", "Opposite Hitter", "Libero",
-                        "Opposite"
-                    ],
-                };
+                
 
                 window.openModal = function() {
                     playerForm.reset();
                     playerForm.action = "{{ route('players.store') }}";
                     formMethodInput.value = "POST";
                     modalTitleEl.innerHTML = '<i class="bi bi-person-add"></i> Add New Player';
+
+                    // Reset filters and selections
+                    document.getElementById('sportFilter').value = '';
+                    document.getElementById('sportIdHidden').value = '';
                     positionSelect.innerHTML = '<option value="">Select position</option>';
+
+                    // Reset team dropdown to show all teams from the stored array
+                    playerTeam.innerHTML = '<option value="">Select team</option>';
+                    const allTeamOptions = document.querySelectorAll('#playerTeam option[data-sport]');
+
+                    // Re-add all team options from the original page load
+                    @foreach ($teams as $team)
+                        const opt{{ $loop->index }} = document.createElement('option');
+                        opt{{ $loop->index }}.value = "{{ $team->id }}";
+                        opt{{ $loop->index }}.textContent = "{{ $team->team_name }}";
+                        opt{{ $loop->index }}.setAttribute('data-sport', "{{ $team->sport_id }}");
+                        opt{{ $loop->index }}.setAttribute('data-sport-name',
+                            "{{ $team->sport->sports_name ?? '' }}");
+                        playerTeam.appendChild(opt{{ $loop->index }});
+                    @endforeach
+
                     bsPlayerModal.show();
                 };
 
                 window.openEditFromButton = function(button) {
-                    playerForm.reset();
-                    playerForm.action = button.dataset.updateUrl;
-                    formMethodInput.value = "PUT";
-                    modalTitleEl.innerHTML = '<i class="bi bi-pencil-square"></i> Edit Player';
+    playerForm.reset();
+    playerForm.action = button.dataset.updateUrl;
+    formMethodInput.value = "PUT";
+    modalTitleEl.innerHTML = '<i class="bi bi-pencil-square"></i> Edit Player';
 
-                    playerName.value = button.dataset.name || '';
-                    playerTeam.value = button.dataset.teamId || '';
-                    playerNumber.value = button.dataset.number || '';
+    playerName.value = button.dataset.name || '';
+    playerNumber.value = button.dataset.number || '';
+    playerBirthday.value = button.dataset.birthday || '';
 
-                    const sportId = button.dataset.sportId || '';
-                    sportSelect.value = sportId;
+    const sportId = button.dataset.sportId || '';
+    document.getElementById('sportIdHidden').value = sportId;
+    
+    // Set team first
+    playerTeam.value = button.dataset.teamId || '';
 
-                    // Get sport name from the select option text
-                    const sportOption = sportSelect.options[sportSelect.selectedIndex];
-                    const sportName = sportOption ? sportOption.text : '';
+    // Get sport name from the team option
+    const teamOption = playerTeam.options[playerTeam.selectedIndex];
+    const sportName = teamOption ? teamOption.getAttribute('data-sport-name')?.toLowerCase() : '';
 
-                    positionSelect.innerHTML = '<option value="">Select position</option>';
-                    if (positions[sportName]) {
-                        positions[sportName].forEach(pos => {
-                            const opt = document.createElement('option');
-                            opt.value = pos;
-                            opt.textContent = pos;
-                            if (pos === button.dataset.position) opt.selected = true;
-                            positionSelect.appendChild(opt);
-                        });
-                    }
+    // Use positionsBySport instead of positions
+    const positionsBySport = {
+        basketball: ["Point Guard", "Shooting Guard", "Small Forward", "Power Forward", "Center"],
+        volleyball: ["Setter", "Libero", "Outside Hitter", "Middle Blocker", "Opposite Hitter", "Opposite"],
+    };
 
-                    bsPlayerModal.show();
-                };
+    positionSelect.innerHTML = '<option value="">Select position</option>';
+    if (positionsBySport[sportName]) {
+        positionsBySport[sportName].forEach(pos => {
+            const opt = document.createElement('option');
+            opt.value = pos;
+            opt.textContent = pos;
+            if (pos === button.dataset.position) opt.selected = true;
+            positionSelect.appendChild(opt);
+        });
+    }
 
-                sportSelect.addEventListener('change', function() {
-                    const sportOption = this.options[this.selectedIndex];
-                    const sportName = sportOption ? sportOption.text : '';
+    bsPlayerModal.show();
+};
 
-                    positionSelect.innerHTML = '<option value="">Select position</option>';
-                    if (positions[sportName]) {
-                        positions[sportName].forEach(pos => {
-                            const opt = document.createElement('option');
-                            opt.value = pos;
-                            opt.textContent = pos;
-                            positionSelect.appendChild(opt);
-                        });
-                    }
-                });
+                
 
                 const searchInput = document.getElementById('searchInput');
                 if (searchInput) {

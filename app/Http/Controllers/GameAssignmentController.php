@@ -101,87 +101,131 @@ class GameAssignmentController extends Controller
      * ✅ FIXED: Join as stat-keeper using token - Always redirect to landing page for login
      * GET /games/{game}/join?token=xxx
      */
-    public function join(Request $request, Game $game)
-    {
-        $token = $request->query('token');
+    /**
+ * ✅ FIXED: Join as stat-keeper using token - Redirect to waiting lobby
+ * GET /games/{game}/join?token=xxx
+ */
+/**
+ * Join as stat-keeper using token
+ * GET /games/{game}/join?token=xxx
+ */
+public function join(Request $request, Game $game)
+{
+    $token = $request->query('token');
 
-        if (!$token) {
-            return redirect()->route('landing')->with('error', 'No join token provided');
-        }
+    \Log::info('🔵 JOIN METHOD CALLED', [
+        'game_id' => $game->id,
+        'token' => $token,
+        'user_authenticated' => auth()->check(),
+        'user_id' => auth()->id() ?? 'not logged in',
+        'session_id' => session()->getId(),
+        'current_session_data' => session()->all(),
+    ]);
 
-        // Find valid assignment with this token
-        $assignment = $game->assignments()
-            ->statKeepers()
-            ->where('device_token', $token)
-            ->first();
+    if (!$token) {
+        \Log::error('❌ No token provided');
+        return redirect()->route('landing')->with('error', 'No join token provided');
+    }
 
-        if (!$assignment || !$assignment->isValid()) {
-            return redirect()->route('landing')->with('error', 'Invalid or expired join token. Please ask the scorer for a new invite link.');
-        }
+    // Find valid assignment with this token
+    $assignment = $game->assignments()
+        ->statKeepers()
+        ->where('device_token', $token)
+        ->first();
 
-        // ✅ ALWAYS REQUIRE LOGIN - Check if user is logged in
-        if (!auth()->check()) {
-            // Store token and game info in session for after login
-            session([
-                'pending_game_join' => [
-                    'game_id' => $game->id,
-                    'token' => $token,
-                    'role' => 'stat_keeper',
-                    'game_name' => "{$game->team1->team_name} vs {$game->team2->team_name}",
-                ]
-            ]);
+    if (!$assignment || !$assignment->isValid()) {
+        \Log::error('❌ Invalid or expired token', [
+            'token' => $token,
+            'assignment_found' => $assignment ? 'yes' : 'no',
+            'is_valid' => $assignment ? $assignment->isValid() : 'N/A',
+        ]);
+        return redirect()->route('landing')->with('error', 'Invalid or expired join token. Please ask the scorer for a new invite link.');
+    }
 
-            // Redirect to landing page with message
-            return redirect()->route('landing')->with('join_prompt', 'Please log in or register to join as Stat-Keeper for this game');
-        }
+    // ✅ Check if user is logged in
+    if (!auth()->check()) {
+        \Log::info('🟡 User not logged in - storing join data in session', [
+            'game_id' => $game->id,
+            'token' => $token,
+        ]);
 
-        // ✅ User is logged in - Check if they're already the scorer
-        $isAlreadyScorer = $game->assignments()
-            ->active()
-            ->scorers()
-            ->where('user_id', auth()->id())
-            ->exists();
+        // Store in session
+        $joinData = [
+            'game_id' => $game->id,
+            'token' => $token,
+            'role' => 'stat_keeper',
+            'game_name' => "{$game->team1->team_name} vs {$game->team2->team_name}",
+            'stored_at' => now()->toDateTimeString(),
+        ];
 
-        if ($isAlreadyScorer) {
-            return redirect()->route('landing')->with('error', 'You are already the Scorer for this game. Please log out and use a different account to join as Stat-Keeper.');
-        }
+        session(['pending_game_join' => $joinData]);
+        
+        // ✅ Force save the session immediately
+        session()->save();
 
-        // ✅ Check if user already joined as stat-keeper
-        $alreadyJoined = $game->assignments()
-            ->active()
-            ->statKeepers()
-            ->where('user_id', auth()->id())
-            ->exists();
+        \Log::info('✅ Session data stored', [
+            'session_id' => session()->getId(),
+            'stored_data' => $joinData,
+            'session_has_key' => session()->has('pending_game_join'),
+            'session_get_value' => session('pending_game_join'),
+        ]);
 
-        if ($alreadyJoined) {
-            // Clear pending join session
-            session()->forget('pending_game_join');
-            
-            // User already joined, go to live
+        // Redirect to landing page with message
+        return redirect()->route('landing')
+            ->with('join_prompt', 'Please log in or register to join as Stat-Keeper for this game');
+    }
+
+    \Log::info('✅ User is logged in', ['user_id' => auth()->id()]);
+
+    // Check if they're already the scorer
+    $isAlreadyScorer = $game->assignments()
+        ->active()
+        ->scorers()
+        ->where('user_id', auth()->id())
+        ->exists();
+
+    if ($isAlreadyScorer) {
+        \Log::warning('⚠️ User is already scorer');
+        return redirect()->route('landing')->with('error', 'You are already the Scorer for this game. Please log out and use a different account to join as Stat-Keeper.');
+    }
+
+    // Check if already joined as stat-keeper
+    $alreadyJoined = $game->assignments()
+        ->active()
+        ->statKeepers()
+        ->where('user_id', auth()->id())
+        ->exists();
+
+    if ($alreadyJoined) {
+        \Log::info('✅ User already joined as stat-keeper');
+        session()->forget('pending_game_join');
+        
+        if ($game->status === 'in_progress') {
             return redirect()->route('games.live', [
                 'game' => $game->id,
                 'role' => 'stat_keeper'
-            ])->with('success', 'Welcome back! You are already joined as Stat-keeper');
+            ])->with('success', 'Welcome back! Joining game...');
+        } else {
+            return redirect()->route('games.waiting-lobby', $game)
+                ->with('success', 'Welcome back! Waiting for scorer to start...');
         }
-
-        // ✅ ASSIGN USER AS STAT-KEEPER
-        if ($assignment->user_id === null) {
-            $assignment->update([
-                'user_id' => auth()->id(),
-                'device_token' => null, // Clear device token once used
-            ]);
-            
-            \Log::info("User " . auth()->id() . " joined game {$game->id} as stat_keeper");
-        }
-
-        // Clear pending join session
-        session()->forget('pending_game_join');
-
-        return redirect()->route('games.live', [
-            'game' => $game->id,
-            'role' => 'stat_keeper'
-        ])->with('success', 'You joined as Stat-keeper successfully!');
     }
+
+    // Assign user as stat-keeper
+    if ($assignment->user_id === null) {
+        $assignment->update([
+            'user_id' => auth()->id(),
+            'device_token' => null,
+        ]);
+        
+        \Log::info("✅ User " . auth()->id() . " assigned as stat_keeper for game {$game->id}");
+    }
+
+    session()->forget('pending_game_join');
+
+    return redirect()->route('games.waiting-lobby', $game)
+        ->with('success', 'You joined as Stat-keeper! Waiting for scorer to start the game...');
+}
 
     /**
      * Get all connected users for a game
@@ -294,4 +338,67 @@ class GameAssignmentController extends Controller
 
         return view('games.invite', compact('game'));
     }
+
+    /**
+ * Check if game has started (for stat-keeper polling)
+ * GET /games/{game}/check-start-status
+ */
+public function checkStartStatus(Game $game)
+{
+    // Check if user has stat_keeper role
+    if (!auth()->check()) {
+        return response()->json(['error' => 'Not authenticated'], 401);
+    }
+
+    $isStatKeeper = $game->assignments()
+        ->active()
+        ->statKeepers()
+        ->where('user_id', auth()->id())
+        ->exists();
+
+    if (!$isStatKeeper) {
+        return response()->json(['error' => 'Not authorized'], 403);
+    }
+
+    return response()->json([
+        'game_started' => $game->status === 'in_progress',
+        'game_status' => $game->status,
+    ]);
+}
+
+/**
+ * Show waiting lobby for stat-keeper
+ * GET /games/{game}/waiting-lobby
+ */
+public function waitingLobby(Game $game)
+{
+    // Verify user is authenticated
+    if (!auth()->check()) {
+        return redirect()->route('landing')->with('error', 'Please log in first');
+    }
+
+    // Verify user is assigned as stat-keeper
+    $isStatKeeper = $game->assignments()
+        ->active()
+        ->statKeepers()
+        ->where('user_id', auth()->id())
+        ->exists();
+
+    if (!$isStatKeeper) {
+        return redirect()->route('dashboard')->with('error', 'You are not assigned to this game');
+    }
+
+    // If game already started, redirect to live
+    if ($game->status === 'in_progress') {
+        return redirect()->route('games.live', [
+            'game' => $game->id,
+            'role' => 'stat_keeper'
+        ]);
+    }
+
+    // Load game relationships
+    $game->load(['team1', 'team2']);
+
+    return view('games.waiting-lobby', compact('game'));
+}
 }
