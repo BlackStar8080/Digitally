@@ -1349,20 +1349,20 @@
     }
     
     .log-section {
-        max-height: 250px;
+        max-height: 200px; /* ✅ REDUCED from 250px */
     }
     
-    /* Scoreboard: vertical stacking */
+    /* Scoreboard: much more compact */
     .scoreboard {
-        padding: 12px 10px 12px 60px;
+        padding: 6px 8px 6px 55px; /* ✅ REDUCED padding */
         flex-direction: column;
-        gap: 10px;
+        gap: 6px; /* ✅ REDUCED from 10px */
         align-items: stretch;
     }
     
     .team-section {
         width: 100%;
-        gap: 10px;
+        gap: 6px; /* ✅ REDUCED from 10px */
     }
     
     .team-section.left {
@@ -1378,126 +1378,162 @@
     
     .center-panel {
         width: 100%;
-        order: -1; /* Move to top */
-        margin-bottom: 10px;
+        order: -1;
+        margin-bottom: 6px; /* ✅ REDUCED from 10px */
     }
     
     /* Smaller score displays */
     .score-display {
-        font-size: 36px;
-        min-width: 60px;
+        font-size: 28px; /* ✅ REDUCED from 36px */
+        min-width: 50px; /* ✅ REDUCED from 60px */
     }
     
     .team-name {
-        font-size: 12px;
+        font-size: 11px; /* ✅ REDUCED from 12px */
     }
     
     .team-stats {
-        font-size: 10px;
-        gap: 8px;
+        font-size: 9px; /* ✅ REDUCED from 10px */
+        gap: 6px; /* ✅ REDUCED from 8px */
+    }
+    
+    .team-info {
+        gap: 2px; /* ✅ REDUCED from default */
     }
     
     .set-display {
-        font-size: 16px;
+        font-size: 14px; /* ✅ REDUCED from 16px */
+        margin-bottom: 4px;
     }
     
     .sets-score {
-        font-size: 24px;
+        font-size: 20px; /* ✅ REDUCED from 24px */
     }
     
     .serving-indicator {
-        width: 16px;
-        height: 16px;
+        width: 14px; /* ✅ REDUCED from 16px */
+        height: 14px;
     }
     
-    /* Jersey badges - keep visible but smaller */
+    /* Jersey badges - smaller */
     .team-jerseys {
         min-width: auto;
         flex-wrap: wrap;
-        gap: 3px;
-        padding: 3px 6px;
-        max-width: 180px;
+        gap: 2px; /* ✅ REDUCED from 3px */
+        padding: 2px 4px; /* ✅ REDUCED */
+        max-width: 160px;
     }
     
     .jersey-badge {
-        width: 30px;
-        height: 30px;
-        font-size: 12px;
+        width: 26px; /* ✅ REDUCED from 30px */
+        height: 26px;
+        font-size: 11px; /* ✅ REDUCED from 12px */
         border-width: 2px;
     }
     
-    /* Player cards */
+    /* Player cards - MORE COMPACT */
     .players-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-        padding: 12px;
+        gap: 6px; /* ✅ REDUCED from 8px */
+        padding: 8px; /* ✅ REDUCED from 12px */
     }
     
     .player-card {
-        padding: 14px 10px;
-        min-height: 80px;
+        padding: 10px 8px; /* ✅ REDUCED from 14px 10px */
+        min-height: 65px; /* ✅ REDUCED from 80px */
         border-left-width: 3px;
     }
     
     .player-number {
-        font-size: 18px;
+        font-size: 16px; /* ✅ REDUCED from 18px */
     }
     
     .player-position {
-        font-size: 11px;
+        font-size: 10px; /* ✅ REDUCED from 11px */
     }
     
     .set-server-btn {
-        padding: 3px 5px;
-        font-size: 11px;
-        top: 6px;
-        right: 6px;
+        padding: 2px 4px; /* ✅ REDUCED from 3px 5px */
+        font-size: 10px; /* ✅ REDUCED from 11px */
+        top: 4px; /* ✅ REDUCED from 6px */
+        right: 4px;
     }
     
-    /* Action buttons: 3 per row */
+    /* Action buttons: 3 per row - SMALLER */
     .actions-grid {
         grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
+        gap: 6px; /* ✅ REDUCED from 8px */
     }
     
     .action-btn {
-        padding: 14px 8px;
-        font-size: 11px;
-        min-height: 44px;
-        letter-spacing: 0.3px;
+        padding: 10px 6px; /* ✅ REDUCED from 14px 8px */
+        font-size: 10px; /* ✅ REDUCED from 11px */
+        min-height: 40px; /* ✅ REDUCED from 44px */
+        letter-spacing: 0.2px;
     }
     
     .actions-section {
-        padding: 12px;
+        padding: 8px; /* ✅ REDUCED from 12px */
     }
     
     /* Hamburger menu */
     .menu-container {
-        top: 10px;
-        left: 10px;
+        top: 8px;
+        left: 8px;
     }
     
     .hamburger-btn {
-        width: 44px;
-        height: 44px;
+        width: 40px;
+        height: 40px;
     }
     
     .menu-dropdown {
         max-height: 70vh;
         overflow-y: auto;
         min-width: 200px;
-        top: 54px;
+        top: 50px;
     }
     
     .menu-item {
-        padding: 14px 18px;
+        padding: 12px 16px;
     }
     
     .menu-item-icon {
-        font-size: 20px;
+        font-size: 18px;
     }
     
     .menu-item-text {
+        font-size: 13px;
+    }
+    
+    /* Roster headers - smaller */
+    .roster-header {
+        padding: 8px; /* ✅ REDUCED from default */
+        font-size: 12px;
+    }
+    
+    /* Event log - more compact */
+    .log-header {
+        padding: 8px 12px; /* ✅ REDUCED */
+        font-size: 12px;
+    }
+    
+    .log-entry {
+        font-size: 10px; /* ✅ REDUCED */
+        padding: 8px 6px; /* ✅ REDUCED */
+        grid-template-columns: 25px 40px 45px 1fr 40px 60px 25px;
+        gap: 4px;
+    }
+    
+    .entry-number {
+        font-size: 9px;
+    }
+    
+    .entry-team {
+        font-size: 12px;
+    }
+    
+    .entry-check {
         font-size: 14px;
     }
     
@@ -1656,35 +1692,6 @@
         gap: 12px !important;
     }
     
-    /* Event log */
-    .log-header {
-        padding: 12px 16px;
-        font-size: 13px;
-    }
-    
-    .log-entry {
-        font-size: 11px;
-        padding: 10px 8px;
-        grid-template-columns: 30px 45px 50px 1fr 50px 70px 30px;
-        gap: 6px;
-    }
-    
-    .entry-number {
-        font-size: 10px;
-    }
-    
-    .entry-team {
-        font-size: 13px;
-    }
-    
-    .entry-player {
-        font-size: 12px;
-    }
-    
-    .entry-action {
-        font-size: 11px;
-    }
-    
     /* Instruction banner */
     .instruction-banner {
         bottom: 80px;
@@ -1698,31 +1705,51 @@
         padding: 20px;
         font-size: 18px;
     }
+    
+    /* Set scores display */
+    .set-scores {
+        margin-top: 4px;
+        flex-wrap: wrap;
+        gap: 3px;
+    }
+    
+    .set-score-box {
+        font-size: 9px;
+        padding: 2px 4px;
+    }
 }
 
 /* ===== SMALL MOBILE (480px and below) ===== */
 @media (max-width: 480px) {
     /* Scoreboard even more compact */
     .scoreboard {
-        padding: 10px 8px 10px 55px;
+        padding: 4px 6px 4px 50px; /* ✅ REDUCED */
     }
     
     .score-display {
-        font-size: 32px;
-        min-width: 50px;
+        font-size: 24px; /* ✅ REDUCED from 32px */
+        min-width: 45px;
     }
     
     .team-name {
-        font-size: 11px;
+        font-size: 10px; /* ✅ REDUCED */
     }
     
     .team-stats {
-        font-size: 9px;
-        gap: 6px;
+        font-size: 8px; /* ✅ REDUCED */
+        gap: 4px;
     }
     
     .team-info {
-        gap: 3px;
+        gap: 2px;
+    }
+    
+    .set-display {
+        font-size: 12px; /* ✅ REDUCED */
+    }
+    
+    .sets-score {
+        font-size: 18px; /* ✅ REDUCED */
     }
     
     /* Hide jerseys on very small screens to save space */
@@ -1733,46 +1760,46 @@
     /* Action buttons: 2 per row */
     .actions-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 6px;
+        gap: 5px; /* ✅ REDUCED */
     }
     
     .action-btn {
-        padding: 12px 6px;
-        font-size: 10px;
-        letter-spacing: 0.2px;
+        padding: 10px 5px; /* ✅ REDUCED */
+        font-size: 9px; /* ✅ REDUCED */
+        letter-spacing: 0.1px;
     }
     
     .actions-section {
-        padding: 10px;
+        padding: 6px; /* ✅ REDUCED */
     }
     
-    /* Player cards stay 2 columns */
+    /* Player cards stay 2 columns but smaller */
     .players-grid {
-        gap: 6px;
-        padding: 10px;
+        gap: 5px; /* ✅ REDUCED */
+        padding: 6px; /* ✅ REDUCED */
     }
     
     .player-card {
-        padding: 12px 8px;
-        min-height: 75px;
+        padding: 8px 6px; /* ✅ REDUCED */
+        min-height: 60px; /* ✅ REDUCED */
     }
     
     .player-number {
-        font-size: 16px;
+        font-size: 14px; /* ✅ REDUCED */
     }
     
     .player-position {
-        font-size: 10px;
+        font-size: 9px; /* ✅ REDUCED */
     }
     
     /* Hamburger menu */
     .hamburger-btn {
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
     }
     
     .hamburger-btn span {
-        width: 20px;
+        width: 18px;
     }
     
     .menu-dropdown {
@@ -1780,7 +1807,7 @@
     }
     
     .menu-item {
-        padding: 12px 16px;
+        padding: 10px 14px;
     }
     
     /* Modals */
@@ -1835,14 +1862,14 @@
     
     /* Event log more compact */
     .log-entry {
-        font-size: 10px;
-        padding: 8px 6px;
-        grid-template-columns: 25px 40px 45px 1fr 45px 65px 25px;
-        gap: 4px;
+        font-size: 9px; /* ✅ REDUCED */
+        padding: 6px 4px; /* ✅ REDUCED */
+        grid-template-columns: 20px 35px 40px 1fr 35px 55px 20px;
+        gap: 3px;
     }
     
     .entry-check {
-        font-size: 14px;
+        font-size: 12px;
     }
     
     /* Instruction banner */
@@ -1855,6 +1882,16 @@
     /* Hotkeys modal */
     #hotkeysModal .modal-content > div[style*="grid"] {
         grid-template-columns: 1fr !important;
+    }
+    
+    /* Roster headers */
+    .roster-header {
+        padding: 6px;
+        font-size: 11px;
+    }
+    
+    .log-section {
+        max-height: 180px; /* ✅ REDUCED */
     }
 }
 
@@ -2288,6 +2325,8 @@
         transform: translate(-50%, -50%);
     }
 }
+
+
 
 
     </style>
