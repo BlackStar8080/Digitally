@@ -173,6 +173,13 @@ Route::delete('/scorekeepers/{scorekeeper}', [ScorekeeperController::class, 'des
 
     Route::get('/games/{game}/check-start-status', [GameAssignmentController::class, 'checkStartStatus'])
     ->name('games.check-start-status');
+
+    // Volleyball auto-save routes (add these near your other game routes)
+Route::post('/games/{game}/auto-save-volleyball', [GameController::class, 'autoSaveVolleyballState'])
+    ->name('games.auto-save-volleyball');
+
+Route::get('/games/{game}/load-state-volleyball', [GameController::class, 'loadVolleyballState'])
+    ->name('games.load-state-volleyball');
 });
 
 // ✅ API Routes - With Role-Based Permission Checks

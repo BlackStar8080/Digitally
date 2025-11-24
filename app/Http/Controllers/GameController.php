@@ -2007,4 +2007,117 @@ public function loadState(Game $game)
     }
 }
 
+/**
+ * Auto-save volleyball game state during live game
+ */
+public function autoSaveVolleyballState(Request $request, Game $game)
+{
+    try {
+        // Get the live state data from the request
+        $liveState = $request->all();
+        
+        // Get existing game_data
+        $gameData = $game->game_data ?? [];
+        
+        // Update the volleyball_live_state section within game_data
+        $gameData['volleyball_live_state'] = [
+            'scoreA' => $liveState['scoreA'] ?? 0,
+            'scoreB' => $liveState['scoreB'] ?? 0,
+            'currentSet' => $liveState['currentSet'] ?? 1,
+            'setsA' => $liveState['setsA'] ?? 0,
+            'setsB' => $liveState['setsB'] ?? 0,
+            'serving' => $liveState['serving'] ?? 'A',
+            'currentServerId' => $liveState['currentServerId'] ?? null,
+            'currentServerTeam' => $liveState['currentServerTeam'] ?? null,
+            'timeoutsA' => $liveState['timeoutsA'] ?? 0,
+            'timeoutsB' => $liveState['timeoutsB'] ?? 0,
+            'substitutionsA' => $liveState['substitutionsA'] ?? 0,
+            'substitutionsB' => $liveState['substitutionsB'] ?? 0,
+            'setScores' => $liveState['setScores'] ?? ['A' => [0,0,0,0,0], 'B' => [0,0,0,0,0]],
+            'game_events' => $liveState['game_events'] ?? [],
+            'active_players' => $liveState['active_players'] ?? [],
+            'bench_players' => $liveState['bench_players'] ?? [],
+            'liberoA' => $liveState['liberoA'] ?? null,
+            'liberoB' => $liveState['liberoB'] ?? null,
+            'currentLiberoA' => $liveState['currentLiberoA'] ?? null,
+            'currentLiberoB' => $liveState['currentLiberoB'] ?? null,
+            'last_auto_save' => now()->toDateTimeString(),
+        ];
+        
+        // Save to database
+        $game->game_data = $gameData;
+        $game->save();
+        
+        \Log::info("Volleyball game {$game->id} auto-saved successfully");
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Volleyball game state saved',
+            'saved_at' => now()->toDateTimeString()
+        ]);
+        
+    } catch (\Exception $e) {
+        \Log::error("Volleyball auto-save failed for game {$game->id}: " . $e->getMessage());
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to save volleyball game state',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
+/**
+ * Load saved volleyball game state
+ */
+public function loadVolleyballState(Game $game)
+{
+    try {
+        $gameData = $game->game_data ?? [];
+        $liveState = $gameData['volleyball_live_state'] ?? null;
+        
+        if ($liveState) {
+            \Log::info("Loading saved volleyball state for game {$game->id}");
+            
+            return response()->json([
+                'has_saved_state' => true,
+                'scoreA' => $liveState['scoreA'] ?? 0,
+                'scoreB' => $liveState['scoreB'] ?? 0,
+                'currentSet' => $liveState['currentSet'] ?? 1,
+                'setsA' => $liveState['setsA'] ?? 0,
+                'setsB' => $liveState['setsB'] ?? 0,
+                'serving' => $liveState['serving'] ?? 'A',
+                'currentServerId' => $liveState['currentServerId'] ?? null,
+                'currentServerTeam' => $liveState['currentServerTeam'] ?? null,
+                'timeoutsA' => $liveState['timeoutsA'] ?? 0,
+                'timeoutsB' => $liveState['timeoutsB'] ?? 0,
+                'substitutionsA' => $liveState['substitutionsA'] ?? 0,
+                'substitutionsB' => $liveState['substitutionsB'] ?? 0,
+                'setScores' => $liveState['setScores'] ?? ['A' => [0,0,0,0,0], 'B' => [0,0,0,0,0]],
+                'game_events' => $liveState['game_events'] ?? [],
+                'active_players' => $liveState['active_players'] ?? [],
+                'bench_players' => $liveState['bench_players'] ?? [],
+                'liberoA' => $liveState['liberoA'] ?? null,
+                'liberoB' => $liveState['liberoB'] ?? null,
+                'currentLiberoA' => $liveState['currentLiberoA'] ?? null,
+                'currentLiberoB' => $liveState['currentLiberoB'] ?? null,
+                'last_saved' => $liveState['last_auto_save'] ?? null,
+            ]);
+        }
+        
+        return response()->json([
+            'has_saved_state' => false,
+            'message' => 'No saved volleyball state found'
+        ]);
+        
+    } catch (\Exception $e) {
+        \Log::error("Failed to load volleyball state for game {$game->id}: " . $e->getMessage());
+        
+        return response()->json([
+            'has_saved_state' => false,
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
 }

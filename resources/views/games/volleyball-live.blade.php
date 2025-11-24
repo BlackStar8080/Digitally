@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +14,8 @@
             padding: 0;
             box-sizing: border-box;
         }
-              body {
+
+        body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #1a1a1a;
             color: white;
@@ -32,268 +34,272 @@
         }
 
         /* Team Jerseys Display */
-.team-jerseys {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-    padding: 4px 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
-    min-width: 160px;
-    justify-content: center;
-}
+        .team-jerseys {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            min-width: 160px;
+            justify-content: center;
+        }
 
-.team-section.right .team-jerseys {
-    order: -1; /* Place jerseys before score for right team */
-}
+        .team-section.right .team-jerseys {
+            order: -1;
+            /* Place jerseys before score for right team */
+        }
 
-.jersey-badge {
-    width: 32px;
-    height: 32px;
-    background: linear-gradient(135deg, #2d2d2d, #3d3d3d);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 13px;
-    color: white;
-    border: 2px solid #444;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    position: relative;
-}
+        .jersey-badge {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #2d2d2d, #3d3d3d);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: white;
+            border: 2px solid #444;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
 
-.jersey-badge:hover {
-    transform: scale(1.1);
-    border-color: #4CAF50;
-}
+        .jersey-badge:hover {
+            transform: scale(1.1);
+            border-color: #4CAF50;
+        }
 
-.jersey-badge.team-a {
-    background: linear-gradient(135deg, #c33, #a22);
-    border-color: #c33;
-}
+        .jersey-badge.team-a {
+            background: linear-gradient(135deg, #c33, #a22);
+            border-color: #c33;
+        }
 
-.jersey-badge.team-b {
-    background: linear-gradient(135deg, #339, #227);
-    border-color: #339;
-}
+        .jersey-badge.team-b {
+            background: linear-gradient(135deg, #339, #227);
+            border-color: #339;
+        }
 
-.jersey-badge.active-player {
-    box-shadow: 0 0 12px rgba(76, 175, 80, 0.6);
-    border-color: #4CAF50;
-    animation: activeGlow 2s infinite;
-}
+        .jersey-badge.active-player {
+            box-shadow: 0 0 12px rgba(76, 175, 80, 0.6);
+            border-color: #4CAF50;
+            animation: activeGlow 2s infinite;
+        }
 
-.jersey-badge.current-server {
-    box-shadow: 0 0 14px rgba(255, 235, 59, 0.9);
-    border-color: #FFEB3B;
-    transform: scale(1.08);
-}
+        .jersey-badge.current-server {
+            box-shadow: 0 0 14px rgba(255, 235, 59, 0.9);
+            border-color: #FFEB3B;
+            transform: scale(1.08);
+        }
 
-@keyframes activeGlow {
-    0%, 100% {
-        box-shadow: 0 0 12px rgba(76, 175, 80, 0.6);
-    }
-    50% {
-        box-shadow: 0 0 20px rgba(76, 175, 80, 0.9);
-    }
-}
+        @keyframes activeGlow {
 
-.jersey-badge .player-number {
-    font-size: 14px;
-    font-weight: 700;
-}
+            0%,
+            100% {
+                box-shadow: 0 0 12px rgba(76, 175, 80, 0.6);
+            }
 
-/* Substitution Modal Styles */
-.substitution-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.85);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
+            50% {
+                box-shadow: 0 0 20px rgba(76, 175, 80, 0.9);
+            }
+        }
 
-.substitution-content {
-    background: #2d2d2d;
-    border-radius: 16px;
-    padding: 40px;
-    max-width: 1000px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    position: relative;
-}
+        .jersey-badge .player-number {
+            font-size: 14px;
+            font-weight: 700;
+        }
 
-.sub-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
+        /* Substitution Modal Styles */
+        .substitution-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
 
-.sub-title {
-    font-size: 28px;
-    font-weight: bold;
-    color: white;
-}
+        .substitution-content {
+            background: #2d2d2d;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 1000px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
 
-.sub-close {
-    background: #666;
-    border: none;
-    color: white;
-    padding: 10px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 20px;
-    font-weight: bold;
-}
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-.sub-close:hover {
-    background: #777;
-}
+        .sub-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+        }
 
-.sub-instructions {
-    background: rgba(76, 175, 80, 0.1);
-    border: 2px solid #4CAF50;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 25px;
-    text-align: center;
-    color: #ddd;
-    font-size: 15px;
-}
+        .sub-close {
+            background: #666;
+            border: none;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+        }
 
-.sub-teams {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-}
+        .sub-close:hover {
+            background: #777;
+        }
 
-.sub-team-section {
-    background: #3d3d3d;
-    padding: 25px;
-    border-radius: 12px;
-}
+        .sub-instructions {
+            background: rgba(76, 175, 80, 0.1);
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+            color: #ddd;
+            font-size: 15px;
+        }
 
-.sub-team-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    text-align: center;
-    padding: 12px;
-    border-radius: 8px;
-    color: white;
-}
+        .sub-teams {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
 
-.sub-team-a .sub-team-title {
-    background: linear-gradient(135deg, #c33, #a22);
-}
+        .sub-team-section {
+            background: #3d3d3d;
+            padding: 25px;
+            border-radius: 12px;
+        }
 
-.sub-team-b .sub-team-title {
-    background: linear-gradient(135deg, #339, #227);
-}
+        .sub-team-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+        }
 
-.sub-section-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #ccc;
-    margin: 20px 0 12px 0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
+        .sub-team-a .sub-team-title {
+            background: linear-gradient(135deg, #c33, #a22);
+        }
 
-.sub-players-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 12px;
-    margin-bottom: 20px;
-}
+        .sub-team-b .sub-team-title {
+            background: linear-gradient(135deg, #339, #227);
+        }
 
-.sub-player-card {
-    background: #4d4d4d;
-    padding: 16px 12px;
-    border-radius: 10px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s;
-    border: 2px solid transparent;
-    min-height: 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    user-select: none;
-}
+        .sub-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ccc;
+            margin: 20px 0 12px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-.sub-player-card:hover {
-    background: #5d5d5d;
-    transform: translateY(-2px);
-}
+        .sub-players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
 
-.sub-player-card.active-player {
-    border-color: #4CAF50;
-    box-shadow: 0 0 12px rgba(76, 175, 80, 0.3);
-}
+        .sub-player-card {
+            background: #4d4d4d;
+            padding: 16px 12px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+        }
 
-.sub-player-card.bench-player {
-    border-color: #FF9800;
-    box-shadow: 0 0 12px rgba(255, 152, 0, 0.2);
-}
+        .sub-player-card:hover {
+            background: #5d5d5d;
+            transform: translateY(-2px);
+        }
 
-.sub-player-card.dragging {
-    opacity: 0.6;
-    transform: scale(0.95) rotate(5deg);
-}
+        .sub-player-card.active-player {
+            border-color: #4CAF50;
+            box-shadow: 0 0 12px rgba(76, 175, 80, 0.3);
+        }
 
-.sub-player-card.drag-over {
-    background: #6d6d6d;
-    border-color: #4CAF50;
-    transform: scale(1.05);
-    box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
-}
+        .sub-player-card.bench-player {
+            border-color: #FF9800;
+            box-shadow: 0 0 12px rgba(255, 152, 0, 0.2);
+        }
 
-.sub-player-number {
-    font-size: 20px;
-    font-weight: bold;
-    color: white;
-    margin-bottom: 4px;
-}
+        .sub-player-card.dragging {
+            opacity: 0.6;
+            transform: scale(0.95) rotate(5deg);
+        }
 
-.sub-player-position {
-    font-size: 12px;
-    color: #aaa;
-    margin-top: 4px;
-}
+        .sub-player-card.drag-over {
+            background: #6d6d6d;
+            border-color: #4CAF50;
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+        }
 
-.sub-player-status {
-    font-size: 11px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    margin-top: 6px;
-    text-transform: uppercase;
-    font-weight: 600;
-}
+        .sub-player-number {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 4px;
+        }
 
-.sub-player-status.active {
-    background: #4CAF50;
-    color: white;
-}
+        .sub-player-position {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 4px;
+        }
 
-.sub-player-status.bench {
-    background: #FF9800;
-    color: white;
-}
+        .sub-player-status {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-top: 6px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
 
-/* Add substitution button style */
-.btn-substitution {
-    background: linear-gradient(135deg, #795548 0%, #5D4037 100%);
-}
+        .sub-player-status.active {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .sub-player-status.bench {
+            background: #FF9800;
+            color: white;
+        }
+
+        /* Add substitution button style */
+        .btn-substitution {
+            background: linear-gradient(135deg, #795548 0%, #5D4037 100%);
+        }
 
         .hamburger-btn {
             background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
@@ -342,7 +348,7 @@
             left: 0;
             background: #2d2d2d;
             border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
             overflow: hidden;
             opacity: 0;
             visibility: hidden;
@@ -390,15 +396,16 @@
         }
 
         /* Scoreboard */
-      .scoreboard {
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-    padding: 12px 20px 12px 80px;  /* ✅ CHANGED: added left padding */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-}
+        .scoreboard {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 12px 20px 12px 80px;
+            /* ✅ CHANGED: added left padding */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
 
         .team-section {
             display: flex;
@@ -445,18 +452,27 @@
         }
 
         .serving-indicator {
-    width: 20px;
-    height: 20px;
-    background: #FF9800;
-    border-radius: 50%;
-    animation: servePulse 2s infinite;
-    flex-shrink: 0;
-    margin-left: 12px;
-}
+            width: 20px;
+            height: 20px;
+            background: #FF9800;
+            border-radius: 50%;
+            animation: servePulse 2s infinite;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
 
         @keyframes servePulse {
-            0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(255, 152, 0, 0.6); }
-            50% { opacity: 0.6; box-shadow: 0 0 15px rgba(255, 152, 0, 0.8); }
+
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 8px rgba(255, 152, 0, 0.6);
+            }
+
+            50% {
+                opacity: 0.6;
+                box-shadow: 0 0 15px rgba(255, 152, 0, 0.8);
+            }
         }
 
         .center-panel {
@@ -500,8 +516,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
         }
 
         /* Main Layout */
@@ -546,7 +569,7 @@
             padding: 16px;
             overflow-y: auto;
             min-height: 0;
-            
+
         }
 
         /* Responsive fallbacks: 2 columns on medium, 1 column on small */
@@ -562,7 +585,7 @@
             }
         }
 
-       .player-card {
+        .player-card {
             background: #3d3d3d;
             border-radius: 10px;
             padding: 16px 12px;
@@ -573,13 +596,13 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            position: relative;  
+            position: relative;
         }
 
         .player-card.current-server {
             outline: 3px solid #FFEB3B;
             transform: scale(1.03);
-            box-shadow: 0 8px 30px rgba(255,235,59,0.08);
+            box-shadow: 0 8px 30px rgba(255, 235, 59, 0.08);
         }
 
         /* ✅ FIXED: Server badge visibility */
@@ -587,7 +610,7 @@
             position: absolute;
             top: 8px;
             right: 8px;
-            background: rgba(255,235,59,0.95);
+            background: rgba(255, 235, 59, 0.95);
             color: #111;
             border: none;
             border-radius: 6px;
@@ -595,7 +618,8 @@
             font-weight: 700;
             cursor: pointer;
             font-size: 12px;
-            display: none !important;  /* ✅ Hidden by default with !important */
+            display: none !important;
+            /* ✅ Hidden by default with !important */
             transition: all 0.2s;
         }
 
@@ -630,17 +654,24 @@
         .player-card.dragging {
             opacity: 0.5;
             transform: scale(0.98);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
         }
 
         .player-card.drag-over {
-            outline: 3px dashed rgba(76,175,80,0.7);
+            outline: 3px dashed rgba(76, 175, 80, 0.7);
             transform: translateY(-4px) scale(1.02);
         }
 
         @keyframes selectPulse {
-            0%, 100% { box-shadow: 0 0 0 2px #4CAF50; }
-            50% { box-shadow: 0 0 0 4px #4CAF50; }
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 2px #4CAF50;
+            }
+
+            50% {
+                box-shadow: 0 0 0 4px #4CAF50;
+            }
         }
 
         .player-number {
@@ -735,7 +766,7 @@
             font-size: 16px;
         }
 
-         /* ✅ ADD: Block Type Modal Styles */
+        /* ✅ ADD: Block Type Modal Styles */
         .block-type-modal {
             position: fixed;
             top: 0;
@@ -902,182 +933,182 @@
         }
 
         .btn-penalty {
-    background: linear-gradient(135deg, #FFC107 0%, #FFA000 100%);
-    color: #000;
-    font-weight: 800;
-}
+            background: linear-gradient(135deg, #FFC107 0%, #FFA000 100%);
+            color: #000;
+            font-weight: 800;
+        }
 
-/* Penalty Cards Modal */
-.penalty-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 10000;
-}
+        /* Penalty Cards Modal */
+        .penalty-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
 
-.penalty-modal.show {
-    display: flex;
-}
+        .penalty-modal.show {
+            display: flex;
+        }
 
-.penalty-content {
-    background: #2d2d2d;
-    border-radius: 16px;
-    padding: 40px;
-    max-width: 700px;
-    width: 90%;
-}
+        .penalty-content {
+            background: #2d2d2d;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 700px;
+            width: 90%;
+        }
 
-.penalty-title {
-    font-size: 32px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    text-align: center;
-    color: #FFC107;
-}
+        .penalty-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #FFC107;
+        }
 
-.penalty-subtitle {
-    font-size: 16px;
-    color: #aaa;
-    margin-bottom: 30px;
-    text-align: center;
-}
+        .penalty-subtitle {
+            font-size: 16px;
+            color: #aaa;
+            margin-bottom: 30px;
+            text-align: center;
+        }
 
-.penalty-cards-section {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-bottom: 40px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-}
+        .penalty-cards-section {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
 
-.penalty-card {
-    width: 120px;
-    height: 160px;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: grab;
-    transition: all 0.3s;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    user-select: none;
-}
+        .penalty-card {
+            width: 120px;
+            height: 160px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            user-select: none;
+        }
 
-.penalty-card:active {
-    cursor: grabbing;
-}
+        .penalty-card:active {
+            cursor: grabbing;
+        }
 
-.penalty-card.dragging {
-    opacity: 0.5;
-    transform: scale(0.95);
-}
+        .penalty-card.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
 
-.penalty-card.yellow-card {
-    background: linear-gradient(135deg, #FDD835 0%, #F9A825 100%);
-    color: #000;
-}
+        .penalty-card.yellow-card {
+            background: linear-gradient(135deg, #FDD835 0%, #F9A825 100%);
+            color: #000;
+        }
 
-.penalty-card.red-card {
-    background: linear-gradient(135deg, #E53935 0%, #C62828 100%);
-    color: white;
-}
+        .penalty-card.red-card {
+            background: linear-gradient(135deg, #E53935 0%, #C62828 100%);
+            color: white;
+        }
 
-.penalty-card:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-}
+        .penalty-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
 
-.card-icon {
-    font-size: 48px;
-    margin-bottom: 10px;
-}
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
 
-.card-label {
-    font-size: 18px;
-    font-weight: bold;
-    text-transform: uppercase;
-}
+        .card-label {
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
 
-.card-description {
-    font-size: 11px;
-    margin-top: 8px;
-    opacity: 0.8;
-    text-align: center;
-    padding: 0 10px;
-}
+        .card-description {
+            font-size: 11px;
+            margin-top: 8px;
+            opacity: 0.8;
+            text-align: center;
+            padding: 0 10px;
+        }
 
-.penalty-teams-section {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 20px;
-}
+        .penalty-teams-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
 
-.penalty-team-zone {
-    background: #3d3d3d;
-    border: 3px dashed #555;
-    border-radius: 12px;
-    padding: 30px 20px;
-    text-align: center;
-    transition: all 0.3s;
-    min-height: 150px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
+        .penalty-team-zone {
+            background: #3d3d3d;
+            border: 3px dashed #555;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
 
-.penalty-team-zone.drag-over {
-    border-color: #FFC107;
-    background: rgba(255, 193, 7, 0.1);
-    transform: scale(1.02);
-}
+        .penalty-team-zone.drag-over {
+            border-color: #FFC107;
+            background: rgba(255, 193, 7, 0.1);
+            transform: scale(1.02);
+        }
 
-.penalty-team-zone.team-a {
-    border-color: #c33;
-}
+        .penalty-team-zone.team-a {
+            border-color: #c33;
+        }
 
-.penalty-team-zone.team-b {
-    border-color: #339;
-}
+        .penalty-team-zone.team-b {
+            border-color: #339;
+        }
 
-.penalty-team-zone.drag-over.team-a {
-    border-color: #FFC107;
-    background: rgba(204, 51, 51, 0.1);
-}
+        .penalty-team-zone.drag-over.team-a {
+            border-color: #FFC107;
+            background: rgba(204, 51, 51, 0.1);
+        }
 
-.penalty-team-zone.drag-over.team-b {
-    border-color: #FFC107;
-    background: rgba(51, 51, 153, 0.1);
-}
+        .penalty-team-zone.drag-over.team-b {
+            border-color: #FFC107;
+            background: rgba(51, 51, 153, 0.1);
+        }
 
-.penalty-team-name {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
+        .penalty-team-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
 
-.penalty-team-zone.team-a .penalty-team-name {
-    color: #c33;
-}
+        .penalty-team-zone.team-a .penalty-team-name {
+            color: #c33;
+        }
 
-.penalty-team-zone.team-b .penalty-team-name {
-    color: #339;
-}
+        .penalty-team-zone.team-b .penalty-team-name {
+            color: #339;
+        }
 
-.drop-instruction {
-    font-size: 14px;
-    color: #888;
-}
+        .drop-instruction {
+            font-size: 14px;
+            color: #888;
+        }
 
         /* Modals */
         .modal {
@@ -1220,8 +1251,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
         }
 
         /* Set Score Display */
@@ -1249,1130 +1287,1175 @@
         }
 
         /* Hotkeys Modal Styles */
-.hotkey-item {
-    background: #3d3d3d;
-    padding: 15px;
-    border-radius: 8px;
-}
-
-.hotkey-input {
-    background: #4d4d4d;
-    padding: 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: 2px solid transparent;
-    text-align: center;
-}
-
-.hotkey-input:hover {
-    background: #5d5d5d;
-    border-color: #4CAF50;
-}
-
-.hotkey-input.listening {
-    background: #FF9800;
-    border-color: #F57C00;
-    animation: pulse 1s infinite;
-}
-
-.current-key {
-    color: white;
-    font-weight: bold;
-    font-size: 16px;
-    font-family: 'Courier New', monospace;
-}
-
-/* Settings Input Styles */
-.settings-input {
-    background: #4d4d4d;
-    color: white;
-    padding: 10px;
-    border-radius: 6px;
-    border: none;
-    font-size: 16px;
-    width: 100%;
-}
-
-@media (max-width: 1024px) {
-    /* ✅ KEEP 3-column layout on tablets */
-    .container {
-        grid-template-columns: 1fr 1.2fr 1fr;  /* Slightly wider center for events */
-        grid-template-rows: 1fr;
-        gap: 2px;
-    }
-    
-    .roster-section:nth-child(1) {
-        grid-column: 1;
-        grid-row: 1;
-    }
-    
-    .log-section {
-        grid-column: 2;
-        grid-row: 1;
-    }
-    
-    .roster-section:nth-child(3) {
-        grid-column: 3;
-        grid-row: 1;
-    }
-    
-    /* Roster headers - smaller */
-    .roster-header {
-        padding: 10px 8px;
-        font-size: 12px;
-    }
-    
-    /* Player cards - keep 2 columns, make smaller */
-    .players-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 6px;
-        padding: 8px;
-    }
-    
-    .player-card {
-        padding: 8px 6px;
-        min-height: 60px;
-    }
-    
-    .player-number {
-        font-size: 15px;
-    }
-    
-    .player-position {
-        font-size: 10px;
-    }
-    
-    /* Event log - more compact */
-    .log-header {
-        padding: 10px 12px;
-        font-size: 12px;
-    }
-    
-    .log-entry {
-        font-size: 10px;
-        padding: 10px 8px;
-        grid-template-columns: 30px 40px 50px 1fr 35px 65px 30px;
-        gap: 4px;
-    }
-    
-    .entry-number {
-        font-size: 9px;
-    }
-    
-    .entry-team {
-        font-size: 12px;
-    }
-    
-    .entry-player {
-        font-size: 11px;
-    }
-    
-    .entry-action {
-        font-size: 10px;
-    }
-    
-    .entry-set {
-        font-size: 9px;
-    }
-    
-    .entry-score {
-        font-size: 9px;
-    }
-    
-    .entry-check {
-        font-size: 13px;
-    }
-    
-    /* Action buttons: 5 per row */
-    .actions-grid {
-        grid-template-columns: repeat(5, 1fr);
-        gap: 8px;
-    }
-    
-    .action-btn {
-        padding: 12px 8px;
-        font-size: 11px;
-    }
-}
-
-/* ===== MOBILE PHONES ONLY (768px and below) ===== */
-@media (max-width: 768px) {
-    /* NOW stack vertically for phones */
-    .container {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto;
-    }
-    
-    .roster-section,
-    .log-section {
-        grid-column: 1;
-    }
-    
-    .log-section {
-        max-height: 200px;
-        order: 2; /* Put event log in middle */
-    }
-    
-    .roster-section:nth-child(1) {
-        order: 1; /* Team A first */
-    }
-    
-    .roster-section:nth-child(3) {
-        order: 3; /* Team B last */
-    }
-    
-    /* Scoreboard: more compact */
-    .scoreboard {
-        padding: 6px 8px 6px 55px;
-        flex-direction: column;
-        gap: 6px;
-        align-items: stretch;
-    }
-    
-    .team-section {
-        width: 100%;
-        gap: 6px;
-    }
-    
-    .team-section.left {
-        justify-content: flex-start;
-        flex-direction: row !important;
-    }
-    
-    .team-section.right {
-        justify-content: flex-end;
-        flex-direction: row-reverse !important;
-        order: 2;
-    }
-    
-    .center-panel {
-        width: 100%;
-        order: -1;
-        margin-bottom: 6px;
-    }
-    
-    /* Smaller score displays */
-    .score-display {
-        font-size: 28px;
-        min-width: 50px;
-    }
-    
-    .team-name {
-        font-size: 11px;
-    }
-    
-    .team-stats {
-        font-size: 9px;
-        gap: 6px;
-    }
-    
-    .team-info {
-        gap: 2px;
-    }
-    
-    .set-display {
-        font-size: 14px;
-        margin-bottom: 4px;
-    }
-    
-    .sets-score {
-        font-size: 20px;
-    }
-    
-    .serving-indicator {
-        width: 14px;
-        height: 14px;
-    }
-    
-    /* Jersey badges - smaller */
-    .team-jerseys {
-        min-width: auto;
-        flex-wrap: wrap;
-        gap: 2px;
-        padding: 2px 4px;
-        max-width: 160px;
-    }
-    
-    .jersey-badge {
-        width: 26px;
-        height: 26px;
-        font-size: 11px;
-        border-width: 2px;
-    }
-    
-    /* Player cards - 2 columns, MORE COMPACT */
-    .players-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 6px;
-        padding: 8px;
-    }
-    
-    .player-card {
-        padding: 10px 8px;
-        min-height: 65px;
-        border-left-width: 3px;
-    }
-    
-    .player-number {
-        font-size: 16px;
-    }
-    
-    .player-position {
-        font-size: 10px;
-    }
-    
-    .set-server-btn {
-        padding: 2px 4px;
-        font-size: 10px;
-        top: 4px;
-        right: 4px;
-    }
-    
-    /* Action buttons: 3 per row - SMALLER */
-    .actions-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 6px;
-    }
-    
-    .action-btn {
-        padding: 10px 6px;
-        font-size: 10px;
-        min-height: 40px;
-        letter-spacing: 0.2px;
-    }
-    
-    .actions-section {
-        padding: 8px;
-    }
-    
-    /* Hamburger menu */
-    .menu-container {
-        top: 8px;
-        left: 8px;
-    }
-    
-    .hamburger-btn {
-        width: 40px;
-        height: 40px;
-    }
-    
-    /* Roster headers - smaller */
-    .roster-header {
-        padding: 8px;
-        font-size: 12px;
-    }
-    
-    /* Event log - more compact */
-    .log-header {
-        padding: 8px 12px;
-        font-size: 12px;
-    }
-    
-    .log-entry {
-        font-size: 10px;
-        padding: 8px 6px;
-        grid-template-columns: 25px 40px 45px 1fr 40px 60px 25px;
-        gap: 4px;
-    }
-    
-    .entry-number {
-        font-size: 9px;
-    }
-    
-    .entry-team {
-        font-size: 12px;
-    }
-    
-    .entry-check {
-        font-size: 14px;
-    }
-    
-    /* All modal adjustments stay the same... */
-    .modal-content {
-        padding: 24px 20px;
-        width: 95%;
-        max-width: none;
-        border-radius: 12px;
-    }
-    
-    .modal-title {
-        font-size: 24px;
-        margin-bottom: 16px;
-    }
-    
-    .modal-subtitle {
-        font-size: 14px;
-        margin-bottom: 20px;
-    }
-    
-    .modal-btn {
-        padding: 14px;
-        font-size: 16px;
-    }
-    
-    .modal-score {
-        margin: 20px 0;
-    }
-    
-    .modal-team-score {
-        font-size: 40px;
-    }
-    
-    .substitution-content {
-        padding: 24px 16px;
-        max-width: 100%;
-    }
-    
-    .sub-title {
-        font-size: 22px;
-    }
-    
-    .sub-teams {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    .sub-team-section {
-        padding: 20px 16px;
-    }
-    
-    .sub-players-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-    }
-    
-    .sub-player-card {
-        padding: 12px 10px;
-        min-height: 75px;
-    }
-    
-    .sub-player-number {
-        font-size: 18px;
-    }
-    
-    .block-type-content {
-        padding: 30px 20px;
-    }
-    
-    .block-type-title {
-        font-size: 24px;
-    }
-    
-    .block-type-btn {
-        padding: 16px;
-        font-size: 16px;
-    }
-    
-    .penalty-content {
-        padding: 30px 20px;
-    }
-    
-    .penalty-title {
-        font-size: 26px;
-    }
-    
-    .penalty-cards-section {
-        flex-direction: row;
-        gap: 15px;
-        padding: 15px;
-    }
-    
-    .penalty-card {
-        width: 110px;
-        height: 150px;
-    }
-    
-    .card-icon {
-        font-size: 40px;
-    }
-    
-    .card-label {
-        font-size: 16px;
-    }
-    
-    .penalty-teams-section {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-    
-    .penalty-team-zone {
-        padding: 25px 16px;
-        min-height: 120px;
-    }
-    
-    .penalty-team-name {
-        font-size: 20px;
-    }
-    
-    #setSummaryModal .modal-content {
-        max-height: 85vh;
-        overflow-y: auto;
-    }
-    
-    #setSummaryModal h3 {
-        font-size: 18px;
-    }
-    
-    #setSummaryModal table {
-        font-size: 11px;
-    }
-    
-    #setSummaryModal th,
-    #setSummaryModal td {
-        padding: 10px 6px;
-    }
-    
-    .hotkey-item {
-        padding: 12px;
-    }
-    
-    #hotkeysModal .modal-content > div[style*="grid"] {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 12px !important;
-    }
-    
-    #gameSettingsModal .modal-content > div[style*="grid"] {
-        grid-template-columns: 1fr !important;
-        gap: 12px !important;
-    }
-    
-    .instruction-banner {
-        bottom: 80px;
-        padding: 10px 20px;
-        font-size: 13px;
-        max-width: 90%;
-    }
-    
-    .team-select-btn {
-        padding: 20px;
-        font-size: 18px;
-    }
-    
-    .set-scores {
-        margin-top: 4px;
-        flex-wrap: wrap;
-        gap: 3px;
-    }
-    
-    .set-score-box {
-        font-size: 9px;
-        padding: 2px 4px;
-    }
-}
-
-/* ===== SMALL MOBILE (480px and below) ===== */
-@media (max-width: 480px) {
-    /* Scoreboard even more compact */
-    .scoreboard {
-        padding: 4px 6px 4px 50px; /* ✅ REDUCED */
-    }
-    
-    .score-display {
-        font-size: 24px; /* ✅ REDUCED from 32px */
-        min-width: 45px;
-    }
-    
-    .team-name {
-        font-size: 10px; /* ✅ REDUCED */
-    }
-    
-    .team-stats {
-        font-size: 8px; /* ✅ REDUCED */
-        gap: 4px;
-    }
-    
-    .team-info {
-        gap: 2px;
-    }
-    
-    .set-display {
-        font-size: 12px; /* ✅ REDUCED */
-    }
-    
-    .sets-score {
-        font-size: 18px; /* ✅ REDUCED */
-    }
-    
-    /* Hide jerseys on very small screens to save space */
-    .team-jerseys {
-        display: none;
-    }
-    
-    /* Action buttons: 2 per row */
-    .actions-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 5px; /* ✅ REDUCED */
-    }
-    
-    .action-btn {
-        padding: 10px 5px; /* ✅ REDUCED */
-        font-size: 9px; /* ✅ REDUCED */
-        letter-spacing: 0.1px;
-    }
-    
-    .actions-section {
-        padding: 6px; /* ✅ REDUCED */
-    }
-    
-    /* Player cards stay 2 columns but smaller */
-    .players-grid {
-        gap: 5px; /* ✅ REDUCED */
-        padding: 6px; /* ✅ REDUCED */
-    }
-    
-    .player-card {
-        padding: 8px 6px; /* ✅ REDUCED */
-        min-height: 60px; /* ✅ REDUCED */
-    }
-    
-    .player-number {
-        font-size: 14px; /* ✅ REDUCED */
-    }
-    
-    .player-position {
-        font-size: 9px; /* ✅ REDUCED */
-    }
-    
-    /* Hamburger menu */
-    .hamburger-btn {
-        width: 36px;
-        height: 36px;
-    }
-    
-    .hamburger-btn span {
-        width: 18px;
-    }
-    
-    .menu-dropdown {
-        min-width: 180px;
-    }
-    
-    .menu-item {
-        padding: 10px 14px;
-    }
-    
-    /* Modals */
-    .modal-content {
-        padding: 20px 16px;
-    }
-    
-    .modal-title {
-        font-size: 20px;
-    }
-    
-    .modal-subtitle {
-        font-size: 13px;
-    }
-    
-    .modal-btn {
-        padding: 12px;
-        font-size: 14px;
-    }
-    
-    .modal-team-score {
-        font-size: 36px;
-    }
-    
-    /* Penalty cards stack vertically */
-    .penalty-cards-section {
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
-    
-    .penalty-card {
-        width: 130px;
-        height: 160px;
-    }
-    
-    /* Sub players grid: 2 columns */
-    .sub-players-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-    }
-    
-    /* Set summary tables */
-    #setSummaryModal table {
-        font-size: 10px;
-    }
-    
-    #setSummaryModal th,
-    #setSummaryModal td {
-        padding: 8px 4px;
-    }
-    
-    /* Event log more compact */
-    .log-entry {
-        font-size: 9px; /* ✅ REDUCED */
-        padding: 6px 4px; /* ✅ REDUCED */
-        grid-template-columns: 20px 35px 40px 1fr 35px 55px 20px;
-        gap: 3px;
-    }
-    
-    .entry-check {
-        font-size: 12px;
-    }
-    
-    /* Instruction banner */
-    .instruction-banner {
-        bottom: 70px;
-        padding: 8px 16px;
-        font-size: 12px;
-    }
-    
-    /* Hotkeys modal */
-    #hotkeysModal .modal-content > div[style*="grid"] {
-        grid-template-columns: 1fr !important;
-    }
-    
-    /* Roster headers */
-    .roster-header {
-        padding: 6px;
-        font-size: 11px;
-    }
-    
-    .log-section {
-        max-height: 180px; /* ✅ REDUCED */
-    }
-}
-
-/* ===== LANDSCAPE MODE FIX FOR MOBILE/TABLET ===== */
-@media (max-width: 1024px) and (orientation: landscape) {
-    html, body {
-        width: 100vw;
-        height: 100vh;
-        overflow: hidden;
-    }
-    
-    .team-jerseys {
-    display: none !important;
-}
-
-    .menu-container {
-    top: 5px;
-    left: 5px;
-    z-index: 10000; /* ✅ ADD: ensure it stays on top */
-}
-
-.hamburger-btn {
-    width: 30px;      /* ✅ CHANGE from 35px */
-    height: 30px;     /* ✅ CHANGE from 35px */
-    opacity: 0.8;     /* ✅ ADD: make it more subtle */
-}
-
-    .hamburger-btn span {
-        width: 18px;
-        height: 2px;
-    }
-
-    /* Scoreboard optimized for landscape */
-    .scoreboard {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        padding: 6px 10px; /* Remove left padding entirely */
-        font-size: 0.85em;
-        min-height: 70px;
-    }
-
-    .team-section {
-        flex: 1;
-        gap: 8px;
-        min-width: 0; /* Allow flex items to shrink */
-    }
-
-    .team-section.left {
-        flex-direction: row;
-        justify-content: flex-start;
-    }
-
-    .team-section.right {
-        flex-direction: row-reverse;
-        justify-content: flex-end;
-    }
-
-    /* Team jerseys - smaller in landscape */
-    .team-jerseys {
-        min-width: auto;
-        max-width: 150px;
-        flex-wrap: wrap;
-        gap: 3px;
-        padding: 3px;
-    }
-
-    .jersey-badge {
-        width: 26px;
-        height: 26px;
-        font-size: 11px;
-        border-width: 2px;
-    }
-
-    /* Team info - more compact */
-    .team-name {
-        font-size: 11px;
-        white-space: nowrap;
-    }
-
-    .team-stats {
-        font-size: 9px;
-        gap: 6px;
-        flex-wrap: wrap;
-    }
-
-    /* Score display */
-    .score-display {
-        font-size: 32px;
-        min-width: 50px;
-    }
-
-    /* Center panel - compact */
-    .center-panel {
-        flex: 0 0 auto;
-        min-width: 120px;
-        max-width: 200px;
-        text-align: center;
-        padding: 0 10px;
-    }
-
-    .set-display {
-        font-size: 14px;
-        margin-bottom: 4px;
-    }
-
-    .sets-score {
-        font-size: 22px;
-    }
-
-    .set-scores {
-        margin-top: 4px;
-        flex-wrap: wrap;
-        gap: 4px;
-    }
-
-    .set-score-box {
-        font-size: 9px;
-        padding: 2px 4px;
-    }
-
-    .serving-indicator {
-        width: 14px;
-        height: 14px;
-    }
-
-    /* Container - optimize for landscape */
-    .container {
-        display: grid;
-        grid-template-columns: 0.8fr 1.4fr 0.8fr; /* Narrower rosters, wider log */
-        grid-template-rows: 1fr;
-        height: calc(100vh - 140px); /* Account for smaller scoreboard + actions */
-        gap: 2px;
-        overflow: hidden;
-    }
-
-    .roster-section, .log-section {
-        max-height: 100%;
-        overflow-y: auto;
-    }
-
-    /* Roster headers - smaller */
-    .roster-header {
-        padding: 10px 8px;
-        font-size: 12px;
-    }
-
-    /* Player cards in landscape - SINGLE COLUMN */
-.players-grid {
-    grid-template-columns: 1fr;  /* ✅ Changed from repeat(2, 1fr) */
-    gap: 4px;                     /* ✅ Smaller gap */
-    padding: 6px;                 /* ✅ Less padding */
-}
-
-    .player-card {
-    padding: 8px 6px;    /* ✅ Less padding */
-    min-height: 55px;    /* ✅ Shorter height */
-}
-
-    .player-number {
-    font-size: 14px;     /* ✅ Smaller from 16px */
-}
-
-.player-position {
-    font-size: 9px;      /* ✅ Smaller from 10px */
-}
-
-    .set-server-btn {
-        padding: 2px 4px;
-        font-size: 10px;
-        top: 4px;
-        right: 4px;
-    }
-
-    /* Event log - compact */
-    .log-header {
-        padding: 10px 12px;
-        font-size: 12px;
-    }
-
-    .log-entry {
-        font-size: 10px;
-        padding: 8px 6px;
-        grid-template-columns: 25px 40px 45px 1fr 40px 60px 25px;
-        gap: 4px;
-    }
-
-    .entry-number {
-        font-size: 9px;
-    }
-
-    .entry-team {
-        font-size: 12px;
-    }
-
-    .entry-check {
-        font-size: 14px;
-    }
-
-    /* Action buttons - optimized for landscape */
-    .actions-section {
-        padding: 6px 10px; /* Remove left padding */
-    }
-
-    .actions-grid {
-        grid-template-columns: repeat(5, 1fr);
-        gap: 6px;
-    }
-
-    .action-btn {
-        padding: 8px 4px;
-        font-size: 10px;
-        min-height: 38px;
-        letter-spacing: 0.2px;
-    }
-
-    /* Hide instruction banner in landscape */
-    .instruction-banner {
-        display: none !important;
-    }
-
-    /* Menu dropdown positioning */
-    .menu-dropdown {
-        top: 40px;
-        min-width: 180px;
-    }
-
-    .menu-item {
-        padding: 10px 14px;
-        font-size: 13px;
-    }
-
-    .menu-item-icon {
-        font-size: 18px;
-    }
-}
-
-/* ===== EXTRA SMALL LANDSCAPE (phones < 667px wide) ===== */
-@media (max-width: 667px) and (orientation: landscape) {
-    .scoreboard {
-        padding: 4px 8px 4px 45px;
-        min-height: 60px;
-    }
-
-    .score-display {
-        font-size: 28px;
-        min-width: 45px;
-    }
-
-    .team-jerseys {
-        max-width: 120px;
-    }
-
-    .jersey-badge {
-        width: 24px;
-        height: 24px;
-        font-size: 10px;
-    }
-
-    .container {
-        height: calc(100vh - 120px);
-    }
-
-    .actions-grid {
-        grid-template-columns: repeat(5, 1fr);
-        gap: 4px;
-    }
-
-    .action-btn {
-        padding: 6px 2px;
-        font-size: 9px;
-        min-height: 36px;
-    }
-
-    .players-grid {
-        grid-template-columns: 1fr;
-        gap: 4px;
-        padding: 6px;
-    }
-
-    .player-card {
-        padding: 8px 6px;
-        min-height: 60px;
-    }
-}
-
-
-/* ===== TOUCH DEVICE OPTIMIZATIONS ===== */
-@media (hover: none) and (pointer: coarse) {
-    /* Ensure minimum touch target sizes */
-    .action-btn,
-    .player-card,
-    .jersey-badge,
-    .menu-item,
-    .modal-btn {
-        min-height: 44px;
-        min-width: 44px;
-        touch-action: manipulation;
-    }
-    
-    /* Remove hover effects on touch devices */
-    .player-card:hover,
-    .action-btn:hover,
-    .jersey-badge:hover {
-        transform: none;
-        background: inherit;
-    }
-    
-    /* Add tap feedback instead */
-    .player-card:active,
-    .action-btn:active {
-        transform: scale(0.97);
-        opacity: 0.8;
-        transition: all 0.1s;
-    }
-    
-    .jersey-badge:active {
-        transform: scale(0.95);
-    }
-    
-    /* Larger drag handles */
-    .sub-player-card[draggable="true"],
-    .penalty-card[draggable="true"] {
-        cursor: grab;
-    }
-    
-    .sub-player-card.dragging,
-    .penalty-card.dragging {
-        cursor: grabbing;
-    }
-}
-
-/* ===== HIGH CONTRAST MODE SUPPORT ===== */
-@media (prefers-contrast: high) {
-    .scoreboard {
-        border-bottom: 2px solid white;
-    }
-    
-    .player-card,
-    .action-btn {
-        border: 2px solid white;
-    }
-    
-    .jersey-badge {
-        border-width: 3px;
-    }
-}
-
-/* ===== REDUCED MOTION SUPPORT ===== */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-    
-    .serving-indicator {
-        animation: none;
-    }
-    
-    .timeout-timer {
-        animation: none;
-    }
-    
-    .player-card.selecting {
-        animation: none;
-    }
-}
-
-/* ===== VERY SMALL SCREENS (360px and below) ===== */
-@media (max-width: 360px) {
-    .score-display {
-        font-size: 28px;
-        min-width: 45px;
-    }
-    
-    .action-btn {
-        font-size: 9px;
-        padding: 10px 4px;
-    }
-    
-    .player-card {
-        padding: 10px 6px;
-    }
-    
-    .menu-dropdown {
-        min-width: 160px;
-    }
-}
-
-/* Libero styling */
-.player-card.is-libero {
-    border-left-color: #9C27B0 !important;
-    border-left-width: 6px !important;
-    position: relative;
-}
-
-.player-card.is-libero::before {
-    content: 'L';
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    background: #9C27B0;
-    color: white;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 12px;
-    z-index: 1;
-}
-
-.jersey-badge.is-libero {
-    border-color: #9C27B0 !important;
-    background: linear-gradient(135deg, #9C27B0, #7B1FA2) !important;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -60%);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, -50%);
-    }
-}
-
-
-
-
+        .hotkey-item {
+            background: #3d3d3d;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .hotkey-input {
+            background: #4d4d4d;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            text-align: center;
+        }
+
+        .hotkey-input:hover {
+            background: #5d5d5d;
+            border-color: #4CAF50;
+        }
+
+        .hotkey-input.listening {
+            background: #FF9800;
+            border-color: #F57C00;
+            animation: pulse 1s infinite;
+        }
+
+        .current-key {
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Settings Input Styles */
+        .settings-input {
+            background: #4d4d4d;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        @media (max-width: 1024px) {
+
+            /* ✅ KEEP 3-column layout on tablets */
+            .container {
+                grid-template-columns: 1fr 1.2fr 1fr;
+                /* Slightly wider center for events */
+                grid-template-rows: 1fr;
+                gap: 2px;
+            }
+
+            .roster-section:nth-child(1) {
+                grid-column: 1;
+                grid-row: 1;
+            }
+
+            .log-section {
+                grid-column: 2;
+                grid-row: 1;
+            }
+
+            .roster-section:nth-child(3) {
+                grid-column: 3;
+                grid-row: 1;
+            }
+
+            /* Roster headers - smaller */
+            .roster-header {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+
+            /* Player cards - keep 2 columns, make smaller */
+            .players-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+                padding: 8px;
+            }
+
+            .player-card {
+                padding: 8px 6px;
+                min-height: 60px;
+            }
+
+            .player-number {
+                font-size: 15px;
+            }
+
+            .player-position {
+                font-size: 10px;
+            }
+
+            /* Event log - more compact */
+            .log-header {
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+
+            .log-entry {
+                font-size: 10px;
+                padding: 10px 8px;
+                grid-template-columns: 30px 40px 50px 1fr 35px 65px 30px;
+                gap: 4px;
+            }
+
+            .entry-number {
+                font-size: 9px;
+            }
+
+            .entry-team {
+                font-size: 12px;
+            }
+
+            .entry-player {
+                font-size: 11px;
+            }
+
+            .entry-action {
+                font-size: 10px;
+            }
+
+            .entry-set {
+                font-size: 9px;
+            }
+
+            .entry-score {
+                font-size: 9px;
+            }
+
+            .entry-check {
+                font-size: 13px;
+            }
+
+            /* Action buttons: 5 per row */
+            .actions-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 8px;
+            }
+
+            .action-btn {
+                padding: 12px 8px;
+                font-size: 11px;
+            }
+        }
+
+        /* ===== MOBILE PHONES ONLY (768px and below) ===== */
+        @media (max-width: 768px) {
+
+            /* NOW stack vertically for phones */
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+            }
+
+            .roster-section,
+            .log-section {
+                grid-column: 1;
+            }
+
+            .log-section {
+                max-height: 200px;
+                order: 2;
+                /* Put event log in middle */
+            }
+
+            .roster-section:nth-child(1) {
+                order: 1;
+                /* Team A first */
+            }
+
+            .roster-section:nth-child(3) {
+                order: 3;
+                /* Team B last */
+            }
+
+            /* Scoreboard: more compact */
+            .scoreboard {
+                padding: 6px 8px 6px 55px;
+                flex-direction: column;
+                gap: 6px;
+                align-items: stretch;
+            }
+
+            .team-section {
+                width: 100%;
+                gap: 6px;
+            }
+
+            .team-section.left {
+                justify-content: flex-start;
+                flex-direction: row !important;
+            }
+
+            .team-section.right {
+                justify-content: flex-end;
+                flex-direction: row-reverse !important;
+                order: 2;
+            }
+
+            .center-panel {
+                width: 100%;
+                order: -1;
+                margin-bottom: 6px;
+            }
+
+            /* Smaller score displays */
+            .score-display {
+                font-size: 28px;
+                min-width: 50px;
+            }
+
+            .team-name {
+                font-size: 11px;
+            }
+
+            .team-stats {
+                font-size: 9px;
+                gap: 6px;
+            }
+
+            .team-info {
+                gap: 2px;
+            }
+
+            .set-display {
+                font-size: 14px;
+                margin-bottom: 4px;
+            }
+
+            .sets-score {
+                font-size: 20px;
+            }
+
+            .serving-indicator {
+                width: 14px;
+                height: 14px;
+            }
+
+            /* Jersey badges - smaller */
+            .team-jerseys {
+                min-width: auto;
+                flex-wrap: wrap;
+                gap: 2px;
+                padding: 2px 4px;
+                max-width: 160px;
+            }
+
+            .jersey-badge {
+                width: 26px;
+                height: 26px;
+                font-size: 11px;
+                border-width: 2px;
+            }
+
+            /* Player cards - 2 columns, MORE COMPACT */
+            .players-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+                padding: 8px;
+            }
+
+            .player-card {
+                padding: 10px 8px;
+                min-height: 65px;
+                border-left-width: 3px;
+            }
+
+            .player-number {
+                font-size: 16px;
+            }
+
+            .player-position {
+                font-size: 10px;
+            }
+
+            .set-server-btn {
+                padding: 2px 4px;
+                font-size: 10px;
+                top: 4px;
+                right: 4px;
+            }
+
+            /* Action buttons: 3 per row - SMALLER */
+            .actions-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+            }
+
+            .action-btn {
+                padding: 10px 6px;
+                font-size: 10px;
+                min-height: 40px;
+                letter-spacing: 0.2px;
+            }
+
+            .actions-section {
+                padding: 8px;
+            }
+
+            /* Hamburger menu */
+            .menu-container {
+                top: 8px;
+                left: 8px;
+            }
+
+            .hamburger-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            /* Roster headers - smaller */
+            .roster-header {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            /* Event log - more compact */
+            .log-header {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            .log-entry {
+                font-size: 10px;
+                padding: 8px 6px;
+                grid-template-columns: 25px 40px 45px 1fr 40px 60px 25px;
+                gap: 4px;
+            }
+
+            .entry-number {
+                font-size: 9px;
+            }
+
+            .entry-team {
+                font-size: 12px;
+            }
+
+            .entry-check {
+                font-size: 14px;
+            }
+
+            /* All modal adjustments stay the same... */
+            .modal-content {
+                padding: 24px 20px;
+                width: 95%;
+                max-width: none;
+                border-radius: 12px;
+            }
+
+            .modal-title {
+                font-size: 24px;
+                margin-bottom: 16px;
+            }
+
+            .modal-subtitle {
+                font-size: 14px;
+                margin-bottom: 20px;
+            }
+
+            .modal-btn {
+                padding: 14px;
+                font-size: 16px;
+            }
+
+            .modal-score {
+                margin: 20px 0;
+            }
+
+            .modal-team-score {
+                font-size: 40px;
+            }
+
+            .substitution-content {
+                padding: 24px 16px;
+                max-width: 100%;
+            }
+
+            .sub-title {
+                font-size: 22px;
+            }
+
+            .sub-teams {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .sub-team-section {
+                padding: 20px 16px;
+            }
+
+            .sub-players-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+
+            .sub-player-card {
+                padding: 12px 10px;
+                min-height: 75px;
+            }
+
+            .sub-player-number {
+                font-size: 18px;
+            }
+
+            .block-type-content {
+                padding: 30px 20px;
+            }
+
+            .block-type-title {
+                font-size: 24px;
+            }
+
+            .block-type-btn {
+                padding: 16px;
+                font-size: 16px;
+            }
+
+            .penalty-content {
+                padding: 30px 20px;
+            }
+
+            .penalty-title {
+                font-size: 26px;
+            }
+
+            .penalty-cards-section {
+                flex-direction: row;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .penalty-card {
+                width: 110px;
+                height: 150px;
+            }
+
+            .card-icon {
+                font-size: 40px;
+            }
+
+            .card-label {
+                font-size: 16px;
+            }
+
+            .penalty-teams-section {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .penalty-team-zone {
+                padding: 25px 16px;
+                min-height: 120px;
+            }
+
+            .penalty-team-name {
+                font-size: 20px;
+            }
+
+            #setSummaryModal .modal-content {
+                max-height: 85vh;
+                overflow-y: auto;
+            }
+
+            #setSummaryModal h3 {
+                font-size: 18px;
+            }
+
+            #setSummaryModal table {
+                font-size: 11px;
+            }
+
+            #setSummaryModal th,
+            #setSummaryModal td {
+                padding: 10px 6px;
+            }
+
+            .hotkey-item {
+                padding: 12px;
+            }
+
+            #hotkeysModal .modal-content>div[style*="grid"] {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px !important;
+            }
+
+            #gameSettingsModal .modal-content>div[style*="grid"] {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+
+            .instruction-banner {
+                bottom: 80px;
+                padding: 10px 20px;
+                font-size: 13px;
+                max-width: 90%;
+            }
+
+            .team-select-btn {
+                padding: 20px;
+                font-size: 18px;
+            }
+
+            .set-scores {
+                margin-top: 4px;
+                flex-wrap: wrap;
+                gap: 3px;
+            }
+
+            .set-score-box {
+                font-size: 9px;
+                padding: 2px 4px;
+            }
+        }
+
+        /* ===== SMALL MOBILE (480px and below) ===== */
+        @media (max-width: 480px) {
+
+            /* Scoreboard even more compact */
+            .scoreboard {
+                padding: 4px 6px 4px 50px;
+                /* ✅ REDUCED */
+            }
+
+            .score-display {
+                font-size: 24px;
+                /* ✅ REDUCED from 32px */
+                min-width: 45px;
+            }
+
+            .team-name {
+                font-size: 10px;
+                /* ✅ REDUCED */
+            }
+
+            .team-stats {
+                font-size: 8px;
+                /* ✅ REDUCED */
+                gap: 4px;
+            }
+
+            .team-info {
+                gap: 2px;
+            }
+
+            .set-display {
+                font-size: 12px;
+                /* ✅ REDUCED */
+            }
+
+            .sets-score {
+                font-size: 18px;
+                /* ✅ REDUCED */
+            }
+
+            /* Hide jerseys on very small screens to save space */
+            .team-jerseys {
+                display: none;
+            }
+
+            /* Action buttons: 2 per row */
+            .actions-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 5px;
+                /* ✅ REDUCED */
+            }
+
+            .action-btn {
+                padding: 10px 5px;
+                /* ✅ REDUCED */
+                font-size: 9px;
+                /* ✅ REDUCED */
+                letter-spacing: 0.1px;
+            }
+
+            .actions-section {
+                padding: 6px;
+                /* ✅ REDUCED */
+            }
+
+            /* Player cards stay 2 columns but smaller */
+            .players-grid {
+                gap: 5px;
+                /* ✅ REDUCED */
+                padding: 6px;
+                /* ✅ REDUCED */
+            }
+
+            .player-card {
+                padding: 8px 6px;
+                /* ✅ REDUCED */
+                min-height: 60px;
+                /* ✅ REDUCED */
+            }
+
+            .player-number {
+                font-size: 14px;
+                /* ✅ REDUCED */
+            }
+
+            .player-position {
+                font-size: 9px;
+                /* ✅ REDUCED */
+            }
+
+            /* Hamburger menu */
+            .hamburger-btn {
+                width: 36px;
+                height: 36px;
+            }
+
+            .hamburger-btn span {
+                width: 18px;
+            }
+
+            .menu-dropdown {
+                min-width: 180px;
+            }
+
+            .menu-item {
+                padding: 10px 14px;
+            }
+
+            /* Modals */
+            .modal-content {
+                padding: 20px 16px;
+            }
+
+            .modal-title {
+                font-size: 20px;
+            }
+
+            .modal-subtitle {
+                font-size: 13px;
+            }
+
+            .modal-btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            .modal-team-score {
+                font-size: 36px;
+            }
+
+            /* Penalty cards stack vertically */
+            .penalty-cards-section {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .penalty-card {
+                width: 130px;
+                height: 160px;
+            }
+
+            /* Sub players grid: 2 columns */
+            .sub-players-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+
+            /* Set summary tables */
+            #setSummaryModal table {
+                font-size: 10px;
+            }
+
+            #setSummaryModal th,
+            #setSummaryModal td {
+                padding: 8px 4px;
+            }
+
+            /* Event log more compact */
+            .log-entry {
+                font-size: 9px;
+                /* ✅ REDUCED */
+                padding: 6px 4px;
+                /* ✅ REDUCED */
+                grid-template-columns: 20px 35px 40px 1fr 35px 55px 20px;
+                gap: 3px;
+            }
+
+            .entry-check {
+                font-size: 12px;
+            }
+
+            /* Instruction banner */
+            .instruction-banner {
+                bottom: 70px;
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+
+            /* Hotkeys modal */
+            #hotkeysModal .modal-content>div[style*="grid"] {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Roster headers */
+            .roster-header {
+                padding: 6px;
+                font-size: 11px;
+            }
+
+            .log-section {
+                max-height: 180px;
+                /* ✅ REDUCED */
+            }
+        }
+
+        /* ===== LANDSCAPE MODE FIX FOR MOBILE/TABLET ===== */
+        @media (max-width: 1024px) and (orientation: landscape) {
+
+            html,
+            body {
+                width: 100vw;
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            .team-jerseys {
+                display: none !important;
+            }
+
+            .menu-container {
+                top: 5px;
+                left: 5px;
+                z-index: 10000;
+                /* ✅ ADD: ensure it stays on top */
+            }
+
+            .hamburger-btn {
+                width: 30px;
+                /* ✅ CHANGE from 35px */
+                height: 30px;
+                /* ✅ CHANGE from 35px */
+                opacity: 0.8;
+                /* ✅ ADD: make it more subtle */
+            }
+
+            .hamburger-btn span {
+                width: 18px;
+                height: 2px;
+            }
+
+            /* Scoreboard optimized for landscape */
+            .scoreboard {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                padding: 6px 10px;
+                /* Remove left padding entirely */
+                font-size: 0.85em;
+                min-height: 70px;
+            }
+
+            .team-section {
+                flex: 1;
+                gap: 8px;
+                min-width: 0;
+                /* Allow flex items to shrink */
+            }
+
+            .team-section.left {
+                flex-direction: row;
+                justify-content: flex-start;
+            }
+
+            .team-section.right {
+                flex-direction: row-reverse;
+                justify-content: flex-end;
+            }
+
+            /* Team jerseys - smaller in landscape */
+            .team-jerseys {
+                min-width: auto;
+                max-width: 150px;
+                flex-wrap: wrap;
+                gap: 3px;
+                padding: 3px;
+            }
+
+            .jersey-badge {
+                width: 26px;
+                height: 26px;
+                font-size: 11px;
+                border-width: 2px;
+            }
+
+            /* Team info - more compact */
+            .team-name {
+                font-size: 11px;
+                white-space: nowrap;
+            }
+
+            .team-stats {
+                font-size: 9px;
+                gap: 6px;
+                flex-wrap: wrap;
+            }
+
+            /* Score display */
+            .score-display {
+                font-size: 32px;
+                min-width: 50px;
+            }
+
+            /* Center panel - compact */
+            .center-panel {
+                flex: 0 0 auto;
+                min-width: 120px;
+                max-width: 200px;
+                text-align: center;
+                padding: 0 10px;
+            }
+
+            .set-display {
+                font-size: 14px;
+                margin-bottom: 4px;
+            }
+
+            .sets-score {
+                font-size: 22px;
+            }
+
+            .set-scores {
+                margin-top: 4px;
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+
+            .set-score-box {
+                font-size: 9px;
+                padding: 2px 4px;
+            }
+
+            .serving-indicator {
+                width: 14px;
+                height: 14px;
+            }
+
+            /* Container - optimize for landscape */
+            .container {
+                display: grid;
+                grid-template-columns: 0.8fr 1.4fr 0.8fr;
+                /* Narrower rosters, wider log */
+                grid-template-rows: 1fr;
+                height: calc(100vh - 140px);
+                /* Account for smaller scoreboard + actions */
+                gap: 2px;
+                overflow: hidden;
+            }
+
+            .roster-section,
+            .log-section {
+                max-height: 100%;
+                overflow-y: auto;
+            }
+
+            /* Roster headers - smaller */
+            .roster-header {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+
+            /* Player cards in landscape - SINGLE COLUMN */
+            .players-grid {
+                grid-template-columns: 1fr;
+                /* ✅ Changed from repeat(2, 1fr) */
+                gap: 4px;
+                /* ✅ Smaller gap */
+                padding: 6px;
+                /* ✅ Less padding */
+            }
+
+            .player-card {
+                padding: 8px 6px;
+                /* ✅ Less padding */
+                min-height: 55px;
+                /* ✅ Shorter height */
+            }
+
+            .player-number {
+                font-size: 14px;
+                /* ✅ Smaller from 16px */
+            }
+
+            .player-position {
+                font-size: 9px;
+                /* ✅ Smaller from 10px */
+            }
+
+            .set-server-btn {
+                padding: 2px 4px;
+                font-size: 10px;
+                top: 4px;
+                right: 4px;
+            }
+
+            /* Event log - compact */
+            .log-header {
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+
+            .log-entry {
+                font-size: 10px;
+                padding: 8px 6px;
+                grid-template-columns: 25px 40px 45px 1fr 40px 60px 25px;
+                gap: 4px;
+            }
+
+            .entry-number {
+                font-size: 9px;
+            }
+
+            .entry-team {
+                font-size: 12px;
+            }
+
+            .entry-check {
+                font-size: 14px;
+            }
+
+            /* Action buttons - optimized for landscape */
+            .actions-section {
+                padding: 6px 10px;
+                /* Remove left padding */
+            }
+
+            .actions-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 6px;
+            }
+
+            .action-btn {
+                padding: 8px 4px;
+                font-size: 10px;
+                min-height: 38px;
+                letter-spacing: 0.2px;
+            }
+
+            /* Hide instruction banner in landscape */
+            .instruction-banner {
+                display: none !important;
+            }
+
+            /* Menu dropdown positioning */
+            .menu-dropdown {
+                top: 40px;
+                min-width: 180px;
+            }
+
+            .menu-item {
+                padding: 10px 14px;
+                font-size: 13px;
+            }
+
+            .menu-item-icon {
+                font-size: 18px;
+            }
+        }
+
+        /* ===== EXTRA SMALL LANDSCAPE (phones < 667px wide) ===== */
+        @media (max-width: 667px) and (orientation: landscape) {
+            .scoreboard {
+                padding: 4px 8px 4px 45px;
+                min-height: 60px;
+            }
+
+            .score-display {
+                font-size: 28px;
+                min-width: 45px;
+            }
+
+            .team-jerseys {
+                max-width: 120px;
+            }
+
+            .jersey-badge {
+                width: 24px;
+                height: 24px;
+                font-size: 10px;
+            }
+
+            .container {
+                height: calc(100vh - 120px);
+            }
+
+            .actions-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 4px;
+            }
+
+            .action-btn {
+                padding: 6px 2px;
+                font-size: 9px;
+                min-height: 36px;
+            }
+
+            .players-grid {
+                grid-template-columns: 1fr;
+                gap: 4px;
+                padding: 6px;
+            }
+
+            .player-card {
+                padding: 8px 6px;
+                min-height: 60px;
+            }
+        }
+
+
+        /* ===== TOUCH DEVICE OPTIMIZATIONS ===== */
+        @media (hover: none) and (pointer: coarse) {
+
+            /* Ensure minimum touch target sizes */
+            .action-btn,
+            .player-card,
+            .jersey-badge,
+            .menu-item,
+            .modal-btn {
+                min-height: 44px;
+                min-width: 44px;
+                touch-action: manipulation;
+            }
+
+            /* Remove hover effects on touch devices */
+            .player-card:hover,
+            .action-btn:hover,
+            .jersey-badge:hover {
+                transform: none;
+                background: inherit;
+            }
+
+            /* Add tap feedback instead */
+            .player-card:active,
+            .action-btn:active {
+                transform: scale(0.97);
+                opacity: 0.8;
+                transition: all 0.1s;
+            }
+
+            .jersey-badge:active {
+                transform: scale(0.95);
+            }
+
+            /* Larger drag handles */
+            .sub-player-card[draggable="true"],
+            .penalty-card[draggable="true"] {
+                cursor: grab;
+            }
+
+            .sub-player-card.dragging,
+            .penalty-card.dragging {
+                cursor: grabbing;
+            }
+        }
+
+        /* ===== HIGH CONTRAST MODE SUPPORT ===== */
+        @media (prefers-contrast: high) {
+            .scoreboard {
+                border-bottom: 2px solid white;
+            }
+
+            .player-card,
+            .action-btn {
+                border: 2px solid white;
+            }
+
+            .jersey-badge {
+                border-width: 3px;
+            }
+        }
+
+        /* ===== REDUCED MOTION SUPPORT ===== */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .serving-indicator {
+                animation: none;
+            }
+
+            .timeout-timer {
+                animation: none;
+            }
+
+            .player-card.selecting {
+                animation: none;
+            }
+        }
+
+        /* ===== VERY SMALL SCREENS (360px and below) ===== */
+        @media (max-width: 360px) {
+            .score-display {
+                font-size: 28px;
+                min-width: 45px;
+            }
+
+            .action-btn {
+                font-size: 9px;
+                padding: 10px 4px;
+            }
+
+            .player-card {
+                padding: 10px 6px;
+            }
+
+            .menu-dropdown {
+                min-width: 160px;
+            }
+        }
+
+        /* Libero styling */
+        .player-card.is-libero {
+            border-left-color: #9C27B0 !important;
+            border-left-width: 6px !important;
+            position: relative;
+        }
+
+        .player-card.is-libero::before {
+            content: 'L';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: #9C27B0;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            z-index: 1;
+        }
+
+        .jersey-badge.is-libero {
+            border-color: #9C27B0 !important;
+            background: linear-gradient(135deg, #9C27B0, #7B1FA2) !important;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
     </style>
 </head>
+
 <body>
     <!-- Hamburger Menu -->
     <div class="menu-container">
@@ -2391,13 +2474,13 @@
                 <span class="menu-item-text">View Scoresheet</span>
             </a>
             <a href="#" class="menu-item" id="hotkeysBtn">
-            <span class="menu-item-icon">⌨️</span>
-            <span class="menu-item-text">Customize Hotkeys</span>
-        </a>
-        <a href="#" class="menu-item" id="gameSettingsBtn">
-            <span class="menu-item-icon">⚙️</span>
-            <span class="menu-item-text">Game Settings</span>
-        </a>
+                <span class="menu-item-icon">⌨️</span>
+                <span class="menu-item-text">Customize Hotkeys</span>
+            </a>
+            <a href="#" class="menu-item" id="gameSettingsBtn">
+                <span class="menu-item-icon">⚙️</span>
+                <span class="menu-item-text">Game Settings</span>
+            </a>
         </div>
     </div>
 
@@ -2405,53 +2488,53 @@
     <div class="instruction-banner" id="instructionBanner"></div>
 
     <!-- Scoreboard -->
-<div class="scoreboard">
-    <!-- Team A Section -->
-    <div class="team-section left">
-        <div class="team-info">
-            <div class="team-name" id="teamAName">{{ strtoupper($game->team1->team_name) }}</div>
-            <div class="team-stats">
-                <span>T.O: <span id="timeoutsA">0</span>/<span id="maxTimeoutsA">2</span></span>
-                <span>SUB: <span id="substitutionsA">0</span>/<span id="maxSubstitutionsA">6</span></span>
+    <div class="scoreboard">
+        <!-- Team A Section -->
+        <div class="team-section left">
+            <div class="team-info">
+                <div class="team-name" id="teamAName">{{ strtoupper($game->team1->team_name) }}</div>
+                <div class="team-stats">
+                    <span>T.O: <span id="timeoutsA">0</span>/<span id="maxTimeoutsA">2</span></span>
+                    <span>SUB: <span id="substitutionsA">0</span>/<span id="maxSubstitutionsA">6</span></span>
+                </div>
+            </div>
+            <!-- Team A Player Jerseys -->
+            <div class="team-jerseys" id="teamAJerseys">
+                <!-- Will be populated by JavaScript -->
+            </div>
+            <div class="score-display" id="scoreA">00</div>
+            <div class="serving-indicator" id="servingA" style="display: none;"></div>
+        </div>
+
+        <!-- Center Panel -->
+        <div class="center-panel">
+            <div class="set-display">SET <span id="currentSet">1</span></div>
+            <div class="sets-won">
+                <span class="sets-score" id="setsA">0</span>
+                <span style="color: #666;">-</span>
+                <span class="sets-score" id="setsB">0</span>
+            </div>
+            <div class="set-scores" id="setScoresDisplay"></div>
+            <div class="timeout-timer" id="timeoutTimer">TIMEOUT: <span id="timeoutTime">60</span>s</div>
+        </div>
+
+        <!-- Team B Section -->
+        <div class="team-section right">
+            <div class="serving-indicator" id="servingB" style="display: none;"></div>
+            <div class="score-display" id="scoreB">00</div>
+            <!-- Team B Player Jerseys -->
+            <div class="team-jerseys" id="teamBJerseys">
+                <!-- Will be populated by JavaScript -->
+            </div>
+            <div class="team-info">
+                <div class="team-name" id="teamBName">{{ strtoupper($game->team2->team_name) }}</div>
+                <div class="team-stats">
+                    <span>T.O: <span id="timeoutsB">0</span>/<span id="maxTimeoutsB">2</span></span>
+                    <span>SUB: <span id="substitutionsB">0</span>/<span id="maxSubstitutionsB">6</span></span>
+                </div>
             </div>
         </div>
-        <!-- Team A Player Jerseys -->
-        <div class="team-jerseys" id="teamAJerseys">
-            <!-- Will be populated by JavaScript -->
-        </div>
-        <div class="score-display" id="scoreA">00</div>
-        <div class="serving-indicator" id="servingA" style="display: none;"></div>
     </div>
-
-    <!-- Center Panel -->
-    <div class="center-panel">
-        <div class="set-display">SET <span id="currentSet">1</span></div>
-        <div class="sets-won">
-            <span class="sets-score" id="setsA">0</span>
-            <span style="color: #666;">-</span>
-            <span class="sets-score" id="setsB">0</span>
-        </div>
-        <div class="set-scores" id="setScoresDisplay"></div>
-        <div class="timeout-timer" id="timeoutTimer">TIMEOUT: <span id="timeoutTime">60</span>s</div>
-    </div>
-
-    <!-- Team B Section -->
-    <div class="team-section right">
-        <div class="serving-indicator" id="servingB" style="display: none;"></div>
-        <div class="score-display" id="scoreB">00</div>
-        <!-- Team B Player Jerseys -->
-        <div class="team-jerseys" id="teamBJerseys">
-            <!-- Will be populated by JavaScript -->
-        </div>
-        <div class="team-info">
-            <div class="team-name" id="teamBName">{{ strtoupper($game->team2->team_name) }}</div>
-            <div class="team-stats">
-                <span>T.O: <span id="timeoutsB">0</span>/<span id="maxTimeoutsB">2</span></span>
-                <span>SUB: <span id="substitutionsB">0</span>/<span id="maxSubstitutionsB">6</span></span>
-            </div>
-        </div>
-    </div>
-</div>
 
     <!-- Main Content -->
     <div class="container">
@@ -2476,34 +2559,36 @@
 
     <!-- Action Buttons -->
     <div class="actions-section">
-    <div class="actions-grid">
-       <button class="action-btn btn-kill" data-action="kill">Kill</button>
-        <button class="action-btn btn-ace" data-action="ace">Ace</button>
-        <button class="action-btn btn-block" id="blockBtn">Block</button>
-        <button class="action-btn btn-dig" data-action="dig">Dig</button>
-        <button class="action-btn btn-assist" data-action="assist">Set</button>
-        <button class="action-btn btn-error" data-action="error">Error</button>
-        <button class="action-btn btn-penalty" id="penaltyBtn">🃏 Penalty</button>
-        <button class="action-btn btn-timeout" id="timeoutBtn">Timeout</button>
-        <button class="action-btn btn-substitution" id="substitutionBtn">Sub</button>
-        <button class="action-btn btn-undo" id="undoBtn">↶ Undo</button>
+        <div class="actions-grid">
+            <button class="action-btn btn-kill" data-action="kill">Kill</button>
+            <button class="action-btn btn-ace" data-action="ace">Ace</button>
+            <button class="action-btn btn-block" id="blockBtn">Block</button>
+            <button class="action-btn btn-dig" data-action="dig">Dig</button>
+            <button class="action-btn btn-assist" data-action="assist">Set</button>
+            <button class="action-btn btn-error" data-action="error">Error</button>
+            <button class="action-btn btn-penalty" id="penaltyBtn">🃏 Penalty</button>
+            <button class="action-btn btn-timeout" id="timeoutBtn">Timeout</button>
+            <button class="action-btn btn-substitution" id="substitutionBtn">Sub</button>
+            <button class="action-btn btn-undo" id="undoBtn">↶ Undo</button>
+        </div>
     </div>
-</div>
-<!-- Timeout End Modal -->
-<div class="modal" id="timeoutEndModal">
-    <div class="modal-content" style="border: 4px solid #FF9800;">
-        <h2 class="modal-title" style="color: #FF9800;">⏰ TIMEOUT ENDED</h2>
-        <p class="modal-subtitle" style="font-size: 20px;">The 60-second timeout has expired</p>
-        <button class="modal-btn modal-btn-primary" onclick="closeTimeoutEndModal()">RESUME GAME</button>
+    <!-- Timeout End Modal -->
+    <div class="modal" id="timeoutEndModal">
+        <div class="modal-content" style="border: 4px solid #FF9800;">
+            <h2 class="modal-title" style="color: #FF9800;">⏰ TIMEOUT ENDED</h2>
+            <p class="modal-subtitle" style="font-size: 20px;">The 60-second timeout has expired</p>
+            <button class="modal-btn modal-btn-primary" onclick="closeTimeoutEndModal()">RESUME GAME</button>
+        </div>
     </div>
-</div>
     <!-- Team Selection Modal -->
     <div class="modal" id="teamSelectModal">
         <div class="modal-content">
             <h2 class="modal-title">Select Team</h2>
             <p class="modal-subtitle" id="teamSelectPrompt">Choose which team</p>
-            <button class="team-select-btn team-a" data-team="A" id="selectTeamA">{{ strtoupper($game->team1->team_name) }}</button>
-            <button class="team-select-btn team-b" data-team="B" id="selectTeamB">{{ strtoupper($game->team2->team_name) }}</button>
+            <button class="team-select-btn team-a" data-team="A"
+                id="selectTeamA">{{ strtoupper($game->team1->team_name) }}</button>
+            <button class="team-select-btn team-b" data-team="B"
+                id="selectTeamB">{{ strtoupper($game->team2->team_name) }}</button>
             <button class="modal-btn modal-btn-secondary" onclick="closeTeamSelectModal()">Cancel</button>
         </div>
     </div>
@@ -2524,9 +2609,11 @@
             </div>
             <div style="margin: 20px 0;">
                 <div style="color: #888; margin-bottom: 8px;">SETS WON</div>
-                <div style="font-size: 32px; font-weight: bold;"><span id="modalSetsA">0</span> - <span id="modalSetsB">0</span></div>
+                <div style="font-size: 32px; font-weight: bold;"><span id="modalSetsA">0</span> - <span
+                        id="modalSetsB">0</span></div>
             </div>
-            <button class="modal-btn modal-btn-primary" onclick="startNextSet()">START SET <span id="nextSetNumber">2</span></button>
+            <button class="modal-btn modal-btn-primary" onclick="startNextSet()">START SET <span
+                    id="nextSetNumber">2</span></button>
         </div>
     </div>
 
@@ -2547,157 +2634,160 @@
     </div>
 
     <!-- Hotkeys Modal -->
-<div class="modal" id="hotkeysModal">
-    <div class="modal-content">
-        <h2 class="modal-title">Customize Hotkeys</h2>
-        <p class="modal-subtitle">Click on an action and press a key to assign a hotkey. Press ESC to clear.</p>
-        
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
-            <div class="hotkey-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Kill</div>
-                <div class="hotkey-input" data-action="kill">
-                    <span class="current-key" id="key-kill">K</span>
+    <div class="modal" id="hotkeysModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Customize Hotkeys</h2>
+            <p class="modal-subtitle">Click on an action and press a key to assign a hotkey. Press ESC to clear.</p>
+
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+                <div class="hotkey-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Kill</div>
+                    <div class="hotkey-input" data-action="kill">
+                        <span class="current-key" id="key-kill">K</span>
+                    </div>
+                </div>
+
+                <div class="hotkey-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Ace</div>
+                    <div class="hotkey-input" data-action="ace">
+                        <span class="current-key" id="key-ace">A</span>
+                    </div>
+                </div>
+
+                <div class="hotkey-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Block</div>
+                    <div class="hotkey-input" data-action="block">
+                        <span class="current-key" id="key-block">B</span>
+                    </div>
+                </div>
+
+                <div class="hotkey-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Dig</div>
+                    <div class="hotkey-input" data-action="dig">
+                        <span class="current-key" id="key-dig">D</span>
+                    </div>
+                </div>
+
+                <div class="hotkey-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Set</div>
+                    <div class="hotkey-input" data-action="assist">
+                        <span class="current-key" id="key-assist">S</span>
+                    </div>
+                </div>
+
+                <div class="hotkey-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Error</div>
+                    <div class="hotkey-input" data-action="error">
+                        <span class="current-key" id="key-error">E</span>
+                    </div>
+                </div>
+
+                <div class="hotkey-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Timeout</div>
+                    <div class="hotkey-input" data-action="timeout">
+                        <span class="current-key" id="key-timeout">T</span>
+                    </div>
+                </div>
+
+                <div class="hotkey-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Undo</div>
+                    <div class="hotkey-input" data-action="undo">
+                        <span class="current-key" id="key-undo">Z</span>
+                    </div>
                 </div>
             </div>
-            
-            <div class="hotkey-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Ace</div>
-                <div class="hotkey-input" data-action="ace">
-                    <span class="current-key" id="key-ace">A</span>
-                </div>
-            </div>
-            
-            <div class="hotkey-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Block</div>
-                <div class="hotkey-input" data-action="block">
-                    <span class="current-key" id="key-block">B</span>
-                </div>
-            </div>
-            
-            <div class="hotkey-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Dig</div>
-                <div class="hotkey-input" data-action="dig">
-                    <span class="current-key" id="key-dig">D</span>
-                </div>
-            </div>
-            
-            <div class="hotkey-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Set</div>
-                <div class="hotkey-input" data-action="assist">
-                    <span class="current-key" id="key-assist">S</span>
-                </div>
-            </div>
-            
-            <div class="hotkey-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Error</div>
-                <div class="hotkey-input" data-action="error">
-                    <span class="current-key" id="key-error">E</span>
-                </div>
-            </div>
-            
-            <div class="hotkey-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Timeout</div>
-                <div class="hotkey-input" data-action="timeout">
-                    <span class="current-key" id="key-timeout">T</span>
-                </div>
-            </div>
-            
-            <div class="hotkey-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Undo</div>
-                <div class="hotkey-input" data-action="undo">
-                    <span class="current-key" id="key-undo">Z</span>
-                </div>
-            </div>
-        </div>
-        
-        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
-            <button class="modal-btn modal-btn-secondary" onclick="resetHotkeysToDefault()">Reset to Defaults</button>
-            <button class="modal-btn modal-btn-primary" onclick="saveHotkeysSettings()">Save Changes</button>
-            <button class="modal-btn modal-btn-secondary" onclick="closeHotkeysModal()">Cancel</button>
-        </div>
-    </div>
-</div>
 
-<!-- Game Settings Modal -->
-<div class="modal" id="gameSettingsModal">
-    <div class="modal-content">
-        <h2 class="modal-title">Game Settings</h2>
-        <p class="modal-subtitle">Customize limits per set per team</p>
-        
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0;">
-            <div class="settings-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team A Max Timeouts</div>
-                <input type="number" min="0" class="settings-input" id="maxTimeoutsAInput">
-            </div>
-            
-            <div class="settings-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team B Max Timeouts</div>
-                <input type="number" min="0" class="settings-input" id="maxTimeoutsBInput">
-            </div>
-            
-            <div class="settings-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team A Max Substitutions</div>
-                <input type="number" min="0" class="settings-input" id="maxSubstitutionsAInput">
-            </div>
-            
-            <div class="settings-item">
-                <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team B Max Substitutions</div>
-                <input type="number" min="0" class="settings-input" id="maxSubstitutionsBInput">
-            </div>
-        </div>
-        
-        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
-            <button class="modal-btn modal-btn-secondary" onclick="resetSettingsToDefault()">Reset to Defaults</button>
-            <button class="modal-btn modal-btn-primary" onclick="saveGameSettings()">Save Changes</button>
-            <button class="modal-btn modal-btn-secondary" onclick="closeGameSettingsModal()">Cancel</button>
-        </div>
-    </div>
-</div>
-
-<!-- Substitution Modal -->
-<div class="substitution-modal" id="substitutionModal">
-    <div class="substitution-content">
-        <div class="sub-header">
-            <div class="sub-title">Player Substitutions</div>
-            <button class="sub-close" id="subClose">&times;</button>
-        </div>
-
-        <div class="sub-instructions">
-            Drag a bench player onto an active player to make a substitution
-        </div>
-
-        <div class="sub-teams">
-            <!-- Team A Substitutions -->
-            <div class="sub-team-section sub-team-a">
-                <div class="sub-team-title">{{ strtoupper($game->team1->team_name) }}</div>
-
-                <div class="sub-section-title">Active Players (On Court)</div>
-                <div class="sub-players-grid" id="activePlayersA"></div>
-
-                <div class="sub-section-title">Bench Players</div>
-                <div class="sub-players-grid" id="benchPlayersA"></div>
-            </div>
-
-            <!-- Team B Substitutions -->
-            <div class="sub-team-section sub-team-b">
-                <div class="sub-team-title">{{ strtoupper($game->team2->team_name) }}</div>
-
-                <div class="sub-section-title">Active Players (On Court)</div>
-                <div class="sub-players-grid" id="activePlayersB"></div>
-
-                <div class="sub-section-title">Bench Players</div>
-                <div class="sub-players-grid" id="benchPlayersB"></div>
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+                <button class="modal-btn modal-btn-secondary" onclick="resetHotkeysToDefault()">Reset to
+                    Defaults</button>
+                <button class="modal-btn modal-btn-primary" onclick="saveHotkeysSettings()">Save Changes</button>
+                <button class="modal-btn modal-btn-secondary" onclick="closeHotkeysModal()">Cancel</button>
             </div>
         </div>
     </div>
-</div>
 
-<!-- ✅ NEW: Block Type Selection Modal -->
+    <!-- Game Settings Modal -->
+    <div class="modal" id="gameSettingsModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Game Settings</h2>
+            <p class="modal-subtitle">Customize limits per set per team</p>
+
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0;">
+                <div class="settings-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team A Max Timeouts</div>
+                    <input type="number" min="0" class="settings-input" id="maxTimeoutsAInput">
+                </div>
+
+                <div class="settings-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team B Max Timeouts</div>
+                    <input type="number" min="0" class="settings-input" id="maxTimeoutsBInput">
+                </div>
+
+                <div class="settings-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team A Max Substitutions</div>
+                    <input type="number" min="0" class="settings-input" id="maxSubstitutionsAInput">
+                </div>
+
+                <div class="settings-item">
+                    <div style="color: white; font-weight: 600; margin-bottom: 8px;">Team B Max Substitutions</div>
+                    <input type="number" min="0" class="settings-input" id="maxSubstitutionsBInput">
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+                <button class="modal-btn modal-btn-secondary" onclick="resetSettingsToDefault()">Reset to
+                    Defaults</button>
+                <button class="modal-btn modal-btn-primary" onclick="saveGameSettings()">Save Changes</button>
+                <button class="modal-btn modal-btn-secondary" onclick="closeGameSettingsModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Substitution Modal -->
+    <div class="substitution-modal" id="substitutionModal">
+        <div class="substitution-content">
+            <div class="sub-header">
+                <div class="sub-title">Player Substitutions</div>
+                <button class="sub-close" id="subClose">&times;</button>
+            </div>
+
+            <div class="sub-instructions">
+                Drag a bench player onto an active player to make a substitution
+            </div>
+
+            <div class="sub-teams">
+                <!-- Team A Substitutions -->
+                <div class="sub-team-section sub-team-a">
+                    <div class="sub-team-title">{{ strtoupper($game->team1->team_name) }}</div>
+
+                    <div class="sub-section-title">Active Players (On Court)</div>
+                    <div class="sub-players-grid" id="activePlayersA"></div>
+
+                    <div class="sub-section-title">Bench Players</div>
+                    <div class="sub-players-grid" id="benchPlayersA"></div>
+                </div>
+
+                <!-- Team B Substitutions -->
+                <div class="sub-team-section sub-team-b">
+                    <div class="sub-team-title">{{ strtoupper($game->team2->team_name) }}</div>
+
+                    <div class="sub-section-title">Active Players (On Court)</div>
+                    <div class="sub-players-grid" id="activePlayersB"></div>
+
+                    <div class="sub-section-title">Bench Players</div>
+                    <div class="sub-players-grid" id="benchPlayersB"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ NEW: Block Type Selection Modal -->
     <div class="block-type-modal" id="blockTypeModal">
         <div class="block-type-content">
             <div class="block-type-title">🏐 Select Block Type</div>
             <div class="block-type-subtitle">Choose the type of block</div>
-            
+
             <div class="block-type-options">
                 <button class="block-type-btn btn-kill-block" onclick="handleBlockType('kill_block')">
                     <span>⚡</span>
@@ -2706,7 +2796,7 @@
                         <div style="font-size: 12px; opacity: 0.8;">Point scored + Block recorded</div>
                     </div>
                 </button>
-                
+
                 <button class="block-type-btn btn-regular-block" onclick="handleBlockType('regular_block')">
                     <span>🛡️</span>
                     <div>
@@ -2721,114 +2811,118 @@
     </div>
 
     <div class="penalty-modal" id="penaltyModal">
-    <div class="penalty-content">
-        <div class="penalty-title">🃏 Issue Penalty Card</div>
-        <div class="penalty-subtitle">Drag a card to the team receiving the penalty</div>
-        
-        <!-- Draggable Cards Section -->
-        <div class="penalty-cards-section">
-            <div class="penalty-card yellow-card" draggable="true" id="yellowCard">
-                <div class="card-icon">⚠️</div>
-                <div class="card-label">Yellow</div>
-                <div class="card-description">Warning</div>
+        <div class="penalty-content">
+            <div class="penalty-title">🃏 Issue Penalty Card</div>
+            <div class="penalty-subtitle">Drag a card to the team receiving the penalty</div>
+
+            <!-- Draggable Cards Section -->
+            <div class="penalty-cards-section">
+                <div class="penalty-card yellow-card" draggable="true" id="yellowCard">
+                    <div class="card-icon">⚠️</div>
+                    <div class="card-label">Yellow</div>
+                    <div class="card-description">Warning</div>
+                </div>
+
+                <div class="penalty-card red-card" draggable="true" id="redCard">
+                    <div class="card-icon">🟥</div>
+                    <div class="card-label">Red</div>
+                    <div class="card-description">Opponent scores</div>
+                </div>
             </div>
-            
-            <div class="penalty-card red-card" draggable="true" id="redCard">
-                <div class="card-icon">🟥</div>
-                <div class="card-label">Red</div>
-                <div class="card-description">Opponent scores</div>
+
+            <!-- Team Drop Zones -->
+            <div class="penalty-teams-section">
+                <div class="penalty-team-zone team-a" id="penaltyZoneA" data-team="A">
+                    <div class="penalty-team-name">{{ strtoupper($game->team1->team_name) }}</div>
+                    <div class="drop-instruction">Drop card here</div>
+                </div>
+
+                <div class="penalty-team-zone team-b" id="penaltyZoneB" data-team="B">
+                    <div class="penalty-team-name">{{ strtoupper($game->team2->team_name) }}</div>
+                    <div class="drop-instruction">Drop card here</div>
+                </div>
             </div>
+
+            <button class="modal-btn modal-btn-secondary" onclick="closePenaltyModal()">Cancel</button>
         </div>
-
-        <!-- Team Drop Zones -->
-        <div class="penalty-teams-section">
-            <div class="penalty-team-zone team-a" id="penaltyZoneA" data-team="A">
-                <div class="penalty-team-name">{{ strtoupper($game->team1->team_name) }}</div>
-                <div class="drop-instruction">Drop card here</div>
-            </div>
-
-            <div class="penalty-team-zone team-b" id="penaltyZoneB" data-team="B">
-                <div class="penalty-team-name">{{ strtoupper($game->team2->team_name) }}</div>
-                <div class="drop-instruction">Drop card here</div>
-            </div>
-        </div>
-
-        <button class="modal-btn modal-btn-secondary" onclick="closePenaltyModal()">Cancel</button>
     </div>
-</div>
 
-<!-- Set Summary Modal -->
-<div class="modal" id="setSummaryModal">
-    <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
-        <h2 class="modal-title" style="color: #4CAF50;">📊 SET <span id="summarySetNumber">1</span> SUMMARY</h2>
-        
-        <!-- Final Score -->
-        <div class="modal-score" style="margin: 20px 0;">
-            <div class="modal-team">
-                <div class="modal-team-name" id="summaryTeamAName"></div>
-                <div class="modal-team-score" id="summaryScoreA">00</div>
+    <!-- Set Summary Modal -->
+    <div class="modal" id="setSummaryModal">
+        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+            <h2 class="modal-title" style="color: #4CAF50;">📊 SET <span id="summarySetNumber">1</span> SUMMARY</h2>
+
+            <!-- Final Score -->
+            <div class="modal-score" style="margin: 20px 0;">
+                <div class="modal-team">
+                    <div class="modal-team-name" id="summaryTeamAName"></div>
+                    <div class="modal-team-score" id="summaryScoreA">00</div>
+                </div>
+                <div class="modal-team">
+                    <div class="modal-team-name" id="summaryTeamBName"></div>
+                    <div class="modal-team-score" id="summaryScoreB">00</div>
+                </div>
             </div>
-            <div class="modal-team">
-                <div class="modal-team-name" id="summaryTeamBName"></div>
-                <div class="modal-team-score" id="summaryScoreB">00</div>
+
+            <!-- Team A Stats -->
+            <div style="margin: 30px 0;">
+                <h3
+                    style="color: #c33; margin-bottom: 15px; font-size: 20px; border-bottom: 2px solid #c33; padding-bottom: 8px;">
+                    <span id="summaryTeamATitle"></span> STATISTICS
+                </h3>
+                <div style="overflow-x: auto;">
+                    <table
+                        style="width: 100%; border-collapse: collapse; background: #3d3d3d; border-radius: 8px; overflow: hidden;">
+                        <thead style="background: #c33;">
+                            <tr>
+                                <th style="padding: 12px; text-align: left;">#</th>
+                                <th style="padding: 12px; text-align: left;">Player</th>
+                                <th style="padding: 12px; text-align: center;">Kills</th>
+                                <th style="padding: 12px; text-align: center;">Aces</th>
+                                <th style="padding: 12px; text-align: center;">Blocks</th>
+                                <th style="padding: 12px; text-align: center;">Digs</th>
+                                <th style="padding: 12px; text-align: center;">Sets</th>
+                                <th style="padding: 12px; text-align: center;">Errors</th>
+                            </tr>
+                        </thead>
+                        <tbody id="summaryTeamAStats">
+                            <!-- Will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
+            <!-- Team B Stats -->
+            <div style="margin: 30px 0;">
+                <h3
+                    style="color: #339; margin-bottom: 15px; font-size: 20px; border-bottom: 2px solid #339; padding-bottom: 8px;">
+                    <span id="summaryTeamBTitle"></span> STATISTICS
+                </h3>
+                <div style="overflow-x: auto;">
+                    <table
+                        style="width: 100%; border-collapse: collapse; background: #3d3d3d; border-radius: 8px; overflow: hidden;">
+                        <thead style="background: #339;">
+                            <tr>
+                                <th style="padding: 12px; text-align: left;">#</th>
+                                <th style="padding: 12px; text-align: left;">Player</th>
+                                <th style="padding: 12px; text-align: center;">Kills</th>
+                                <th style="padding: 12px; text-align: center;">Aces</th>
+                                <th style="padding: 12px; text-align: center;">Blocks</th>
+                                <th style="padding: 12px; text-align: center;">Digs</th>
+                                <th style="padding: 12px; text-align: center;">Sets</th>
+                                <th style="padding: 12px; text-align: center;">Errors</th>
+                            </tr>
+                        </thead>
+                        <tbody id="summaryTeamBStats">
+                            <!-- Will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <button class="modal-btn modal-btn-primary" onclick="closeSetSummaryModal()">CONTINUE TO NEXT SET</button>
         </div>
-
-        <!-- Team A Stats -->
-        <div style="margin: 30px 0;">
-            <h3 style="color: #c33; margin-bottom: 15px; font-size: 20px; border-bottom: 2px solid #c33; padding-bottom: 8px;">
-                <span id="summaryTeamATitle"></span> STATISTICS
-            </h3>
-            <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; background: #3d3d3d; border-radius: 8px; overflow: hidden;">
-                    <thead style="background: #c33;">
-                        <tr>
-                            <th style="padding: 12px; text-align: left;">#</th>
-                            <th style="padding: 12px; text-align: left;">Player</th>
-                            <th style="padding: 12px; text-align: center;">Kills</th>
-                            <th style="padding: 12px; text-align: center;">Aces</th>
-                            <th style="padding: 12px; text-align: center;">Blocks</th>
-                            <th style="padding: 12px; text-align: center;">Digs</th>
-                            <th style="padding: 12px; text-align: center;">Sets</th>
-                            <th style="padding: 12px; text-align: center;">Errors</th>
-                        </tr>
-                    </thead>
-                    <tbody id="summaryTeamAStats">
-                        <!-- Will be populated by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Team B Stats -->
-        <div style="margin: 30px 0;">
-            <h3 style="color: #339; margin-bottom: 15px; font-size: 20px; border-bottom: 2px solid #339; padding-bottom: 8px;">
-                <span id="summaryTeamBTitle"></span> STATISTICS
-            </h3>
-            <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; background: #3d3d3d; border-radius: 8px; overflow: hidden;">
-                    <thead style="background: #339;">
-                        <tr>
-                            <th style="padding: 12px; text-align: left;">#</th>
-                            <th style="padding: 12px; text-align: left;">Player</th>
-                            <th style="padding: 12px; text-align: center;">Kills</th>
-                            <th style="padding: 12px; text-align: center;">Aces</th>
-                            <th style="padding: 12px; text-align: center;">Blocks</th>
-                            <th style="padding: 12px; text-align: center;">Digs</th>
-                            <th style="padding: 12px; text-align: center;">Sets</th>
-                            <th style="padding: 12px; text-align: center;">Errors</th>
-                        </tr>
-                    </thead>
-                    <tbody id="summaryTeamBStats">
-                        <!-- Will be populated by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <button class="modal-btn modal-btn-primary" onclick="closeSetSummaryModal()">CONTINUE TO NEXT SET</button>
     </div>
-</div>
 
     <script>
         // Game data from Laravel
@@ -2846,18 +2940,22 @@
 
         // Game state
         // Block action tracking
-let blockingTeam = null;
-let pendingBlockType = null;
-        let scoreA = 0, scoreB = 0;
+        let blockingTeam = null;
+        let pendingBlockType = null;
+        let scoreA = 0,
+            scoreB = 0;
         let currentSet = 1;
-        let setsA = 0, setsB = 0;
+        let setsA = 0,
+            setsB = 0;
         let serving = 'A';
-        let timeoutsA = 0, timeoutsB = 0;
-        let substitutionsA = 0, substitutionsB = 0;
+        let timeoutsA = 0,
+            timeoutsB = 0;
+        let substitutionsA = 0,
+            substitutionsB = 0;
         let events = [];
         let eventCounter = 1;
 
-       
+
         let setScores = {
             A: [0, 0, 0, 0, 0],
             B: [0, 0, 0, 0, 0]
@@ -2867,14 +2965,14 @@ let pendingBlockType = null;
         let selectingPlayer = false;
         let selectingTeam = false;
         let teamSelectCallback = null;
-    // Current server tracking
-    let currentServerId = null;
-    let currentServerTeam = null;
+        // Current server tracking
+        let currentServerId = null;
+        let currentServerTeam = null;
 
         let timeoutActive = false;
         let timeoutTime = 60;
         let timeoutInterval = null;
-        let currentTimeoutTeam = null;  // ✅ ADD THIS LINE
+        let currentTimeoutTeam = null; // ✅ ADD THIS LINE
 
         // Game settings limits
         let maxTimeoutsA = 2;
@@ -2908,186 +3006,189 @@ let pendingBlockType = null;
         });
 
         // Player roster management
-let activePlayers = {
-    A: [],
-    B: []
-};
+        let activePlayers = {
+            A: [],
+            B: []
+        };
 
-let benchPlayers = {
-    A: [],
-    B: []
-};
+        let benchPlayers = {
+            A: [],
+            B: []
+        };
 
-// Initialize player rosters from game data
-function initializePlayerRosters() {
-    // Team A - first 6 players are active (starters)
-    activePlayers.A = gameData.team1.players.slice(0, 6);
-    benchPlayers.A = gameData.team1.players.slice(6);
+        // Initialize player rosters from game data
+        function initializePlayerRosters() {
+            // Team A - first 6 players are active (starters)
+            activePlayers.A = gameData.team1.players.slice(0, 6);
+            benchPlayers.A = gameData.team1.players.slice(6);
 
-    // Team B - first 6 players are active (starters)
-    activePlayers.B = gameData.team2.players.slice(0, 6);
-    benchPlayers.B = gameData.team2.players.slice(6);
+            // Team B - first 6 players are active (starters)
+            activePlayers.B = gameData.team2.players.slice(0, 6);
+            benchPlayers.B = gameData.team2.players.slice(6);
 
-    console.log('Initialized rosters:', { activePlayers, benchPlayers });
-    
-    // Render jerseys in scoreboard
-    renderTeamJerseys();
-}
+            console.log('Initialized rosters:', {
+                activePlayers,
+                benchPlayers
+            });
 
-// Render team jerseys in scoreboard
-function renderTeamJerseys() {
-    const teamAJerseys = document.getElementById('teamAJerseys');
-    const teamBJerseys = document.getElementById('teamBJerseys');
-
-    teamAJerseys.innerHTML = '';
-    teamBJerseys.innerHTML = '';
-
-    // Render Team A jerseys
-    activePlayers.A.forEach(player => {
-        const badge = createJerseyBadge(player, 'A');
-        teamAJerseys.appendChild(badge);
-    });
-
-    // Render Team B jerseys
-    activePlayers.B.forEach(player => {
-        const badge = createJerseyBadge(player, 'B');
-        teamBJerseys.appendChild(badge);
-    });
-}
-
-// Create jersey badge
-function createJerseyBadge(player, team) {
-    const badge = document.createElement('div');
-    badge.className = `jersey-badge team-${team.toLowerCase()} active-player`;
-    badge.dataset.playerId = player.id;
-    badge.dataset.team = team;
-    badge.title = player.name || `#${player.number}`;
-    
-    badge.innerHTML = `<span class="player-number">${player.number || '00'}</span>`;
-    
-    // clicking a jersey sets that player as the current server for their team
-    badge.addEventListener('click', (e) => {
-        e.stopPropagation();
-        setServer(team, player.id);
-    });
-
-    // visually mark current server
-    if (currentServerId && currentServerId.toString() === player.id.toString() && currentServerTeam === team) {
-        badge.classList.add('current-server');
-    }
-
-    return badge;
-}
-
-// ✅ UPDATED: Identify liberos and set both original and current
-function identifyLiberos() {
-    // Team A - find player with position "Libero"
-    const liberoPlayerA = gameData.team1.players.find(p => 
-        p.position && (p.position.toLowerCase() === 'libero' || p.position.toLowerCase() === 'l')
-    );
-    if (liberoPlayerA) {
-        liberoA = liberoPlayerA.id;
-        currentLiberoA = liberoPlayerA.id; // Set current as well
-        console.log('✅ Team A Libero identified:', liberoPlayerA.number, liberoPlayerA.name);
-    }
-    
-    // Team B - find player with position "Libero"
-    const liberoPlayerB = gameData.team2.players.find(p => 
-        p.position && (p.position.toLowerCase() === 'libero' || p.position.toLowerCase() === 'l')
-    );
-    if (liberoPlayerB) {
-        liberoB = liberoPlayerB.id;
-        currentLiberoB = liberoPlayerB.id; // Set current as well
-        console.log('✅ Team B Libero identified:', liberoPlayerB.number, liberoPlayerB.name);
-    }
-    
-    // Update visual indicators
-    updateLiberoVisuals();
-}
-
-// ✅ ADD: Update visuals to show who is libero
-// ✅ UPDATED: Update visuals based on CURRENT libero (not original)
-function updateLiberoVisuals() {
-    // Clear existing libero styling
-    document.querySelectorAll('.player-card').forEach(card => {
-        card.classList.remove('is-libero');
-    });
-    
-    document.querySelectorAll('.jersey-badge').forEach(badge => {
-        badge.classList.remove('is-libero');
-    });
-    
-    // Mark Team A current libero (whoever is currently playing as libero)
-    if (currentLiberoA) {
-        const cardA = document.querySelector(`.player-card[data-player-id="${currentLiberoA}"]`);
-        if (cardA) {
-            cardA.classList.add('is-libero');
-            console.log('Applied libero visual to Team A player:', currentLiberoA);
+            // Render jerseys in scoreboard
+            renderTeamJerseys();
         }
-    }
-    
-    // Mark Team B current libero
-    if (currentLiberoB) {
-        const cardB = document.querySelector(`.player-card[data-player-id="${currentLiberoB}"]`);
-        if (cardB) {
-            cardB.classList.add('is-libero');
-            console.log('Applied libero visual to Team B player:', currentLiberoB);
-        }
-    }
-}
 
-// ✅ FIXED: Only check if libero is actually on court
-function checkLiberoPosition(team) {
-    const currentLiberoId = team === 'A' ? currentLiberoA : currentLiberoB;
-    
-    // ✅ CRITICAL: If no current libero, don't check at all
-    if (!currentLiberoId) {
-        console.log(`No active libero on court for team ${team} - skipping check`);
-        return;
-    }
-    
-    const arr = team === 'A' ? activePlayers.A : activePlayers.B;
-    
-    // Check if current libero is actually in the active players array
-    const liberoIndex = arr.findIndex(p => p && p.id.toString() === currentLiberoId.toString());
-    
-    // ✅ CRITICAL: If libero not found in active players, they're benched
-    if (liberoIndex === -1) {
-        console.log(`Current libero for team ${team} is not in active roster (benched)`);
-        // Clear the current libero since they're not on court
-        if (team === 'A') {
-            currentLiberoA = null;
-        } else {
-            currentLiberoB = null;
+        // Render team jerseys in scoreboard
+        function renderTeamJerseys() {
+            const teamAJerseys = document.getElementById('teamAJerseys');
+            const teamBJerseys = document.getElementById('teamBJerseys');
+
+            teamAJerseys.innerHTML = '';
+            teamBJerseys.innerHTML = '';
+
+            // Render Team A jerseys
+            activePlayers.A.forEach(player => {
+                const badge = createJerseyBadge(player, 'A');
+                teamAJerseys.appendChild(badge);
+            });
+
+            // Render Team B jerseys
+            activePlayers.B.forEach(player => {
+                const badge = createJerseyBadge(player, 'B');
+                teamBJerseys.appendChild(badge);
+            });
         }
-        return;
-    }
-    
-    // Position mapping: index 0->pos4, 1->pos3, 2->pos2 (front row)
-    const frontRowIndices = [0, 1, 2];
-    
-    console.log(`Team ${team} libero check:`, {
-        currentLiberoId,
-        liberoIndex,
-        isFrontRow: frontRowIndices.includes(liberoIndex),
-        currentPosition: liberoIndex
-    });
-    
-    if (frontRowIndices.includes(liberoIndex)) {
-        const liberoPlayer = arr[liberoIndex];
-        console.log('⚠️ LIBERO IN FRONT ROW!', liberoPlayer);
-        showLiberoSubWarning(team, liberoPlayer);
-    }
-}
-// ✅ ADD: Show libero substitution warning
-function showLiberoSubWarning(team, liberoPlayer) {
-    if (quickSubPanelOpen) return;
-    
-    quickSubPanelOpen = true;
-    
-    const panel = document.createElement('div');
-    panel.id = 'quickSubPanel';
-    panel.style.cssText = `
+
+        // Create jersey badge
+        function createJerseyBadge(player, team) {
+            const badge = document.createElement('div');
+            badge.className = `jersey-badge team-${team.toLowerCase()} active-player`;
+            badge.dataset.playerId = player.id;
+            badge.dataset.team = team;
+            badge.title = player.name || `#${player.number}`;
+
+            badge.innerHTML = `<span class="player-number">${player.number || '00'}</span>`;
+
+            // clicking a jersey sets that player as the current server for their team
+            badge.addEventListener('click', (e) => {
+                e.stopPropagation();
+                setServer(team, player.id);
+            });
+
+            // visually mark current server
+            if (currentServerId && currentServerId.toString() === player.id.toString() && currentServerTeam === team) {
+                badge.classList.add('current-server');
+            }
+
+            return badge;
+        }
+
+        // ✅ UPDATED: Identify liberos and set both original and current
+        function identifyLiberos() {
+            // Team A - find player with position "Libero"
+            const liberoPlayerA = gameData.team1.players.find(p =>
+                p.position && (p.position.toLowerCase() === 'libero' || p.position.toLowerCase() === 'l')
+            );
+            if (liberoPlayerA) {
+                liberoA = liberoPlayerA.id;
+                currentLiberoA = liberoPlayerA.id; // Set current as well
+                console.log('✅ Team A Libero identified:', liberoPlayerA.number, liberoPlayerA.name);
+            }
+
+            // Team B - find player with position "Libero"
+            const liberoPlayerB = gameData.team2.players.find(p =>
+                p.position && (p.position.toLowerCase() === 'libero' || p.position.toLowerCase() === 'l')
+            );
+            if (liberoPlayerB) {
+                liberoB = liberoPlayerB.id;
+                currentLiberoB = liberoPlayerB.id; // Set current as well
+                console.log('✅ Team B Libero identified:', liberoPlayerB.number, liberoPlayerB.name);
+            }
+
+            // Update visual indicators
+            updateLiberoVisuals();
+        }
+
+        // ✅ ADD: Update visuals to show who is libero
+        // ✅ UPDATED: Update visuals based on CURRENT libero (not original)
+        function updateLiberoVisuals() {
+            // Clear existing libero styling
+            document.querySelectorAll('.player-card').forEach(card => {
+                card.classList.remove('is-libero');
+            });
+
+            document.querySelectorAll('.jersey-badge').forEach(badge => {
+                badge.classList.remove('is-libero');
+            });
+
+            // Mark Team A current libero (whoever is currently playing as libero)
+            if (currentLiberoA) {
+                const cardA = document.querySelector(`.player-card[data-player-id="${currentLiberoA}"]`);
+                if (cardA) {
+                    cardA.classList.add('is-libero');
+                    console.log('Applied libero visual to Team A player:', currentLiberoA);
+                }
+            }
+
+            // Mark Team B current libero
+            if (currentLiberoB) {
+                const cardB = document.querySelector(`.player-card[data-player-id="${currentLiberoB}"]`);
+                if (cardB) {
+                    cardB.classList.add('is-libero');
+                    console.log('Applied libero visual to Team B player:', currentLiberoB);
+                }
+            }
+        }
+
+        // ✅ FIXED: Only check if libero is actually on court
+        function checkLiberoPosition(team) {
+            const currentLiberoId = team === 'A' ? currentLiberoA : currentLiberoB;
+
+            // ✅ CRITICAL: If no current libero, don't check at all
+            if (!currentLiberoId) {
+                console.log(`No active libero on court for team ${team} - skipping check`);
+                return;
+            }
+
+            const arr = team === 'A' ? activePlayers.A : activePlayers.B;
+
+            // Check if current libero is actually in the active players array
+            const liberoIndex = arr.findIndex(p => p && p.id.toString() === currentLiberoId.toString());
+
+            // ✅ CRITICAL: If libero not found in active players, they're benched
+            if (liberoIndex === -1) {
+                console.log(`Current libero for team ${team} is not in active roster (benched)`);
+                // Clear the current libero since they're not on court
+                if (team === 'A') {
+                    currentLiberoA = null;
+                } else {
+                    currentLiberoB = null;
+                }
+                return;
+            }
+
+            // Position mapping: index 0->pos4, 1->pos3, 2->pos2 (front row)
+            const frontRowIndices = [0, 1, 2];
+
+            console.log(`Team ${team} libero check:`, {
+                currentLiberoId,
+                liberoIndex,
+                isFrontRow: frontRowIndices.includes(liberoIndex),
+                currentPosition: liberoIndex
+            });
+
+            if (frontRowIndices.includes(liberoIndex)) {
+                const liberoPlayer = arr[liberoIndex];
+                console.log('⚠️ LIBERO IN FRONT ROW!', liberoPlayer);
+                showLiberoSubWarning(team, liberoPlayer);
+            }
+        }
+        // ✅ ADD: Show libero substitution warning
+        function showLiberoSubWarning(team, liberoPlayer) {
+            if (quickSubPanelOpen) return;
+
+            quickSubPanelOpen = true;
+
+            const panel = document.createElement('div');
+            panel.id = 'quickSubPanel';
+            panel.style.cssText = `
         position: fixed;
         top: 50%;
         left: 50%;
@@ -3101,10 +3202,10 @@ function showLiberoSubWarning(team, liberoPlayer) {
         max-width: 90vw;
         animation: slideIn 0.3s ease-out;
     `;
-    
-    const teamName = team === 'A' ? gameData.team1.name : gameData.team2.name;
-    
-    panel.innerHTML = `
+
+            const teamName = team === 'A' ? gameData.team1.name : gameData.team2.name;
+
+            panel.innerHTML = `
         <div style="text-align: center; margin-bottom: 20px;">
             <div style="font-size: 28px; font-weight: bold; color: white; margin-bottom: 8px;">
                 ⚠️ LIBERO IN FRONT ROW
@@ -3150,16 +3251,16 @@ function showLiberoSubWarning(team, liberoPlayer) {
             </button>
         </div>
     `;
-    
-    document.body.appendChild(panel);
-    
-    // Populate available players
-    const benchArr = team === 'A' ? benchPlayers.A : benchPlayers.B;
-    const playersContainer = document.getElementById('quickSubPlayers');
-    
-    benchArr.forEach(player => {
-        const card = document.createElement('div');
-        card.style.cssText = `
+
+            document.body.appendChild(panel);
+
+            // Populate available players
+            const benchArr = team === 'A' ? benchPlayers.A : benchPlayers.B;
+            const playersContainer = document.getElementById('quickSubPlayers');
+
+            benchArr.forEach(player => {
+                const card = document.createElement('div');
+                card.style.cssText = `
             background: rgba(255,255,255,0.15);
             border-radius: 10px;
             padding: 16px;
@@ -3168,8 +3269,8 @@ function showLiberoSubWarning(team, liberoPlayer) {
             transition: all 0.2s;
             border: 2px solid transparent;
         `;
-        
-        card.innerHTML = `
+
+                card.innerHTML = `
             <div style="font-size: 24px; font-weight: bold; color: white; margin-bottom: 4px;">
                 ${player.number || '00'}
             </div>
@@ -3177,140 +3278,140 @@ function showLiberoSubWarning(team, liberoPlayer) {
                 ${player.position || 'P'}
             </div>
         `;
-        
-        card.onmouseover = function() {
-            this.style.background = 'rgba(255,255,255,0.3)';
-            this.style.borderColor = 'white';
-            this.style.transform = 'translateY(-2px)';
-        };
-        card.onmouseout = function() {
-            this.style.background = 'rgba(255,255,255,0.15)';
-            this.style.borderColor = 'transparent';
-            this.style.transform = 'translateY(0)';
-        };
-        
-        card.onclick = () => quickSubLibero(team, liberoPlayer.id, player.id);
-        
-        playersContainer.appendChild(card);
-    });
-}
 
-// ✅ FIXED: When quick-subbing libero out, clear the current libero
-function quickSubLibero(team, liberoId, replacementId) {
-    const arr = team === 'A' ? activePlayers.A : activePlayers.B;
-    const bench = team === 'A' ? benchPlayers.A : benchPlayers.B;
-    
-    const activeIndex = arr.findIndex(p => p.id.toString() === liberoId.toString());
-    const benchIndex = bench.findIndex(p => p.id.toString() === replacementId.toString());
-    
-    if (activeIndex === -1 || benchIndex === -1) {
-        alert('Error: Players not found');
-        return;
-    }
-    
-    const currentSubs = team === 'A' ? substitutionsA : substitutionsB;
-    const maxSubs = team === 'A' ? maxSubstitutionsA : maxSubstitutionsB;
-    
-    if (currentSubs >= maxSubs) {
-        alert(`Team ${team} has no more substitutions remaining this set`);
-        closeQuickSubPanel();
-        return;
-    }
-    
-    // Swap players
-    const liberoPlayer = arr[activeIndex];
-    const replacementPlayer = bench[benchIndex];
-    
-    bench[benchIndex] = liberoPlayer;
-    arr[activeIndex] = replacementPlayer;
-    
-    // ✅ FIXED: When libero is subbed out, clear current libero (don't transfer to replacement)
-    if (team === 'A') {
-        currentLiberoA = null;
-        console.log('Team A libero REMOVED from court via quick sub');
-    } else {
-        currentLiberoB = null;
-        console.log('Team B libero REMOVED from court via quick sub');
-    }
-    
-    // Update substitution count
-    if (team === 'A') {
-        substitutionsA++;
-        document.getElementById('substitutionsA').textContent = substitutionsA;
-    } else {
-        substitutionsB++;
-        document.getElementById('substitutionsB').textContent = substitutionsB;
-    }
-    
-    logEvent(team, `${liberoPlayer.number}→${replacementPlayer.number}`, 'Libero Sub', 0);
-    
-    renderSubstitutionPlayers();
-    renderTeamJerseys();
-    updateMainRoster();
-    
-    closeQuickSubPanel();
-    showNotification(`Libero substituted: #${liberoPlayer.number} → #${replacementPlayer.number}`, '#4CAF50');
-}
+                card.onmouseover = function() {
+                    this.style.background = 'rgba(255,255,255,0.3)';
+                    this.style.borderColor = 'white';
+                    this.style.transform = 'translateY(-2px)';
+                };
+                card.onmouseout = function() {
+                    this.style.background = 'rgba(255,255,255,0.15)';
+                    this.style.borderColor = 'transparent';
+                    this.style.transform = 'translateY(0)';
+                };
 
-// ✅ ADD: Close quick sub panel
-function closeQuickSubPanel() {
-    const panel = document.getElementById('quickSubPanel');
-    if (panel) {
-        panel.remove();
-    }
-    quickSubPanelOpen = false;
-}
+                card.onclick = () => quickSubLibero(team, liberoPlayer.id, player.id);
 
-// ✅ ADD: Open full sub modal
-function openFullSubModal(team) {
-    closeQuickSubPanel();
-    openSubstitutionModal();
-}
+                playersContainer.appendChild(card);
+            });
+        }
 
-       document.getElementById('blockBtn').addEventListener('click', function() {
-    selectedAction = 'block';
-    document.querySelectorAll('.action-btn').forEach(btn => btn.classList.remove('selected'));
-    this.classList.add('selected');
-    
-    // ✅ Skip team selection - go directly to block type modal
-    document.getElementById('blockTypeModal').classList.add('show');
-});
+        // ✅ FIXED: When quick-subbing libero out, clear the current libero
+        function quickSubLibero(team, liberoId, replacementId) {
+            const arr = team === 'A' ? activePlayers.A : activePlayers.B;
+            const bench = team === 'A' ? benchPlayers.A : benchPlayers.B;
+
+            const activeIndex = arr.findIndex(p => p.id.toString() === liberoId.toString());
+            const benchIndex = bench.findIndex(p => p.id.toString() === replacementId.toString());
+
+            if (activeIndex === -1 || benchIndex === -1) {
+                alert('Error: Players not found');
+                return;
+            }
+
+            const currentSubs = team === 'A' ? substitutionsA : substitutionsB;
+            const maxSubs = team === 'A' ? maxSubstitutionsA : maxSubstitutionsB;
+
+            if (currentSubs >= maxSubs) {
+                alert(`Team ${team} has no more substitutions remaining this set`);
+                closeQuickSubPanel();
+                return;
+            }
+
+            // Swap players
+            const liberoPlayer = arr[activeIndex];
+            const replacementPlayer = bench[benchIndex];
+
+            bench[benchIndex] = liberoPlayer;
+            arr[activeIndex] = replacementPlayer;
+
+            // ✅ FIXED: When libero is subbed out, clear current libero (don't transfer to replacement)
+            if (team === 'A') {
+                currentLiberoA = null;
+                console.log('Team A libero REMOVED from court via quick sub');
+            } else {
+                currentLiberoB = null;
+                console.log('Team B libero REMOVED from court via quick sub');
+            }
+
+            // Update substitution count
+            if (team === 'A') {
+                substitutionsA++;
+                document.getElementById('substitutionsA').textContent = substitutionsA;
+            } else {
+                substitutionsB++;
+                document.getElementById('substitutionsB').textContent = substitutionsB;
+            }
+
+            logEvent(team, `${liberoPlayer.number}→${replacementPlayer.number}`, 'Libero Sub', 0);
+
+            renderSubstitutionPlayers();
+            renderTeamJerseys();
+            updateMainRoster();
+
+            closeQuickSubPanel();
+            showNotification(`Libero substituted: #${liberoPlayer.number} → #${replacementPlayer.number}`, '#4CAF50');
+        }
+
+        // ✅ ADD: Close quick sub panel
+        function closeQuickSubPanel() {
+            const panel = document.getElementById('quickSubPanel');
+            if (panel) {
+                panel.remove();
+            }
+            quickSubPanelOpen = false;
+        }
+
+        // ✅ ADD: Open full sub modal
+        function openFullSubModal(team) {
+            closeQuickSubPanel();
+            openSubstitutionModal();
+        }
+
+        document.getElementById('blockBtn').addEventListener('click', function() {
+            selectedAction = 'block';
+            document.querySelectorAll('.action-btn').forEach(btn => btn.classList.remove('selected'));
+            this.classList.add('selected');
+
+            // ✅ Skip team selection - go directly to block type modal
+            document.getElementById('blockTypeModal').classList.add('show');
+        });
 
         // ✅ NEW: Handle Block Team Selection
         function handleBlockTeamSelect(team) {
             blockingTeam = team;
             closeTeamSelectModal();
-            
+
             // Now show block type modal
             document.getElementById('blockTypeModal').classList.add('show');
         }
 
         // ✅ NEW: Handle Block Type Selection
         // ✅ UPDATED: Handle Block Type Selection - skip team selection
-// ✅ FIXED: Handle Block Type Selection
-function handleBlockType(blockType) {
-    pendingBlockType = blockType;
-    blockingTeam = null; // We don't need this anymore, but keeping for compatibility
-    
-    // Close the block type modal
-    document.getElementById('blockTypeModal').classList.remove('show');
-    
-    // Set up player selection state
-    selectedAction = 'block';  // ✅ Make sure this is set
-    selectingPlayer = true;
-    
-    // Make ALL player cards selectable
-    document.querySelectorAll('.player-card').forEach(card => {
-        card.classList.add('selecting');
-    });
-    
-    // Show instruction based on block type
-    if (blockType === 'kill_block') {
-        showInstruction('Select player who made the KILL BLOCK (will score point + record block stat)');
-    } else {
-        showInstruction('Select player who made the REGULAR BLOCK (no point, only stat recorded)');
-    }
-}
+        // ✅ FIXED: Handle Block Type Selection
+        function handleBlockType(blockType) {
+            pendingBlockType = blockType;
+            blockingTeam = null; // We don't need this anymore, but keeping for compatibility
+
+            // Close the block type modal
+            document.getElementById('blockTypeModal').classList.remove('show');
+
+            // Set up player selection state
+            selectedAction = 'block'; // ✅ Make sure this is set
+            selectingPlayer = true;
+
+            // Make ALL player cards selectable
+            document.querySelectorAll('.player-card').forEach(card => {
+                card.classList.add('selecting');
+            });
+
+            // Show instruction based on block type
+            if (blockType === 'kill_block') {
+                showInstruction('Select player who made the KILL BLOCK (will score point + record block stat)');
+            } else {
+                showInstruction('Select player who made the REGULAR BLOCK (no point, only stat recorded)');
+            }
+        }
 
         // ✅ NEW: Close Block Type Modal
         function closeBlockTypeModal() {
@@ -3319,204 +3420,211 @@ function handleBlockType(blockType) {
             resetSelection();
         }
 
-     function handlePlayerClick(team, player) {
-    if (!selectingPlayer) {
-        console.log('Not selecting player, ignoring click');
-        return;
-    }
+        function handlePlayerClick(team, player) {
+            if (!selectingPlayer) {
+                console.log('Not selecting player, ignoring click');
+                return;
+            }
 
-    console.log('Player clicked:', team, player.number, 'Action:', selectedAction, 'BlockType:', pendingBlockType);
+            console.log('Player clicked:', team, player.number, 'Action:', selectedAction, 'BlockType:', pendingBlockType);
 
-    const playerNumber = player.number || '00';
-    
-    // ✅ PRIORITY: Handle block action with pending block type FIRST
-    if (selectedAction === 'block' && pendingBlockType) {
-        console.log('Processing block with type:', pendingBlockType);
-        
-        if (pendingBlockType === 'kill_block') {
-            // Kill block: award point to the blocking team AND record block stat
-            handleScore(team, 'kill', playerNumber);  // This awards the point
-            logEvent(team, playerNumber, 'Block', 0);  // This records the block stat separately
-            console.log('Kill block recorded');
-        } else if (pendingBlockType === 'regular_block') {
-            // Regular block: just record the stat (no point)
-            logEvent(team, playerNumber, 'Block', 0);
-            console.log('Regular block recorded');
+            const playerNumber = player.number || '00';
+
+            // ✅ PRIORITY: Handle block action with pending block type FIRST
+            if (selectedAction === 'block' && pendingBlockType) {
+                console.log('Processing block with type:', pendingBlockType);
+
+                if (pendingBlockType === 'kill_block') {
+                    // Kill block: award point to the blocking team AND record block stat
+                    handleScore(team, 'kill', playerNumber); // This awards the point
+                    logEvent(team, playerNumber, 'Block', 0); // This records the block stat separately
+                    console.log('Kill block recorded');
+                } else if (pendingBlockType === 'regular_block') {
+                    // Regular block: just record the stat (no point)
+                    logEvent(team, playerNumber, 'Block', 0);
+                    console.log('Regular block recorded');
+                }
+
+                // Reset block state
+                pendingBlockType = null;
+                blockingTeam = null;
+                resetSelection();
+                return; // ✅ CRITICAL: Exit here so we don't run the code below
+            }
+
+            // ✅ Handle other actions (kill, ace) - but NOT block anymore since it's handled above
+            if (selectedAction === 'kill' || selectedAction === 'ace') {
+                console.log('Processing', selectedAction);
+                handleScore(team, selectedAction, playerNumber);
+            } else if (selectedAction === 'dig' || selectedAction === 'assist') {
+                console.log('Processing', selectedAction);
+                logEvent(team, playerNumber, selectedAction.charAt(0).toUpperCase() + selectedAction.slice(1), 0);
+            }
+
+            resetSelection();
         }
-        
-        // Reset block state
-        pendingBlockType = null;
-        blockingTeam = null;
-        resetSelection();
-        return; // ✅ CRITICAL: Exit here so we don't run the code below
-    }
-    
-    // ✅ Handle other actions (kill, ace) - but NOT block anymore since it's handled above
-    if (selectedAction === 'kill' || selectedAction === 'ace') {
-        console.log('Processing', selectedAction);
-        handleScore(team, selectedAction, playerNumber);
-    } else if (selectedAction === 'dig' || selectedAction === 'assist') {
-        console.log('Processing', selectedAction);
-        logEvent(team, playerNumber, selectedAction.charAt(0).toUpperCase() + selectedAction.slice(1), 0);
-    }
-
-    resetSelection();
-}
-
-        
 
 
-document.getElementById('penaltyBtn').addEventListener('click', function() {
-    openPenaltyModal();
-});
 
-function openPenaltyModal() {
-    document.getElementById('penaltyModal').classList.add('show');
-    setupPenaltyCardDragDrop();
-}
 
-function closePenaltyModal() {
-    document.getElementById('penaltyModal').classList.remove('show');
-}
-
-// ✅ NEW: Penalty Card Drag and Drop System
-let draggedCard = null;
-let draggedCardType = null;
-
-function setupPenaltyCardDragDrop() {
-    const yellowCard = document.getElementById('yellowCard');
-    const redCard = document.getElementById('redCard');
-    const zoneA = document.getElementById('penaltyZoneA');
-    const zoneB = document.getElementById('penaltyZoneB');
-
-    // Card drag events
-    [yellowCard, redCard].forEach(card => {
-        card.addEventListener('dragstart', function(e) {
-            draggedCard = this;
-            draggedCardType = this.classList.contains('yellow-card') ? 'yellow' : 'red';
-            this.classList.add('dragging');
-            e.dataTransfer.effectAllowed = 'move';
+        document.getElementById('penaltyBtn').addEventListener('click', function() {
+            openPenaltyModal();
         });
 
-        card.addEventListener('dragend', function(e) {
-            this.classList.remove('dragging');
-            draggedCard = null;
-            draggedCardType = null;
-        });
-    });
-
-    // Team zone drop events
-    [zoneA, zoneB].forEach(zone => {
-        zone.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-        });
-
-        zone.addEventListener('dragenter', function(e) {
-            e.preventDefault();
-            if (draggedCard) {
-                this.classList.add('drag-over');
-            }
-        });
-
-        zone.addEventListener('dragleave', function(e) {
-            if (!this.contains(e.relatedTarget)) {
-                this.classList.remove('drag-over');
-            }
-        });
-
-        zone.addEventListener('drop', function(e) {
-            e.preventDefault();
-            this.classList.remove('drag-over');
-            
-            if (draggedCard && draggedCardType) {
-                const team = this.dataset.team;
-                handlePenaltyCardDrop(team, draggedCardType);
-            }
-        });
-    });
-}
-
-let penaltyProcessing = false;
-
-// STEP 2: Replace handlePenaltyCardDrop with safeguards
-function handlePenaltyCardDrop(team, cardType) {
-    // ✅ PREVENT MULTIPLE SIMULTANEOUS CALLS
-    if (penaltyProcessing) {
-        console.warn('Penalty already processing, ignoring duplicate call');
-        return;
-    }
-    
-    penaltyProcessing = true;
-    console.log('=== PENALTY CARD DROPPED ===');
-    console.log('Team:', team, 'Card:', cardType);
-    console.log('Score BEFORE - A:', scoreA, 'B:', scoreB);
-    
-    closePenaltyModal();
-
-   if (cardType === 'yellow') {
-    logEvent(team, 'TEAM', '⚠️ Yellow Card (Warning)', 0);
-    showNotification(`Yellow card issued to Team ${team} - WARNING`, '#FDD835');
-    
-    // ✅ ADD THIS - Reset flag after short delay
-    setTimeout(() => {
-        penaltyProcessing = false;
-    }, 500);
-    return;
-}
-    
-    if (cardType === 'red') {
-        const opponent = team === 'A' ? 'B' : 'A';
-        
-        // Award exactly 1 point
-        if (opponent === 'A') {
-            scoreA++;
-            console.log('Team A score increased to:', scoreA);
-        } else {
-            scoreB++;
-            console.log('Team B score increased to:', scoreB);
+        function openPenaltyModal() {
+            document.getElementById('penaltyModal').classList.add('show');
+            setupPenaltyCardDragDrop();
         }
-        
-        updateScoreDisplay();
-        logEvent(team, 'TEAM', '🟥 Red Card (Penalty Point)', 0);
-        
-        // Only switch serve if needed
-        if (opponent !== serving) {
-            console.log('Switching serve to', opponent);
-            serving = opponent;
-            rotateTeamClockwise(opponent);
-            
-            const serverIndexMap = {1:5, 2:2, 3:1, 4:0, 5:3, 6:4};
-            const arr = opponent === 'A' ? activePlayers.A : activePlayers.B;
-            const newServer = arr && arr[serverIndexMap[1]] ? arr[serverIndexMap[1]] : null;
-            
-            if (newServer) {
-                currentServerId = newServer.id;
-                currentServerTeam = opponent;
-            }
-            
-            updateServingIndicator();
-            highlightServerBadge();
-            logEvent('GAME', 'SYSTEM', `Serve → Team ${opponent}`, 0);
+
+        function closePenaltyModal() {
+            document.getElementById('penaltyModal').classList.remove('show');
         }
-        
-        checkSetWin();
-        showNotification(`Red card to Team ${team} - 1 point to Team ${opponent}`, '#E53935');
-    }
-    
-    console.log('FINAL Score - A:', scoreA, 'B:', scoreB);
-    console.log('=== PENALTY COMPLETE ===');
-    
-    // ✅ Reset the flag after a short delay
-    setTimeout(() => {
-        penaltyProcessing = false;
-    }, 500);
-}
+
+        // ✅ NEW: Penalty Card Drag and Drop System
+        let draggedCard = null;
+        let draggedCardType = null;
+
+        function setupPenaltyCardDragDrop() {
+            const yellowCard = document.getElementById('yellowCard');
+            const redCard = document.getElementById('redCard');
+            const zoneA = document.getElementById('penaltyZoneA');
+            const zoneB = document.getElementById('penaltyZoneB');
+
+            // Card drag events
+            [yellowCard, redCard].forEach(card => {
+                card.addEventListener('dragstart', function(e) {
+                    draggedCard = this;
+                    draggedCardType = this.classList.contains('yellow-card') ? 'yellow' : 'red';
+                    this.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+
+                card.addEventListener('dragend', function(e) {
+                    this.classList.remove('dragging');
+                    draggedCard = null;
+                    draggedCardType = null;
+                });
+            });
+
+            // Team zone drop events
+            [zoneA, zoneB].forEach(zone => {
+                zone.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                });
+
+                zone.addEventListener('dragenter', function(e) {
+                    e.preventDefault();
+                    if (draggedCard) {
+                        this.classList.add('drag-over');
+                    }
+                });
+
+                zone.addEventListener('dragleave', function(e) {
+                    if (!this.contains(e.relatedTarget)) {
+                        this.classList.remove('drag-over');
+                    }
+                });
+
+                zone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('drag-over');
+
+                    if (draggedCard && draggedCardType) {
+                        const team = this.dataset.team;
+                        handlePenaltyCardDrop(team, draggedCardType);
+                    }
+                });
+            });
+        }
+
+        let penaltyProcessing = false;
+
+        // STEP 2: Replace handlePenaltyCardDrop with safeguards
+        function handlePenaltyCardDrop(team, cardType) {
+            // ✅ PREVENT MULTIPLE SIMULTANEOUS CALLS
+            if (penaltyProcessing) {
+                console.warn('Penalty already processing, ignoring duplicate call');
+                return;
+            }
+
+            penaltyProcessing = true;
+            console.log('=== PENALTY CARD DROPPED ===');
+            console.log('Team:', team, 'Card:', cardType);
+            console.log('Score BEFORE - A:', scoreA, 'B:', scoreB);
+
+            closePenaltyModal();
+
+            if (cardType === 'yellow') {
+                logEvent(team, 'TEAM', '⚠️ Yellow Card (Warning)', 0);
+                showNotification(`Yellow card issued to Team ${team} - WARNING`, '#FDD835');
+
+                // ✅ ADD THIS - Reset flag after short delay
+                setTimeout(() => {
+                    penaltyProcessing = false;
+                }, 500);
+                return;
+            }
+
+            if (cardType === 'red') {
+                const opponent = team === 'A' ? 'B' : 'A';
+
+                // Award exactly 1 point
+                if (opponent === 'A') {
+                    scoreA++;
+                    console.log('Team A score increased to:', scoreA);
+                } else {
+                    scoreB++;
+                    console.log('Team B score increased to:', scoreB);
+                }
+
+                updateScoreDisplay();
+                logEvent(team, 'TEAM', '🟥 Red Card (Penalty Point)', 0);
+
+                // Only switch serve if needed
+                if (opponent !== serving) {
+                    console.log('Switching serve to', opponent);
+                    serving = opponent;
+                    rotateTeamClockwise(opponent);
+
+                    const serverIndexMap = {
+                        1: 5,
+                        2: 2,
+                        3: 1,
+                        4: 0,
+                        5: 3,
+                        6: 4
+                    };
+                    const arr = opponent === 'A' ? activePlayers.A : activePlayers.B;
+                    const newServer = arr && arr[serverIndexMap[1]] ? arr[serverIndexMap[1]] : null;
+
+                    if (newServer) {
+                        currentServerId = newServer.id;
+                        currentServerTeam = opponent;
+                    }
+
+                    updateServingIndicator();
+                    highlightServerBadge();
+                    logEvent('GAME', 'SYSTEM', `Serve → Team ${opponent}`, 0);
+                }
+
+                checkSetWin();
+                showNotification(`Red card to Team ${team} - 1 point to Team ${opponent}`, '#E53935');
+            }
+
+            console.log('FINAL Score - A:', scoreA, 'B:', scoreB);
+            console.log('=== PENALTY COMPLETE ===');
+
+            // ✅ Reset the flag after a short delay
+            setTimeout(() => {
+                penaltyProcessing = false;
+            }, 500);
+        }
 
         // ✅ Helper function for notifications
         function showNotification(message, bgColor = '#4CAF50') {
-    const notification = document.createElement('div');
-    notification.style.cssText = `
+            const notification = document.createElement('div');
+            notification.style.cssText = `
         position: fixed;
         top: 100px;
         left: 50%;
@@ -3530,352 +3638,367 @@ function handlePenaltyCardDrop(team, cardType) {
         box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         animation: fadeIn 0.3s;
     `;
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        if (document.body.contains(notification)) {
-            document.body.removeChild(notification);
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 3000);
         }
-    }, 3000);
-}
 
-// Set the current server (choose which team serves and which player)
-function setServer(team, playerId) {
-    serving = team; // set global serving team
-    currentServerTeam = team;
+        // Set the current server (choose which team serves and which player)
+        function setServer(team, playerId) {
+            serving = team; // set global serving team
+            currentServerTeam = team;
 
-    // Mapping of position -> array index for the grid layout:
-    // positions:
-    // [4, 3, 2]
-    // [5, 6, 1]
-    // arr indices: 0->4,1->3,2->2,3->5,4->6,5->1
-    const posIndex = {1:5,2:2,3:1,4:0,5:3,6:4};
+            // Mapping of position -> array index for the grid layout:
+            // positions:
+            // [4, 3, 2]
+            // [5, 6, 1]
+            // arr indices: 0->4,1->3,2->2,3->5,4->6,5->1
+            const posIndex = {
+                1: 5,
+                2: 2,
+                3: 1,
+                4: 0,
+                5: 3,
+                6: 4
+            };
 
-    const arr = team === 'A' ? activePlayers.A : activePlayers.B;
-    if (arr && arr.length >= 1) {
-        // Try to rotate the team's active array until the chosen player is in the server position (pos 1)
-        let attempts = 0;
-        while ((arr[posIndex[1]] && arr[posIndex[1]].id.toString() !== playerId.toString()) && attempts < 6) {
-            rotateTeamClockwise(team);
-            attempts++;
+            const arr = team === 'A' ? activePlayers.A : activePlayers.B;
+            if (arr && arr.length >= 1) {
+                // Try to rotate the team's active array until the chosen player is in the server position (pos 1)
+                let attempts = 0;
+                while ((arr[posIndex[1]] && arr[posIndex[1]].id.toString() !== playerId.toString()) && attempts < 6) {
+                    rotateTeamClockwise(team);
+                    attempts++;
+                }
+            }
+
+            currentServerId = playerId;
+            updateServingIndicator();
+            renderTeamJerseys();
+            updateMainRoster();
+            renderSubstitutionPlayers();
+            highlightServerBadge();
+            showNotification(`Server set to Team ${team} player #${playerId}`);
         }
-    }
 
-    currentServerId = playerId;
-    updateServingIndicator();
-    renderTeamJerseys();
-    updateMainRoster();
-    renderSubstitutionPlayers();
-    highlightServerBadge();
-    showNotification(`Server set to Team ${team} player #${playerId}`);
-}
+        function highlightServerBadge() {
+            // Clear both jersey badges and roster cards
+            document.querySelectorAll('.jersey-badge').forEach(b => b.classList.remove('current-server'));
+            document.querySelectorAll('.player-card').forEach(c => c.classList.remove('current-server'));
+            if (!currentServerId) return;
+            // highlight jersey if visible
+            const el = document.querySelector(`.jersey-badge[data-player-id="${currentServerId}"]`);
+            if (el) el.classList.add('current-server');
+            // highlight roster card
+            const card = document.querySelector(`.player-card[data-player-id="${currentServerId}"]`);
+            if (card) card.classList.add('current-server');
+        }
 
-function highlightServerBadge() {
-    // Clear both jersey badges and roster cards
-    document.querySelectorAll('.jersey-badge').forEach(b => b.classList.remove('current-server'));
-    document.querySelectorAll('.player-card').forEach(c => c.classList.remove('current-server'));
-    if (!currentServerId) return;
-    // highlight jersey if visible
-    const el = document.querySelector(`.jersey-badge[data-player-id="${currentServerId}"]`);
-    if (el) el.classList.add('current-server');
-    // highlight roster card
-    const card = document.querySelector(`.player-card[data-player-id="${currentServerId}"]`);
-    if (card) card.classList.add('current-server');
-}
+        // Rotate a team's active players clockwise (used when they gain serve)
+        function rotateTeamClockwise(team) {
+            const posIndex = {
+                1: 5,
+                2: 2,
+                3: 1,
+                4: 0,
+                5: 3,
+                6: 4
+            };
+            const arr = team === 'A' ? activePlayers.A : activePlayers.B;
+            if (!arr || arr.length < 6) return;
 
-// Rotate a team's active players clockwise (used when they gain serve)
-function rotateTeamClockwise(team) {
-    const posIndex = {1:5,2:2,3:1,4:0,5:3,6:4};
-    const arr = team === 'A' ? activePlayers.A : activePlayers.B;
-    if (!arr || arr.length < 6) return;
+            const old = arr.slice();
+            const newArr = new Array(6);
 
-    const old = arr.slice();
-    const newArr = new Array(6);
-    
-    for (let pos = 1; pos <= 6; pos++) {
-        const nextPos = pos % 6 + 1;
-        const newIndex = posIndex[pos];
-        const oldIndex = posIndex[nextPos];
-        newArr[newIndex] = old[oldIndex];
-    }
+            for (let pos = 1; pos <= 6; pos++) {
+                const nextPos = pos % 6 + 1;
+                const newIndex = posIndex[pos];
+                const oldIndex = posIndex[nextPos];
+                newArr[newIndex] = old[oldIndex];
+            }
 
-    for (let i = 0; i < 6; i++) arr[i] = newArr[i];
+            for (let i = 0; i < 6; i++) arr[i] = newArr[i];
 
-    renderTeamJerseys();
-    updateMainRoster();
-    renderSubstitutionPlayers();
-    updateLiberoVisuals(); // ✅ ADD THIS LINE
-    
-    // ✅ ADD: Check libero position after rotation
-    setTimeout(() => {
-        console.log(`Checking libero position for team ${team} after rotation`);
-        checkLiberoPosition(team);
-    }, 200);
-}
+            renderTeamJerseys();
+            updateMainRoster();
+            renderSubstitutionPlayers();
+            updateLiberoVisuals(); // ✅ ADD THIS LINE
 
-// Substitution Modal Functions
-const substitutionModal = document.getElementById('substitutionModal');
-const subCloseBtn = document.getElementById('subClose');
-const substitutionBtn = document.getElementById('substitutionBtn');
+            // ✅ ADD: Check libero position after rotation
+            setTimeout(() => {
+                console.log(`Checking libero position for team ${team} after rotation`);
+                checkLiberoPosition(team);
+            }, 200);
+        }
 
-// Open substitution modal
-function openSubstitutionModal() {
-    substitutionModal.style.display = 'flex';
-    renderSubstitutionPlayers();
-}
+        // Substitution Modal Functions
+        const substitutionModal = document.getElementById('substitutionModal');
+        const subCloseBtn = document.getElementById('subClose');
+        const substitutionBtn = document.getElementById('substitutionBtn');
 
-// Close substitution modal
-function closeSubstitutionModal() {
-    substitutionModal.style.display = 'none';
-}
+        // Open substitution modal
+        function openSubstitutionModal() {
+            substitutionModal.style.display = 'flex';
+            renderSubstitutionPlayers();
+        }
 
-// Render players in substitution modal
-function renderSubstitutionPlayers() {
-    const activePlayersA = document.getElementById('activePlayersA');
-    const benchPlayersA = document.getElementById('benchPlayersA');
-    const activePlayersB = document.getElementById('activePlayersB');
-    const benchPlayersB = document.getElementById('benchPlayersB');
+        // Close substitution modal
+        function closeSubstitutionModal() {
+            substitutionModal.style.display = 'none';
+        }
 
-    // Clear existing
-    activePlayersA.innerHTML = '';
-    benchPlayersA.innerHTML = '';
-    activePlayersB.innerHTML = '';
-    benchPlayersB.innerHTML = '';
+        // Render players in substitution modal
+        function renderSubstitutionPlayers() {
+            const activePlayersA = document.getElementById('activePlayersA');
+            const benchPlayersA = document.getElementById('benchPlayersA');
+            const activePlayersB = document.getElementById('activePlayersB');
+            const benchPlayersB = document.getElementById('benchPlayersB');
 
-    // Render Team A
-    activePlayers.A.forEach(player => {
-        activePlayersA.appendChild(createSubPlayerCard(player, 'A', true));
-    });
-    benchPlayers.A.forEach(player => {
-        benchPlayersA.appendChild(createSubPlayerCard(player, 'A', false));
-    });
+            // Clear existing
+            activePlayersA.innerHTML = '';
+            benchPlayersA.innerHTML = '';
+            activePlayersB.innerHTML = '';
+            benchPlayersB.innerHTML = '';
 
-    // Render Team B
-    activePlayers.B.forEach(player => {
-        activePlayersB.appendChild(createSubPlayerCard(player, 'B', true));
-    });
-    benchPlayers.B.forEach(player => {
-        benchPlayersB.appendChild(createSubPlayerCard(player, 'B', false));
-    });
-}
+            // Render Team A
+            activePlayers.A.forEach(player => {
+                activePlayersA.appendChild(createSubPlayerCard(player, 'A', true));
+            });
+            benchPlayers.A.forEach(player => {
+                benchPlayersA.appendChild(createSubPlayerCard(player, 'A', false));
+            });
 
-// Create substitution player card
-function createSubPlayerCard(player, team, isActive) {
-    const card = document.createElement('div');
-    card.className = `sub-player-card ${isActive ? 'active-player' : 'bench-player'}`;
-    card.draggable = true;
-    card.dataset.team = team;
-    card.dataset.number = player.number || '00';
-    card.dataset.playerId = player.id;
-    card.dataset.isActive = isActive;
+            // Render Team B
+            activePlayers.B.forEach(player => {
+                activePlayersB.appendChild(createSubPlayerCard(player, 'B', true));
+            });
+            benchPlayers.B.forEach(player => {
+                benchPlayersB.appendChild(createSubPlayerCard(player, 'B', false));
+            });
+        }
 
-    card.innerHTML = `
+        // Create substitution player card
+        function createSubPlayerCard(player, team, isActive) {
+            const card = document.createElement('div');
+            card.className = `sub-player-card ${isActive ? 'active-player' : 'bench-player'}`;
+            card.draggable = true;
+            card.dataset.team = team;
+            card.dataset.number = player.number || '00';
+            card.dataset.playerId = player.id;
+            card.dataset.isActive = isActive;
+
+            card.innerHTML = `
         <div class="sub-player-number">${player.number || '00'}</div>
         <div class="sub-player-position">${player.position || 'P'}</div>
         <div class="sub-player-status ${isActive ? 'active' : 'bench'}">${isActive ? 'On Court' : 'Bench'}</div>
     `;
 
-    // Drag events
-    card.addEventListener('dragstart', handleDragStart);
-    card.addEventListener('dragend', handleDragEnd);
-    card.addEventListener('dragover', handleDragOver);
-    card.addEventListener('drop', handleDrop);
-    card.addEventListener('dragenter', handleDragEnter);
-    card.addEventListener('dragleave', handleDragLeave);
+            // Drag events
+            card.addEventListener('dragstart', handleDragStart);
+            card.addEventListener('dragend', handleDragEnd);
+            card.addEventListener('dragover', handleDragOver);
+            card.addEventListener('drop', handleDrop);
+            card.addEventListener('dragenter', handleDragEnter);
+            card.addEventListener('dragleave', handleDragLeave);
 
-    return card;
-}
-
-// Drag and Drop Handlers
-let draggedElement = null;
-
-function handleDragStart(e) {
-    draggedElement = e.target;
-    e.target.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-}
-
-function handleDragEnd(e) {
-    e.target.classList.remove('dragging');
-    document.querySelectorAll('.sub-player-card').forEach(card => {
-        card.classList.remove('drag-over');
-    });
-    draggedElement = null;
-}
-
-function handleDragOver(e) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    return false;
-}
-
-function handleDragEnter(e) {
-    e.preventDefault();
-    const target = e.target.closest('.sub-player-card');
-    if (target && canDropOn(draggedElement, target)) {
-        target.classList.add('drag-over');
-    }
-}
-
-function handleDragLeave(e) {
-    const target = e.target.closest('.sub-player-card');
-    if (target && !target.contains(e.relatedTarget)) {
-        target.classList.remove('drag-over');
-    }
-}
-
-function handleDrop(e) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const dropTarget = e.target.closest('.sub-player-card');
-    if (dropTarget) {
-        dropTarget.classList.remove('drag-over');
-        
-        if (draggedElement && draggedElement !== dropTarget && canDropOn(draggedElement, dropTarget)) {
-            makeSubstitution(draggedElement, dropTarget);
+            return card;
         }
-    }
-    return false;
-}
 
-// Check if can drop
-function canDropOn(source, target) {
-    if (!source || !target || source === target) return false;
+        // Drag and Drop Handlers
+        let draggedElement = null;
 
-    const sourceCard = source.closest('.sub-player-card');
-    const targetCard = target.closest('.sub-player-card');
-    
-    if (!sourceCard || !targetCard) return false;
-
-    const sourceTeam = sourceCard.dataset.team;
-    const targetTeam = targetCard.dataset.team;
-    const sourceActive = sourceCard.dataset.isActive === 'true';
-    const targetActive = targetCard.dataset.isActive === 'true';
-
-    // Same team, bench to active only
-    return sourceTeam === targetTeam && !sourceActive && targetActive;
-}
-
-// ✅ COMPLETELY FIXED: Proper libero tracking during substitutions
-function makeSubstitution(benchCard, activeCard) {
-    const team = benchCard.dataset.team;
-    const benchPlayerId = benchCard.dataset.playerId;
-    const activePlayerId = activeCard.dataset.playerId;
-
-    if (team === 'A' && substitutionsA >= maxSubstitutionsA) {
-        alert('Team A has no more substitutions remaining this set');
-        return;
-    } else if (team === 'B' && substitutionsB >= maxSubstitutionsB) {
-        alert('Team B has no more substitutions remaining this set');
-        return;
-    }
-
-    // Find players
-    const benchPlayerIndex = benchPlayers[team].findIndex(p => p.id.toString() === benchPlayerId);
-    const activePlayerIndex = activePlayers[team].findIndex(p => p.id.toString() === activePlayerId);
-
-    if (benchPlayerIndex === -1 || activePlayerIndex === -1) {
-        console.error('Players not found');
-        return;
-    }
-
-    // Get player objects
-    const benchPlayer = benchPlayers[team][benchPlayerIndex];
-    const activePlayer = activePlayers[team][activePlayerIndex];
-    
-    // Get original libero ID for this team
-    const originalLiberoId = team === 'A' ? liberoA : liberoB;
-
-    // ✅ CRITICAL: Track libero status BEFORE the swap
-    console.log('=== SUBSTITUTION DEBUG ===');
-    console.log('Team:', team);
-    console.log('Active player going out:', activePlayer.number, 'ID:', activePlayerId);
-    console.log('Bench player coming in:', benchPlayer.number, 'ID:', benchPlayerId);
-    console.log('Original libero ID:', originalLiberoId);
-    console.log('Current libero ID before swap:', team === 'A' ? currentLiberoA : currentLiberoB);
-
-    // Perform the swap
-    benchPlayers[team][benchPlayerIndex] = activePlayer;
-    activePlayers[team][activePlayerIndex] = benchPlayer;
-
-    // ✅ NOW update libero tracking after swap
-    
-    // Case 1: Original libero is being subbed OUT
-    if (originalLiberoId && activePlayerId === originalLiberoId.toString()) {
-        if (team === 'A') {
-            currentLiberoA = null;
-        } else {
-            currentLiberoB = null;
+        function handleDragStart(e) {
+            draggedElement = e.target;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
         }
-        console.log(`✅ Original libero REMOVED from court for team ${team}`);
-    }
-    
-    // Case 2: Original libero is being subbed IN
-    if (originalLiberoId && benchPlayerId === originalLiberoId.toString()) {
-        if (team === 'A') {
-            currentLiberoA = originalLiberoId;
-        } else {
-            currentLiberoB = originalLiberoId;
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            document.querySelectorAll('.sub-player-card').forEach(card => {
+                card.classList.remove('drag-over');
+            });
+            draggedElement = null;
         }
-        console.log(`✅ Original libero BROUGHT BACK to court for team ${team}`);
-    }
-    
-    console.log('Current libero ID after swap:', team === 'A' ? currentLiberoA : currentLiberoB);
-    console.log('=== END SUBSTITUTION DEBUG ===');
 
-    // Update substitution count
-    if (team === 'A') {
-        substitutionsA++;
-        document.getElementById('substitutionsA').textContent = substitutionsA;
-    } else {
-        substitutionsB++;
-        document.getElementById('substitutionsB').textContent = substitutionsB;
-    }
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
 
-    // Log event
-    logEvent(team, `${activePlayer.number}→${benchPlayer.number}`, 'Substitution', 0);
+        function handleDragEnter(e) {
+            e.preventDefault();
+            const target = e.target.closest('.sub-player-card');
+            if (target && canDropOn(draggedElement, target)) {
+                target.classList.add('drag-over');
+            }
+        }
 
-    // Update displays
-    renderSubstitutionPlayers();
-    renderTeamJerseys();
-    updateMainRoster(); // This calls updateLiberoVisuals() inside
+        function handleDragLeave(e) {
+            const target = e.target.closest('.sub-player-card');
+            if (target && !target.contains(e.relatedTarget)) {
+                target.classList.remove('drag-over');
+            }
+        }
 
-    // Show success message
-    showSubstitutionSuccess(team, activePlayer.number, benchPlayer.number);
-}
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
 
-// Update main roster display
-function updateMainRoster() {
-    const playersAGrid = document.getElementById('playersA');
-    const playersBGrid = document.getElementById('playersB');
-    
-    playersAGrid.innerHTML = '';
-    playersBGrid.innerHTML = '';
+            const dropTarget = e.target.closest('.sub-player-card');
+            if (dropTarget) {
+                dropTarget.classList.remove('drag-over');
 
-    activePlayers.A.forEach(player => {
-        playersAGrid.appendChild(createPlayerCard(player, 'A'));
-    });
+                if (draggedElement && draggedElement !== dropTarget && canDropOn(draggedElement, dropTarget)) {
+                    makeSubstitution(draggedElement, dropTarget);
+                }
+            }
+            return false;
+        }
 
-    activePlayers.B.forEach(player => {
-        playersBGrid.appendChild(createPlayerCard(player, 'B'));
-    });
-    
-    // ✅ ADD THIS LINE
-    updateLiberoVisuals();
-}
-function showTimeoutEndModal() {
-    document.getElementById('timeoutEndModal').classList.add('show');
-}
+        // Check if can drop
+        function canDropOn(source, target) {
+            if (!source || !target || source === target) return false;
 
-function closeTimeoutEndModal() {
-    document.getElementById('timeoutEndModal').classList.remove('show');
-}
-// Show substitution success
-function showSubstitutionSuccess(team, outNumber, inNumber) {
-    const message = document.createElement('div');
-    message.style.cssText = `
+            const sourceCard = source.closest('.sub-player-card');
+            const targetCard = target.closest('.sub-player-card');
+
+            if (!sourceCard || !targetCard) return false;
+
+            const sourceTeam = sourceCard.dataset.team;
+            const targetTeam = targetCard.dataset.team;
+            const sourceActive = sourceCard.dataset.isActive === 'true';
+            const targetActive = targetCard.dataset.isActive === 'true';
+
+            // Same team, bench to active only
+            return sourceTeam === targetTeam && !sourceActive && targetActive;
+        }
+
+        // ✅ COMPLETELY FIXED: Proper libero tracking during substitutions
+        function makeSubstitution(benchCard, activeCard) {
+            const team = benchCard.dataset.team;
+            const benchPlayerId = benchCard.dataset.playerId;
+            const activePlayerId = activeCard.dataset.playerId;
+
+            if (team === 'A' && substitutionsA >= maxSubstitutionsA) {
+                alert('Team A has no more substitutions remaining this set');
+                return;
+            } else if (team === 'B' && substitutionsB >= maxSubstitutionsB) {
+                alert('Team B has no more substitutions remaining this set');
+                return;
+            }
+
+            // Find players
+            const benchPlayerIndex = benchPlayers[team].findIndex(p => p.id.toString() === benchPlayerId);
+            const activePlayerIndex = activePlayers[team].findIndex(p => p.id.toString() === activePlayerId);
+
+            if (benchPlayerIndex === -1 || activePlayerIndex === -1) {
+                console.error('Players not found');
+                return;
+            }
+
+            // Get player objects
+            const benchPlayer = benchPlayers[team][benchPlayerIndex];
+            const activePlayer = activePlayers[team][activePlayerIndex];
+
+            // Get original libero ID for this team
+            const originalLiberoId = team === 'A' ? liberoA : liberoB;
+
+            // ✅ CRITICAL: Track libero status BEFORE the swap
+            console.log('=== SUBSTITUTION DEBUG ===');
+            console.log('Team:', team);
+            console.log('Active player going out:', activePlayer.number, 'ID:', activePlayerId);
+            console.log('Bench player coming in:', benchPlayer.number, 'ID:', benchPlayerId);
+            console.log('Original libero ID:', originalLiberoId);
+            console.log('Current libero ID before swap:', team === 'A' ? currentLiberoA : currentLiberoB);
+
+            // Perform the swap
+            benchPlayers[team][benchPlayerIndex] = activePlayer;
+            activePlayers[team][activePlayerIndex] = benchPlayer;
+
+            // ✅ NOW update libero tracking after swap
+
+            // Case 1: Original libero is being subbed OUT
+            if (originalLiberoId && activePlayerId === originalLiberoId.toString()) {
+                if (team === 'A') {
+                    currentLiberoA = null;
+                } else {
+                    currentLiberoB = null;
+                }
+                console.log(`✅ Original libero REMOVED from court for team ${team}`);
+            }
+
+            // Case 2: Original libero is being subbed IN
+            if (originalLiberoId && benchPlayerId === originalLiberoId.toString()) {
+                if (team === 'A') {
+                    currentLiberoA = originalLiberoId;
+                } else {
+                    currentLiberoB = originalLiberoId;
+                }
+                console.log(`✅ Original libero BROUGHT BACK to court for team ${team}`);
+            }
+
+            console.log('Current libero ID after swap:', team === 'A' ? currentLiberoA : currentLiberoB);
+            console.log('=== END SUBSTITUTION DEBUG ===');
+
+            // Update substitution count
+            if (team === 'A') {
+                substitutionsA++;
+                document.getElementById('substitutionsA').textContent = substitutionsA;
+            } else {
+                substitutionsB++;
+                document.getElementById('substitutionsB').textContent = substitutionsB;
+            }
+
+            // Log event
+            logEvent(team, `${activePlayer.number}→${benchPlayer.number}`, 'Substitution', 0);
+
+            // Update displays
+            renderSubstitutionPlayers();
+            renderTeamJerseys();
+            updateMainRoster(); // This calls updateLiberoVisuals() inside
+
+            // Show success message
+            showSubstitutionSuccess(team, activePlayer.number, benchPlayer.number);
+        }
+
+        // Update main roster display
+        function updateMainRoster() {
+            const playersAGrid = document.getElementById('playersA');
+            const playersBGrid = document.getElementById('playersB');
+
+            playersAGrid.innerHTML = '';
+            playersBGrid.innerHTML = '';
+
+            activePlayers.A.forEach(player => {
+                playersAGrid.appendChild(createPlayerCard(player, 'A'));
+            });
+
+            activePlayers.B.forEach(player => {
+                playersBGrid.appendChild(createPlayerCard(player, 'B'));
+            });
+
+            // ✅ ADD THIS LINE
+            updateLiberoVisuals();
+        }
+
+        function showTimeoutEndModal() {
+            document.getElementById('timeoutEndModal').classList.add('show');
+        }
+
+        function closeTimeoutEndModal() {
+            document.getElementById('timeoutEndModal').classList.remove('show');
+        }
+        // Show substitution success
+        function showSubstitutionSuccess(team, outNumber, inNumber) {
+            const message = document.createElement('div');
+            message.style.cssText = `
         position: fixed;
         top: 100px;
         left: 50%;
@@ -3888,79 +4011,79 @@ function showSubstitutionSuccess(team, outNumber, inNumber) {
         z-index: 10000;
         animation: fadeIn 0.3s;
     `;
-    message.textContent = `Team ${team}: Player #${outNumber} → #${inNumber}`;
-    document.body.appendChild(message);
+            message.textContent = `Team ${team}: Player #${outNumber} → #${inNumber}`;
+            document.body.appendChild(message);
 
-    setTimeout(() => {
-        document.body.removeChild(message);
-    }, 3000);
-}
+            setTimeout(() => {
+                document.body.removeChild(message);
+            }, 3000);
+        }
 
-function getWinningScore(setNumber) {
-  return setNumber === 5 ? 15 : 25;
-}
+        function getWinningScore(setNumber) {
+            return setNumber === 5 ? 15 : 25;
+        }
 
-function checkSetWin() {
-    // ✅ Don't check for set win if game is already over
-    if (setsA >= 3 || setsB >= 3) {
-        return;
-    }
+        function checkSetWin() {
+            // ✅ Don't check for set win if game is already over
+            if (setsA >= 3 || setsB >= 3) {
+                return;
+            }
 
-    const maxPoints = currentSet === 5 ? 15 : 25;
-    const minLead = 2;
+            const maxPoints = currentSet === 5 ? 15 : 25;
+            const minLead = 2;
 
-    if (scoreA >= maxPoints && scoreA - scoreB >= minLead) {
-        handleSetWin('A');
-    } else if (scoreB >= maxPoints && scoreB - scoreA >= minLead) {
-        handleSetWin('B');
-    }
-}
-
-
-function startNextSet() {
-    document.getElementById('setEndModal').classList.remove('show');
-    
-    // Move to next set
-    currentSet++;
-    
-    // Reset scores for new set
-    scoreA = 0;
-    scoreB = 0;
-    
-    // Reset timeouts and substitutions per set
-    timeoutsA = 0;
-    timeoutsB = 0;
-    substitutionsA = 0;
-    substitutionsB = 0;
-
-    // Switch serve
-    serving = serving === 'A' ? 'B' : 'A';
-
-    updateScoreboard();
-    updateServingIndicator();
-    updateSetScoresDisplay();
-    logEvent('GAME', 'SYSTEM', `Set ${currentSet} Started`, 0);
-}
+            if (scoreA >= maxPoints && scoreA - scoreB >= minLead) {
+                handleSetWin('A');
+            } else if (scoreB >= maxPoints && scoreB - scoreA >= minLead) {
+                handleSetWin('B');
+            }
+        }
 
 
+        function startNextSet() {
+            document.getElementById('setEndModal').classList.remove('show');
+
+            // Move to next set
+            currentSet++;
+
+            // Reset scores for new set
+            scoreA = 0;
+            scoreB = 0;
+
+            // Reset timeouts and substitutions per set
+            timeoutsA = 0;
+            timeoutsB = 0;
+            substitutionsA = 0;
+            substitutionsB = 0;
+
+            // Switch serve
+            serving = serving === 'A' ? 'B' : 'A';
+
+            updateScoreboard();
+            updateServingIndicator();
+            updateSetScoresDisplay();
+            logEvent('GAME', 'SYSTEM', `Set ${currentSet} Started`, 0);
+        }
 
 
-// Event Listeners
-if (substitutionBtn) {
-    substitutionBtn.addEventListener('click', openSubstitutionModal);
-}
 
-if (subCloseBtn) {
-    subCloseBtn.addEventListener('click', closeSubstitutionModal);
-}
 
-substitutionModal.addEventListener('click', (e) => {
-    if (e.target === substitutionModal) {
-        closeSubstitutionModal();
-    }
-});
+        // Event Listeners
+        if (substitutionBtn) {
+            substitutionBtn.addEventListener('click', openSubstitutionModal);
+        }
 
-// Update the init function to call initializePlayerRosters
+        if (subCloseBtn) {
+            subCloseBtn.addEventListener('click', closeSubstitutionModal);
+        }
+
+        substitutionModal.addEventListener('click', (e) => {
+            if (e.target === substitutionModal) {
+                closeSubstitutionModal();
+            }
+        });
+
+        // Update the init function to call initializePlayerRosters
 
         // Initialize
         function init() {
@@ -3976,241 +4099,245 @@ substitutionModal.addEventListener('click', (e) => {
         }
 
         // Hotkeys functionality
-let hotkeys = {
-    'kill': 'K',
-    'ace': 'A',
-    'block': 'B',
-    'dig': 'D',
-    'assist': 'S',
-    'error': 'E',
-    'timeout': 'T',
-    'undo': 'Z'
-};
+        let hotkeys = {
+            'kill': 'K',
+            'ace': 'A',
+            'block': 'B',
+            'dig': 'D',
+            'assist': 'S',
+            'error': 'E',
+            'timeout': 'T',
+            'undo': 'Z'
+        };
 
-const defaultHotkeys = { ...hotkeys };
+        const defaultHotkeys = {
+            ...hotkeys
+        };
 
-// Load saved hotkeys from localStorage
-function loadHotkeys() {
-    const saved = localStorage.getItem('volleyballHotkeys');
-    if (saved) {
-        hotkeys = JSON.parse(saved);
-    }
-    applyHotkeys();
-}
-
-// Save hotkeys to localStorage
-function saveHotkeys() {
-    localStorage.setItem('volleyballHotkeys', JSON.stringify(hotkeys));
-}
-
-// Apply hotkeys (global keyboard listener)
-function applyHotkeys() {
-    document.addEventListener('keydown', handleHotkeyPress);
-}
-
-// Handle hotkey press
-function handleHotkeyPress(e) {
-    // Ignore if typing in input fields or modal is open
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    if (document.getElementById('hotkeysModal').classList.contains('show')) return;
-    if (selectingPlayer || selectingTeam) return;
-
-    const key = e.key.toUpperCase();
-
-    // Find action for this key
-    for (const [action, hotkey] of Object.entries(hotkeys)) {
-        if (hotkey.toUpperCase() === key) {
-            e.preventDefault();
-            executeHotkeyAction(action);
-            break;
-        }
-    }
-}
-
-// Execute action based on hotkey
-function executeHotkeyAction(action) {
-    if (action === 'timeout') {
-        document.getElementById('timeoutBtn').click();
-    } else if (action === 'undo') {
-        document.getElementById('undoBtn').click();
-    } else {
-        const btn = document.querySelector(`[data-action="${action}"]`);
-        if (btn) btn.click();
-    }
-}
-
-// Open hotkeys modal
-function openHotkeysModal() {
-    document.getElementById('hotkeysModal').classList.add('show');
-    updateHotkeyDisplay();
-}
-
-// Close hotkeys modal
-function closeHotkeysModal() {
-    document.getElementById('hotkeysModal').classList.remove('show');
-    document.querySelectorAll('.hotkey-input').forEach(input => {
-        input.classList.remove('listening');
-    });
-}
-
-// Update hotkey display in modal
-function updateHotkeyDisplay() {
-    for (const [action, key] of Object.entries(hotkeys)) {
-        const element = document.getElementById(`key-${action}`);
-        if (element) {
-            element.textContent = key.toUpperCase();
-        }
-    }
-}
-
-// Setup hotkey input listeners
-function setupHotkeyInputs() {
-    const inputs = document.querySelectorAll('.hotkey-input');
-    let listeningInput = null;
-
-    inputs.forEach(input => {
-        input.addEventListener('click', function() {
-            inputs.forEach(i => i.classList.remove('listening'));
-            this.classList.add('listening');
-            listeningInput = this;
-            
-            const keyDisplay = this.querySelector('.current-key');
-            keyDisplay.textContent = 'Press a key...';
-        });
-    });
-
-    document.addEventListener('keydown', function(e) {
-        if (listeningInput && document.getElementById('hotkeysModal').classList.contains('show')) {
-            e.preventDefault();
-            
-            const action = listeningInput.dataset.action;
-            
-            if (e.key === 'Escape') {
-                hotkeys[action] = '';
-                listeningInput.querySelector('.current-key').textContent = 'NONE';
-            } else {
-                const newKey = e.key.toUpperCase();
-                hotkeys[action] = newKey;
-                listeningInput.querySelector('.current-key').textContent = newKey;
+        // Load saved hotkeys from localStorage
+        function loadHotkeys() {
+            const saved = localStorage.getItem('volleyballHotkeys');
+            if (saved) {
+                hotkeys = JSON.parse(saved);
             }
-            
-            listeningInput.classList.remove('listening');
-            listeningInput = null;
+            applyHotkeys();
         }
-    });
-}
 
-// Reset hotkeys to defaults
-function resetHotkeysToDefault() {
-    if (confirm('Reset all hotkeys to default values?')) {
-        hotkeys = { ...defaultHotkeys };
-        updateHotkeyDisplay();
-        saveHotkeys();
-        showNotification('Hotkeys reset to defaults');
-    }
-}
+        // Save hotkeys to localStorage
+        function saveHotkeys() {
+            localStorage.setItem('volleyballHotkeys', JSON.stringify(hotkeys));
+        }
 
-// Save hotkeys settings
-function saveHotkeysSettings() {
-    saveHotkeys();
-    closeHotkeysModal();
-    showNotification('Hotkeys saved successfully');
-}
+        // Apply hotkeys (global keyboard listener)
+        function applyHotkeys() {
+            document.addEventListener('keydown', handleHotkeyPress);
+        }
 
-// Load game settings from localStorage
-function loadGameSettings() {
-    const saved = localStorage.getItem('volleyballSettings');
-    if (saved) {
-        const settings = JSON.parse(saved);
-        maxTimeoutsA = settings.maxTimeoutsA || 2;
-        maxTimeoutsB = settings.maxTimeoutsB || 2;
-        maxSubstitutionsA = settings.maxSubstitutionsA || 6;
-        maxSubstitutionsB = settings.maxSubstitutionsB || 6;
-    }
-    updateSettingsDisplay();
-}
+        // Handle hotkey press
+        function handleHotkeyPress(e) {
+            // Ignore if typing in input fields or modal is open
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (document.getElementById('hotkeysModal').classList.contains('show')) return;
+            if (selectingPlayer || selectingTeam) return;
 
-// Save game settings to localStorage
-function saveGameSettings() {
-    maxTimeoutsA = parseInt(document.getElementById('maxTimeoutsAInput').value) || 2;
-    maxTimeoutsB = parseInt(document.getElementById('maxTimeoutsBInput').value) || 2;
-    maxSubstitutionsA = parseInt(document.getElementById('maxSubstitutionsAInput').value) || 6;
-    maxSubstitutionsB = parseInt(document.getElementById('maxSubstitutionsBInput').value) || 6;
+            const key = e.key.toUpperCase();
 
-    localStorage.setItem('volleyballSettings', JSON.stringify({
-        maxTimeoutsA,
-        maxTimeoutsB,
-        maxSubstitutionsA,
-        maxSubstitutionsB
-    }));
-    updateSettingsDisplay();
-    closeGameSettingsModal();
-    showNotification('Settings saved successfully');
-}
+            // Find action for this key
+            for (const [action, hotkey] of Object.entries(hotkeys)) {
+                if (hotkey.toUpperCase() === key) {
+                    e.preventDefault();
+                    executeHotkeyAction(action);
+                    break;
+                }
+            }
+        }
 
-// Open game settings modal
-function openGameSettingsModal() {
-    document.getElementById('maxTimeoutsAInput').value = maxTimeoutsA;
-    document.getElementById('maxTimeoutsBInput').value = maxTimeoutsB;
-    document.getElementById('maxSubstitutionsAInput').value = maxSubstitutionsA;
-    document.getElementById('maxSubstitutionsBInput').value = maxSubstitutionsB;
-    document.getElementById('gameSettingsModal').classList.add('show');
-}
+        // Execute action based on hotkey
+        function executeHotkeyAction(action) {
+            if (action === 'timeout') {
+                document.getElementById('timeoutBtn').click();
+            } else if (action === 'undo') {
+                document.getElementById('undoBtn').click();
+            } else {
+                const btn = document.querySelector(`[data-action="${action}"]`);
+                if (btn) btn.click();
+            }
+        }
 
-// Close game settings modal
-function closeGameSettingsModal() {
-    document.getElementById('gameSettingsModal').classList.remove('show');
-}
+        // Open hotkeys modal
+        function openHotkeysModal() {
+            document.getElementById('hotkeysModal').classList.add('show');
+            updateHotkeyDisplay();
+        }
 
-// Reset settings to defaults
-function resetSettingsToDefault() {
-    if (confirm('Reset all settings to default values?')) {
-        maxTimeoutsA = 2;
-        maxTimeoutsB = 2;
-        maxSubstitutionsA = 6;
-        maxSubstitutionsB = 6;
-        openGameSettingsModal(); // Update inputs
-        saveGameSettings();
-    }
-}
+        // Close hotkeys modal
+        function closeHotkeysModal() {
+            document.getElementById('hotkeysModal').classList.remove('show');
+            document.querySelectorAll('.hotkey-input').forEach(input => {
+                input.classList.remove('listening');
+            });
+        }
 
-// Update settings display in scoreboard
-function updateSettingsDisplay() {
-    document.getElementById('maxTimeoutsA').textContent = maxTimeoutsA;
-    document.getElementById('maxTimeoutsB').textContent = maxTimeoutsB;
-    document.getElementById('maxSubstitutionsA').textContent = maxSubstitutionsA;
-    document.getElementById('maxSubstitutionsB').textContent = maxSubstitutionsB;
-}
+        // Update hotkey display in modal
+        function updateHotkeyDisplay() {
+            for (const [action, key] of Object.entries(hotkeys)) {
+                const element = document.getElementById(`key-${action}`);
+                if (element) {
+                    element.textContent = key.toUpperCase();
+                }
+            }
+        }
+
+        // Setup hotkey input listeners
+        function setupHotkeyInputs() {
+            const inputs = document.querySelectorAll('.hotkey-input');
+            let listeningInput = null;
+
+            inputs.forEach(input => {
+                input.addEventListener('click', function() {
+                    inputs.forEach(i => i.classList.remove('listening'));
+                    this.classList.add('listening');
+                    listeningInput = this;
+
+                    const keyDisplay = this.querySelector('.current-key');
+                    keyDisplay.textContent = 'Press a key...';
+                });
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (listeningInput && document.getElementById('hotkeysModal').classList.contains('show')) {
+                    e.preventDefault();
+
+                    const action = listeningInput.dataset.action;
+
+                    if (e.key === 'Escape') {
+                        hotkeys[action] = '';
+                        listeningInput.querySelector('.current-key').textContent = 'NONE';
+                    } else {
+                        const newKey = e.key.toUpperCase();
+                        hotkeys[action] = newKey;
+                        listeningInput.querySelector('.current-key').textContent = newKey;
+                    }
+
+                    listeningInput.classList.remove('listening');
+                    listeningInput = null;
+                }
+            });
+        }
+
+        // Reset hotkeys to defaults
+        function resetHotkeysToDefault() {
+            if (confirm('Reset all hotkeys to default values?')) {
+                hotkeys = {
+                    ...defaultHotkeys
+                };
+                updateHotkeyDisplay();
+                saveHotkeys();
+                showNotification('Hotkeys reset to defaults');
+            }
+        }
+
+        // Save hotkeys settings
+        function saveHotkeysSettings() {
+            saveHotkeys();
+            closeHotkeysModal();
+            showNotification('Hotkeys saved successfully');
+        }
+
+        // Load game settings from localStorage
+        function loadGameSettings() {
+            const saved = localStorage.getItem('volleyballSettings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                maxTimeoutsA = settings.maxTimeoutsA || 2;
+                maxTimeoutsB = settings.maxTimeoutsB || 2;
+                maxSubstitutionsA = settings.maxSubstitutionsA || 6;
+                maxSubstitutionsB = settings.maxSubstitutionsB || 6;
+            }
+            updateSettingsDisplay();
+        }
+
+        // Save game settings to localStorage
+        function saveGameSettings() {
+            maxTimeoutsA = parseInt(document.getElementById('maxTimeoutsAInput').value) || 2;
+            maxTimeoutsB = parseInt(document.getElementById('maxTimeoutsBInput').value) || 2;
+            maxSubstitutionsA = parseInt(document.getElementById('maxSubstitutionsAInput').value) || 6;
+            maxSubstitutionsB = parseInt(document.getElementById('maxSubstitutionsBInput').value) || 6;
+
+            localStorage.setItem('volleyballSettings', JSON.stringify({
+                maxTimeoutsA,
+                maxTimeoutsB,
+                maxSubstitutionsA,
+                maxSubstitutionsB
+            }));
+            updateSettingsDisplay();
+            closeGameSettingsModal();
+            showNotification('Settings saved successfully');
+        }
+
+        // Open game settings modal
+        function openGameSettingsModal() {
+            document.getElementById('maxTimeoutsAInput').value = maxTimeoutsA;
+            document.getElementById('maxTimeoutsBInput').value = maxTimeoutsB;
+            document.getElementById('maxSubstitutionsAInput').value = maxSubstitutionsA;
+            document.getElementById('maxSubstitutionsBInput').value = maxSubstitutionsB;
+            document.getElementById('gameSettingsModal').classList.add('show');
+        }
+
+        // Close game settings modal
+        function closeGameSettingsModal() {
+            document.getElementById('gameSettingsModal').classList.remove('show');
+        }
+
+        // Reset settings to defaults
+        function resetSettingsToDefault() {
+            if (confirm('Reset all settings to default values?')) {
+                maxTimeoutsA = 2;
+                maxTimeoutsB = 2;
+                maxSubstitutionsA = 6;
+                maxSubstitutionsB = 6;
+                openGameSettingsModal(); // Update inputs
+                saveGameSettings();
+            }
+        }
+
+        // Update settings display in scoreboard
+        function updateSettingsDisplay() {
+            document.getElementById('maxTimeoutsA').textContent = maxTimeoutsA;
+            document.getElementById('maxTimeoutsB').textContent = maxTimeoutsB;
+            document.getElementById('maxSubstitutionsA').textContent = maxSubstitutionsA;
+            document.getElementById('maxSubstitutionsB').textContent = maxSubstitutionsB;
+        }
 
 
 
-// Initialize hotkeys and settings when menu is clicked
-document.addEventListener('DOMContentLoaded', function() {
-    const hotkeysBtn = document.getElementById('hotkeysBtn');
-    if (hotkeysBtn) {
-        hotkeysBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            hamburgerBtn.classList.remove('active');
-            menuDropdown.classList.remove('show');
-            openHotkeysModal();
+        // Initialize hotkeys and settings when menu is clicked
+        document.addEventListener('DOMContentLoaded', function() {
+            const hotkeysBtn = document.getElementById('hotkeysBtn');
+            if (hotkeysBtn) {
+                hotkeysBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    hamburgerBtn.classList.remove('active');
+                    menuDropdown.classList.remove('show');
+                    openHotkeysModal();
+                });
+            }
+
+            const gameSettingsBtn = document.getElementById('gameSettingsBtn');
+            if (gameSettingsBtn) {
+                gameSettingsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    hamburgerBtn.classList.remove('active');
+                    menuDropdown.classList.remove('show');
+                    openGameSettingsModal();
+                });
+            }
+
+            setupHotkeyInputs();
+            loadHotkeys();
         });
-    }
-    
-    const gameSettingsBtn = document.getElementById('gameSettingsBtn');
-    if (gameSettingsBtn) {
-        gameSettingsBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            hamburgerBtn.classList.remove('active');
-            menuDropdown.classList.remove('show');
-            openGameSettingsModal();
-        });
-    }
-    
-    setupHotkeyInputs();
-    loadHotkeys();
-});
 
-        
+
 
         function createPlayerCard(player, team) {
             const card = document.createElement('div');
@@ -4255,9 +4382,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function rosterDragStart(e) {
             const el = e.currentTarget;
-            rosterDragging = { playerId: el.dataset.playerId, fromTeam: el.dataset.team };
+            rosterDragging = {
+                playerId: el.dataset.playerId,
+                fromTeam: el.dataset.team
+            };
             el.classList.add('dragging');
-            try { e.dataTransfer.setData('text/plain', el.dataset.playerId); } catch (err) {}
+            try {
+                e.dataTransfer.setData('text/plain', el.dataset.playerId);
+            } catch (err) {}
             e.dataTransfer.effectAllowed = 'move';
         }
 
@@ -4331,7 +4463,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Allow dropping into empty grid area (append)
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.players-grid').forEach(grid => {
-                grid.addEventListener('dragover', (e) => { e.preventDefault(); });
+                grid.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                });
                 grid.addEventListener('drop', (e) => {
                     e.preventDefault();
                     if (!rosterDragging) return;
@@ -4375,9 +4509,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function handleActionClick(action) {
             document.querySelectorAll('.action-btn').forEach(btn => btn.classList.remove('selected'));
-           
+
             selectedAction = action;
-           
+
             event.target.classList.add('selected');
 
             if (action === 'error') {
@@ -4392,31 +4526,32 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // ✅ NEW: Global click handler to cancel action selection
-// ✅ UPDATED: Global click handler to cancel action selection
-document.addEventListener('click', function(e) {
-    // Only handle if we're currently selecting
-    if (!selectingPlayer && !selectingTeam) return;
-    
-    // Check what was clicked
-    const clickedPlayerCard = e.target.closest('.player-card');
-    const clickedActionBtn = e.target.closest('.action-btn');
-    const clickedModal = e.target.closest('.modal-content');
-    const clickedBanner = e.target.closest('.instruction-banner');
-    const clickedBlockTypeModal = e.target.closest('.block-type-modal'); // ✅ ADD THIS
-    const clickedBlockTypeBtn = e.target.closest('.block-type-btn'); // ✅ ADD THIS
-    
-    // If clicked outside all valid targets, cancel selection
-    if (!clickedPlayerCard && !clickedActionBtn && !clickedModal && !clickedBanner && !clickedBlockTypeModal && !clickedBlockTypeBtn) {
-        console.log('Clicked outside - canceling action selection');
-        resetSelection();
-    }
-});
+        // ✅ UPDATED: Global click handler to cancel action selection
+        document.addEventListener('click', function(e) {
+            // Only handle if we're currently selecting
+            if (!selectingPlayer && !selectingTeam) return;
+
+            // Check what was clicked
+            const clickedPlayerCard = e.target.closest('.player-card');
+            const clickedActionBtn = e.target.closest('.action-btn');
+            const clickedModal = e.target.closest('.modal-content');
+            const clickedBanner = e.target.closest('.instruction-banner');
+            const clickedBlockTypeModal = e.target.closest('.block-type-modal'); // ✅ ADD THIS
+            const clickedBlockTypeBtn = e.target.closest('.block-type-btn'); // ✅ ADD THIS
+
+            // If clicked outside all valid targets, cancel selection
+            if (!clickedPlayerCard && !clickedActionBtn && !clickedModal && !clickedBanner && !
+                clickedBlockTypeModal && !clickedBlockTypeBtn) {
+                console.log('Clicked outside - canceling action selection');
+                resetSelection();
+            }
+        });
 
         function handlePlayerClick(team, player) {
             if (!selectingPlayer) return;
 
             const playerNumber = player.number || '00';
-           
+
             if (selectedAction === 'kill' || selectedAction === 'ace' || selectedAction === 'block') {
                 handleScore(team, selectedAction, playerNumber);
             } else if (selectedAction === 'dig' || selectedAction === 'assist') {
@@ -4427,47 +4562,54 @@ document.addEventListener('click', function(e) {
         }
 
         function handleScore(team, action, playerNumber) {
-    // ✅ Prevent scoring if game is already over
-    if (setsA >= 3 || setsB >= 3) {
-        return;
-    }
+            // ✅ Prevent scoring if game is already over
+            if (setsA >= 3 || setsB >= 3) {
+                return;
+            }
 
-    // ✅ Handle action label formatting
-    let actionLabel = action.charAt(0).toUpperCase() + action.slice(1);
-    if (action === 'Kill Block') {
-        actionLabel = 'Kill Block';
-    }
-    
-    if (team === 'A') {
-        scoreA++;
-        updateScoreDisplay();
-        logEvent('A', playerNumber, actionLabel, 1);
-    } else {
-        scoreB++;
-        updateScoreDisplay();
-        logEvent('B', playerNumber, actionLabel, 1);
-    }
+            // ✅ Handle action label formatting
+            let actionLabel = action.charAt(0).toUpperCase() + action.slice(1);
+            if (action === 'Kill Block') {
+                actionLabel = 'Kill Block';
+            }
 
-    if (team !== serving) {
-        // team gained the serve -> rotate that team's players
-        serving = team;
-        rotateTeamClockwise(team);
-        
-        // update current server to the player in the server position
-        const serverIndexMap = {1:5, 2:2, 3:1, 4:0, 5:3, 6:4};
-        const arr = team === 'A' ? activePlayers.A : activePlayers.B;
-        const newServer = arr && arr[serverIndexMap[1]] ? arr[serverIndexMap[1]] : null;
-        if (newServer) {
-            currentServerId = newServer.id;
-            currentServerTeam = team;
+            if (team === 'A') {
+                scoreA++;
+                updateScoreDisplay();
+                logEvent('A', playerNumber, actionLabel, 1);
+            } else {
+                scoreB++;
+                updateScoreDisplay();
+                logEvent('B', playerNumber, actionLabel, 1);
+            }
+
+            if (team !== serving) {
+                // team gained the serve -> rotate that team's players
+                serving = team;
+                rotateTeamClockwise(team);
+
+                // update current server to the player in the server position
+                const serverIndexMap = {
+                    1: 5,
+                    2: 2,
+                    3: 1,
+                    4: 0,
+                    5: 3,
+                    6: 4
+                };
+                const arr = team === 'A' ? activePlayers.A : activePlayers.B;
+                const newServer = arr && arr[serverIndexMap[1]] ? arr[serverIndexMap[1]] : null;
+                if (newServer) {
+                    currentServerId = newServer.id;
+                    currentServerTeam = team;
+                }
+                updateServingIndicator();
+                highlightServerBadge();
+                logEvent('GAME', 'SYSTEM', `Serve → Team ${team}`, 0);
+            }
+
+            checkSetWin();
         }
-        updateServingIndicator();
-        highlightServerBadge();
-        logEvent('GAME', 'SYSTEM', `Serve → Team ${team}`, 0);
-    }
-
-    checkSetWin();
-}
 
         function checkSetWin() {
             const maxPoints = currentSet < 5 ? 25 : 15;
@@ -4481,119 +4623,121 @@ document.addEventListener('click', function(e) {
         }
 
         function handleSetWin(winner) {
-    // Save current set scores BEFORE incrementing
-    setScores.A[currentSet - 1] = scoreA;
-    setScores.B[currentSet - 1] = scoreB;
+            // Save current set scores BEFORE incrementing
+            setScores.A[currentSet - 1] = scoreA;
+            setScores.B[currentSet - 1] = scoreB;
 
-    // Increment sets won for the winner
-    if (winner === 'A') {
-        setsA++;
-    } else {
-        setsB++;
-    }
+            // Increment sets won for the winner
+            if (winner === 'A') {
+                setsA++;
+            } else {
+                setsB++;
+            }
 
-    // Log the set end
-    logEvent('GAME', 'SYSTEM', `Set ${currentSet} Ended - Team ${winner} wins ${winner === 'A' ? scoreA : scoreB}-${winner === 'A' ? scoreB : scoreA}`, 0);
+            // Log the set end
+            logEvent('GAME', 'SYSTEM',
+                `Set ${currentSet} Ended - Team ${winner} wins ${winner === 'A' ? scoreA : scoreB}-${winner === 'A' ? scoreB : scoreA}`,
+                0);
 
-    // Update displays
-    updateScoreboard();
-    updateSetScoresDisplay();
+            // Update displays
+            updateScoreboard();
+            updateSetScoresDisplay();
 
-    // ✅ Show set summary modal with stats
-    setTimeout(() => showSetSummaryModal(currentSet, scoreA, scoreB), 1000);
-}
-
-// Calculate stats for current set
-function calculateSetStats(setNumber) {
-    const stats = {
-        A: [],
-        B: []
-    };
-
-    // Initialize Team A players with zero stats
-    gameData.team1.players.forEach(player => {
-        stats.A.push({
-            id: player.id,
-            name: player.name || `Player ${player.number}`,
-            number: player.number || '00',
-            kills: 0,
-            aces: 0,
-            blocks: 0,
-            digs: 0,
-            assists: 0,
-            errors: 0
-        });
-    });
-
-    // Initialize Team B players with zero stats
-    gameData.team2.players.forEach(player => {
-        stats.B.push({
-            id: player.id,
-            name: player.name || `Player ${player.number}`,
-            number: player.number || '00',
-            kills: 0,
-            aces: 0,
-            blocks: 0,
-            digs: 0,
-            assists: 0,
-            errors: 0
-        });
-    });
-
-    // Count stats from events in this set
-    events.forEach(event => {
-        if (event.set !== setNumber) return;
-        if (event.player === 'TEAM' || event.player === 'SYSTEM') return;
-
-        const team = event.team;
-        const playerNumber = event.player.toString();
-
-        // Find the player in stats array
-        const playerStats = stats[team].find(p => p.number.toString() === playerNumber);
-        if (!playerStats) return;
-
-        const action = event.action.toLowerCase();
-        
-        if (action === 'kill' || action === 'kill block') {
-            playerStats.kills++;
-        } else if (action === 'ace') {
-            playerStats.aces++;
-        } else if (action === 'block') {
-            playerStats.blocks++;
-        } else if (action === 'dig') {
-            playerStats.digs++;
-        } else if (action === 'assist') {
-            playerStats.assists++;
-        } else if (action.includes('error')) {
-            playerStats.errors++;
+            // ✅ Show set summary modal with stats
+            setTimeout(() => showSetSummaryModal(currentSet, scoreA, scoreB), 1000);
         }
-    });
 
-    return stats;
-}
+        // Calculate stats for current set
+        function calculateSetStats(setNumber) {
+            const stats = {
+                A: [],
+                B: []
+            };
 
-// Show set summary modal
-function showSetSummaryModal(setNumber, finalScoreA, finalScoreB) {
-    const stats = calculateSetStats(setNumber);
+            // Initialize Team A players with zero stats
+            gameData.team1.players.forEach(player => {
+                stats.A.push({
+                    id: player.id,
+                    name: player.name || `Player ${player.number}`,
+                    number: player.number || '00',
+                    kills: 0,
+                    aces: 0,
+                    blocks: 0,
+                    digs: 0,
+                    assists: 0,
+                    errors: 0
+                });
+            });
 
-    // Set header info
-    document.getElementById('summarySetNumber').textContent = setNumber;
-    document.getElementById('summaryTeamAName').textContent = gameData.team1.name;
-    document.getElementById('summaryTeamBName').textContent = gameData.team2.name;
-    document.getElementById('summaryTeamATitle').textContent = gameData.team1.name.toUpperCase();
-    document.getElementById('summaryTeamBTitle').textContent = gameData.team2.name.toUpperCase();
-    document.getElementById('summaryScoreA').textContent = finalScoreA.toString().padStart(2, '0');
-    document.getElementById('summaryScoreB').textContent = finalScoreB.toString().padStart(2, '0');
+            // Initialize Team B players with zero stats
+            gameData.team2.players.forEach(player => {
+                stats.B.push({
+                    id: player.id,
+                    name: player.name || `Player ${player.number}`,
+                    number: player.number || '00',
+                    kills: 0,
+                    aces: 0,
+                    blocks: 0,
+                    digs: 0,
+                    assists: 0,
+                    errors: 0
+                });
+            });
 
-    // Render Team A stats
-    const teamAStatsBody = document.getElementById('summaryTeamAStats');
-    teamAStatsBody.innerHTML = '';
-    
-    // ✅ FIXED: Use the array directly, not Object.values
-    stats.A.forEach(player => {
-        const row = document.createElement('tr');
-        row.style.borderBottom = '1px solid #2d2d2d';
-        row.innerHTML = `
+            // Count stats from events in this set
+            events.forEach(event => {
+                if (event.set !== setNumber) return;
+                if (event.player === 'TEAM' || event.player === 'SYSTEM') return;
+
+                const team = event.team;
+                const playerNumber = event.player.toString();
+
+                // Find the player in stats array
+                const playerStats = stats[team].find(p => p.number.toString() === playerNumber);
+                if (!playerStats) return;
+
+                const action = event.action.toLowerCase();
+
+                if (action === 'kill' || action === 'kill block') {
+                    playerStats.kills++;
+                } else if (action === 'ace') {
+                    playerStats.aces++;
+                } else if (action === 'block') {
+                    playerStats.blocks++;
+                } else if (action === 'dig') {
+                    playerStats.digs++;
+                } else if (action === 'assist') {
+                    playerStats.assists++;
+                } else if (action.includes('error')) {
+                    playerStats.errors++;
+                }
+            });
+
+            return stats;
+        }
+
+        // Show set summary modal
+        function showSetSummaryModal(setNumber, finalScoreA, finalScoreB) {
+            const stats = calculateSetStats(setNumber);
+
+            // Set header info
+            document.getElementById('summarySetNumber').textContent = setNumber;
+            document.getElementById('summaryTeamAName').textContent = gameData.team1.name;
+            document.getElementById('summaryTeamBName').textContent = gameData.team2.name;
+            document.getElementById('summaryTeamATitle').textContent = gameData.team1.name.toUpperCase();
+            document.getElementById('summaryTeamBTitle').textContent = gameData.team2.name.toUpperCase();
+            document.getElementById('summaryScoreA').textContent = finalScoreA.toString().padStart(2, '0');
+            document.getElementById('summaryScoreB').textContent = finalScoreB.toString().padStart(2, '0');
+
+            // Render Team A stats
+            const teamAStatsBody = document.getElementById('summaryTeamAStats');
+            teamAStatsBody.innerHTML = '';
+
+            // ✅ FIXED: Use the array directly, not Object.values
+            stats.A.forEach(player => {
+                const row = document.createElement('tr');
+                row.style.borderBottom = '1px solid #2d2d2d';
+                row.innerHTML = `
             <td style="padding: 12px; font-weight: bold;">${player.number}</td>
             <td style="padding: 12px;">${player.name}</td>
             <td style="padding: 12px; text-align: center;">${player.kills}</td>
@@ -4603,18 +4747,18 @@ function showSetSummaryModal(setNumber, finalScoreA, finalScoreB) {
             <td style="padding: 12px; text-align: center;">${player.assists}</td>
             <td style="padding: 12px; text-align: center;">${player.errors}</td>
         `;
-        teamAStatsBody.appendChild(row);
-    });
+                teamAStatsBody.appendChild(row);
+            });
 
-    // Render Team B stats
-    const teamBStatsBody = document.getElementById('summaryTeamBStats');
-    teamBStatsBody.innerHTML = '';
-    
-    // ✅ FIXED: Use the array directly, not Object.values
-    stats.B.forEach(player => {
-        const row = document.createElement('tr');
-        row.style.borderBottom = '1px solid #2d2d2d';
-        row.innerHTML = `
+            // Render Team B stats
+            const teamBStatsBody = document.getElementById('summaryTeamBStats');
+            teamBStatsBody.innerHTML = '';
+
+            // ✅ FIXED: Use the array directly, not Object.values
+            stats.B.forEach(player => {
+                const row = document.createElement('tr');
+                row.style.borderBottom = '1px solid #2d2d2d';
+                row.innerHTML = `
             <td style="padding: 12px; font-weight: bold;">${player.number}</td>
             <td style="padding: 12px;">${player.name}</td>
             <td style="padding: 12px; text-align: center;">${player.kills}</td>
@@ -4624,24 +4768,24 @@ function showSetSummaryModal(setNumber, finalScoreA, finalScoreB) {
             <td style="padding: 12px; text-align: center;">${player.assists}</td>
             <td style="padding: 12px; text-align: center;">${player.errors}</td>
         `;
-        teamBStatsBody.appendChild(row);
-    });
+                teamBStatsBody.appendChild(row);
+            });
 
-    // Show modal
-    document.getElementById('setSummaryModal').classList.add('show');
-}
+            // Show modal
+            document.getElementById('setSummaryModal').classList.add('show');
+        }
 
-// Close set summary modal and continue
-function closeSetSummaryModal() {
-    document.getElementById('setSummaryModal').classList.remove('show');
-    
-    // Check if game is over
-    if (setsA >= 3 || setsB >= 3) {
-        setTimeout(() => showGameEndModal(), 500);
-    } else {
-        setTimeout(() => showSetEndModal(), 500);
-    }
-}
+        // Close set summary modal and continue
+        function closeSetSummaryModal() {
+            document.getElementById('setSummaryModal').classList.remove('show');
+
+            // Check if game is over
+            if (setsA >= 3 || setsB >= 3) {
+                setTimeout(() => showGameEndModal(), 500);
+            } else {
+                setTimeout(() => showSetEndModal(), 500);
+            }
+        }
 
         function handleTimeoutClick() {
             selectingTeam = true;
@@ -4650,28 +4794,28 @@ function closeSetSummaryModal() {
         }
 
         function handleTimeoutTeamSelect(team) {
-    if (team === 'A' && timeoutsA >= maxTimeoutsA) {
-        alert('Team A has no timeouts remaining');
-        return;
-    }
-    if (team === 'B' && timeoutsB >= maxTimeoutsB) {
-        alert('Team B has no timeouts remaining');
-        return;
-    }
+            if (team === 'A' && timeoutsA >= maxTimeoutsA) {
+                alert('Team A has no timeouts remaining');
+                return;
+            }
+            if (team === 'B' && timeoutsB >= maxTimeoutsB) {
+                alert('Team B has no timeouts remaining');
+                return;
+            }
 
-    if (team === 'A') {
-        timeoutsA++;
-    } else {
-        timeoutsB++;
-    }
+            if (team === 'A') {
+                timeoutsA++;
+            } else {
+                timeoutsB++;
+            }
 
-    updateScoreboard();
-    startTimeoutTimer(team);  // ✅ CHANGED - pass team parameter, removed logEvent
-}
+            updateScoreboard();
+            startTimeoutTimer(team); // ✅ CHANGED - pass team parameter, removed logEvent
+        }
 
         function handleErrorTeamSelect(team) {
             const opponent = team === 'A' ? 'B' : 'A';
-           
+
             if (opponent === 'A') {
                 scoreA++;
             } else {
@@ -4690,14 +4834,14 @@ function closeSetSummaryModal() {
             checkSetWin();
         }
 
-       function startTimeoutTimer(team) {  // ✅ ADD team parameter
+        function startTimeoutTimer(team) { // ✅ ADD team parameter
             timeoutActive = true;
-            timeoutTime = 60;  // ✅ Changed from 30
-            currentTimeoutTeam = team;  // ✅ ADD THIS
+            timeoutTime = 60; // ✅ Changed from 30
+            currentTimeoutTeam = team; // ✅ ADD THIS
             document.getElementById('timeoutTimer').classList.add('active');
             updateTimeoutDisplay();
-            
-            logEvent(team, 'TEAM', 'Timeout Started (60s)', 0);  // ✅ ADD THIS
+
+            logEvent(team, 'TEAM', 'Timeout Started (60s)', 0); // ✅ ADD THIS
 
             timeoutInterval = setInterval(() => {
                 timeoutTime--;
@@ -4709,38 +4853,38 @@ function closeSetSummaryModal() {
         }
 
         function endTimeout() {
-    timeoutActive = false;
-    clearInterval(timeoutInterval);
-    document.getElementById('timeoutTimer').classList.remove('active');
-    
-    // ✅ ADD THESE LINES
-    if (currentTimeoutTeam) {
-        logEvent(currentTimeoutTeam, 'TEAM', 'Timeout Ended', 0);
-        showTimeoutEndModal();
-    }
-    
-    timeoutTime = 60;  // ✅ Changed from 30
-    currentTimeoutTeam = null;  // ✅ ADD THIS
-}
+            timeoutActive = false;
+            clearInterval(timeoutInterval);
+            document.getElementById('timeoutTimer').classList.remove('active');
+
+            // ✅ ADD THESE LINES
+            if (currentTimeoutTeam) {
+                logEvent(currentTimeoutTeam, 'TEAM', 'Timeout Ended', 0);
+                showTimeoutEndModal();
+            }
+
+            timeoutTime = 60; // ✅ Changed from 30
+            currentTimeoutTeam = null; // ✅ ADD THIS
+        }
 
         function updateTimeoutDisplay() {
             document.getElementById('timeoutTime').textContent = timeoutTime;
         }
 
         function handleTeamSelect(team) {
-    if (teamSelectCallback) {
-        const callback = teamSelectCallback;
-        teamSelectCallback = null;
-        selectingTeam = false;
-        closeTeamSelectModal(); // Close first
-        
-        // Use setTimeout to ensure modal closes before callback shows new modal
-        setTimeout(() => callback(team), 100);
-    } else {
-        closeTeamSelectModal();
-        selectingTeam = false;
-    }
-}
+            if (teamSelectCallback) {
+                const callback = teamSelectCallback;
+                teamSelectCallback = null;
+                selectingTeam = false;
+                closeTeamSelectModal(); // Close first
+
+                // Use setTimeout to ensure modal closes before callback shows new modal
+                setTimeout(() => callback(team), 100);
+            } else {
+                closeTeamSelectModal();
+                selectingTeam = false;
+            }
+        }
 
         function showTeamSelectModal(prompt) {
             document.getElementById('teamSelectPrompt').textContent = prompt;
@@ -4767,7 +4911,7 @@ function closeSetSummaryModal() {
 
         function startNextSet() {
             document.getElementById('setEndModal').classList.remove('show');
-           
+
             currentSet++;
             scoreA = 0;
             scoreB = 0;
@@ -4785,34 +4929,34 @@ function closeSetSummaryModal() {
         }
 
         function showGameEndModal() {
-    const winner = setsA > setsB ? gameData.team1.name : gameData.team2.name;
-    document.getElementById('winnerText').textContent = `${winner.toUpperCase()} WINS!`;
-    document.getElementById('finalSetsA').textContent = setsA;
-    document.getElementById('finalSetsB').textContent = setsB;
+            const winner = setsA > setsB ? gameData.team1.name : gameData.team2.name;
+            document.getElementById('winnerText').textContent = `${winner.toUpperCase()} WINS!`;
+            document.getElementById('finalSetsA').textContent = setsA;
+            document.getElementById('finalSetsB').textContent = setsB;
 
-    let setScoresHtml = '';
-    
-    // ✅ ONLY show sets that were actually played (not empty sets)
-    for (let i = 0; i < currentSet; i++) {
-        const scoreA = setScores.A[i];
-        const scoreB = setScores.B[i];
-        
-        // Only show if this set has scores
-        if (scoreA !== undefined && scoreB !== undefined && (scoreA > 0 || scoreB > 0)) {
-            const wonClass = scoreA > scoreB ? 'won-a' : 'won-b';
+            let setScoresHtml = '';
 
-            setScoresHtml += `
+            // ✅ ONLY show sets that were actually played (not empty sets)
+            for (let i = 0; i < currentSet; i++) {
+                const scoreA = setScores.A[i];
+                const scoreB = setScores.B[i];
+
+                // Only show if this set has scores
+                if (scoreA !== undefined && scoreB !== undefined && (scoreA > 0 || scoreB > 0)) {
+                    const wonClass = scoreA > scoreB ? 'won-a' : 'won-b';
+
+                    setScoresHtml += `
                 <div style="display: flex; justify-content: space-between; padding: 10px; background: #3d3d3d; margin-bottom: 8px; border-radius: 6px;" class="${wonClass}">
                     <span>Set ${i + 1}:</span>
                     <span style="font-family: 'Courier New', monospace; font-weight: bold;">${scoreA} - ${scoreB}</span>
                 </div>
             `;
-        }
-    }
+                }
+            }
 
-    document.getElementById('finalSetScores').innerHTML = setScoresHtml;
-    document.getElementById('gameEndModal').classList.add('show');
-}
+            document.getElementById('finalSetScores').innerHTML = setScoresHtml;
+            document.getElementById('gameEndModal').classList.add('show');
+        }
 
         function collectPlayerStats() {
             const playerStats = {};
@@ -4891,7 +5035,7 @@ function closeSetSummaryModal() {
 
         function saveGameResults() {
             const playerStats = collectPlayerStats();
-    
+
             const finalGameData = {
                 game_id: gameData.id,
                 team1_score: setsA,
@@ -4904,27 +5048,27 @@ function closeSetSummaryModal() {
                 winner_id: setsA > setsB ? 1 : 2,
                 status: 'completed',
                 completed_at: new Date().toISOString(),
-                game_events: events,  // ✅ Events already include 'set' property
+                game_events: events, // ✅ Events already include 'set' property
                 player_stats: playerStats
             };
 
             fetch(`/games/${gameData.id}/volleyball-complete`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify(finalGameData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert('Game saved successfully!');
-                window.location.href = data.redirect_url || '/games';
-            })
-            .catch(error => {
-                console.error('Error saving game:', error);
-                alert('Error saving game. Please try again.');
-            });
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify(finalGameData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert('Game saved successfully!');
+                    window.location.href = data.redirect_url || '/games';
+                })
+                .catch(error => {
+                    console.error('Error saving game:', error);
+                    alert('Error saving game. Please try again.');
+                });
         }
 
         function logEvent(team, player, action, points) {
@@ -4934,7 +5078,7 @@ function closeSetSummaryModal() {
                 player,
                 action,
                 points,
-                set: currentSet,  // ✅ This is already there
+                set: currentSet, // ✅ This is already there
                 score: `${scoreA}-${scoreB}`
             };
             events.unshift(event);
@@ -5042,7 +5186,7 @@ function closeSetSummaryModal() {
                 const scoreA = setScores.A[i];
                 const scoreB = setScores.B[i];
                 const wonClass = scoreA > scoreB ? 'won-a' : 'won-b';
-               
+
                 const box = document.createElement('div');
                 box.className = `set-score-box ${wonClass}`;
                 box.textContent = `${scoreA}-${scoreB}`;
@@ -5064,9 +5208,9 @@ function closeSetSummaryModal() {
         function resetSelection() {
             selectedAction = null;
             selectingPlayer = false;
-             blockingTeam = null;        // ✅ ADD this line
-            pendingBlockType = null;    // ✅ ADD this line
-            teamSelectCallback = null;  // ✅ ADD this line
+            blockingTeam = null; // ✅ ADD this line
+            pendingBlockType = null; // ✅ ADD this line
+            teamSelectCallback = null; // ✅ ADD this line
             document.querySelectorAll('.action-btn').forEach(btn => btn.classList.remove('selected'));
             document.querySelectorAll('.player-card').forEach(card => card.classList.remove('selecting'));
             hideInstruction();
@@ -5075,4 +5219,5 @@ function closeSetSummaryModal() {
         init();
     </script>
 </body>
+
 </html>
