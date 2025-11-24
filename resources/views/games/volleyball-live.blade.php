@@ -4083,20 +4083,173 @@
             }
         });
 
-        // Update the init function to call initializePlayerRosters
+        // ✅ ADD THESE THREE FUNCTIONS (place them before the init() function)
 
-        // Initialize
-        function init() {
-            initializePlayerRosters(); // populate activePlayers/benchPlayers
-            // render from activePlayers so draggable reordering is based on that state
-            identifyLiberos();
-            updateMainRoster();
+/**
+ * Save game state to backend (every 5 seconds)
+ */
+function saveGameState() {
+    const gameStateData = {
+        scoreA: scoreA,
+        scoreB: scoreB,
+        currentSet: currentSet,
+        setsA: setsA,
+        setsB: setsB,
+        serving: serving,
+        currentServerId: currentServerId,
+        currentServerTeam: currentServerTeam,
+        timeoutsA: timeoutsA,
+        timeoutsB: timeoutsB,
+        substitutionsA: substitutionsA,
+        substitutionsB: substitutionsB,
+        setScores: setScores,
+        game_events: events,
+        active_players: {
+            teamA: activePlayers.A,
+            teamB: activePlayers.B
+        },
+        bench_players: {
+            teamA: benchPlayers.A,
+            teamB: benchPlayers.B
+        },
+        liberoA: liberoA,
+        liberoB: liberoB,
+        currentLiberoA: currentLiberoA,
+        currentLiberoB: currentLiberoB
+    };
+
+    fetch(`/games/${gameData.id}/auto-save-volleyball`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify(gameStateData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('✅ Auto-saved at:', data.saved_at);
+        }
+    })
+    .catch(error => console.error('❌ Auto-save failed:', error));
+}
+
+/**
+ * Load saved game state on page load
+ */
+function loadSavedGameState() {
+    fetch(`/games/${gameData.id}/load-state-volleyball`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.has_saved_state) {
+            console.log('📥 Loading saved state from:', data.last_saved);
+            
+            // Restore scores
+            scoreA = data.scoreA || 0;
+            scoreB = data.scoreB || 0;
+            currentSet = data.currentSet || 1;
+            setsA = data.setsA || 0;
+            setsB = data.setsB || 0;
+            
+            // Restore serving
+            serving = data.serving || 'A';
+            currentServerId = data.currentServerId;
+            currentServerTeam = data.currentServerTeam;
+            
+            // Restore timeouts and subs
+            timeoutsA = data.timeoutsA || 0;
+            timeoutsB = data.timeoutsB || 0;
+            substitutionsA = data.substitutionsA || 0;
+            substitutionsB = data.substitutionsB || 0;
+            
+            // Restore set scores
+            if (data.setScores) {
+                setScores = data.setScores;
+            }
+            
+            // Restore events
+            if (data.game_events && data.game_events.length > 0) {
+                events = data.game_events;
+                eventCounter = Math.max(...events.map(e => e.id)) + 1;
+            }
+            
+            // Restore rosters
+            if (data.active_players) {
+                if (data.active_players.teamA) activePlayers.A = data.active_players.teamA;
+                if (data.active_players.teamB) activePlayers.B = data.active_players.teamB;
+            }
+            
+            if (data.bench_players) {
+                if (data.bench_players.teamA) benchPlayers.A = data.bench_players.teamA;
+                if (data.bench_players.teamB) benchPlayers.B = data.bench_players.teamB;
+            }
+            
+            // Restore libero tracking
+            liberoA = data.liberoA;
+            liberoB = data.liberoB;
+            currentLiberoA = data.currentLiberoA;
+            currentLiberoB = data.currentLiberoB;
+            
+            // Update all displays
             updateScoreboard();
             updateServingIndicator();
-            setupEventListeners();
-            loadHotkeys();
-            loadGameSettings();
+            updateSetScoresDisplay();
+            renderLog();
+            renderTeamJerseys();
+            updateMainRoster();
+            renderSubstitutionPlayers();
+            highlightServerBadge();
+            
+            // Show notification
+            showNotification('Game state restored from last save', '#4CAF50');
+            console.log('✅ Game state fully restored');
+        } else {
+            console.log('ℹ️ No saved state found - starting fresh');
         }
+    })
+    .catch(error => {
+        console.error('❌ Failed to load saved state:', error);
+    });
+}
+
+       // ✅ REPLACE your existing init() function with this:
+function init() {
+    initializePlayerRosters();
+    identifyLiberos();
+    updateMainRoster();
+    updateScoreboard();
+    updateServingIndicator();
+    setupEventListeners();
+    loadHotkeys();
+    loadGameSettings();
+    
+    // ✅ NEW: Load saved state after a short delay
+    setTimeout(() => {
+        loadSavedGameState();
+    }, 500);
+    
+    // ✅ NEW: Start auto-save interval (every 5 seconds)
+    setInterval(() => {
+        // Only auto-save if there are events (game has started)
+        if (events.length > 0) {
+            saveGameState();
+        }
+    }, 5000);
+    
+    // ✅ NEW: Save on page unload
+    window.addEventListener('beforeunload', () => {
+        if (events.length > 0) {
+            saveGameState();
+        }
+    });
+}
 
         // Hotkeys functionality
         let hotkeys = {
