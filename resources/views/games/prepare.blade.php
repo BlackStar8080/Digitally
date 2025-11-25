@@ -1370,9 +1370,7 @@
             document.getElementById('generateInviteContainer').style.display = 'block';
         }
 
-        // Poll for connected users every 2 seconds
         function refreshConnectedUsers() {
-    // ✅ Only run for basketball games
     const isVolleyball = {{ $game->isVolleyball() ? 'true' : 'false' }};
     if (isVolleyball) {
         console.log('🏐 Volleyball game - skipping user polling');
@@ -1386,7 +1384,7 @@
     const list = document.getElementById('usersList');
     const startBtn = document.getElementById('startGameBtn');
     
-    if (!list || !startBtn) return; // Safety check
+    if (!list || !startBtn) return;
     
     fetch(`/games/${gameId}/connected-users`)
         .then(r => r.json())
@@ -1404,11 +1402,23 @@
                     `<span class="badge bg-success">${u.user_name} (${u.role})</span>`
                 ).join(' ');
                 
-                // ✅ ENABLE START BUTTON WHEN STAT-KEEPER JOINS
                 const hasStatKeeper = users.some(u => u.role === 'stat_keeper');
-                if (isSeparated && hasStatKeeper) {
+                
+                // ✅ CRITICAL FIX: Check if game setup is complete first
+                const team1Ready = gameState.selectedRoster.team1.length >= {{ $game->isVolleyball() ? 6 : 5 }} &&
+                                  gameState.selectedStarters.team1.length === {{ $game->isVolleyball() ? 6 : 5 }};
+                const team2Ready = gameState.selectedRoster.team2.length >= {{ $game->isVolleyball() ? 6 : 5 }} &&
+                                  gameState.selectedStarters.team2.length === {{ $game->isVolleyball() ? 6 : 5 }};
+                const hasReferee = officialsData.referee && officialsData.referee.trim() !== '';
+                const allReady = team1Ready && team2Ready && hasReferee;
+                
+                if (isSeparated && hasStatKeeper && allReady) {
                     startBtn.disabled = false;
                     startBtn.innerHTML = '<i class="bi bi-play-circle-fill"></i> Start Live Game';
+                    console.log('✅ Stat-keeper joined! Start button enabled.');
+                } else if (isSeparated && !allReady) {
+                    startBtn.disabled = true;
+                    startBtn.innerHTML = '<i class="bi bi-exclamation-circle"></i> Complete setup first';
                 }
             }
         })
@@ -1862,16 +1872,36 @@ if (!isVolleyball) {
 
             var allReady = team1Ready && team2Ready && hasReferee;
 
-            if (allReady) {
-                startButton.disabled = false;
 
-                if (team1RosterInput) team1RosterInput.value = JSON.stringify(gameState.selectedRoster.team1);
-                if (team2RosterInput) team2RosterInput.value = JSON.stringify(gameState.selectedRoster.team2);
-                if (team1StartersInput) team1StartersInput.value = JSON.stringify(gameState.selectedStarters.team1);
-                if (team2StartersInput) team2StartersInput.value = JSON.stringify(gameState.selectedStarters.team2);
-            } else {
-                startButton.disabled = true;
+
+                const separatedRadio = document.getElementById('separated');
+                const isSeparated = separatedRadio && separatedRadio.checked;
+                
+                if (allReady) {
+                    if (isSeparated) {
+                        // Don't enable yet - wait for refreshConnectedUsers() to enable it
+                        startButton.innerHTML = '<i class="bi bi-hourglass-split"></i> Waiting for stat-keeper...';
+                    } else {
+                        startButton.disabled = false;
+                        startButton.innerHTML = '<i class="bi bi-play-circle-fill"></i> Start Live Game';
+                    }
+
+                    // Update hidden inputs
+                    if (team1RosterInput) team1RosterInput.value = JSON.stringify(gameState.selectedRoster.team1);
+                    if (team2RosterInput) team2RosterInput.value = JSON.stringify(gameState.selectedRoster.team2);
+                    if (team1StartersInput) team1StartersInput.value = JSON.stringify(gameState.selectedStarters.team1);
+                    if (team2StartersInput) team2StartersInput.value = JSON.stringify(gameState.selectedStarters.team2);
+                } else {
+                    startButton.disabled = true;
+                }
             }
-        }
+
+            // Debug mode selector changes
+            document.querySelectorAll('input[name="interface_mode"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    console.log('🎮 Mode changed to:', this.value);
+                    console.log('📋 Hidden input value:', document.getElementById('interface_mode_input').value);
+                });
+            });
     </script>
 @endsection

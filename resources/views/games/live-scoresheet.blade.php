@@ -3118,26 +3118,46 @@
 
 
     <script>
-        // Game data from Laravel - UPDATED to include roster and starters data
         const gameData = {
-            id: {{ $game->id }},
-            team1: {
-                name: '{{ $game->team1->team_name }}',
-                players: @json($team1Players->values()),
-                roster: @json($team1Roster ?? []),
-                starters: @json($team1Starters ?? [])
-            },
-            team2: {
-                name: '{{ $game->team2->team_name }}',
-                players: @json($team2Players->values()),
-                roster: @json($team2Roster ?? []),
-                starters: @json($team2Starters ?? [])
-            },
-            referee: '{{ $game->referee }}',
-            startedAt: '{{ $game->started_at }}',
-            tournamentId: {{ $game->tournament_id ?? 'null' }},
-            bracketId: {{ $game->bracket_id ?? 'null' }}
-        };
+    id: {{ $game->id }},
+    team1: {
+        name: '{{ $game->team1->team_name }}',
+        players: @json($team1PlayersArray ?? []),
+        roster: @json($team1Roster ?? []),
+        starters: @json($team1Starters ?? [])
+    },
+    team2: {
+        name: '{{ $game->team2->team_name }}',
+        players: @json($team2PlayersArray ?? []),
+        roster: @json($team2Roster ?? []),
+        starters: @json($team2Starters ?? [])
+    },
+    referee: '{{ $game->referee }}',
+    startedAt: '{{ $game->started_at }}',
+    tournamentId: {{ $game->tournament_id ?? 'null' }},
+    bracketId: {{ $game->bracket_id ?? 'null' }}
+};
+
+// ✅ DEBUG LOG
+console.log('🎮 Game Data Loaded:', gameData);
+console.log('👥 Team 1 Players:', gameData.team1.players);
+console.log('👥 Team 2 Players:', gameData.team2.players);
+console.log('📋 User Role:', '{{ $userRole }}');
+
+// ✅ ADD THIS SECTION
+    const userRole = '{{ $userRole }}';
+    console.log('👤 Current User Role:', userRole);
+
+    // ✅ Helper function to safely add event listeners
+    function safeAddEventListener(elementId, event, handler) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.addEventListener(event, handler);
+            console.log(`✅ Event listener attached to: ${elementId}`);
+        } else {
+            console.log(`⚠️ Element not found (skipped): ${elementId}`);
+        }
+    }
 
         // Calculate player stats from game events
         function calculatePlayerStats() {
@@ -3536,44 +3556,53 @@
 
         // Initialize active and bench players based on preparation data
         function initializePlayerRosters() {
-            // Team A (team1)
-            if (gameData.team1.starters && gameData.team1.starters.length > 0) {
-                // Use the starters selected in preparation
-                gameData.team1.players.forEach(player => {
-                    if (gameData.team1.starters.includes(player.id.toString())) {
-                        activePlayers.A.push(player);
-                    } else if (gameData.team1.roster && gameData.team1.roster.includes(player.id.toString())) {
-                        benchPlayers.A.push(player);
-                    }
-                });
-            } else {
-                // Fallback to first 5 if no preparation data
-                activePlayers.A = gameData.team1.players.slice(0, 5);
-                benchPlayers.A = gameData.team1.players.slice(5);
+    console.log('🔧 Initializing player rosters...');
+    console.log('Team 1 starters:', gameData.team1.starters);
+    console.log('Team 1 all players:', gameData.team1.players);
+    
+    // Team A (team1)
+    if (gameData.team1.starters && gameData.team1.starters.length > 0) {
+        // Use the starters selected in preparation
+        gameData.team1.players.forEach(player => {
+            if (gameData.team1.starters.includes(player.id.toString())) {
+                activePlayers.A.push(player);
+                console.log('✅ Added Team A starter:', player.name);
+            } else if (gameData.team1.roster && gameData.team1.roster.includes(player.id.toString())) {
+                benchPlayers.A.push(player);
+                console.log('📋 Added Team A bench:', player.name);
             }
+        });
+    } else {
+        // Fallback to first 5 if no preparation data
+        activePlayers.A = gameData.team1.players.slice(0, 5);
+        benchPlayers.A = gameData.team1.players.slice(5);
+        console.log('⚠️ Using fallback for Team A');
+    }
 
-            // Team B (team2)
-            if (gameData.team2.starters && gameData.team2.starters.length > 0) {
-                // Use the starters selected in preparation
-                gameData.team2.players.forEach(player => {
-                    if (gameData.team2.starters.includes(player.id.toString())) {
-                        activePlayers.B.push(player);
-                    } else if (gameData.team2.roster && gameData.team2.roster.includes(player.id.toString())) {
-                        benchPlayers.B.push(player);
-                    }
-                });
-            } else {
-                // Fallback to first 5 if no preparation data
-                activePlayers.B = gameData.team2.players.slice(0, 5);
-                benchPlayers.B = gameData.team2.players.slice(5);
+    // Team B (team2)
+    if (gameData.team2.starters && gameData.team2.starters.length > 0) {
+        gameData.team2.players.forEach(player => {
+            if (gameData.team2.starters.includes(player.id.toString())) {
+                activePlayers.B.push(player);
+                console.log('✅ Added Team B starter:', player.name);
+            } else if (gameData.team2.roster && gameData.team2.roster.includes(player.id.toString())) {
+                benchPlayers.B.push(player);
+                console.log('📋 Added Team B bench:', player.name);
             }
+        });
+    } else {
+        // Fallback
+        activePlayers.B = gameData.team2.players.slice(0, 5);
+        benchPlayers.B = gameData.team2.players.slice(5);
+        console.log('⚠️ Using fallback for Team B');
+    }
 
-            console.log('Initialized rosters:');
-            console.log('Team A Active:', activePlayers.A);
-            console.log('Team A Bench:', benchPlayers.A);
-            console.log('Team B Active:', activePlayers.B);
-            console.log('Team B Bench:', benchPlayers.B);
-        }
+    console.log('✅ Roster initialization complete');
+    console.log('Team A Active:', activePlayers.A);
+    console.log('Team A Bench:', benchPlayers.A);
+    console.log('Team B Active:', activePlayers.B);
+    console.log('Team B Bench:', benchPlayers.B);
+}
 
         function initializePlayerFouls() {
             // Initialize foul count for all players
