@@ -2120,4 +2120,72 @@ public function loadVolleyballState(Game $game)
     }
 }
 
+public function getLiveScores(Request $request)
+    {
+        // Get tournament_id from request (optional filter)
+        $tournamentId = $request->query('tournament_id');
+
+        // Build the query
+        $query = Game::with(['team1', 'team2', 'bracket.tournament'])
+            ->whereIn('status', ['in_progress', 'pending']);
+
+        // Filter by tournament if provided
+        if ($tournamentId) {
+            $query->whereHas('bracket', function($q) use ($tournamentId) {
+                $q->where('tournament_id', $tournamentId);
+            });
+        }
+
+        // Get games and map to response format
+        $games = $query->get()->map(function($game) {
+            return [
+                'id' => $game->id,
+                'team1_id' => $game->team1_id,
+                'team2_id' => $game->team2_id,
+                'team1_name' => $game->team1 ? $game->team1->team_name : 'TBD',
+                'team2_name' => $game->team2 ? $game->team2->team_name : 'TBD',
+                'team1_score' => $game->team1_score ?? 0,
+                'team2_score' => $game->team2_score ?? 0,
+                'status' => $game->status,
+                'winner_id' => $game->winner_id,
+                'round' => $game->round,
+                'match_number' => $game->match_number,
+                'tournament_name' => $game->bracket->tournament->name ?? 'N/A',
+                'sport' => $game->bracket->tournament->sport->sports_name ?? 'N/A'
+            ];
+        });
+
+        return response()->json(['games' => $games]);
+    }
+
+    /**
+     * Helper method to get game status text
+     * 
+     * @param Game $game
+     * @return string
+     */
+    private function getGameStatusText($game)
+    {
+        if ($game->status === 'completed') {
+            return 'Final';
+        }
+        
+        if ($game->status === 'in_progress') {
+            // You can expand this based on your game tracking needs
+            $sportName = $game->bracket->tournament->sport->sports_name ?? '';
+            
+            if (stripos($sportName, 'Basketball') !== false) {
+                return 'Q' . ($game->current_quarter ?? 1) . ' - ' . ($game->time_remaining ?? '12:00');
+            } else if (stripos($sportName, 'Volleyball') !== false) {
+                return 'Set ' . ($game->current_set ?? 1) . ' - ' . ($game->team1_score ?? 0) . ':' . ($game->team2_score ?? 0);
+            }
+        }
+        
+        if ($game->scheduled_at) {
+            return 'Next - ' . Carbon::parse($game->scheduled_at)->format('g:i A');
+        }
+        
+        return 'Pending';
+    }
+
 }

@@ -4118,6 +4118,11 @@ function saveGameState() {
         currentLiberoB: currentLiberoB
     };
 
+    console.log('💾 Saving game state...', {
+        events_count: events.length,
+        scoreA, scoreB, currentSet
+    });
+
     fetch(`/games/${gameData.id}/auto-save-volleyball`, {
         method: 'POST',
         headers: {
@@ -4126,13 +4131,24 @@ function saveGameState() {
         },
         body: JSON.stringify(gameStateData)
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('💾 Save response status:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             console.log('✅ Auto-saved at:', data.saved_at);
+        } else {
+            console.error('❌ Save failed:', data);
         }
     })
-    .catch(error => console.error('❌ Auto-save failed:', error));
+    .catch(error => {
+        console.error('❌ Auto-save failed:', error);
+        console.error('Error details:', error.message);
+    });
 }
 
 /**
@@ -4142,14 +4158,22 @@ function loadSavedGameState() {
     fetch(`/games/${gameData.id}/load-state-volleyball`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            'Content-Type': 'application/json'
+            // ✅ Removed CSRF token - not needed for GET requests
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('🔍 Load response status:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+    })
     .then(data => {
+        console.log('📥 Received data:', data);
+        
         if (data.has_saved_state) {
-            console.log('📥 Loading saved state from:', data.last_saved);
+            console.log('✅ Saved state found, restoring...');
             
             // Restore scores
             scoreA = data.scoreA || 0;
@@ -4216,6 +4240,7 @@ function loadSavedGameState() {
     })
     .catch(error => {
         console.error('❌ Failed to load saved state:', error);
+        console.error('Error details:', error.message);
     });
 }
 

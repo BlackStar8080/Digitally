@@ -3047,7 +3047,8 @@
                                                         @else
                                                             {{-- REGULAR GAME --}}
                                                             <div class="bracket-game {{ $game->status === 'in_progress' ? 'in-progress' : ($game->isCompleted() ? 'completed' : 'upcoming') }}"
-                                                                style="background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(44,124,249,0.07); border:2px solid #dee2e6; min-width:160px; min-height:70px; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                                                                    data-game-id="{{ $game->id }}"
+                                                                    style="background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(44,124,249,0.07); border:2px solid #dee2e6; min-width:160px; min-height:70px; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                                                                 <div class="game-title"
                                                                     style="font-weight:600; margin-bottom:6px;">Game
                                                                     {{ $game->match_number }}</div>
@@ -3205,7 +3206,8 @@
                                                 {{-- REGULAR GAME CARD --}}
                                                 <div class="game-card {{ $game->status }}"
                                                     data-status="{{ $game->status }}"
-                                                    data-round="{{ $game->round }}">
+                                                    data-round="{{ $game->round }}"
+                                                    data-game-id="{{ $game->id }}">
                                                     {{-- Add sport badge to game header --}}
                                                     <div
                                                         class="game-header {{ $game->status === 'completed' ? 'completed' : ($game->status === 'in_progress' ? 'in-progress' : 'upcoming') }}">
@@ -4780,5 +4782,227 @@ function openEditScheduleModal(gameId, gameTitle, team1, team2, scheduledAt, ven
                             console.error('Modal element not found!');
                         }
                     });
+
+                    // ===== LIVE SCORE POLLING SYSTEM =====
+// Add this code inside the existing <script> tag in tournament_show.blade.php
+// Place it after the schedule editing code, before the closing </script> tag
+
+(function() {
+    'use strict';
+
+    const POLL_INTERVAL = 5000; // 5 seconds
+    const tournamentId = {{ $tournament->id }};
+    let pollInterval = null;
+    let isPolling = false;
+
+    console.log('🎮 Starting live score polling for tournament:', tournamentId);
+
+    /**
+     * Fetch latest scores from API
+     */
+    async function updateLiveScores() {
+        if (!isPolling) return;
+
+        try {
+            console.log('🔄 Checking for live score updates...');
+            
+            const response = await fetch(`/api/live-scores?tournament_id=${tournamentId}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('✅ Received live scores:', data);
+
+            if (data.games && data.games.length > 0) {
+                data.games.forEach(game => {
+                    updateGameCard(game);
+                    updateBracketGame(game);
+                });
+            }
+        } catch (error) {
+            console.error('❌ Error fetching live scores:', error);
+        }
+    }
+
+    /**
+     * Update game card in the games section
+     */
+    function updateGameCard(game) {
+        const gameCard = document.querySelector(`.game-card[data-game-id="${game.id}"]`);
+        if (!gameCard) {
+            console.log(`Game card #${game.id} not found in DOM`);
+            return;
+        }
+
+        console.log(`📊 Updating game card #${game.id}`);
+
+        // Update status badge
+        const statusBadge = gameCard.querySelector('.game-status-badge');
+        if (statusBadge) {
+            if (game.status === 'in_progress') {
+                statusBadge.innerHTML = '🔴 Live';
+                statusBadge.className = 'game-status-badge live';
+            } else if (game.status === 'completed') {
+                statusBadge.innerHTML = '✅ Completed';
+                statusBadge.className = 'game-status-badge completed';
+            } else {
+                statusBadge.innerHTML = 'Pending';
+                statusBadge.className = 'game-status-badge pending';
+            }
+        }
+
+        // Update game card status class
+        gameCard.className = `game-card ${game.status}`;
+        gameCard.setAttribute('data-status', game.status);
+
+        // Update game header class
+        const gameHeader = gameCard.querySelector('.game-header');
+        if (gameHeader) {
+            gameHeader.className = `game-header ${game.status === 'completed' ? 'completed' : (game.status === 'in_progress' ? 'in-progress' : 'upcoming')}`;
+        }
+
+        // Update team scores
+        const teamRows = gameCard.querySelectorAll('.team-row');
+        if (teamRows.length >= 2) {
+            // Update Team 1
+            const team1Score = teamRows[0].querySelector('.team-score');
+            if (team1Score) {
+                team1Score.textContent = game.team1_score ?? '-';
+            }
+            
+            // Update Team 2
+            const team2Score = teamRows[1].querySelector('.team-score');
+            if (team2Score) {
+                team2Score.textContent = game.team2_score ?? '-';
+            }
+
+            // Update winner highlighting
+            if (game.winner_id) {
+                teamRows.forEach(row => {
+                    row.classList.remove('winner', 'loser');
+                });
+
+                if (game.winner_id === game.team1_id) {
+                    teamRows[0].classList.add('winner');
+                    teamRows[1].classList.add('loser');
+                } else if (game.winner_id === game.team2_id) {
+                    teamRows[1].classList.add('winner');
+                    teamRows[0].classList.add('loser');
+                }
+            }
+        }
+    }
+
+    /**
+     * Update game in the bracket display
+     */
+    function updateBracketGame(game) {
+        const bracketGame = document.querySelector(`.bracket-game[data-game-id="${game.id}"]`);
+        if (!bracketGame) {
+            console.log(`Bracket game #${game.id} not found in DOM`);
+            return;
+        }
+
+        console.log(`📊 Updating bracket game:`, game);
+
+        // Update bracket game status class
+        bracketGame.className = `bracket-game ${game.status === 'in_progress' ? 'in-progress' : (game.status === 'completed' ? 'completed' : 'upcoming')}`;
+
+        // Update team scores in bracket
+        const teamSlots = bracketGame.querySelectorAll('.team-slot');
+        if (teamSlots.length >= 2) {
+            // Update Team 1 score
+            const team1Score = teamSlots[0].querySelector('.team-score');
+            if (team1Score) {
+                team1Score.textContent = game.team1_score ?? '-';
+            }
+
+            // Update Team 2 score
+            const team2Score = teamSlots[1].querySelector('.team-score');
+            if (team2Score) {
+                team2Score.textContent = game.team2_score ?? '-';
+            }
+
+            // Update winner highlighting
+            if (game.winner_id) {
+                teamSlots.forEach(slot => {
+                    slot.classList.remove('winner');
+                });
+
+                if (game.winner_id === game.team1_id) {
+                    teamSlots[0].classList.add('winner');
+                } else if (game.winner_id === game.team2_id) {
+                    teamSlots[1].classList.add('winner');
+                }
+            }
+        }
+    }
+
+    /**
+     * Start polling
+     */
+    function startPolling() {
+        if (isPolling) return;
+        
+        isPolling = true;
+        console.log('▶️ Starting live score polling...');
+        
+        // Initial update
+        updateLiveScores();
+        
+        // Poll every 5 seconds
+        pollInterval = setInterval(updateLiveScores, POLL_INTERVAL);
+    }
+
+    /**
+     * Stop polling
+     */
+    function stopPolling() {
+        if (!isPolling) return;
+        
+        isPolling = false;
+        console.log('⏸️ Stopping live score polling...');
+        
+        if (pollInterval) {
+            clearInterval(pollInterval);
+            pollInterval = null;
+        }
+    }
+
+    /**
+     * Handle page visibility changes (pause when tab is hidden)
+     */
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            console.log('⏸️ Page hidden - pausing polling');
+            stopPolling();
+        } else {
+            console.log('▶️ Page visible - resuming polling');
+            startPolling();
+        }
+    });
+
+    /**
+     * Cleanup on page unload
+     */
+    window.addEventListener('beforeunload', function() {
+        stopPolling();
+    });
+
+    // Start polling when page loads
+    startPolling();
+
+    // Export for debugging
+    window.liveScorePolling = {
+        start: startPolling,
+        stop: stopPolling,
+        updateNow: updateLiveScores,
+        isActive: () => isPolling
+    };
+
+})();
+// ===== END LIVE SCORE POLLING SYSTEM =====
     </script>
 @endif

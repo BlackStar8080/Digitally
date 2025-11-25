@@ -80,8 +80,7 @@ Route::middleware(['auth.or.guest'])->group(function () { // ✅ Changed from 'a
     Route::get('/tournaments/{id}', [BracketController::class, 'showTournament'])->name('tournaments.show');
     Route::get('/tournament/{id}/guest', [BracketController::class, 'guestView'])->name('tournament.guest');
 
-    // API route for live scores
-    Route::get('/api/live-scores', [LandingController::class, 'getLiveScores'])->name('api.live-scores');
+   Route::get('/api/live-scores', [GameController::class, 'getLiveScores'])->name('api.live-scores');
 
 });
 
