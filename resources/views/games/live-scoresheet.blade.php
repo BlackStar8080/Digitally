@@ -2460,6 +2460,43 @@
 .sub-player-card[data-ejected="true"]:hover {
     transform: none !important;
 }
+
+
+/* Fix roster visibility for stat-keeper mode */
+#statKeeperActions {
+    display: flex !important;
+    flex-direction: column;
+    background: #2d2d2d;
+    padding: 24px 20px;
+    gap: 12px;
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+/* Ensure roster section is visible in all modes */
+.roster-section {
+    display: flex !important;
+    flex-direction: column;
+    background: #2d2d2d;
+    border-right: 1px solid #444;
+    height: 100%;
+    overflow: hidden;
+    min-height: 0;
+    max-height: 100%;
+}
+
+.players-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    max-height: 100%;
+}
     </style>
 </head>
 
@@ -3144,20 +3181,7 @@ console.log('👥 Team 1 Players:', gameData.team1.players);
 console.log('👥 Team 2 Players:', gameData.team2.players);
 console.log('📋 User Role:', '{{ $userRole }}');
 
-// ✅ ADD THIS SECTION
-    const userRole = '{{ $userRole }}';
-    console.log('👤 Current User Role:', userRole);
 
-    // ✅ Helper function to safely add event listeners
-    function safeAddEventListener(elementId, event, handler) {
-        const element = document.getElementById(elementId);
-        if (element) {
-            element.addEventListener(event, handler);
-            console.log(`✅ Event listener attached to: ${elementId}`);
-        } else {
-            console.log(`⚠️ Element not found (skipped): ${elementId}`);
-        }
-    }
 
         // Calculate player stats from game events
         function calculatePlayerStats() {
@@ -3555,10 +3579,21 @@ console.log('📋 User Role:', '{{ $userRole }}');
         }
 
         // Initialize active and bench players based on preparation data
-        function initializePlayerRosters() {
+       function initializePlayerRosters() {
     console.log('🔧 Initializing player rosters...');
     console.log('Team 1 starters:', gameData.team1.starters);
     console.log('Team 1 all players:', gameData.team1.players);
+    
+    // ✅ CRITICAL: Check if players data exists
+    if (!gameData.team1 || !gameData.team1.players || gameData.team1.players.length === 0) {
+        console.error('❌ Team 1 players data is missing!');
+        return;
+    }
+    
+    if (!gameData.team2 || !gameData.team2.players || gameData.team2.players.length === 0) {
+        console.error('❌ Team 2 players data is missing!');
+        return;
+    }
     
     // Team A (team1)
     if (gameData.team1.starters && gameData.team1.starters.length > 0) {
@@ -5492,62 +5527,164 @@ function showFoulModal() {
         });
 
         // ✅ ADD THIS AT THE END (before other DOMContentLoaded handlers)
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add hotkeys button handler
-            const hotkeysBtn = document.getElementById('hotkeysBtn');
-            if (hotkeysBtn) {
-                hotkeysBtn.addEventListener('click', function() {
-                    const dropdownMenu = document.getElementById('dropdownMenu');
-                    dropdownMenu.classList.remove('show');
-                    const hamburgerBtn = document.getElementById('hamburgerBtn');
-                    if (hamburgerBtn) hamburgerBtn.classList.remove('active');
-                    openHotkeysModal();
-                });
-            }
-
-            // Add game settings button handler
-            const gameSettingsBtn = document.getElementById('gameSettingsBtn');
-            if (gameSettingsBtn) {
-                gameSettingsBtn.addEventListener('click', function() {
-                    const dropdownMenu = document.getElementById('dropdownMenu');
-                    dropdownMenu.classList.remove('show');
-                    const hamburgerBtn = document.getElementById('hamburgerBtn');
-                    if (hamburgerBtn) hamburgerBtn.classList.remove('active');
-                    gameSettingsModal.style.display = 'flex';
-                });
-            }
-
-            // Setup hotkey modal
-            const hotkeysClose = document.getElementById('hotkeysClose');
-            if (hotkeysClose) {
-                hotkeysClose.addEventListener('click', closeHotkeysModal);
-            }
-
-            const hotkeysModal = document.getElementById('hotkeysModal');
-            if (hotkeysModal) {
-                hotkeysModal.addEventListener('click', function(e) {
-                    if (e.target === hotkeysModal) {
-                        closeHotkeysModal();
-                    }
-                });
-            }
-
-            const resetBtn = document.getElementById('resetHotkeys');
-            if (resetBtn) {
-                resetBtn.addEventListener('click', resetHotkeysToDefault);
-            }
-
-            const saveBtn = document.getElementById('saveHotkeys');
-            if (saveBtn) {
-                saveBtn.addEventListener('click', saveHotkeysSettings);
-            }
-
-            // Setup hotkey inputs
-            setupHotkeyInputs();
-
-            // Load saved hotkeys
-            loadHotkeys();
+        // ✅ FIXED: Add null checks before attaching event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Add hotkeys button handler
+    const hotkeysBtn = document.getElementById('hotkeysBtn');
+    if (hotkeysBtn) {
+        hotkeysBtn.addEventListener('click', function() {
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            if (dropdownMenu) dropdownMenu.classList.remove('show');
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            if (hamburgerBtn) hamburgerBtn.classList.remove('active');
+            openHotkeysModal();
         });
+    }
+
+    // Add game settings button handler
+    const gameSettingsBtn = document.getElementById('gameSettingsBtn');
+    if (gameSettingsBtn) {
+        gameSettingsBtn.addEventListener('click', function() {
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            if (dropdownMenu) dropdownMenu.classList.remove('show');
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            if (hamburgerBtn) hamburgerBtn.classList.remove('active');
+            const gameSettingsModal = document.getElementById('gameSettingsModal');
+            if (gameSettingsModal) gameSettingsModal.style.display = 'flex';
+        });
+    }
+
+    // ✅ ONLY attach to action buttons that exist
+    const actionButtons = document.querySelectorAll('.action-btn:not(#undoBtn):not(#timeoutBtn)');
+    if (actionButtons.length > 0) {
+        actionButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Exit timeout mode if another action is selected
+                if (timeoutMode) {
+                    exitTimeoutMode();
+                    const timeoutBtn = document.getElementById('timeoutBtn');
+                    if (timeoutBtn) {
+                        timeoutBtn.classList.remove('selected');
+                        timeoutBtn.textContent = 'Timeout';
+                    }
+                }
+
+                // Remove selection from all buttons
+                document.querySelectorAll('.action-btn').forEach(b => b.classList.remove('selected'));
+
+                // Add selection to clicked button
+                btn.classList.add('selected');
+                selectedAction = btn;
+
+                // Add pulse effect
+                document.querySelectorAll('.player-card').forEach(card => {
+                    card.classList.add('pulse-effect');
+                });
+
+                // Show toast notification
+                const actionName = btn.dataset.action;
+                showToast(`👆 Select a player who committed: ${actionName}`, 'info', 5000);
+
+                // Handle foul button specially
+                if (btn.dataset.action === 'Foul') {
+                    showFoulModal();
+                } else if (btn.dataset.action === 'Tech Foul') {
+                    showTechFoulModal();
+                }
+            });
+        });
+    }
+
+    // ✅ ONLY set up substitution if button exists
+    const substitutionBtn = document.querySelector('.action-btn.substitution');
+    if (substitutionBtn) {
+        substitutionBtn.addEventListener('click', openSubstitutionModal);
+    }
+
+    // Setup hotkey modal (if it exists)
+    const hotkeysClose = document.getElementById('hotkeysClose');
+    if (hotkeysClose) {
+        hotkeysClose.addEventListener('click', closeHotkeysModal);
+    }
+
+    const hotkeysModal = document.getElementById('hotkeysModal');
+    if (hotkeysModal) {
+        hotkeysModal.addEventListener('click', function(e) {
+            if (e.target === hotkeysModal) {
+                closeHotkeysModal();
+            }
+        });
+    }
+
+    const resetBtn = document.getElementById('resetHotkeys');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', resetHotkeysToDefault);
+    }
+
+    const saveBtn = document.getElementById('saveHotkeys');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', saveHotkeysSettings);
+    }
+
+    // Setup hotkey inputs
+    setupHotkeyInputs();
+
+    // Load saved hotkeys
+    loadHotkeys();
+    
+    // ✅ Game settings handlers
+    const gameSettingsClose = document.getElementById('gameSettingsClose');
+    if (gameSettingsClose) {
+        gameSettingsClose.addEventListener('click', function() {
+            const modal = document.getElementById('gameSettingsModal');
+            if (modal) modal.style.display = 'none';
+        });
+    }
+
+    const gameSettingsModal = document.getElementById('gameSettingsModal');
+    if (gameSettingsModal) {
+        gameSettingsModal.addEventListener('click', function(e) {
+            if (e.target === gameSettingsModal) {
+                this.style.display = 'none';
+            }
+        });
+    }
+    
+    // ✅ Only attach game settings save if button exists
+    const saveGameSettingsBtn = document.getElementById('saveGameSettings');
+    if (saveGameSettingsBtn) {
+        saveGameSettingsBtn.addEventListener('click', function() {
+            const quarterTimeInput = document.getElementById('quarterTimeInput');
+            const timeoutDurationInput = document.getElementById('timeoutDurationInput');
+            const timeoutLimitInput = document.getElementById('timeoutLimitInput');
+            const subsPerQuarterInput = document.getElementById('subsPerQuarterInput');
+            
+            if (quarterTimeInput && timeoutDurationInput && timeoutLimitInput && subsPerQuarterInput) {
+                gameSettings.quarterTime = parseInt(quarterTimeInput.value);
+                gameSettings.timeoutDuration = parseInt(timeoutDurationInput.value);
+                gameSettings.timeoutLimit = parseInt(timeoutLimitInput.value);
+                gameSettings.subsPerQuarter = parseInt(subsPerQuarterInput.value);
+
+                quarterLength = gameSettings.quarterTime * 60;
+                timeoutTime = gameSettings.timeoutDuration;
+                maxTimeoutsPerQuarter = gameSettings.timeoutLimit;
+
+                if (!isRunning) {
+                    time = quarterLength;
+                    updateTimer();
+                }
+
+                document.querySelectorAll('.max-timeouts').forEach(el => {
+                    el.textContent = maxTimeoutsPerQuarter;
+                });
+
+                alert('✅ Game settings updated successfully!');
+                const modal = document.getElementById('gameSettingsModal');
+                if (modal) modal.style.display = 'none';
+            }
+        });
+    }
+});
 
         // ✅ GAME SETTINGS HANDLERS
         document.addEventListener('DOMContentLoaded', function() {
@@ -6822,13 +6959,44 @@ function startTechFreeThrows(team, playerNumber, techType) {
 
 
         updateTimer();
+initializePossessionArrows();
 
-        initializePossessionArrows();
-        initializePlayerRosters();
-        initializePlayerFouls();
-        updateMainRoster();
-        updatePeriodDisplay(); // Initialize quarter display
-        updatePenaltyStatus();
+// ✅ Apply role restrictions FIRST
+applyRoleRestrictions();
+
+// ✅ THEN initialize and render players
+initializePlayerRosters();
+initializePlayerFouls();
+updateMainRoster();
+
+// ✅ FORCE roster display for stat-keeper
+if (userRole === 'stat_keeper') {
+    console.log('🔧 Forcing roster display for stat-keeper');
+    const rosterSection = document.querySelector('.roster-section');
+    const playersGrid = document.getElementById('playersGrid');
+    
+    if (rosterSection) {
+        rosterSection.style.display = 'flex';
+        rosterSection.style.visibility = 'visible';
+    }
+    
+    if (playersGrid) {
+        playersGrid.style.display = 'grid';
+        // Show Team A by default
+        if (playersGrid.children[0]) {
+            playersGrid.children[0].style.display = 'grid';
+        }
+        if (playersGrid.children[1]) {
+            playersGrid.children[1].style.display = 'none';
+        }
+    }
+    
+    // Re-render to make sure
+    updateMainRoster();
+}
+
+updatePeriodDisplay();
+updatePenaltyStatus();
         console.log('Game loaded:', gameData);
 
         // Load saved game state on page load

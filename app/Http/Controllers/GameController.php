@@ -322,6 +322,20 @@ $team2Roster = array_map('strval', $team2RosterIds);
 $team1Starters = array_map('strval', $team1StarterIds);
 $team2Starters = array_map('strval', $team2StarterIds);
 
+// ✅ DEBUG LOG - Check what's being passed to view
+\Log::info('🎮 Live method - Passing to view', [
+    'game_id' => $game->id,
+    'userRole' => $userRole,
+    'team1_players_count' => count($team1PlayersArray),
+    'team2_players_count' => count($team2PlayersArray),
+    'team1_roster_count' => count($team1Roster),
+    'team2_roster_count' => count($team2Roster),
+    'team1_starters_count' => count($team1Starters),
+    'team2_starters_count' => count($team2Starters),
+    'team1_first_player' => $team1PlayersArray[0] ?? 'NONE',
+    'team2_first_player' => $team2PlayersArray[0] ?? 'NONE',
+]);
+
 return view('games.live-scoresheet', compact(
     'game', 
     'team1PlayersArray', 
