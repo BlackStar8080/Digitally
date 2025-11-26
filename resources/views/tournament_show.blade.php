@@ -116,6 +116,45 @@
             background: white;
         }
 
+        /* Mythical 5 improved cards */
+        .mythical-card {
+            border-radius: 12px;
+            background: linear-gradient(180deg, #ffffff, #fbfbff);
+            box-shadow: 0 8px 24px rgba(96, 78, 167, 0.08);
+            padding: 16px;
+            border: 1px solid rgba(99, 102, 241, 0.08);
+        }
+
+        .mythical-card .player-name {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .mythical-card .player-team {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .mythical-stats {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .mythical-stat {
+            background: #f5f7ff;
+            border-radius: 8px;
+            padding: 6px 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #2b2a6c;
+        }
+
+        .mythical-selection-card.selectable:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.12);
+        }
+
         /* IMPROVED MODAL STYLES */
         .tournament-page .modal-content {
             border: none;
@@ -140,6 +179,8 @@
             align-items: center;
             gap: 0.5rem;
         }
+
+        
 
         .tournament-page .btn-close {
             background: rgba(255, 255, 255, 0.2);
@@ -2347,6 +2388,8 @@
             text-align: center;
         }
 
+        
+       
         `
     </style>
 @endpush
@@ -2423,75 +2466,7 @@
         </div>
     </div>
 
-    @if(!empty($canSelectMythical) && $canSelectMythical)
-        <div class="mt-3 info-card">
-            <h5 class="section-title">Mythical 5 Selection (Basketball)</h5>
-
-            @if($mythicalCandidates->isEmpty())
-                <p>No player stat data available to compute candidates.</p>
-            @else
-                <form method="POST" action="{{ route('tournaments.mythical-five.save', $tournament->id) }}">
-                    @csrf
-
-                    <p class="selection-info">Select 5 players from the top-performing candidates below. You can only save once you choose exactly 5.</p>
-
-                    <div class="row">
-                        @foreach($mythicalCandidates as $candidate)
-                            @php
-                                $player = $candidate->player;
-                                $selected = in_array($player->id, $tournament->mythical_five ?? []);
-                            @endphp
-                            <div class="col-md-6 mb-2">
-                                <label class="d-flex align-items-center p-2 border rounded">
-                                    <input type="checkbox" name="players[]" value="{{ $player->id }}" class="me-2" {{ $selected ? 'checked' : '' }} />
-                                    <div>
-                                        <strong>{{ $player->name ?? 'Player' }}</strong>
-                                        <div class="text-muted">Score: {{ number_format($candidate->mvp_score, 2) }}</div>
-                                    </div>
-                                </label>
-                            </div>
-                        @endforeach
-                    </div>
-
-                    <div class="mt-3">
-                        <button type="submit" class="btn btn-primary">Save Mythical 5</button>
-                        <small class="text-muted ms-2">You must select exactly 5 players.</small>
-                    </div>
-                </form>
-            @endif
-        </div>
-    @endif
-
-    @push('scripts')
-        <script>
-            (function(){
-                const form = document.querySelector('form[action*="mythical-five"]');
-                if (!form) return;
-                const checkboxes = Array.from(form.querySelectorAll('input[type="checkbox"][name="players[]"]'));
-                const submit = form.querySelector('button[type="submit"]');
-
-                function update() {
-                    const checked = checkboxes.filter(c=>c.checked).length;
-                    if (submit) submit.disabled = checked !== 5;
-                }
-
-                checkboxes.forEach(cb => cb.addEventListener('change', () => {
-                    // Prevent selecting more than 5
-                    const checked = checkboxes.filter(c=>c.checked);
-                    if (checked.length > 5) {
-                        // uncheck the last changed
-                        cb.checked = false;
-                        return;
-                    }
-                    update();
-                }));
-
-                update();
-            })();
-        </script>
-    @endpush
-</div>
-
+    
                 <!-- Team Management Section -->
                 <!-- Team Management Section -->
 <div class="info-card">
@@ -3180,6 +3155,114 @@
                                         </p>
                                     </div>
                                 @endif
+                                @if(!empty($canSelectMythical) && $canSelectMythical)
+        <div class="mt-3 info-card">
+            <h5 class="section-title">Mythical 5 (Basketball)</h5>
+
+            @if(empty($tournament->mythical_five) || (isset($editing) && $editing))
+                {{-- Selection mode: show top 7 candidates with stats and allow choosing 5 --}}
+                @if($mythicalCandidates->isEmpty())
+                    <p>No player stat data available to compute candidates.</p>
+                @else
+                    <form method="POST" action="{{ route('tournaments.mythical-five.save', $tournament->id) }}">
+                        @csrf
+
+                        <p class="selection-info">Choose the final Mythical 5. Candidates are the top 7 performers for this tournament.</p>
+
+                        <div class="row">
+                            @foreach($mythicalCandidates as $candidate)
+                                @php
+                                    $player = $candidate->player;
+                                    $selected = in_array($player->id, $tournament->mythical_five ?? []);
+                                @endphp
+                                <div class="col-md-6 mb-2">
+                                    <label class="d-flex align-items-center p-2 border rounded mythical-selection-card selectable">
+                                        <input type="checkbox" name="players[]" value="{{ $player->id }}" class="form-check-input me-2 mythical-checkbox" {{ $selected ? 'checked' : '' }} />
+                                        <div class="flex-grow-1">
+                                            <strong>{{ $player->name ?? 'Player' }}</strong>
+                                            <div class="team-details">
+                                                <div class="detail-item">Points: <span class="ms-1">{{ $candidate->total_points ?? 0 }}</span></div>
+                                                <div class="detail-item">Assists: <span class="ms-1">{{ $candidate->total_assists ?? 0 }}</span></div>
+                                                <div class="detail-item">Steals: <span class="ms-1">{{ $candidate->total_steals ?? 0 }}</span></div>
+                                                <div class="detail-item">Rebounds: <span class="ms-1">{{ $candidate->total_rebounds ?? 0 }}</span></div>
+                                                <div class="detail-item">Score: <span class="ms-1">{{ number_format($candidate->mvp_score ?? 0, 2) }}</span></div>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary">Save Mythical 5</button>
+                            <small class="text-muted ms-2">Select exactly 5 players.</small>
+                        </div>
+                    </form>
+                @endif
+
+            @else
+                {{-- Display saved Mythical 5 as player cards with stats and allow editing --}}
+                <div class="d-flex gap-3 flex-wrap">
+                    @php $stats = $selectedStats ?? collect(); @endphp
+                    @foreach($selectedPlayers as $player)
+                        @php $s = $stats->get($player->id); @endphp
+                        <div class="mythical-card" style="min-width:220px;">
+                            <div class="d-flex gap-3 align-items-center">
+                                <div style="width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,#6f42c1,#8b5cf6); color:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px;">
+                                    {{ strtoupper(substr($player->name,0,1) ?? 'P') }}
+                                </div>
+                                <div>
+                                    <div class="player-name">{{ $player->name }}</div>
+                                    <div class="player-team">{{ optional($player->team)->team_name ?? 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="mythical-stats">
+                                <div class="mythical-stat">PTS <strong class="ms-1">{{ $s->total_points ?? 0 }}</strong></div>
+                                <div class="mythical-stat">AST <strong class="ms-1">{{ $s->total_assists ?? 0 }}</strong></div>
+                                <div class="mythical-stat">STL <strong class="ms-1">{{ $s->total_steals ?? 0 }}</strong></div>
+                                <div class="mythical-stat">REB <strong class="ms-1">{{ $s->total_rebounds ?? 0 }}</strong></div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="mt-3">
+                    <a href="{{ route('tournaments.show', ['id' => $tournament->id, 'edit_mythical' => 1]) }}" class="btn btn-secondary">Edit Mythical 5</a>
+                </div>
+            @endif
+        </div>
+    @endif
+
+    @push('scripts')
+        <script>
+            (function(){
+                const form = document.querySelector('form[action*="mythical-five"]');
+                if (!form) return;
+                const checkboxes = Array.from(form.querySelectorAll('input[type="checkbox"][name="players[]"]'));
+                const submit = form.querySelector('button[type="submit"]');
+
+                function update() {
+                    const checked = checkboxes.filter(c=>c.checked).length;
+                    if (submit) submit.disabled = checked !== 5;
+                }
+
+                checkboxes.forEach(cb => cb.addEventListener('change', () => {
+                    // Prevent selecting more than 5
+                    const checked = checkboxes.filter(c=>c.checked);
+                    if (checked.length > 5) {
+                        // uncheck the last changed
+                        cb.checked = false;
+                        return;
+                    }
+                    update();
+                }));
+
+                update();
+            })();
+        </script>
+    @endpush
+</div>
+
                             @endif
 
                             
