@@ -2422,6 +2422,74 @@
             @endif
         </div>
     </div>
+
+    @if(!empty($canSelectMythical) && $canSelectMythical)
+        <div class="mt-3 info-card">
+            <h5 class="section-title">Mythical 5 Selection (Basketball)</h5>
+
+            @if($mythicalCandidates->isEmpty())
+                <p>No player stat data available to compute candidates.</p>
+            @else
+                <form method="POST" action="{{ route('tournaments.mythical-five.save', $tournament->id) }}">
+                    @csrf
+
+                    <p class="selection-info">Select 5 players from the top-performing candidates below. You can only save once you choose exactly 5.</p>
+
+                    <div class="row">
+                        @foreach($mythicalCandidates as $candidate)
+                            @php
+                                $player = $candidate->player;
+                                $selected = in_array($player->id, $tournament->mythical_five ?? []);
+                            @endphp
+                            <div class="col-md-6 mb-2">
+                                <label class="d-flex align-items-center p-2 border rounded">
+                                    <input type="checkbox" name="players[]" value="{{ $player->id }}" class="me-2" {{ $selected ? 'checked' : '' }} />
+                                    <div>
+                                        <strong>{{ $player->name ?? 'Player' }}</strong>
+                                        <div class="text-muted">Score: {{ number_format($candidate->mvp_score, 2) }}</div>
+                                    </div>
+                                </label>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary">Save Mythical 5</button>
+                        <small class="text-muted ms-2">You must select exactly 5 players.</small>
+                    </div>
+                </form>
+            @endif
+        </div>
+    @endif
+
+    @push('scripts')
+        <script>
+            (function(){
+                const form = document.querySelector('form[action*="mythical-five"]');
+                if (!form) return;
+                const checkboxes = Array.from(form.querySelectorAll('input[type="checkbox"][name="players[]"]'));
+                const submit = form.querySelector('button[type="submit"]');
+
+                function update() {
+                    const checked = checkboxes.filter(c=>c.checked).length;
+                    if (submit) submit.disabled = checked !== 5;
+                }
+
+                checkboxes.forEach(cb => cb.addEventListener('change', () => {
+                    // Prevent selecting more than 5
+                    const checked = checkboxes.filter(c=>c.checked);
+                    if (checked.length > 5) {
+                        // uncheck the last changed
+                        cb.checked = false;
+                        return;
+                    }
+                    update();
+                }));
+
+                update();
+            })();
+        </script>
+    @endpush
 </div>
 
                 <!-- Team Management Section -->
@@ -3113,6 +3181,10 @@
                                     </div>
                                 @endif
                             @endif
+
+                            
+
+
 
                             <!-- Keep your existing Games Section exactly as it is -->
                             @if ($bracket->games->count() > 0)
