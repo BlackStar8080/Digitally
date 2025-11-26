@@ -4321,31 +4321,37 @@
             showResumePrompt('Timeout ended. Resume game clock?');
         }
 
-        // Timeout button click handler
-        timeoutBtn.addEventListener('click', () => {
-            if (timeoutTimer) {
-                // If timer is running, allow early end
-                if (confirm('End timeout early?')) {
-                    endTimeout();
+        // Timeout button click handler (guard if element absent)
+        if (timeoutBtn) {
+            timeoutBtn.addEventListener('click', () => {
+                if (timeoutTimer) {
+                    // If timer is running, allow early end
+                    if (confirm('End timeout early?')) {
+                        endTimeout();
+                    }
+                } else if (!timeoutMode) {
+                    // Enter timeout selection mode
+                    enterTimeoutMode();
                 }
-            } else if (!timeoutMode) {
-                // Enter timeout selection mode
-                enterTimeoutMode();
-            }
-        });
+            });
+        }
 
-        // Team section click handlers for timeout
-        teamSectionA.addEventListener('click', () => {
-            if (timeoutMode) {
-                startTimeoutTimer('A');
-            }
-        });
+        // Team section click handlers for timeout (guard if elements absent)
+        if (teamSectionA) {
+            teamSectionA.addEventListener('click', () => {
+                if (timeoutMode) {
+                    startTimeoutTimer('A');
+                }
+            });
+        }
 
-        teamSectionB.addEventListener('click', () => {
-            if (timeoutMode) {
-                startTimeoutTimer('B');
-            }
-        });
+        if (teamSectionB) {
+            teamSectionB.addEventListener('click', () => {
+                if (timeoutMode) {
+                    startTimeoutTimer('B');
+                }
+            });
+        }
 
         // Cancel timeout mode if clicking elsewhere
         document.addEventListener('click', (e) => {
@@ -4933,10 +4939,16 @@ function autoSubstituteFouledOutPlayer(fouledOutPlayer, team) {
             }, reason ? 4000 : 3000); // Longer display for foul-out notifications
         }
 
-        // Event listeners for substitution modal
-        subCloseBtn.addEventListener('click', closeSubstitutionModal);
-        // Open substitution modal when substitution button is clicked
-        document.querySelector('.action-btn.substitution').addEventListener('click', openSubstitutionModal);
+        // Event listeners for substitution modal (guard if elements absent)
+        if (subCloseBtn) {
+            subCloseBtn.addEventListener('click', closeSubstitutionModal);
+        }
+
+        // Open substitution modal when substitution button is clicked (guard)
+        const substitutionBtn = document.querySelector('.action-btn.substitution');
+        if (substitutionBtn) {
+            substitutionBtn.addEventListener('click', openSubstitutionModal);
+        }
 
         // Close modal when clicking outside
         substitutionModal.addEventListener('click', (e) => {
@@ -6523,43 +6535,43 @@ function startTechFreeThrows(team, playerNumber, techType) {
         function executeHotkeyAction(action) {
             switch (action) {
                 case 'Free Throw':
-                    document.querySelector('[data-action="Free Throw"]').click();
+                    document.querySelector('[data-action="Free Throw"]')?.click();
                     break;
                 case '2 Points':
-                    document.querySelector('[data-action="2 Points"]').click();
+                    document.querySelector('[data-action="2 Points"]')?.click();
                     break;
                 case '3 Points':
-                    document.querySelector('[data-action="3 Points"]').click();
+                    document.querySelector('[data-action="3 Points"]')?.click();
                     break;
                 case 'Assist':
-                    document.querySelector('[data-action="Assist"]').click();
+                    document.querySelector('[data-action="Assist"]')?.click();
                     break;
                 case 'Steal':
-                    document.querySelector('[data-action="Steal"]').click();
+                    document.querySelector('[data-action="Steal"]')?.click();
                     break;
                 case 'Rebound':
-                    document.querySelector('[data-action="Rebound"]').click();
+                    document.querySelector('[data-action="Rebound"]')?.click();
                     break;
                 case 'blocks':
-                    document.querySelector('[data-action="blocks"]').click();
+                    document.querySelector('[data-action="blocks"]')?.click();
                     break;
                 case 'Foul':
-                    document.querySelector('[data-action="Foul"]').click();
+                    document.querySelector('[data-action="Foul"]')?.click();
                     break;
                 case 'Tech Foul':
-                    document.querySelector('[data-action="Tech Foul"]').click();
+                    document.querySelector('[data-action="Tech Foul"]')?.click();
                     break;
                 case 'Timeout':
-                    document.getElementById('timeoutBtn').click();
+                    document.getElementById('timeoutBtn')?.click();
                     break;
                 case 'Substitution':
-                    document.querySelector('[data-action="Substitution"]').click();
+                    document.querySelector('[data-action="Substitution"]')?.click();
                     break;
                 case 'Undo':
-                    document.getElementById('undoBtn').click();
+                    document.getElementById('undoBtn')?.click();
                     break;
                 case 'PlayPause':
-                    document.getElementById('playPause').click();
+                    document.getElementById('playPause')?.click();
                     break;
             }
         }
@@ -7189,17 +7201,19 @@ window.addEventListener('beforeunload', function() {
                 indicator.innerHTML = html;
             }
 
-            // Start polling based on role
-            if (userRole === 'scorer') {
-                console.log('📊 Running as SCORER - will push updates every 3 seconds');
-                setInterval(pushGameState, 3000);
-            } else if (userRole === 'stat_keeper') {
-                console.log('📈 Running as STAT-KEEPER - will fetch updates every 2 seconds');
-                setInterval(fetchGameState, 2000);
-            } else {
-                console.log('👁 Running as VIEWER - will fetch updates every 5 seconds');
-                setInterval(fetchGameState, 5000);
-            }
+ // Start polling based on role
+if (userRole === 'scorer') {
+    console.log('📊 Running as SCORER - will push updates every 1 second');
+    setInterval(pushGameState, 1000); // ✅ Changed from 3000 to 1000
+    setInterval(fetchGameState, 1000); // ✅ Changed from 2000 to 1000
+} else if (userRole === 'stat_keeper') {
+    console.log('📈 Running as STAT-KEEPER - will push AND fetch updates every 1 second');
+    setInterval(pushGameState, 1000); // ✅ Changed from 3000 to 1000
+    setInterval(fetchGameState, 1000); // ✅ Changed from 2000 to 1000
+} else {
+    console.log('👁 Running as VIEWER - will fetch updates every 2 seconds');
+    setInterval(fetchGameState, 2000); // ✅ Changed from 5000 to 2000
+}
 
             // Update connected users every 30 seconds
             updateConnectedUsers();

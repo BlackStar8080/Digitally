@@ -6,14 +6,17 @@ use App\Models\Tournament;
 use App\Models\Bracket;
 use App\Models\Team;
 use App\Models\Game;
+use App\Models\PlayerGameStat;
+use App\Models\Player;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BracketController extends Controller
 {
     /**
      * Show tournament with its brackets
      */
-    public function showTournament($id)
+    public function showTournament(Request $request, $id)
         {
             $tournament = Tournament::with(['brackets.games', 'teams.sport', 'sport'])->findOrFail($id);
 
@@ -25,8 +28,97 @@ class BracketController extends Controller
                 })
                 ->get();
 
-            return view('tournament_show', compact('tournament', 'availableTeams'));
+            // Compute Mythical 5 candidates if sport is Basketball and tournament appears finished
+            $mythicalCandidates = collect();
+            $canSelectMythical = false;
+            $editing = (bool) $request->query('edit_mythical');
+
+            // Use canonical sport_id for basketball detection
+            $sportId = $tournament->sport_id;
+            // Determine tournament ended: all games on brackets are completed
+            $allGames = $tournament->brackets->flatMap(function ($b) { return $b->games; });
+            $ended = $allGames->isNotEmpty() && $allGames->every(function ($g) { return $g->status === 'completed'; });
+
+            $selectedPlayers = collect();
+            $selectedStats = collect();
+
+            // Basketball sport_id is 1
+            if ($sportId === 1 && $ended) {
+                $canSelectMythical = true;
+
+                $gameIds = $allGames->pluck('id')->filter()->unique()->values()->all();
+
+                if (!empty($gameIds)) {
+                    // Compute aggregated totals and MVP score using SQL for performance
+                    $rows = PlayerGameStat::select(
+                        'player_id',
+                        DB::raw('SUM(points) as total_points'),
+                        DB::raw('SUM(assists) as total_assists'),
+                        DB::raw('SUM(steals) as total_steals'),
+                        DB::raw('SUM(rebounds) as total_rebounds'),
+                        DB::raw('SUM(points*2 + assists*1.5 + rebounds*1.2 + steals*2 + blocks*2 - fouls*3) as mvp_score')
+                    )
+                    ->whereIn('game_id', $gameIds)
+                    ->groupBy('player_id')
+                    ->orderByDesc('mvp_score')
+                    ->with('player')
+                    ->take(7) // take top 7 candidates to present
+                    ->get();
+
+                    $mythicalCandidates = $rows;
+                }
+
+                // If a Mythical 5 already saved and not editing, prepare selected player cards
+                if (!empty($tournament->mythical_five) && is_array($tournament->mythical_five)) {
+                    // preserve order as saved
+                    $selectedPlayers = collect($tournament->mythical_five)
+                        ->map(function ($pid) { return Player::find($pid); })
+                        ->filter();
+
+                    // also compute aggregated stats for selected players so we can display points/assists/steals/rebounds
+                    $selectedStats = collect();
+                    $statsRows = PlayerGameStat::select(
+                        'player_id',
+                        DB::raw('SUM(points) as total_points'),
+                        DB::raw('SUM(assists) as total_assists'),
+                        DB::raw('SUM(steals) as total_steals'),
+                        DB::raw('SUM(rebounds) as total_rebounds'),
+                        DB::raw('SUM(points*2 + assists*1.5 + rebounds*1.2 + steals*2 + blocks*2 - fouls*3) as mvp_score')
+                    )
+                    ->whereIn('game_id', $gameIds)
+                    ->whereIn('player_id', $tournament->mythical_five)
+                    ->groupBy('player_id')
+                    ->get();
+
+                    $selectedStats = $statsRows->keyBy('player_id');
+                }
+            }
+
+            return view('tournament_show', compact('tournament', 'availableTeams', 'mythicalCandidates', 'canSelectMythical', 'editing', 'selectedPlayers', 'selectedStats'));
         }
+
+    /**
+     * Save Mythical 5 selection for a tournament (basketball only)
+     */
+    public function saveMythicalFive(Request $request, $tournamentId)
+    {
+        $tournament = Tournament::with('sport')->findOrFail($tournamentId);
+
+        // Basketball sport_id is 1
+        if ($tournament->sport_id !== 1) {
+            return back()->with('error', 'Mythical 5 is only available for basketball tournaments.');
+        }
+
+        $validated = $request->validate([
+            'players' => 'required|array|size:5',
+            'players.*' => 'integer|exists:players,id'
+        ]);
+
+        $tournament->mythical_five = $validated['players'];
+        $tournament->save();
+
+        return redirect()->route('tournaments.show', $tournament->id)->with('success', 'Mythical 5 saved successfully.');
+    }
 
     /**
      * Create a new bracket for a tournament

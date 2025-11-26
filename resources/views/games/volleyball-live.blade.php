@@ -111,6 +111,12 @@
             font-weight: 700;
         }
 
+        /* Hide jersey badges inside the top scoreboard (optional) */
+        .scoreboard .team-jerseys,
+        .scoreboard .jersey-badge {
+            display: none !important;
+        }
+
         /* Substitution Modal Styles */
         .substitution-modal {
             position: fixed;

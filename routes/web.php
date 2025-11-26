@@ -162,6 +162,8 @@ Route::delete('/scorekeepers/{scorekeeper}', [ScorekeeperController::class, 'des
     Route::post('/tournaments/{tournament}/teams', [BracketController::class, 'assignTeam'])->name('tournaments.assign-team');
     Route::delete('/tournaments/{tournament}/teams/{team}', [BracketController::class, 'removeTeam'])->name('tournaments.remove-team');
     Route::post('/tournaments/{tournament}/assign-teams', [TournamentController::class, 'assignTeams'])->name('tournaments.assign-teams');
+    // Mythical 5 selection (basketball only)
+    Route::post('/tournaments/{tournament}/mythical-five', [BracketController::class, 'saveMythicalFive'])->name('tournaments.mythical-five.save');
    // Inside the guest-restricted middleware group (around line 80)
     Route::get('/tournaments/{tournament}/info/preview', [PdfController::class, 'previewTournamentInfo'])->name('tournaments.info.preview');
     Route::get('/tournaments/{tournament}/info/download', [PdfController::class, 'downloadTournamentInfo'])->name('tournaments.info.download');

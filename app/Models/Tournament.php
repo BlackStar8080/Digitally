@@ -14,6 +14,11 @@ class Tournament extends Model
         'division',
         'sport_id',
         'start_date',
+        'mythical_five',
+    ];
+
+    protected $casts = [
+        'mythical_five' => 'array',
     ];
 
     /**

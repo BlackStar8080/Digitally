@@ -874,7 +874,7 @@
 
                                 <div class="players-list">
                                     @forelse($game->team1->players as $player)
-                                        <div class="player-item" data-team="team1" data-player-id="{{ $player->id }}">
+                                        <div class="player-item" data-team="team1" data-player-id="{{ $player->id }}" onclick="togglePlayerSelect(this)">
                                             <div class="player-checkbox">
                                                 <input type="checkbox" class="player-select roster-select"
                                                     id="roster1_{{ $player->id }}" data-team="team1"
@@ -926,7 +926,7 @@
 
                                 <div class="players-list">
                                     @forelse($game->team2->players as $player)
-                                        <div class="player-item" data-team="team2" data-player-id="{{ $player->id }}">
+                                        <div class="player-item" data-team="team2" data-player-id="{{ $player->id }}" onclick="togglePlayerSelect(this)">
                                             <div class="player-checkbox">
                                                 <input type="checkbox" class="player-select roster-select"
                                                     id="roster2_{{ $player->id }}" data-team="team2"
@@ -1873,5 +1873,32 @@ if (!isVolleyball) {
                 startButton.disabled = true;
             }
         }
+        function togglePlayerSelect(playerItem) {
+    const team = playerItem.getAttribute("data-team");
+    const playerId = playerItem.getAttribute("data-player-id");
+
+    // Detect whether we’re in roster or starter mode
+    const isRosterMode = (gameState.currentStep === "roster");
+
+    // Get correct checkbox
+    const checkbox = document.getElementById(
+        (isRosterMode ? "roster" : "starter") +
+        (team === "team1" ? "1_" : "2_") +
+        playerId
+    );
+
+    if (!checkbox) return;
+
+    // Toggle checkbox the same as clicking it
+    checkbox.checked = !checkbox.checked;
+
+    // Manually trigger existing handler
+    if (isRosterMode) {
+        handleRosterSelection(checkbox);
+    } else {
+        handleStarterSelection(checkbox);
+    }
+}
+
     </script>
 @endsection

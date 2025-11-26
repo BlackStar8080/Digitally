@@ -1397,18 +1397,32 @@ public function selectVolleyballMVP(Request $request, Game $game)
         return response()->json(['error' => 'Unauthorized'], 403);
     }
 
-    // ✅ FIX: game_data is already an array, don't json_decode it
+    // Prefer live_state (used by auto-save) when available to avoid overwriting
+    // in-memory scores with stale top-level columns when autosave updates timestamps.
     $gameData = $game->game_data ?? [];
-    
+    $liveState = $gameData['live_state'] ?? null;
+
+    $scoreA = $liveState['team1_score'] ?? $game->team1_score ?? 0;
+    $scoreB = $liveState['team2_score'] ?? $game->team2_score ?? 0;
+
+    $foulsA = $liveState['team1_fouls'] ?? ($gameData['team1_fouls'] ?? 0);
+    $foulsB = $liveState['team2_fouls'] ?? ($gameData['team2_fouls'] ?? 0);
+
+    $timeoutsA = $liveState['team1_timeouts'] ?? ($gameData['team1_timeouts'] ?? 0);
+    $timeoutsB = $liveState['team2_timeouts'] ?? ($gameData['team2_timeouts'] ?? 0);
+
+    // events may be stored under live_state (auto-save) or at top-level (older code)
+    $events = $liveState['game_events'] ?? ($gameData['game_events'] ?? []);
+
     return response()->json([
         'gameId' => $game->id,
-        'scoreA' => $game->team1_score ?? 0,
-        'scoreB' => $game->team2_score ?? 0,
-        'foulsA' => $gameData['team1_fouls'] ?? 0,
-        'foulsB' => $gameData['team2_fouls'] ?? 0,
-        'timeoutsA' => $gameData['team1_timeouts'] ?? 0,
-        'timeoutsB' => $gameData['team2_timeouts'] ?? 0,
-        'events' => $gameData['game_events'] ?? [],  // ✅ No json_decode needed
+        'scoreA' => $scoreA,
+        'scoreB' => $scoreB,
+        'foulsA' => $foulsA,
+        'foulsB' => $foulsB,
+        'timeoutsA' => $timeoutsA,
+        'timeoutsB' => $timeoutsB,
+        'events' => $events,
         'last_update' => $game->updated_at->timestamp,
     ]);
 }
@@ -1915,28 +1929,49 @@ public function autoSave(Request $request, Game $game)
         
         // Get existing game_data
         $gameData = $game->game_data ?? [];
-        
-        // Update the live_state section within game_data
-        $gameData['live_state'] = [
-            'team1_score' => $liveState['team1_score'] ?? 0,
-            'team2_score' => $liveState['team2_score'] ?? 0,
-            'team1_fouls' => $liveState['team1_fouls'] ?? 0,
-            'team2_fouls' => $liveState['team2_fouls'] ?? 0,
-            'team1_timeouts' => $liveState['team1_timeouts'] ?? 0,
-            'team2_timeouts' => $liveState['team2_timeouts'] ?? 0,
-            'current_quarter' => $liveState['current_quarter'] ?? 1,
-            'time_remaining' => $liveState['time_remaining'] ?? 0,
-            'shot_clock' => $liveState['shot_clock'] ?? 24,
-            'game_events' => $liveState['game_events'] ?? [],
-            'period_scores' => $liveState['period_scores'] ?? [],
-            'active_players' => $liveState['active_players'] ?? [],
-            'bench_players' => $liveState['bench_players'] ?? [],
-            'possession' => $liveState['possession'] ?? 'A',
-            'is_running' => $liveState['is_running'] ?? false,
+        // Determine if the current user is allowed to update scores (scorer)
+        $isScorer = false;
+        try {
+            $isScorer = \App\Http\Controllers\GameAssignmentController::canScore(auth()->user(), $game);
+        } catch (\Throwable $e) {
+            // fallback: non-scorer
+            $isScorer = false;
+        }
+
+        // Existing live_state (if any)
+        $existingLive = $gameData['live_state'] ?? [];
+
+        // If caller is scorer, accept posted scores; otherwise preserve existing scores
+        $team1_score = $isScorer ? ($liveState['team1_score'] ?? ($existingLive['team1_score'] ?? 0)) : ($existingLive['team1_score'] ?? $game->team1_score ?? 0);
+        $team2_score = $isScorer ? ($liveState['team2_score'] ?? ($existingLive['team2_score'] ?? 0)) : ($existingLive['team2_score'] ?? $game->team2_score ?? 0);
+
+        // Merge live state while preserving existing values when appropriate
+        $gameData['live_state'] = array_merge($existingLive, [
+            'team1_score' => $team1_score,
+            'team2_score' => $team2_score,
+            'team1_fouls' => $liveState['team1_fouls'] ?? ($existingLive['team1_fouls'] ?? 0),
+            'team2_fouls' => $liveState['team2_fouls'] ?? ($existingLive['team2_fouls'] ?? 0),
+            'team1_timeouts' => $liveState['team1_timeouts'] ?? ($existingLive['team1_timeouts'] ?? 0),
+            'team2_timeouts' => $liveState['team2_timeouts'] ?? ($existingLive['team2_timeouts'] ?? 0),
+            'current_quarter' => $liveState['current_quarter'] ?? ($existingLive['current_quarter'] ?? 1),
+            'time_remaining' => $liveState['time_remaining'] ?? ($existingLive['time_remaining'] ?? 0),
+            'shot_clock' => $liveState['shot_clock'] ?? ($existingLive['shot_clock'] ?? 24),
+            'game_events' => $liveState['game_events'] ?? ($existingLive['game_events'] ?? []),
+            'period_scores' => $liveState['period_scores'] ?? ($existingLive['period_scores'] ?? []),
+            'active_players' => $liveState['active_players'] ?? ($existingLive['active_players'] ?? []),
+            'bench_players' => $liveState['bench_players'] ?? ($existingLive['bench_players'] ?? []),
+            'possession' => $liveState['possession'] ?? ($existingLive['possession'] ?? 'A'),
+            'is_running' => $liveState['is_running'] ?? ($existingLive['is_running'] ?? false),
             'last_auto_save' => now()->toDateTimeString(),
-        ];
+        ]);
+
+        // If scorer posted the auto-save, also keep top-level score columns in sync
+        if ($isScorer) {
+            $game->team1_score = $team1_score;
+            $game->team2_score = $team2_score;
+        }
         
-        // Save to database
+        // Save to database (this updates updated_at so polling clients will pick it up)
         $game->game_data = $gameData;
         $game->save();
         

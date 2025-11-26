@@ -311,7 +311,8 @@ public function isBasketball()
     return $this->bracket && 
            $this->bracket->tournament && 
            $this->bracket->tournament->sport && 
-           strtolower($this->bracket->tournament->sport->sports_name) === 'basketball';
+           // Use canonical sport_id for basketball (1)
+           ($this->bracket->tournament->sport_id === 1);
 }
 
 /**

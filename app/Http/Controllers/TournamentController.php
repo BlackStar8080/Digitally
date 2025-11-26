@@ -151,4 +151,6 @@ class TournamentController extends Controller
 
         return back()->with('success', $message);
     }
+
+    
 }
