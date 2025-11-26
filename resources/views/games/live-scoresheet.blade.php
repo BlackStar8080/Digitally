@@ -3802,48 +3802,75 @@
         }
 
         function showGameEndModal() {
-            const modal = document.getElementById('quarterModal');
-            const title = document.getElementById('quarterTitle');
-            const info = document.querySelector('.quarter-info');
-            const teamA = document.getElementById('modalTeamA');
-            const teamB = document.getElementById('modalTeamB');
-            const scoreAElement = document.getElementById('modalScoreA');
-            const scoreBElement = document.getElementById('modalScoreB');
-            const nextBtn = document.getElementById('nextQuarterBtn');
+    const modal = document.getElementById('quarterModal');
+    const title = document.getElementById('quarterTitle');
+    const info = document.querySelector('.quarter-info');
+    const teamA = document.getElementById('modalTeamA');
+    const teamB = document.getElementById('modalTeamB');
+    const scoreAElement = document.getElementById('modalScoreA');
+    const scoreBElement = document.getElementById('modalScoreB');
+    const nextBtn = document.getElementById('nextQuarterBtn');
 
-            // Update for game end
-            title.textContent = 'GAME ENDED';
-            title.className = 'quarter-title game-end-title';
+    // Update for game end
+    title.textContent = 'GAME ENDED';
+    title.className = 'quarter-title game-end-title';
 
-            // Determine winner using global variables
-            let winner = '';
-            if (scoreA > scoreB) {
-                winner = `${gameData.team1.name} Wins!`;
-            } else if (scoreB > scoreA) {
-                winner = `${gameData.team2.name} Wins!`;
-            } else {
-                winner = 'It\'s a Tie!';
-            }
+    // Determine winner using global variables
+    let winner = '';
+    if (scoreA > scoreB) {
+        winner = `${gameData.team1.name} Wins!`;
+    } else if (scoreB > scoreA) {
+        winner = `${gameData.team2.name} Wins!`;
+    } else {
+        winner = 'It\'s a Tie!';
+    }
 
-            info.textContent = winner;
-            teamA.textContent = gameData.team1.name;
-            teamB.textContent = gameData.team2.name;
+    info.textContent = winner;
+    teamA.textContent = gameData.team1.name;
+    teamB.textContent = gameData.team2.name;
 
-            // Use global score variables
-            scoreAElement.textContent = scoreA.toString().padStart(2, '0');
-            scoreBElement.textContent = scoreB.toString().padStart(2, '0');
+    // Use global score variables
+    scoreAElement.textContent = scoreA.toString().padStart(2, '0');
+    scoreBElement.textContent = scoreB.toString().padStart(2, '0');
 
-            nextBtn.textContent = 'Save Game Results';
-            nextBtn.className = 'quarter-btn game-end-btn';
+    // ✅ ROLE-BASED BUTTON BEHAVIOR
+    if (userRole === 'scorer' || userRole === 'all_in_one') {
+        // Scorer can save the game
+        nextBtn.textContent = 'Save Game Results';
+        nextBtn.className = 'quarter-btn game-end-btn';
+        nextBtn.style.background = 'linear-gradient(135deg, #FF9800 0%, #F57C00 100%)';
+        nextBtn.style.cursor = 'pointer';
+        nextBtn.disabled = false;
+        
+        nextBtn.onclick = () => {
+            modal.style.display = 'none';
+            saveGameResults();
+        };
+    } else if (userRole === 'stat_keeper') {
+        // Stat-keeper sees waiting message
+        nextBtn.textContent = 'Waiting for Scorer to Save...';
+        nextBtn.className = 'quarter-btn';
+        nextBtn.style.background = '#666';
+        nextBtn.style.cursor = 'not-allowed';
+        nextBtn.disabled = true;
+        
+        nextBtn.onclick = () => {
+            showToast('⏳ Please wait for the Scorer to save the game results', 'info', 3000);
+        };
+        
+        // ✅ Start polling to detect when game is saved
+        startWaitingForSave();
+    } else {
+        // Viewer (if applicable)
+        nextBtn.textContent = 'Game Ended';
+        nextBtn.className = 'quarter-btn';
+        nextBtn.style.background = '#666';
+        nextBtn.style.cursor = 'default';
+        nextBtn.disabled = true;
+    }
 
-            // UPDATED: Modified to save game results instead of just showing alert
-            nextBtn.onclick = () => {
-                modal.style.display = 'none';
-                saveGameResults();
-            };
-
-            modal.style.display = 'flex';
-        }
+    modal.style.display = 'flex';
+}
 
         function continueToNextQuarter() {
             const modal = document.getElementById('quarterModal');
@@ -4048,82 +4075,81 @@
             }
         });
 
-        // NEW: Save game results function
         function saveGameResults() {
-            const saveModal = document.getElementById('saveGameModal');
-            const saveStatus = document.getElementById('saveStatus');
-            const saveError = document.getElementById('saveError');
-            const saveSpinner = document.getElementById('saveSpinner');
-            const retryBtn = document.getElementById('retryBtn');
+    const saveModal = document.getElementById('saveGameModal');
+    const saveStatus = document.getElementById('saveStatus');
+    const saveError = document.getElementById('saveError');
+    const saveSpinner = document.getElementById('saveSpinner');
+    const retryBtn = document.getElementById('retryBtn');
 
-            // Show save modal
-            saveModal.style.display = 'flex';
-            saveStatus.textContent = 'Preparing game data...';
-            saveError.style.display = 'none';
-            retryBtn.style.display = 'none';
-            saveSpinner.style.display = 'block';
+    // Show save modal
+    saveModal.style.display = 'flex';
+    saveStatus.textContent = 'Preparing game data...';
+    saveError.style.display = 'none';
+    retryBtn.style.display = 'none';
+    saveSpinner.style.display = 'block';
 
-            // NEW: Collect player statistics
-            const playerStats = collectPlayerStats();
+    // Collect player statistics
+    const playerStats = collectPlayerStats();
 
-            // Prepare game data
-            const finalGameData = {
-                game_id: gameData.id,
-                team1_score: scoreA,
-                team2_score: scoreB,
-                team1_fouls: foulsA,
-                team2_fouls: foulsB,
-                team1_timeouts: timeoutsA,
-                team2_timeouts: timeoutsB,
-                total_quarters: currentQuarter,
-                game_events: gameEvents,
-                period_scores: {
-                    team1: periodScores.teamA,
-                    team2: periodScores.teamB
-                },
-                winner_id: scoreA > scoreB ? 1 : (scoreB > scoreA ? 2 : null),
-                status: 'completed',
-                completed_at: new Date().toISOString(),
-                player_stats: Object.values(playerStats)
-            };
+    // Prepare game data
+    const finalGameData = {
+        game_id: gameData.id,
+        team1_score: scoreA,
+        team2_score: scoreB,
+        team1_fouls: foulsA,
+        team2_fouls: foulsB,
+        team1_timeouts: timeoutsA,
+        team2_timeouts: timeoutsB,
+        total_quarters: currentQuarter,
+        game_events: gameEvents,
+        period_scores: {
+            team1: periodScores.teamA,
+            team2: periodScores.teamB
+        },
+        winner_id: scoreA > scoreB ? 1 : (scoreB > scoreA ? 2 : null),
+        status: 'completed', // ✅ This triggers stat-keeper detection
+        completed_at: new Date().toISOString(),
+        player_stats: Object.values(playerStats)
+    };
 
-            // Update status
-            saveStatus.textContent = 'Saving game results...';
+    // Update status
+    saveStatus.textContent = 'Saving game results...';
 
-            // Send data to backend
-            fetch(`/games/${gameData.id}/complete`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify(finalGameData)
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    saveStatus.textContent = 'Game saved successfully!';
-                    saveSpinner.style.display = 'none';
+    // Send data to backend
+    fetch(`/games/${gameData.id}/complete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(finalGameData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            saveStatus.textContent = 'Game saved successfully!';
+            saveSpinner.style.display = 'none';
 
-                    // Show success message briefly then redirect
-                    setTimeout(() => {
-                        saveStatus.textContent = 'Redirecting to box score...';
-                        window.location.href = data.redirect_url;
-                    }, 1500);
-                })
-                .catch(error => {
-                    console.error('Error saving game:', error);
-                    saveSpinner.style.display = 'none';
-                    saveStatus.textContent = 'Failed to save game results';
-                    saveError.style.display = 'block';
-                    saveError.textContent = `Error: ${error.message}. Please try again.`;
-                    retryBtn.style.display = 'inline-block';
-                });
-        }
+            // Show success message briefly then redirect
+            setTimeout(() => {
+                saveStatus.textContent = 'Redirecting to box score...';
+                window.location.href = data.redirect_url;
+            }, 1500);
+        })
+        .catch(error => {
+            console.error('Error saving game:', error);
+            saveSpinner.style.display = 'none';
+            saveStatus.textContent = 'Failed to save game results';
+            saveError.style.display = 'block';
+            saveError.textContent = `Error: ${error.message}. Please try again.`;
+            retryBtn.style.display = 'inline-block';
+        });
+}
 
         
 
@@ -7201,18 +7227,22 @@ window.addEventListener('beforeunload', function() {
                 indicator.innerHTML = html;
             }
 
- // Start polling based on role
+// Start polling based on role
 if (userRole === 'scorer') {
-    console.log('📊 Running as SCORER - will push updates every 1 second');
-    setInterval(pushGameState, 1000); // ✅ Changed from 3000 to 1000
-    setInterval(fetchGameState, 1000); // ✅ Changed from 2000 to 1000
+    console.log('📊 Running as SCORER - will push updates every 500ms');
+    setInterval(pushGameState, 500); // ✅ Changed from 1000 to 500ms
+    setInterval(fetchGameState, 500); // ✅ Fetch updates too
 } else if (userRole === 'stat_keeper') {
-    console.log('📈 Running as STAT-KEEPER - will push AND fetch updates every 1 second');
-    setInterval(pushGameState, 1000); // ✅ Changed from 3000 to 1000
-    setInterval(fetchGameState, 1000); // ✅ Changed from 2000 to 1000
+    console.log('📈 Running as STAT-KEEPER - will push AND fetch updates every 500ms');
+    setInterval(pushGameState, 500); // ✅ Changed from 1000 to 500ms
+    setInterval(fetchGameState, 500); // ✅ Changed from 1000 to 500ms
+} else if (userRole === 'all_in_one') {
+    console.log('⚡ Running as ALL-IN-ONE - will push AND fetch updates every 500ms');
+    setInterval(pushGameState, 500);
+    setInterval(fetchGameState, 500);
 } else {
-    console.log('👁 Running as VIEWER - will fetch updates every 2 seconds');
-    setInterval(fetchGameState, 2000); // ✅ Changed from 5000 to 2000
+    console.log('👁 Running as VIEWER - will fetch updates every 1 second');
+    setInterval(fetchGameState, 1000); // ✅ Changed from 2000 to 1000
 }
 
             // Update connected users every 30 seconds
@@ -7237,6 +7267,137 @@ if (userRole === 'scorer') {
             document.body.appendChild(roleIndicator);
 
         })();
+
+        // ✅ NEW: Poll server to detect when game is saved by scorer
+let saveCheckInterval = null;
+
+function startWaitingForSave() {
+    console.log('📊 Stat-keeper waiting for scorer to save...');
+    
+    // Show persistent notification
+    const waitingNotification = document.createElement('div');
+    waitingNotification.id = 'waiting-for-save-notification';
+    waitingNotification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+        color: white;
+        padding: 15px 30px;
+        border-radius: 12px;
+        font-weight: bold;
+        z-index: 10000;
+        text-align: center;
+        box-shadow: 0 8px 24px rgba(255, 152, 0, 0.4);
+        animation: pulse 2s infinite;
+    `;
+    waitingNotification.innerHTML = `
+        <div style="font-size: 16px; margin-bottom: 5px;">⏳ Waiting for Scorer</div>
+        <div style="font-size: 12px;">The scorer will save the game results...</div>
+    `;
+    document.body.appendChild(waitingNotification);
+    
+    // Poll every 2 seconds to check if game is completed
+    saveCheckInterval = setInterval(checkIfGameSaved, 2000);
+}
+
+function checkIfGameSaved() {
+    fetch(`/games/${gameData.id}/check-status`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'completed') {
+                console.log('✅ Game has been saved by scorer!');
+                clearInterval(saveCheckInterval);
+                
+                // Remove waiting notification
+                const notification = document.getElementById('waiting-for-save-notification');
+                if (notification) {
+                    notification.remove();
+                }
+                
+                // Show success and redirect
+                showGameSavedByScorer(data.redirect_url);
+            }
+        })
+        .catch(error => {
+            console.error('❌ Failed to check game status:', error);
+        });
+}
+
+function showGameSavedByScorer(redirectUrl) {
+    // Close the quarter modal
+    const modal = document.getElementById('quarterModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    
+    // Show success modal
+    const successModal = document.createElement('div');
+    successModal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10001;
+    `;
+    
+    successModal.innerHTML = `
+        <div style="
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            border: 3px solid white;
+            box-shadow: 0 10px 40px rgba(76, 175, 80, 0.6);
+            max-width: 500px;
+            animation: successPulse 0.5s ease-out;
+        ">
+            <div style="font-size: 64px; margin-bottom: 20px;">✓</div>
+            <div style="font-size: 28px; font-weight: bold; color: white; margin-bottom: 15px;">
+                Game Saved Successfully!
+            </div>
+            <div style="font-size: 16px; color: rgba(255,255,255,0.9); margin-bottom: 30px;">
+                The scorer has completed the game. Redirecting to box score...
+            </div>
+            <div style="
+                background: rgba(255,255,255,0.2);
+                padding: 10px;
+                border-radius: 8px;
+                font-size: 14px;
+                color: white;
+            ">
+                <div style="margin-bottom: 5px;">Final Score</div>
+                <div style="font-size: 24px; font-weight: bold;">
+                    ${gameData.team1.name} ${scoreA} - ${scoreB} ${gameData.team2.name}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(successModal);
+    
+    // Add animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes successPulse {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Redirect after 3 seconds
+    setTimeout(() => {
+        window.location.href = redirectUrl;
+    }, 3000);
+}
     </script>
 </body>
 

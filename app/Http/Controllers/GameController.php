@@ -614,6 +614,7 @@ private function processPlayerFouls(array $events)
 
         // ✅ NEW: Save tallysheet
         $this->saveTallysheet($game, $validated);
+        $this->autoSelectMVP($game);
 
         // Advance bracket if needed
         if ($game->bracket_id && $winnerId) {
@@ -651,6 +652,37 @@ private function processPlayerFouls(array $events)
             'success' => false,
             'message' => 'Failed to complete game: ' . $e->getMessage()
         ], 500);
+    }
+}
+
+/**
+ * Automatically select MVP based on player statistics
+ */
+private function autoSelectMVP(Game $game)
+{
+    try {
+        // Get all player stats for this game, ordered by MVP score
+        $topPlayer = $game->playerStats()
+            ->with('player')
+            ->get()
+            ->sortByDesc(function($stat) {
+                return $stat->getMVPScore();
+            })
+            ->first();
+
+        if ($topPlayer) {
+            // Clear any existing MVP flags
+            $game->playerStats()->update(['is_mvp' => false]);
+            
+            // Set the top player as MVP
+            $topPlayer->update(['is_mvp' => true]);
+            
+            \Log::info("Auto-selected MVP for game {$game->id}: Player {$topPlayer->player->name} (Score: {$topPlayer->getMVPScore()})");
+        }
+        
+    } catch (\Exception $e) {
+        \Log::error("Failed to auto-select MVP for game {$game->id}: " . $e->getMessage());
+        // Don't throw - MVP selection failure shouldn't break game completion
     }
 }
 
@@ -1424,6 +1456,18 @@ public function selectVolleyballMVP(Request $request, Game $game)
         'timeoutsB' => $timeoutsB,
         'events' => $events,
         'last_update' => $game->updated_at->timestamp,
+    ]);
+}
+
+/**
+ * Check if game has been completed (for stat-keeper polling)
+ */
+public function checkGameStatus(Game $game)
+{
+    return response()->json([
+        'status' => $game->status,
+        'completed_at' => $game->completed_at,
+        'redirect_url' => route('games.box-score', $game->id)
     ]);
 }
 

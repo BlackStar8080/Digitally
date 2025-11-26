@@ -181,6 +181,9 @@ Route::post('/games/{game}/auto-save-volleyball', [GameController::class, 'autoS
 
 Route::get('/games/{game}/load-state-volleyball', [GameController::class, 'loadVolleyballState'])
     ->name('games.load-state-volleyball');
+
+    // Add this with your other game routes
+Route::get('/games/{game}/check-status', [GameController::class, 'checkGameStatus'])->name('games.check-status');
 });
 
 // ✅ API Routes - With Role-Based Permission Checks

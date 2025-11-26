@@ -949,19 +949,29 @@
         </div>
 
         <!-- MVP Selection Section (if not selected) -->
-        @if(!$mvpSelected && ($team1Stats->count() > 0 || $team2Stats->count() > 0))
-            <div class="mvp-selection-section">
+@if(!$mvpSelected && ($team1Stats->count() > 0 || $team2Stats->count() > 0))
+    <div class="mvp-selection-section" id="mvpSelectionSection">
                 <div class="mvp-selection-header">
-                    <h2 class="mvp-selection-title">
-                        <i class="bi bi-star-fill" style="color: #ffd700;"></i>
-                        Select Match MVP
-                    </h2>
-                    <p class="mvp-selection-subtitle">Click on a player to select them as the Most Valuable Player of this match</p>
-                </div>
+    <h2 class="mvp-selection-title">
+        <i class="bi bi-star-fill" style="color: #ffd700;"></i>
+        @if($mvpSelected)
+            Change Match MVP
+        @else
+            Select Match MVP
+        @endif
+    </h2>
+    <p class="mvp-selection-subtitle">
+        @if($mvpSelected)
+            Click on a different player to change the Most Valuable Player selection
+        @else
+            Click on a player to select them as the Most Valuable Player of this match
+        @endif
+    </p>
+</div>
 
                 <div class="mvp-candidates" id="mvpCandidates">
                     @foreach($team1Stats->merge($team2Stats)->sortByDesc('points')->take(6) as $stat)
-                        <div class="mvp-candidate-card" data-stat-id="{{ $stat->id }}" onclick="selectMVPCandidate({{ $stat->id }})">
+    <div class="mvp-candidate-card {{ $stat->is_mvp ? 'selected' : '' }}" data-stat-id="{{ $stat->id }}" onclick="selectMVPCandidate({{ $stat->id }})">
                             <div class="candidate-header">
                                 <div class="candidate-number">{{ $stat->player->number ?? '0' }}</div>
                                 <div class="candidate-info">
@@ -991,30 +1001,40 @@
                     @endforeach
                 </div>
 
-                <button class="select-mvp-btn" id="confirmMVPBtn" onclick="confirmMVP()" disabled>
-                    <i class="bi bi-star-fill"></i>
-                    Confirm MVP Selection
-                </button>
+                <button class="select-mvp-btn" id="confirmMVPBtn" onclick="confirmMVP()" {{ $mvpSelected ? '' : 'disabled' }}>
+    <i class="bi bi-star-fill"></i>
+    @if($mvpSelected)
+        Update MVP Selection
+    @else
+        Confirm MVP Selection
+    @endif
+</button>
             </div>
         @endif
 
         <!-- Back Actions -->
-        <div class="back-actions">
-            @if($game->bracket && $game->bracket->tournament)
-                <a href="{{ route('tournaments.show', $game->bracket->tournament->id) }}" class="action-btn btn-primary">
-                    <i class="bi bi-trophy"></i>
-                    Back to Tournament
-                </a>
-            @endif
-            <a href="{{ route('games.index') }}" class="action-btn btn-secondary">
-                <i class="bi bi-list"></i>
-                All Games
-            </a>
-            <a href="{{ route('games.tallysheet', $game->id) }}" class="action-btn btn-secondary">
-                <i class="bi bi-clipboard-data"></i>
-                View Tallysheet
-            </a>
-        </div>
+<div class="back-actions">
+    @if($game->bracket && $game->bracket->tournament)
+        <a href="{{ route('tournaments.show', $game->bracket->tournament->id) }}" class="action-btn btn-primary">
+            <i class="bi bi-trophy"></i>
+            Back to Tournament
+        </a>
+    @endif
+    <a href="{{ route('games.index') }}" class="action-btn btn-secondary">
+        <i class="bi bi-list"></i>
+        All Games
+    </a>
+    <a href="{{ route('games.tallysheet', $game->id) }}" class="action-btn btn-secondary">
+        <i class="bi bi-clipboard-data"></i>
+        View Tallysheet
+    </a>
+    @if($mvpSelected && ($team1Stats->count() > 0 || $team2Stats->count() > 0))
+        <button onclick="showMVPSelection()" class="action-btn btn-secondary">
+            <i class="bi bi-star"></i>
+            Update MVP
+        </button>
+    @endif
+</div>
     </div>
 </div>
 
@@ -1040,6 +1060,15 @@ function hideToast() {
     setTimeout(() => {
         toast.classList.remove('hide');
     }, 400);
+}
+
+// ✅ NEW: Show MVP selection section
+function showMVPSelection() {
+    const mvpSection = document.getElementById('mvpSelectionSection');
+    if (mvpSection) {
+        mvpSection.style.display = 'block';
+        mvpSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 }
 
 let selectedMVPStatId = null;
