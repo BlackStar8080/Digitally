@@ -2460,43 +2460,6 @@
 .sub-player-card[data-ejected="true"]:hover {
     transform: none !important;
 }
-
-
-/* Fix roster visibility for stat-keeper mode */
-#statKeeperActions {
-    display: flex !important;
-    flex-direction: column;
-    background: #2d2d2d;
-    padding: 24px 20px;
-    gap: 12px;
-    height: 100%;
-    min-height: 0;
-    overflow-y: auto;
-    max-height: 100%;
-}
-
-/* Ensure roster section is visible in all modes */
-.roster-section {
-    display: flex !important;
-    flex-direction: column;
-    background: #2d2d2d;
-    border-right: 1px solid #444;
-    height: 100%;
-    overflow: hidden;
-    min-height: 0;
-    max-height: 100%;
-}
-
-.players-grid {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    padding: 20px;
-    flex: 1;
-    overflow-y: auto;
-    min-height: 0;
-    max-height: 100%;
-}
     </style>
 </head>
 
@@ -3155,33 +3118,26 @@
 
 
     <script>
+        // Game data from Laravel - UPDATED to include roster and starters data
         const gameData = {
-    id: {{ $game->id }},
-    team1: {
-        name: '{{ $game->team1->team_name }}',
-        players: @json($team1PlayersArray ?? []),
-        roster: @json($team1Roster ?? []),
-        starters: @json($team1Starters ?? [])
-    },
-    team2: {
-        name: '{{ $game->team2->team_name }}',
-        players: @json($team2PlayersArray ?? []),
-        roster: @json($team2Roster ?? []),
-        starters: @json($team2Starters ?? [])
-    },
-    referee: '{{ $game->referee }}',
-    startedAt: '{{ $game->started_at }}',
-    tournamentId: {{ $game->tournament_id ?? 'null' }},
-    bracketId: {{ $game->bracket_id ?? 'null' }}
-};
-
-// ✅ DEBUG LOG
-console.log('🎮 Game Data Loaded:', gameData);
-console.log('👥 Team 1 Players:', gameData.team1.players);
-console.log('👥 Team 2 Players:', gameData.team2.players);
-console.log('📋 User Role:', '{{ $userRole }}');
-
-
+            id: {{ $game->id }},
+            team1: {
+                name: '{{ $game->team1->team_name }}',
+                players: @json($team1Players->values()),
+                roster: @json($team1Roster ?? []),
+                starters: @json($team1Starters ?? [])
+            },
+            team2: {
+                name: '{{ $game->team2->team_name }}',
+                players: @json($team2Players->values()),
+                roster: @json($team2Roster ?? []),
+                starters: @json($team2Starters ?? [])
+            },
+            referee: '{{ $game->referee }}',
+            startedAt: '{{ $game->started_at }}',
+            tournamentId: {{ $game->tournament_id ?? 'null' }},
+            bracketId: {{ $game->bracket_id ?? 'null' }}
+        };
 
         // Calculate player stats from game events
         function calculatePlayerStats() {
@@ -3579,65 +3535,45 @@ console.log('📋 User Role:', '{{ $userRole }}');
         }
 
         // Initialize active and bench players based on preparation data
-       function initializePlayerRosters() {
-    console.log('🔧 Initializing player rosters...');
-    console.log('Team 1 starters:', gameData.team1.starters);
-    console.log('Team 1 all players:', gameData.team1.players);
-    
-    // ✅ CRITICAL: Check if players data exists
-    if (!gameData.team1 || !gameData.team1.players || gameData.team1.players.length === 0) {
-        console.error('❌ Team 1 players data is missing!');
-        return;
-    }
-    
-    if (!gameData.team2 || !gameData.team2.players || gameData.team2.players.length === 0) {
-        console.error('❌ Team 2 players data is missing!');
-        return;
-    }
-    
-    // Team A (team1)
-    if (gameData.team1.starters && gameData.team1.starters.length > 0) {
-        // Use the starters selected in preparation
-        gameData.team1.players.forEach(player => {
-            if (gameData.team1.starters.includes(player.id.toString())) {
-                activePlayers.A.push(player);
-                console.log('✅ Added Team A starter:', player.name);
-            } else if (gameData.team1.roster && gameData.team1.roster.includes(player.id.toString())) {
-                benchPlayers.A.push(player);
-                console.log('📋 Added Team A bench:', player.name);
+        function initializePlayerRosters() {
+            // Team A (team1)
+            if (gameData.team1.starters && gameData.team1.starters.length > 0) {
+                // Use the starters selected in preparation
+                gameData.team1.players.forEach(player => {
+                    if (gameData.team1.starters.includes(player.id.toString())) {
+                        activePlayers.A.push(player);
+                    } else if (gameData.team1.roster && gameData.team1.roster.includes(player.id.toString())) {
+                        benchPlayers.A.push(player);
+                    }
+                });
+            } else {
+                // Fallback to first 5 if no preparation data
+                activePlayers.A = gameData.team1.players.slice(0, 5);
+                benchPlayers.A = gameData.team1.players.slice(5);
             }
-        });
-    } else {
-        // Fallback to first 5 if no preparation data
-        activePlayers.A = gameData.team1.players.slice(0, 5);
-        benchPlayers.A = gameData.team1.players.slice(5);
-        console.log('⚠️ Using fallback for Team A');
-    }
 
-    // Team B (team2)
-    if (gameData.team2.starters && gameData.team2.starters.length > 0) {
-        gameData.team2.players.forEach(player => {
-            if (gameData.team2.starters.includes(player.id.toString())) {
-                activePlayers.B.push(player);
-                console.log('✅ Added Team B starter:', player.name);
-            } else if (gameData.team2.roster && gameData.team2.roster.includes(player.id.toString())) {
-                benchPlayers.B.push(player);
-                console.log('📋 Added Team B bench:', player.name);
+            // Team B (team2)
+            if (gameData.team2.starters && gameData.team2.starters.length > 0) {
+                // Use the starters selected in preparation
+                gameData.team2.players.forEach(player => {
+                    if (gameData.team2.starters.includes(player.id.toString())) {
+                        activePlayers.B.push(player);
+                    } else if (gameData.team2.roster && gameData.team2.roster.includes(player.id.toString())) {
+                        benchPlayers.B.push(player);
+                    }
+                });
+            } else {
+                // Fallback to first 5 if no preparation data
+                activePlayers.B = gameData.team2.players.slice(0, 5);
+                benchPlayers.B = gameData.team2.players.slice(5);
             }
-        });
-    } else {
-        // Fallback
-        activePlayers.B = gameData.team2.players.slice(0, 5);
-        benchPlayers.B = gameData.team2.players.slice(5);
-        console.log('⚠️ Using fallback for Team B');
-    }
 
-    console.log('✅ Roster initialization complete');
-    console.log('Team A Active:', activePlayers.A);
-    console.log('Team A Bench:', benchPlayers.A);
-    console.log('Team B Active:', activePlayers.B);
-    console.log('Team B Bench:', benchPlayers.B);
-}
+            console.log('Initialized rosters:');
+            console.log('Team A Active:', activePlayers.A);
+            console.log('Team A Bench:', benchPlayers.A);
+            console.log('Team B Active:', activePlayers.B);
+            console.log('Team B Bench:', benchPlayers.B);
+        }
 
         function initializePlayerFouls() {
             // Initialize foul count for all players
@@ -4385,31 +4321,37 @@ console.log('📋 User Role:', '{{ $userRole }}');
             showResumePrompt('Timeout ended. Resume game clock?');
         }
 
-        // Timeout button click handler
-        timeoutBtn.addEventListener('click', () => {
-            if (timeoutTimer) {
-                // If timer is running, allow early end
-                if (confirm('End timeout early?')) {
-                    endTimeout();
+        // Timeout button click handler (guard if element absent)
+        if (timeoutBtn) {
+            timeoutBtn.addEventListener('click', () => {
+                if (timeoutTimer) {
+                    // If timer is running, allow early end
+                    if (confirm('End timeout early?')) {
+                        endTimeout();
+                    }
+                } else if (!timeoutMode) {
+                    // Enter timeout selection mode
+                    enterTimeoutMode();
                 }
-            } else if (!timeoutMode) {
-                // Enter timeout selection mode
-                enterTimeoutMode();
-            }
-        });
+            });
+        }
 
-        // Team section click handlers for timeout
-        teamSectionA.addEventListener('click', () => {
-            if (timeoutMode) {
-                startTimeoutTimer('A');
-            }
-        });
+        // Team section click handlers for timeout (guard if elements absent)
+        if (teamSectionA) {
+            teamSectionA.addEventListener('click', () => {
+                if (timeoutMode) {
+                    startTimeoutTimer('A');
+                }
+            });
+        }
 
-        teamSectionB.addEventListener('click', () => {
-            if (timeoutMode) {
-                startTimeoutTimer('B');
-            }
-        });
+        if (teamSectionB) {
+            teamSectionB.addEventListener('click', () => {
+                if (timeoutMode) {
+                    startTimeoutTimer('B');
+                }
+            });
+        }
 
         // Cancel timeout mode if clicking elsewhere
         document.addEventListener('click', (e) => {
@@ -4997,10 +4939,16 @@ function autoSubstituteFouledOutPlayer(fouledOutPlayer, team) {
             }, reason ? 4000 : 3000); // Longer display for foul-out notifications
         }
 
-        // Event listeners for substitution modal
-        subCloseBtn.addEventListener('click', closeSubstitutionModal);
-        // Open substitution modal when substitution button is clicked
-        document.querySelector('.action-btn.substitution').addEventListener('click', openSubstitutionModal);
+        // Event listeners for substitution modal (guard if elements absent)
+        if (subCloseBtn) {
+            subCloseBtn.addEventListener('click', closeSubstitutionModal);
+        }
+
+        // Open substitution modal when substitution button is clicked (guard)
+        const substitutionBtn = document.querySelector('.action-btn.substitution');
+        if (substitutionBtn) {
+            substitutionBtn.addEventListener('click', openSubstitutionModal);
+        }
 
         // Close modal when clicking outside
         substitutionModal.addEventListener('click', (e) => {
@@ -5527,164 +5475,62 @@ function showFoulModal() {
         });
 
         // ✅ ADD THIS AT THE END (before other DOMContentLoaded handlers)
-        // ✅ FIXED: Add null checks before attaching event listeners
-document.addEventListener('DOMContentLoaded', function() {
-    // Add hotkeys button handler
-    const hotkeysBtn = document.getElementById('hotkeysBtn');
-    if (hotkeysBtn) {
-        hotkeysBtn.addEventListener('click', function() {
-            const dropdownMenu = document.getElementById('dropdownMenu');
-            if (dropdownMenu) dropdownMenu.classList.remove('show');
-            const hamburgerBtn = document.getElementById('hamburgerBtn');
-            if (hamburgerBtn) hamburgerBtn.classList.remove('active');
-            openHotkeysModal();
-        });
-    }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hotkeys button handler
+            const hotkeysBtn = document.getElementById('hotkeysBtn');
+            if (hotkeysBtn) {
+                hotkeysBtn.addEventListener('click', function() {
+                    const dropdownMenu = document.getElementById('dropdownMenu');
+                    dropdownMenu.classList.remove('show');
+                    const hamburgerBtn = document.getElementById('hamburgerBtn');
+                    if (hamburgerBtn) hamburgerBtn.classList.remove('active');
+                    openHotkeysModal();
+                });
+            }
 
-    // Add game settings button handler
-    const gameSettingsBtn = document.getElementById('gameSettingsBtn');
-    if (gameSettingsBtn) {
-        gameSettingsBtn.addEventListener('click', function() {
-            const dropdownMenu = document.getElementById('dropdownMenu');
-            if (dropdownMenu) dropdownMenu.classList.remove('show');
-            const hamburgerBtn = document.getElementById('hamburgerBtn');
-            if (hamburgerBtn) hamburgerBtn.classList.remove('active');
-            const gameSettingsModal = document.getElementById('gameSettingsModal');
-            if (gameSettingsModal) gameSettingsModal.style.display = 'flex';
-        });
-    }
+            // Add game settings button handler
+            const gameSettingsBtn = document.getElementById('gameSettingsBtn');
+            if (gameSettingsBtn) {
+                gameSettingsBtn.addEventListener('click', function() {
+                    const dropdownMenu = document.getElementById('dropdownMenu');
+                    dropdownMenu.classList.remove('show');
+                    const hamburgerBtn = document.getElementById('hamburgerBtn');
+                    if (hamburgerBtn) hamburgerBtn.classList.remove('active');
+                    gameSettingsModal.style.display = 'flex';
+                });
+            }
 
-    // ✅ ONLY attach to action buttons that exist
-    const actionButtons = document.querySelectorAll('.action-btn:not(#undoBtn):not(#timeoutBtn)');
-    if (actionButtons.length > 0) {
-        actionButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                // Exit timeout mode if another action is selected
-                if (timeoutMode) {
-                    exitTimeoutMode();
-                    const timeoutBtn = document.getElementById('timeoutBtn');
-                    if (timeoutBtn) {
-                        timeoutBtn.classList.remove('selected');
-                        timeoutBtn.textContent = 'Timeout';
+            // Setup hotkey modal
+            const hotkeysClose = document.getElementById('hotkeysClose');
+            if (hotkeysClose) {
+                hotkeysClose.addEventListener('click', closeHotkeysModal);
+            }
+
+            const hotkeysModal = document.getElementById('hotkeysModal');
+            if (hotkeysModal) {
+                hotkeysModal.addEventListener('click', function(e) {
+                    if (e.target === hotkeysModal) {
+                        closeHotkeysModal();
                     }
-                }
-
-                // Remove selection from all buttons
-                document.querySelectorAll('.action-btn').forEach(b => b.classList.remove('selected'));
-
-                // Add selection to clicked button
-                btn.classList.add('selected');
-                selectedAction = btn;
-
-                // Add pulse effect
-                document.querySelectorAll('.player-card').forEach(card => {
-                    card.classList.add('pulse-effect');
                 });
-
-                // Show toast notification
-                const actionName = btn.dataset.action;
-                showToast(`👆 Select a player who committed: ${actionName}`, 'info', 5000);
-
-                // Handle foul button specially
-                if (btn.dataset.action === 'Foul') {
-                    showFoulModal();
-                } else if (btn.dataset.action === 'Tech Foul') {
-                    showTechFoulModal();
-                }
-            });
-        });
-    }
-
-    // ✅ ONLY set up substitution if button exists
-    const substitutionBtn = document.querySelector('.action-btn.substitution');
-    if (substitutionBtn) {
-        substitutionBtn.addEventListener('click', openSubstitutionModal);
-    }
-
-    // Setup hotkey modal (if it exists)
-    const hotkeysClose = document.getElementById('hotkeysClose');
-    if (hotkeysClose) {
-        hotkeysClose.addEventListener('click', closeHotkeysModal);
-    }
-
-    const hotkeysModal = document.getElementById('hotkeysModal');
-    if (hotkeysModal) {
-        hotkeysModal.addEventListener('click', function(e) {
-            if (e.target === hotkeysModal) {
-                closeHotkeysModal();
             }
-        });
-    }
 
-    const resetBtn = document.getElementById('resetHotkeys');
-    if (resetBtn) {
-        resetBtn.addEventListener('click', resetHotkeysToDefault);
-    }
-
-    const saveBtn = document.getElementById('saveHotkeys');
-    if (saveBtn) {
-        saveBtn.addEventListener('click', saveHotkeysSettings);
-    }
-
-    // Setup hotkey inputs
-    setupHotkeyInputs();
-
-    // Load saved hotkeys
-    loadHotkeys();
-    
-    // ✅ Game settings handlers
-    const gameSettingsClose = document.getElementById('gameSettingsClose');
-    if (gameSettingsClose) {
-        gameSettingsClose.addEventListener('click', function() {
-            const modal = document.getElementById('gameSettingsModal');
-            if (modal) modal.style.display = 'none';
-        });
-    }
-
-    const gameSettingsModal = document.getElementById('gameSettingsModal');
-    if (gameSettingsModal) {
-        gameSettingsModal.addEventListener('click', function(e) {
-            if (e.target === gameSettingsModal) {
-                this.style.display = 'none';
+            const resetBtn = document.getElementById('resetHotkeys');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', resetHotkeysToDefault);
             }
-        });
-    }
-    
-    // ✅ Only attach game settings save if button exists
-    const saveGameSettingsBtn = document.getElementById('saveGameSettings');
-    if (saveGameSettingsBtn) {
-        saveGameSettingsBtn.addEventListener('click', function() {
-            const quarterTimeInput = document.getElementById('quarterTimeInput');
-            const timeoutDurationInput = document.getElementById('timeoutDurationInput');
-            const timeoutLimitInput = document.getElementById('timeoutLimitInput');
-            const subsPerQuarterInput = document.getElementById('subsPerQuarterInput');
-            
-            if (quarterTimeInput && timeoutDurationInput && timeoutLimitInput && subsPerQuarterInput) {
-                gameSettings.quarterTime = parseInt(quarterTimeInput.value);
-                gameSettings.timeoutDuration = parseInt(timeoutDurationInput.value);
-                gameSettings.timeoutLimit = parseInt(timeoutLimitInput.value);
-                gameSettings.subsPerQuarter = parseInt(subsPerQuarterInput.value);
 
-                quarterLength = gameSettings.quarterTime * 60;
-                timeoutTime = gameSettings.timeoutDuration;
-                maxTimeoutsPerQuarter = gameSettings.timeoutLimit;
-
-                if (!isRunning) {
-                    time = quarterLength;
-                    updateTimer();
-                }
-
-                document.querySelectorAll('.max-timeouts').forEach(el => {
-                    el.textContent = maxTimeoutsPerQuarter;
-                });
-
-                alert('✅ Game settings updated successfully!');
-                const modal = document.getElementById('gameSettingsModal');
-                if (modal) modal.style.display = 'none';
+            const saveBtn = document.getElementById('saveHotkeys');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', saveHotkeysSettings);
             }
+
+            // Setup hotkey inputs
+            setupHotkeyInputs();
+
+            // Load saved hotkeys
+            loadHotkeys();
         });
-    }
-});
 
         // ✅ GAME SETTINGS HANDLERS
         document.addEventListener('DOMContentLoaded', function() {
@@ -6689,43 +6535,43 @@ function startTechFreeThrows(team, playerNumber, techType) {
         function executeHotkeyAction(action) {
             switch (action) {
                 case 'Free Throw':
-                    document.querySelector('[data-action="Free Throw"]').click();
+                    document.querySelector('[data-action="Free Throw"]')?.click();
                     break;
                 case '2 Points':
-                    document.querySelector('[data-action="2 Points"]').click();
+                    document.querySelector('[data-action="2 Points"]')?.click();
                     break;
                 case '3 Points':
-                    document.querySelector('[data-action="3 Points"]').click();
+                    document.querySelector('[data-action="3 Points"]')?.click();
                     break;
                 case 'Assist':
-                    document.querySelector('[data-action="Assist"]').click();
+                    document.querySelector('[data-action="Assist"]')?.click();
                     break;
                 case 'Steal':
-                    document.querySelector('[data-action="Steal"]').click();
+                    document.querySelector('[data-action="Steal"]')?.click();
                     break;
                 case 'Rebound':
-                    document.querySelector('[data-action="Rebound"]').click();
+                    document.querySelector('[data-action="Rebound"]')?.click();
                     break;
                 case 'blocks':
-                    document.querySelector('[data-action="blocks"]').click();
+                    document.querySelector('[data-action="blocks"]')?.click();
                     break;
                 case 'Foul':
-                    document.querySelector('[data-action="Foul"]').click();
+                    document.querySelector('[data-action="Foul"]')?.click();
                     break;
                 case 'Tech Foul':
-                    document.querySelector('[data-action="Tech Foul"]').click();
+                    document.querySelector('[data-action="Tech Foul"]')?.click();
                     break;
                 case 'Timeout':
-                    document.getElementById('timeoutBtn').click();
+                    document.getElementById('timeoutBtn')?.click();
                     break;
                 case 'Substitution':
-                    document.querySelector('[data-action="Substitution"]').click();
+                    document.querySelector('[data-action="Substitution"]')?.click();
                     break;
                 case 'Undo':
-                    document.getElementById('undoBtn').click();
+                    document.getElementById('undoBtn')?.click();
                     break;
                 case 'PlayPause':
-                    document.getElementById('playPause').click();
+                    document.getElementById('playPause')?.click();
                     break;
             }
         }
@@ -6959,44 +6805,13 @@ function startTechFreeThrows(team, playerNumber, techType) {
 
 
         updateTimer();
-initializePossessionArrows();
 
-// ✅ Apply role restrictions FIRST
-applyRoleRestrictions();
-
-// ✅ THEN initialize and render players
-initializePlayerRosters();
-initializePlayerFouls();
-updateMainRoster();
-
-// ✅ FORCE roster display for stat-keeper
-if (userRole === 'stat_keeper') {
-    console.log('🔧 Forcing roster display for stat-keeper');
-    const rosterSection = document.querySelector('.roster-section');
-    const playersGrid = document.getElementById('playersGrid');
-    
-    if (rosterSection) {
-        rosterSection.style.display = 'flex';
-        rosterSection.style.visibility = 'visible';
-    }
-    
-    if (playersGrid) {
-        playersGrid.style.display = 'grid';
-        // Show Team A by default
-        if (playersGrid.children[0]) {
-            playersGrid.children[0].style.display = 'grid';
-        }
-        if (playersGrid.children[1]) {
-            playersGrid.children[1].style.display = 'none';
-        }
-    }
-    
-    // Re-render to make sure
-    updateMainRoster();
-}
-
-updatePeriodDisplay();
-updatePenaltyStatus();
+        initializePossessionArrows();
+        initializePlayerRosters();
+        initializePlayerFouls();
+        updateMainRoster();
+        updatePeriodDisplay(); // Initialize quarter display
+        updatePenaltyStatus();
         console.log('Game loaded:', gameData);
 
         // Load saved game state on page load
