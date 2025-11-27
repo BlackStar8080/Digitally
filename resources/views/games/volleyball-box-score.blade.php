@@ -978,72 +978,106 @@
         </div>
 
         <!-- MVP Selection Section (if not selected) -->
-        @if(!$mvpSelected && ($team1Stats->count() > 0 || $team2Stats->count() > 0))
-            <div class="mvp-selection-section">
-                <div class="mvp-selection-header">
-                    <h2 class="mvp-selection-title">
-                        <i class="bi bi-star-fill" style="color: #ffd700;"></i>
-                        Select Match MVP
-                    </h2>
-                    <p class="mvp-selection-subtitle">Click on a player to select them as the Most Valuable Player of this match</p>
-                </div>
-
-                <div class="mvp-candidates" id="mvpCandidates">
-                    @foreach($team1Stats->merge($team2Stats)->sortByDesc('kills')->take(6) as $stat)
-                        <div class="mvp-candidate-card" data-stat-id="{{ $stat->id }}" onclick="selectMVPCandidate({{ $stat->id }})">
-                            <div class="candidate-header">
-                                <div class="candidate-number">{{ $stat->player->number ?? '0' }}</div>
-                                <div class="candidate-info">
-                                    <div class="candidate-name">{{ $stat->player->name }}</div>
-                                    <div class="candidate-team">{{ $stat->team->team_name }}</div>
-                                </div>
-                            </div>
-                            <div class="candidate-stats">
-                                <div class="candidate-stat">
-                                    <div class="candidate-stat-value">{{ $stat->kills }}</div>
-                                    <div class="candidate-stat-label">Kills</div>
-                                </div>
-                                <div class="candidate-stat">
-                                    <div class="candidate-stat-value">{{ $stat->aces }}</div>
-                                    <div class="candidate-stat-label">Aces</div>
-                                </div>
-                                <div class="candidate-stat">
-                                    <div class="candidate-stat-value">{{ $stat->blocks }}</div>
-                                    <div class="candidate-stat-label">Blocks</div>
-                                </div>
-                                <div class="candidate-stat">
-                                    <div class="candidate-stat-value">{{ $stat->digs }}</div>
-                                    <div class="candidate-stat-label">Digs</div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-
-                <button class="select-mvp-btn" id="confirmMVPBtn" onclick="confirmMVP()" disabled>
-                    <i class="bi bi-star-fill"></i>
-                    Confirm MVP Selection
-                </button>
-            </div>
-        @endif
-
-        <!-- Back Actions -->
-        <div class="back-actions">
-            @if($game->bracket && $game->bracket->tournament)
-                <a href="{{ route('tournaments.show', $game->bracket->tournament->id) }}" class="action-btn btn-primary">
-                    <i class="bi bi-trophy"></i>
-                    Back to Tournament
-                </a>
-            @endif
-            <a href="{{ route('games.index') }}" class="action-btn btn-secondary">
-                <i class="bi bi-list"></i>
-                All Games
-            </a>
-            <a href="{{ route('games.volleyball-scoresheet', $game) }}" class="action-btn btn-secondary">
-                <i class="bi bi-clipboard-data"></i>
-                View Scoresheet
-            </a>
+@if($team1Stats->count() > 0 || $team2Stats->count() > 0)
+    <div class="mvp-selection-section" id="mvpSelectionSection" style="display: {{ $mvpSelected ? 'none' : 'block' }};">
+        <div class="mvp-selection-header">
+            <h2 class="mvp-selection-title">
+                <i class="bi bi-star-fill" style="color: #ffd700;"></i>
+                @if($mvpSelected)
+                    Change Match MVP
+                @else
+                    Select Match MVP
+                @endif
+            </h2>
+            <p class="mvp-selection-subtitle">
+                @if($mvpSelected)
+                    Click on a different player to change the Most Valuable Player selection
+                @else
+                    Click on a player to select them as the Most Valuable Player of this match
+                @endif
+            </p>
         </div>
+
+        <div class="mvp-candidates" id="mvpCandidates">
+    @php
+        // ✅ Get winning team ID
+        $winningTeamId = null;
+        if ($game->team1_score > $game->team2_score) {
+            $winningTeamId = $game->team1_id;
+        } elseif ($game->team2_score > $game->team1_score) {
+            $winningTeamId = $game->team2_id;
+        }
+        
+        // ✅ Filter candidates to only winning team
+        $mvpCandidates = $winningTeamId 
+            ? $team1Stats->merge($team2Stats)->where('team_id', $winningTeamId)->sortByDesc('kills')->take(6)
+            : $team1Stats->merge($team2Stats)->sortByDesc('kills')->take(6);
+    @endphp
+            @foreach($team1Stats->merge($team2Stats)->sortByDesc('kills')->take(6) as $stat)
+                <div class="mvp-candidate-card {{ $stat->is_mvp ? 'selected' : '' }}" data-stat-id="{{ $stat->id }}" onclick="selectMVPCandidate({{ $stat->id }})">
+                    <div class="candidate-header">
+                        <div class="candidate-number">{{ $stat->player->number ?? '0' }}</div>
+                        <div class="candidate-info">
+                            <div class="candidate-name">{{ $stat->player->name }}</div>
+                            <div class="candidate-team">{{ $stat->team->team_name }}</div>
+                        </div>
+                    </div>
+                    <div class="candidate-stats">
+                        <div class="candidate-stat">
+                            <div class="candidate-stat-value">{{ $stat->kills }}</div>
+                            <div class="candidate-stat-label">Kills</div>
+                        </div>
+                        <div class="candidate-stat">
+                            <div class="candidate-stat-value">{{ $stat->aces }}</div>
+                            <div class="candidate-stat-label">Aces</div>
+                        </div>
+                        <div class="candidate-stat">
+                            <div class="candidate-stat-value">{{ $stat->blocks }}</div>
+                            <div class="candidate-stat-label">Blocks</div>
+                        </div>
+                        <div class="candidate-stat">
+                            <div class="candidate-stat-value">{{ $stat->digs }}</div>
+                            <div class="candidate-stat-label">Digs</div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <button class="select-mvp-btn" id="confirmMVPBtn" onclick="confirmMVP()" {{ $mvpSelected ? '' : 'disabled' }}>
+            <i class="bi bi-star-fill"></i>
+            @if($mvpSelected)
+                Update MVP Selection
+            @else
+                Confirm MVP Selection
+            @endif
+        </button>
+    </div>
+@endif
+
+       <!-- Back Actions -->
+<div class="back-actions">
+    @if($game->bracket && $game->bracket->tournament)
+        <a href="{{ route('tournaments.show', $game->bracket->tournament->id) }}" class="action-btn btn-primary">
+            <i class="bi bi-trophy"></i>
+            Back to Tournament
+        </a>
+    @endif
+    <a href="{{ route('games.index') }}" class="action-btn btn-secondary">
+        <i class="bi bi-list"></i>
+        All Games
+    </a>
+    <a href="{{ route('games.volleyball-scoresheet', $game) }}" class="action-btn btn-secondary">
+        <i class="bi bi-clipboard-data"></i>
+        View Scoresheet
+    </a>
+    @if($mvpSelected && ($team1Stats->count() > 0 || $team2Stats->count() > 0))
+        <button onclick="showMVPSelection()" class="action-btn btn-secondary">
+            <i class="bi bi-star"></i>
+            Update MVP
+        </button>
+    @endif
+</div>
     </div>
 </div>
 
@@ -1142,6 +1176,15 @@ function confirmMVP() {
         btn.innerHTML = '<i class="bi bi-star-fill"></i> Confirm MVP Selection';
         btn.style.background = 'linear-gradient(135deg, #ffd700, #ffed4e)';
     });
+}
+
+// ✅ NEW: Show MVP selection section
+function showMVPSelection() {
+    const mvpSection = document.getElementById('mvpSelectionSection');
+    if (mvpSection) {
+        mvpSection.style.display = 'block';
+        mvpSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 }
 </script>
 @endsection

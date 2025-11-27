@@ -970,6 +970,20 @@
 </div>
 
                 <div class="mvp-candidates" id="mvpCandidates">
+    @php
+        // ✅ Get winning team ID
+        $winningTeamId = null;
+        if ($game->team1_score > $game->team2_score) {
+            $winningTeamId = $game->team1_id;
+        } elseif ($game->team2_score > $game->team1_score) {
+            $winningTeamId = $game->team2_id;
+        }
+        
+        // ✅ Filter candidates to only winning team
+        $mvpCandidates = $winningTeamId 
+            ? $team1Stats->merge($team2Stats)->where('team_id', $winningTeamId)->sortByDesc('points')->take(6)
+            : $team1Stats->merge($team2Stats)->sortByDesc('points')->take(6);
+    @endphp
                     @foreach($team1Stats->merge($team2Stats)->sortByDesc('points')->take(6) as $stat)
     <div class="mvp-candidate-card {{ $stat->is_mvp ? 'selected' : '' }}" data-stat-id="{{ $stat->id }}" onclick="selectMVPCandidate({{ $stat->id }})">
                             <div class="candidate-header">

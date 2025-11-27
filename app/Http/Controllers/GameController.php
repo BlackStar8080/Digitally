@@ -661,8 +661,23 @@ private function processPlayerFouls(array $events)
 private function autoSelectMVP(Game $game)
 {
     try {
-        // Get all player stats for this game, ordered by MVP score
+        // ✅ Determine the winning team
+        $winningTeamId = null;
+        if ($game->team1_score > $game->team2_score) {
+            $winningTeamId = $game->team1_id;
+        } elseif ($game->team2_score > $game->team1_score) {
+            $winningTeamId = $game->team2_id;
+        }
+
+        // ✅ If no winner (tie), don't auto-select MVP
+        if (!$winningTeamId) {
+            \Log::info("No MVP auto-selected for game {$game->id}: Game ended in a tie");
+            return;
+        }
+
+        // ✅ Get top player from WINNING TEAM ONLY
         $topPlayer = $game->playerStats()
+            ->where('team_id', $winningTeamId) // ✅ Filter by winning team
             ->with('player')
             ->get()
             ->sortByDesc(function($stat) {
@@ -677,7 +692,7 @@ private function autoSelectMVP(Game $game)
             // Set the top player as MVP
             $topPlayer->update(['is_mvp' => true]);
             
-            \Log::info("Auto-selected MVP for game {$game->id}: Player {$topPlayer->player->name} (Score: {$topPlayer->getMVPScore()})");
+            \Log::info("Auto-selected MVP for game {$game->id}: Player {$topPlayer->player->name} from winning team (Score: {$topPlayer->getMVPScore()})");
         }
         
     } catch (\Exception $e) {
@@ -1044,12 +1059,15 @@ public function completeVolleyballGame(Request $request, Game $game)
         ]);
 
         // Save volleyball player statistics
-        if (isset($validated['player_stats']) && is_array($validated['player_stats'])) {
-            $this->saveVolleyballPlayerStats($game, $validated['player_stats']);
-        }
+if (isset($validated['player_stats']) && is_array($validated['player_stats'])) {
+    $this->saveVolleyballPlayerStats($game, $validated['player_stats']);
+}
 
-        // Save volleyball tallysheet
-        $this->saveVolleyballTallysheet($game, $validated);
+// Save volleyball tallysheet
+$this->saveVolleyballTallysheet($game, $validated);
+
+// ✅ NEW: Auto-select MVP for volleyball
+$this->autoSelectVolleyballMVP($game);
 
         // Advance bracket if needed
         if ($game->bracket_id && $winnerId) {
@@ -1080,6 +1098,57 @@ public function completeVolleyballGame(Request $request, Game $game)
             'success' => false,
             'message' => 'Failed to complete game: ' . $e->getMessage()
         ], 500);
+    }
+}
+
+/**
+ * Automatically select MVP for volleyball based on player statistics
+ */
+/**
+ * Automatically select MVP for volleyball based on player statistics from WINNING TEAM
+ */
+private function autoSelectVolleyballMVP(Game $game)
+{
+    try {
+        // ✅ Determine the winning team (sets won)
+        $winningTeamId = null;
+        if ($game->team1_score > $game->team2_score) {
+            $winningTeamId = $game->team1_id;
+        } elseif ($game->team2_score > $game->team1_score) {
+            $winningTeamId = $game->team2_id;
+        }
+
+        // ✅ If no winner (tie - shouldn't happen in volleyball), don't auto-select MVP
+        if (!$winningTeamId) {
+            \Log::info("No MVP auto-selected for volleyball game {$game->id}: Game ended in a tie");
+            return;
+        }
+
+        // ✅ Get top player from WINNING TEAM ONLY
+        $topPlayer = $game->volleyballPlayerStats()
+            ->where('team_id', $winningTeamId) // ✅ Filter by winning team
+            ->with('player')
+            ->get()
+            ->sortByDesc(function($stat) {
+                // MVP scoring for volleyball: Kills (3pts) + Aces (2pts) + Blocks (2pts) + Digs (1pt) + Assists (1pt)
+                return ($stat->kills * 3) + ($stat->aces * 2) + ($stat->blocks * 2) + ($stat->digs * 1) + ($stat->assists * 1);
+            })
+            ->first();
+
+        if ($topPlayer) {
+            // Clear any existing MVP flags
+            $game->volleyballPlayerStats()->update(['is_mvp' => false]);
+            
+            // Set the top player as MVP
+            $topPlayer->update(['is_mvp' => true]);
+            
+            $mvpScore = ($topPlayer->kills * 3) + ($topPlayer->aces * 2) + ($topPlayer->blocks * 2) + ($topPlayer->digs * 1) + ($topPlayer->assists * 1);
+            \Log::info("Auto-selected Volleyball MVP for game {$game->id}: Player {$topPlayer->player->name} from winning team (Score: {$mvpScore})");
+        }
+        
+    } catch (\Exception $e) {
+        \Log::error("Failed to auto-select Volleyball MVP for game {$game->id}: " . $e->getMessage());
+        // Don't throw - MVP selection failure shouldn't break game completion
     }
 }
 
