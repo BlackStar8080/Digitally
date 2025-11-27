@@ -949,8 +949,8 @@
         </div>
 
         <!-- MVP Selection Section (if not selected) -->
-@if(!$mvpSelected && ($team1Stats->count() > 0 || $team2Stats->count() > 0))
-    <div class="mvp-selection-section" id="mvpSelectionSection">
+@if($team1Stats->count() > 0 || $team2Stats->count() > 0)
+    <div class="mvp-selection-section" id="mvpSelectionSection" style="display: {{ $mvpSelected ? 'none' : 'block' }};">
                 <div class="mvp-selection-header">
     <h2 class="mvp-selection-title">
         <i class="bi bi-star-fill" style="color: #ffd700;"></i>
