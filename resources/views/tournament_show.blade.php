@@ -3808,7 +3808,7 @@
                     </div>
                 @endforeach
             </div>
-
+            @if (!session('is_guest'))
             <div class="display-actions">
                 <a href="{{ route('tournaments.show', ['id' => $tournament->id, 'edit_mythical' => 1]) }}" 
                    class="btn btn-edit-mythical">
@@ -3816,6 +3816,7 @@
                     Edit Mythical 5
                 </a>
             </div>
+            @endif
         @endif
     </div>
 @endif

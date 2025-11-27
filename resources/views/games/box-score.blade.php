@@ -984,8 +984,9 @@
             ? $team1Stats->merge($team2Stats)->where('team_id', $winningTeamId)->sortByDesc('points')->take(6)
             : $team1Stats->merge($team2Stats)->sortByDesc('points')->take(6);
     @endphp
-                    @foreach($team1Stats->merge($team2Stats)->sortByDesc('points')->take(6) as $stat)
-    <div class="mvp-candidate-card {{ $stat->is_mvp ? 'selected' : '' }}" data-stat-id="{{ $stat->id }}" onclick="selectMVPCandidate({{ $stat->id }})">
+    
+    @foreach($mvpCandidates as $stat)  {{-- ✅ CHANGED: Use $mvpCandidates instead of the full list --}}
+        <div class="mvp-candidate-card {{ $stat->is_mvp ? 'selected' : '' }}" data-stat-id="{{ $stat->id }}" onclick="selectMVPCandidate({{ $stat->id }})">
                             <div class="candidate-header">
                                 <div class="candidate-number">{{ $stat->player->number ?? '0' }}</div>
                                 <div class="candidate-info">
@@ -1038,15 +1039,14 @@
         <i class="bi bi-list"></i>
         All Games
     </a>
-    <a href="{{ route('games.tallysheet', $game->id) }}" class="action-btn btn-secondary">
-        <i class="bi bi-clipboard-data"></i>
-        View Tallysheet
-    </a>
+   
     @if($mvpSelected && ($team1Stats->count() > 0 || $team2Stats->count() > 0))
+    @if (!session('is_guest'))
         <button onclick="showMVPSelection()" class="action-btn btn-secondary">
             <i class="bi bi-star"></i>
             Update MVP
         </button>
+        @endif
     @endif
 </div>
     </div>

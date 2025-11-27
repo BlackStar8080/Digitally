@@ -544,202 +544,190 @@
         </table>
     </div>
 
-    <!-- TEAMS AND PLAYERS PERFORMANCES - WITH DATA -->
-<div class="stats-wrapper" style="page-break-inside: avoid;">
-    <div class="stats-title">TEAMS AND PLAYERS PERFORMANCES</div>
-    
-    <!-- SCORING SKILLS TABLE -->
-    <table style="width: 100%; border-collapse: collapse; font-size: 5pt;">
-        <tbody>
+    <!-- TEAMS AND PLAYERS PERFORMANCES -->
+<div class="performance-title">TEAMS AND PLAYERS PERFORMANCES</div>
+
+<!-- SCORING SKILLS TABLE -->
+<table class="stats-table">
+    <thead>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Won Pts</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Atts</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">No Name</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Scoring Skills</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Won Pts</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Atts</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">No Name</td>
+            <th style="width: 10%;">Won Pts</th>
+            <th style="width: 10%;">Total Atts</th>
+            <th style="width: 15%;">No Name</th>
+            <th style="width: 20%; background: #d0d0d0;">Scoring Skills</th>
+            <th style="width: 10%;">Won Pts</th>
+            <th style="width: 10%;">Total Atts</th>
+            <th style="width: 15%;">No Name</th>
         </tr>
-        
+    </thead>
+    <tbody>
         <!-- SPIKE SECTION -->
-        <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['total_kills'] ?? 0 }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['total_attack_attempts'] ?? 0 }}</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Spike</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['total_kills'] ?? 0 }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['total_attack_attempts'] ?? 0 }}</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+        <tr class="skill-category">
+            <td>{{ $team1Stats['total_kills'] ?? 0 }}</td>
+            <td>{{ $team1Stats['total_attack_attempts'] ?? 0 }}</td>
+            <td><strong>Total Team</strong></td>
+            <td style="background: #d0d0d0;"><strong>Spike</strong></td>
+            <td>{{ $team2Stats['total_kills'] ?? 0 }}</td>
+            <td>{{ $team2Stats['total_attack_attempts'] ?? 0 }}</td>
+            <td><strong>Total Team</strong></td>
         </tr>
-        <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['top_killer']['kills'] ?? '' }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['top_killer']['attempts'] ?? '' }}</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['top_killer']['number'] ?? '' }}</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['top_killer']['kills'] ?? '' }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['top_killer']['attempts'] ?? '' }}</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['top_killer']['number'] ?? '' }}</td>
-        </tr>
-        <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px;"></td>
-        </tr>
-        
+        @for($i = 0; $i < 3; $i++)
+            <tr>
+                <td>{{ $team1Stats['top_spikers'][$i]['kills'] ?? '' }}</td>
+                <td>{{ $team1Stats['top_spikers'][$i]['attempts'] ?? '' }}</td>
+                <td>{{ $team1Stats['top_spikers'][$i]['number'] ?? '' }} {{ isset($team1Stats['top_spikers'][$i]) ? substr($team1Stats['top_spikers'][$i]['name'], 0, 10) : '' }}</td>
+                <td style="background: #f5f5f5;"></td>
+                <td>{{ $team2Stats['top_spikers'][$i]['kills'] ?? '' }}</td>
+                <td>{{ $team2Stats['top_spikers'][$i]['attempts'] ?? '' }}</td>
+                <td>{{ $team2Stats['top_spikers'][$i]['number'] ?? '' }} {{ isset($team2Stats['top_spikers'][$i]) ? substr($team2Stats['top_spikers'][$i]['name'], 0, 10) : '' }}</td>
+            </tr>
+        @endfor
+
         <!-- BLOCK SECTION -->
-        <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['total_blocks'] ?? 0 }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">-</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Block</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['total_blocks'] ?? 0 }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">-</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+        <tr class="skill-category">
+            <td>{{ $team1Stats['total_blocks'] ?? 0 }}</td>
+            <td>—</td>
+            <td><strong>Total Team</strong></td>
+            <td style="background: #d0d0d0;"><strong>Block</strong></td>
+            <td>{{ $team2Stats['total_blocks'] ?? 0 }}</td>
+            <td>—</td>
+            <td><strong>Total Team</strong></td>
         </tr>
-        <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['top_blocker']['blocks'] ?? '' }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['top_blocker']['number'] ?? '' }}</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['top_blocker']['blocks'] ?? '' }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['top_blocker']['number'] ?? '' }}</td>
-        </tr>
-        <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px;"></td>
-        </tr>
-        
+        @for($i = 0; $i < 2; $i++)
+            <tr>
+                <td>{{ $team1Stats['top_blockers'][$i]['blocks'] ?? '' }}</td>
+                <td></td>
+                <td>{{ $team1Stats['top_blockers'][$i]['number'] ?? '' }} {{ isset($team1Stats['top_blockers'][$i]) ? substr($team1Stats['top_blockers'][$i]['name'], 0, 10) : '' }}</td>
+                <td style="background: #f5f5f5;"></td>
+                <td>{{ $team2Stats['top_blockers'][$i]['blocks'] ?? '' }}</td>
+                <td></td>
+                <td>{{ $team2Stats['top_blockers'][$i]['number'] ?? '' }} {{ isset($team2Stats['top_blockers'][$i]) ? substr($team2Stats['top_blockers'][$i]['name'], 0, 10) : '' }}</td>
+            </tr>
+        @endfor
+
         <!-- SERVE SECTION -->
-        <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['total_aces'] ?? 0 }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">-</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Serve</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['total_aces'] ?? 0 }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">-</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+        <tr class="skill-category">
+            <td>{{ $team1Stats['total_aces'] ?? 0 }}</td>
+            <td>—</td>
+            <td><strong>Total Team</strong></td>
+            <td style="background: #d0d0d0;"><strong>Serve</strong></td>
+            <td>{{ $team2Stats['total_aces'] ?? 0 }}</td>
+            <td>—</td>
+            <td><strong>Total Team</strong></td>
         </tr>
-        <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['top_server']['aces'] ?? '' }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['top_server']['number'] ?? '' }}</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['top_server']['aces'] ?? '' }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['top_server']['number'] ?? '' }}</td>
+        @for($i = 0; $i < 2; $i++)
+            <tr>
+                <td>{{ $team1Stats['top_servers'][$i]['aces'] ?? '' }}</td>
+                <td></td>
+                <td>{{ $team1Stats['top_servers'][$i]['number'] ?? '' }} {{ isset($team1Stats['top_servers'][$i]) ? substr($team1Stats['top_servers'][$i]['name'], 0, 10) : '' }}</td>
+                <td style="background: #f5f5f5;"></td>
+                <td>{{ $team2Stats['top_servers'][$i]['aces'] ?? '' }}</td>
+                <td></td>
+                <td>{{ $team2Stats['top_servers'][$i]['number'] ?? '' }} {{ isset($team2Stats['top_servers'][$i]) ? substr($team2Stats['top_servers'][$i]['name'], 0, 10) : '' }}</td>
+            </tr>
+        @endfor
+
+        <!-- OPPONENT ERRORS -->
+        <tr class="skill-category">
+            <td>{{ $team1Stats['opponent_errors'] ?? 0 }}</td>
+            <td></td>
+            <td><strong>Total Team</strong></td>
+            <td style="background: #d0d0d0;"><strong>Opp. error</strong></td>
+            <td>{{ $team2Stats['opponent_errors'] ?? 0 }}</td>
+            <td></td>
+            <td><strong>Total Team</strong></td>
         </tr>
-        
-        <!-- OPPONENT ERROR SECTION -->
-        <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['opponent_errors'] ?? 0 }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Opp. error Total</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['opponent_errors'] ?? 0 }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
-        </tr>
-        <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
-        </tr>
-        
+
         <!-- BEST SCORER -->
-        <tr style="background-color: #e8e8e8;">
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['best_scorer']['points'] ?? '' }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; font-weight: bold; text-align: center;">{{ $team1Stats['best_scorer']['number'] ?? '' }}</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Best Scorer</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['best_scorer']['points'] ?? '' }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; font-weight: bold; text-align: center;">{{ $team2Stats['best_scorer']['number'] ?? '' }}</td>
+        <tr class="best-scorer-row">
+            <td>{{ $team1Stats['best_scorer']['points'] ?? '' }}</td>
+            <td></td>
+            <td><strong>{{ $team1Stats['best_scorer']['number'] ?? '' }} {{ isset($team1Stats['best_scorer']) ? substr($team1Stats['best_scorer']['name'], 0, 10) : '' }}</strong></td>
+            <td style="background: #d0d0d0;"><strong>Best Scorer</strong></td>
+            <td>{{ $team2Stats['best_scorer']['points'] ?? '' }}</td>
+            <td></td>
+            <td><strong>{{ $team2Stats['best_scorer']['number'] ?? '' }} {{ isset($team2Stats['best_scorer']) ? substr($team2Stats['best_scorer']['name'], 0, 10) : '' }}</strong></td>
         </tr>
-        </tbody>
-    </table>
+    </tbody>
+</table>
 
-    <br>
+<div style="height: 5px;"></div>
 
-    <!-- NON-SCORING SKILLS TABLE -->
-    <table style="width: 100%; border-collapse: collapse; font-size: 5pt;">
-        <tbody>
+<!-- NON-SCORING SKILLS TABLE -->
+<table class="stats-table">
+    <thead>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Excellent</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Atts</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">No Name</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Non scoring Skills</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Excellent</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Atts</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">No Name</td>
+            <th style="width: 10%;">Excellent</th>
+            <th style="width: 10%;">Total Atts</th>
+            <th style="width: 15%;">No Name</th>
+            <th style="width: 20%; background: #d0d0d0;">Non scoring Skills</th>
+            <th style="width: 10%;">Excellent</th>
+            <th style="width: 10%;">Total Atts</th>
+            <th style="width: 15%;">No Name</th>
         </tr>
-        
+    </thead>
+    <tbody>
         <!-- DIG SECTION -->
-        <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['total_digs'] ?? 0 }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">-</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Dig</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['total_digs'] ?? 0 }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">-</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+        <tr class="skill-category">
+            <td>{{ $team1Stats['total_digs'] ?? 0 }}</td>
+            <td>—</td>
+            <td><strong>Total Team</strong></td>
+            <td style="background: #d0d0d0;"><strong>Dig</strong></td>
+            <td>{{ $team2Stats['total_digs'] ?? 0 }}</td>
+            <td>—</td>
+            <td><strong>Total Team</strong></td>
         </tr>
-        <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['top_digger']['digs'] ?? '' }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['top_digger']['attempts'] ?? '' }}</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['top_digger']['number'] ?? '' }}</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['top_digger']['digs'] ?? '' }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['top_digger']['attempts'] ?? '' }}</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['top_digger']['number'] ?? '' }}</td>
-        </tr>
-        
+        @for($i = 0; $i < 2; $i++)
+            <tr>
+                <td>{{ $team1Stats['top_diggers'][$i]['digs'] ?? '' }}</td>
+                <td></td>
+                <td>{{ $team1Stats['top_diggers'][$i]['number'] ?? '' }} {{ isset($team1Stats['top_diggers'][$i]) ? substr($team1Stats['top_diggers'][$i]['name'], 0, 10) : '' }}</td>
+                <td style="background: #f5f5f5;"></td>
+                <td>{{ $team2Stats['top_diggers'][$i]['digs'] ?? '' }}</td>
+                <td></td>
+                <td>{{ $team2Stats['top_diggers'][$i]['number'] ?? '' }} {{ isset($team2Stats['top_diggers'][$i]) ? substr($team2Stats['top_diggers'][$i]['name'], 0, 10) : '' }}</td>
+            </tr>
+        @endfor
+
         <!-- SET SECTION -->
-        <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team1Stats['total_assists'] ?? 0 }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">-</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Set</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">{{ $team2Stats['total_assists'] ?? 0 }}</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px; text-align: center;">-</td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+        <tr class="skill-category">
+            <td>{{ $team1Stats['total_assists'] ?? 0 }}</td>
+            <td>—</td>
+            <td><strong>Total Team</strong></td>
+            <td style="background: #d0d0d0;"><strong>Set</strong></td>
+            <td>{{ $team2Stats['total_assists'] ?? 0 }}</td>
+            <td>—</td>
+            <td><strong>Total Team</strong></td>
         </tr>
-        
-        <!-- RECEPTION SECTION -->
-        <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; background-color: #e8e8e8;">Reception</td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; text-align: center; font-weight: bold;">Total Team</td>
+        @for($i = 0; $i < 2; $i++)
+            <tr>
+                <td>{{ $team1Stats['top_setters'][$i]['assists'] ?? '' }}</td>
+                <td></td>
+                <td>{{ $team1Stats['top_setters'][$i]['number'] ?? '' }} {{ isset($team1Stats['top_setters'][$i]) ? substr($team1Stats['top_setters'][$i]['name'], 0, 10) : '' }}</td>
+                <td style="background: #f5f5f5;"></td>
+                <td>{{ $team2Stats['top_setters'][$i]['assists'] ?? '' }}</td>
+                <td></td>
+                <td>{{ $team2Stats['top_setters'][$i]['number'] ?? '' }} {{ isset($team2Stats['top_setters'][$i]) ? substr($team2Stats['top_setters'][$i]['name'], 0, 10) : '' }}</td>
+            </tr>
+        @endfor
+
+        <!-- RECEPTION (PLACEHOLDER) -->
+        <tr class="skill-category">
+            <td></td>
+            <td></td>
+            <td><strong>Total Team</strong></td>
+            <td style="background: #d0d0d0;"><strong>Reception</strong></td>
+            <td></td>
+            <td></td>
+            <td><strong>Total Team</strong></td>
         </tr>
         <tr>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; font-weight: bold;">Success - Faults # Attempts</td>
-            <td style="width: 18%; border: 1px solid #000; padding: 2px; background-color: #e8e8e8;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 8%; border: 1px solid #000; padding: 2px;"></td>
-            <td style="width: 10%; border: 1px solid #000; padding: 2px; font-weight: bold;">Success - Faults # Attempts</td>
+            <td colspan="3" style="text-align: left; font-size: 6pt;"><em>Success - Faults # Attempts</em></td>
+            <td style="background: #f5f5f5;"></td>
+            <td colspan="3" style="text-align: left; font-size: 6pt;"><em>Success - Faults # Attempts</em></td>
         </tr>
-        </tbody>
-    </table>
-</div>
+    </tbody>
+</table>
     <!-- SIGNATURES -->
     <table class="signatures-table">
         <tr>

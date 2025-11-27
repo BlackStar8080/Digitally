@@ -406,7 +406,7 @@ public function volleyballScoresheet($gameId)
         'defaultFont' => 'DejaVu Sans',
         'isHtml5ParserEnabled' => true,
         'isRemoteEnabled' => false,
-        'dpi' => 96,
+        'dpi' => 150,
         'enable_font_subsetting' => true,
     ]);
 

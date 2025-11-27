@@ -1498,8 +1498,7 @@ public function selectVolleyballMVP(Request $request, Game $game)
         return response()->json(['error' => 'Unauthorized'], 403);
     }
 
-    // Prefer live_state (used by auto-save) when available to avoid overwriting
-    // in-memory scores with stale top-level columns when autosave updates timestamps.
+    // Prefer live_state (used by auto-save) when available
     $gameData = $game->game_data ?? [];
     $liveState = $gameData['live_state'] ?? null;
 
@@ -1990,6 +1989,47 @@ public function calculateVolleyballTeamStats(Game $game, $teamId)
         ->orderBy('assists', 'DESC')
         ->first();
 
+        // Get top 3 performers for each skill category
+$topSpikers = $game->volleyballPlayerStats()
+    ->where('team_id', $teamId)
+    ->where('kills', '>', 0)
+    ->with('player')
+    ->orderBy('kills', 'DESC')
+    ->take(3)
+    ->get();
+
+$topServers = $game->volleyballPlayerStats()
+    ->where('team_id', $teamId)
+    ->where('aces', '>', 0)
+    ->with('player')
+    ->orderBy('aces', 'DESC')
+    ->take(3)
+    ->get();
+
+$topBlockers = $game->volleyballPlayerStats()
+    ->where('team_id', $teamId)
+    ->where('blocks', '>', 0)
+    ->with('player')
+    ->orderBy('blocks', 'DESC')
+    ->take(3)
+    ->get();
+
+$topDiggers = $game->volleyballPlayerStats()
+    ->where('team_id', $teamId)
+    ->where('digs', '>', 0)
+    ->with('player')
+    ->orderBy('digs', 'DESC')
+    ->take(3)
+    ->get();
+
+$topSetters = $game->volleyballPlayerStats()
+    ->where('team_id', $teamId)
+    ->where('assists', '>', 0)
+    ->with('player')
+    ->orderBy('assists', 'DESC')
+    ->take(3)
+    ->get();
+
     return [
         'total_kills' => $stats->total_kills ?? 0,
         'total_aces' => $stats->total_aces ?? 0,
@@ -2028,8 +2068,37 @@ public function calculateVolleyballTeamStats(Game $game, $teamId)
             'assists' => $topSetter->assists,
             'attempts' => $topSetter->assists // You can track this separately if needed
         ] : null,
+
+            'top_spikers' => $topSpikers->map(fn($s) => [
+    'number' => $s->player->number ?? '00',
+    'name' => $s->player->name ?? 'Unknown',
+    'kills' => $s->kills,
+    'attempts' => $s->attack_attempts
+]),
+'top_servers' => $topServers->map(fn($s) => [
+    'number' => $s->player->number ?? '00',
+    'name' => $s->player->name ?? 'Unknown',
+    'aces' => $s->aces
+]),
+'top_blockers' => $topBlockers->map(fn($s) => [
+    'number' => $s->player->number ?? '00',
+    'name' => $s->player->name ?? 'Unknown',
+    'blocks' => $s->blocks
+]),
+'top_diggers' => $topDiggers->map(fn($s) => [
+    'number' => $s->player->number ?? '00',
+    'name' => $s->player->name ?? 'Unknown',
+    'digs' => $s->digs
+]),
+'top_setters' => $topSetters->map(fn($s) => [
+    'number' => $s->player->number ?? '00',
+    'name' => $s->player->name ?? 'Unknown',
+    'assists' => $s->assists
+]),
     ];
 }
+
+
 
 /**
  * Auto-save game state during live game

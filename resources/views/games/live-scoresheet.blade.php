@@ -4032,48 +4032,54 @@
         }
 
         playPauseBtn.addEventListener("click", () => {
-            if (isRunning) {
-                // Manual pause
-                wasRunningBeforePause = true;
-                clearInterval(interval);
-                isRunning = false;
-                playPauseBtn.textContent = "▶";
-                pauseReason = 'manual';
-                playPauseBtn.style.backgroundColor = '#4CAF50';
-                playPauseBtn.title = '';
-                // Pause shot clock when game paused
-                pauseShotClock();
-            } else {
-                if (pauseReason && pauseReason !== 'manual') {
-                    // Show confirmation for resuming during auto-pause
-                    if (confirm(`Timer was paused for ${pauseReason}. Resume game clock?`)) {
-                        resumeTimer();
-                        // Resume shot clock if it was running
-                        if (shotTime > 0) {
-                            startShotClock();
-                        }
-                    }
-                } else {
-                    // Normal resume
-                    interval = setInterval(() => {
-                        if (time > 0) {
-                            time--;
-                            updateTimer();
-                        }
-                    }, 1000);
-                    isRunning = true;
-                    playPauseBtn.textContent = "⏸";
-                    playPauseBtn.style.backgroundColor = '#4CAF50';
-                    wasRunningBeforePause = false;
-                    pauseReason = null;
-                    // Start or resume shot clock when game resumes
-                    if (shotTime <= 0) {
-                        resetShotClock(24);
-                    }
+    // ✅ CHECK ROLE - Only scorer and all-in-one can control timer
+    if (userRole === 'stat_keeper') {
+        showToast('⛔ Only the Scorer can control the game timer', 'error', 3000);
+        return;
+    }
+    
+    if (isRunning) {
+        // Manual pause
+        wasRunningBeforePause = true;
+        clearInterval(interval);
+        isRunning = false;
+        playPauseBtn.textContent = "▶";
+        pauseReason = 'manual';
+        playPauseBtn.style.backgroundColor = '#4CAF50';
+        playPauseBtn.title = '';
+        // Pause shot clock when game paused
+        pauseShotClock();
+    } else {
+        if (pauseReason && pauseReason !== 'manual') {
+            // Show confirmation for resuming during auto-pause
+            if (confirm(`Timer was paused for ${pauseReason}. Resume game clock?`)) {
+                resumeTimer();
+                // Resume shot clock if it was running
+                if (shotTime > 0) {
                     startShotClock();
                 }
             }
-        });
+        } else {
+            // Normal resume
+            interval = setInterval(() => {
+                if (time > 0) {
+                    time--;
+                    updateTimer();
+                }
+            }, 1000);
+            isRunning = true;
+            playPauseBtn.textContent = "⏸";
+            playPauseBtn.style.backgroundColor = '#4CAF50';
+            wasRunningBeforePause = false;
+            pauseReason = null;
+            // Start or resume shot clock when game resumes
+            if (shotTime <= 0) {
+                resetShotClock(24);
+            }
+            startShotClock();
+        }
+    }
+});
 
         function saveGameResults() {
     const saveModal = document.getElementById('saveGameModal');
@@ -6787,6 +6793,36 @@ function startTechFreeThrows(team, playerNumber, techType) {
             subsPerQuarter: 5,
         };
 
+        // ✅ ADD THIS FUNCTION
+function loadGameSettings() {
+    const saved = localStorage.getItem('gameSettings');
+    if (saved) {
+        try {
+            gameSettings = JSON.parse(saved);
+            
+            // Apply loaded settings to game variables
+            quarterLength = gameSettings.quarterTime * 60;
+            timeoutTime = gameSettings.timeoutDuration;
+            maxTimeoutsPerQuarter = gameSettings.timeoutLimit;
+            
+            // Update timeout display
+            document.querySelectorAll(".max-timeouts").forEach(el => {
+                el.textContent = maxTimeoutsPerQuarter;
+            });
+            
+            // Reset timer if not running
+            if (!isRunning && currentQuarter === 1) {
+                time = quarterLength;
+                updateTimer();
+            }
+            
+            console.log('✅ Game settings loaded from localStorage:', gameSettings);
+        } catch (e) {
+            console.error('Failed to load game settings:', e);
+        }
+    }
+}
+
         // Open modal
         gameSettingsBtn.addEventListener("click", () => {
             gameSettingsModal.style.display = "flex";
@@ -6802,31 +6838,34 @@ function startTechFreeThrows(team, playerNumber, techType) {
         });
 
         // Save settings
-        saveGameSettings.addEventListener("click", () => {
-            gameSettings.quarterTime = parseInt(quarterTimeInput.value);
-            gameSettings.timeoutDuration = parseInt(timeoutDurationInput.value);
-            gameSettings.timeoutLimit = parseInt(timeoutLimitInput.value);
-            gameSettings.subsPerQuarter = parseInt(subsPerQuarterInput.value);
+saveGameSettings.addEventListener("click", () => {
+    gameSettings.quarterTime = parseInt(quarterTimeInput.value);
+    gameSettings.timeoutDuration = parseInt(timeoutDurationInput.value);
+    gameSettings.timeoutLimit = parseInt(timeoutLimitInput.value);
+    gameSettings.subsPerQuarter = parseInt(subsPerQuarterInput.value);
 
-            // Apply to actual game logic
-            quarterLength = gameSettings.quarterTime * 60; // seconds
-            timeoutTime = gameSettings.timeoutDuration; // seconds
-            maxTimeoutsPerQuarter = gameSettings.timeoutLimit;
+    // ✅ SAVE TO LOCALSTORAGE
+    localStorage.setItem('gameSettings', JSON.stringify(gameSettings));
 
-            // Reset the timer to reflect new quarter time if not running
-            if (!isRunning) {
-                time = quarterLength;
-                updateTimer();
-            }
+    // Apply to actual game logic
+    quarterLength = gameSettings.quarterTime * 60; // seconds
+    timeoutTime = gameSettings.timeoutDuration; // seconds
+    maxTimeoutsPerQuarter = gameSettings.timeoutLimit;
 
-            // Update timeout limit display
-            document.querySelectorAll(".max-timeouts").forEach(el => {
-                el.textContent = maxTimeoutsPerQuarter;
-            });
+    // Reset the timer to reflect new quarter time if not running
+    if (!isRunning) {
+        time = quarterLength;
+        updateTimer();
+    }
 
-            alert("✅ Game settings updated successfully!");
-            gameSettingsModal.style.display = "none";
-        });
+    // Update timeout limit display
+    document.querySelectorAll(".max-timeouts").forEach(el => {
+        el.textContent = maxTimeoutsPerQuarter;
+    });
+
+    showToast("✅ Game settings saved successfully!", 'success', 3000);
+    gameSettingsModal.style.display = "none";
+});
 
 
 
@@ -6838,6 +6877,7 @@ function startTechFreeThrows(team, playerNumber, techType) {
         updateMainRoster();
         updatePeriodDisplay(); // Initialize quarter display
         updatePenaltyStatus();
+        loadGameSettings(); // ✅ ADD THIS LINE
         console.log('Game loaded:', gameData);
 
         // Load saved game state on page load
@@ -7077,79 +7117,123 @@ window.addEventListener('beforeunload', function() {
             document.head.appendChild(style);
 
             // Fetch and update game state (for stat-keeper)
-            function fetchGameState() {
-                if (syncInProgress || userRole === 'scorer') return;
+function fetchGameState() {
+    if (syncInProgress || userRole === 'scorer' || userRole === 'all_in_one') return;
 
-                syncInProgress = true;
+    syncInProgress = true;
 
-                fetch(`/api/game-state/${gameId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Only update if there's new data
-                        if (data.last_update > lastUpdateTimestamp) {
-                            let hasChanges = false;
+    fetch(`/api/game-state/${gameId}`)
+        .then(response => response.json())
+        .then(data => {
+            // Only update if there's new data
+            if (data.last_update > lastUpdateTimestamp) {
+                let hasChanges = false;
 
-                            // Update scores
-                            if (data.scoreA !== scoreA) {
-                                scoreA = data.scoreA;
-                                scoreADisplay.textContent = scoreA.toString().padStart(2, '0');
-                                hasChanges = true;
-                            }
+                // Update scores
+                if (data.scoreA !== scoreA) {
+                    scoreA = data.scoreA;
+                    scoreADisplay.textContent = scoreA.toString().padStart(2, '0');
+                    hasChanges = true;
+                }
 
-                            if (data.scoreB !== scoreB) {
-                                scoreB = data.scoreB;
-                                scoreBDisplay.textContent = scoreB.toString().padStart(2, '0');
-                                hasChanges = true;
-                            }
+                if (data.scoreB !== scoreB) {
+                    scoreB = data.scoreB;
+                    scoreBDisplay.textContent = scoreB.toString().padStart(2, '0');
+                    hasChanges = true;
+                }
 
-                            // Update fouls
-                            if (data.foulsA !== foulsA) {
-                                foulsA = data.foulsA;
-                                foulsADisplay.textContent = foulsA;
-                                hasChanges = true;
-                            }
+                // Update fouls
+                if (data.foulsA !== foulsA) {
+                    foulsA = data.foulsA;
+                    foulsADisplay.textContent = foulsA;
+                    hasChanges = true;
+                }
 
-                            if (data.foulsB !== foulsB) {
-                                foulsB = data.foulsB;
-                                foulsBDisplay.textContent = foulsB;
-                                hasChanges = true;
-                            }
+                if (data.foulsB !== foulsB) {
+                    foulsB = data.foulsB;
+                    foulsBDisplay.textContent = foulsB;
+                    hasChanges = true;
+                }
 
-                            // Update timeouts
-                            if (data.timeoutsA !== timeoutsA) {
-                                timeoutsA = data.timeoutsA;
-                                timeoutsADisplay.textContent = timeoutsA;
-                                hasChanges = true;
-                            }
+                // Update timeouts
+                if (data.timeoutsA !== timeoutsA) {
+                    timeoutsA = data.timeoutsA;
+                    timeoutsADisplay.textContent = timeoutsA;
+                    hasChanges = true;
+                }
 
-                            if (data.timeoutsB !== timeoutsB) {
-                                timeoutsB = data.timeoutsB;
-                                timeoutsBDisplay.textContent = timeoutsB;
-                                hasChanges = true;
-                            }
+                if (data.timeoutsB !== timeoutsB) {
+                    timeoutsB = data.timeoutsB;
+                    timeoutsBDisplay.textContent = timeoutsB;
+                    hasChanges = true;
+                }
 
-                            // Update events log
-                            if (data.events && data.events.length > gameEvents.length) {
-                                gameEvents = data.events;
-                                renderLog();
-                                hasChanges = true;
-                            }
+                // Update events log
+                if (data.events && data.events.length > gameEvents.length) {
+                    gameEvents = data.events;
+                    renderLog();
+                    
+                    // ✅ UPDATE PLAYER FOULS FROM EVENTS
+                    updatePlayerFoulsFromEvents();
+                    
+                    hasChanges = true;
+                }
 
-                            if (hasChanges) {
-                                lastUpdateTimestamp = data.last_update;
-                                showSyncIndicator('✓ Synced', '#4CAF50');
-                                console.log('📥 Game state updated from scorer');
-                            }
-                        }
-                    })
-                    .catch(error => {
-                        console.error('❌ Failed to fetch game state:', error);
-                        showSyncIndicator('⚠ Sync failed', '#F44336');
-                    })
-                    .finally(() => {
-                        syncInProgress = false;
-                    });
+                if (hasChanges) {
+                    lastUpdateTimestamp = data.last_update;
+                    
+                    // ✅ REFRESH PLAYER CARDS TO SHOW UPDATED FOUL DOTS
+                    updateMainRoster();
+                    updatePenaltyStatus();
+                    
+                    showSyncIndicator('✓ Synced', '#4CAF50');
+                    console.log('📥 Game state updated from scorer');
+                }
             }
+        })
+        .catch(error => {
+            console.error('❌ Failed to fetch game state:', error);
+            showSyncIndicator('⚠ Sync failed', '#F44336');
+        })
+        .finally(() => {
+            syncInProgress = false;
+        });
+}
+
+// ✅ NEW FUNCTION: Update player fouls by analyzing game events
+function updatePlayerFoulsFromEvents() {
+    // Reset all player fouls first
+    [...activePlayers.A, ...benchPlayers.A, ...activePlayers.B, ...benchPlayers.B].forEach(player => {
+        player.fouls = 0;
+        player.techFouls = 0;
+    });
+    
+    // Count fouls from events
+    gameEvents.forEach(event => {
+        if (event.action && event.action.includes('Foul') && event.player !== 'TEAM' && event.player !== 'SYSTEM') {
+            const team = event.team;
+            const playerNumber = event.player;
+            
+            // Find the player
+            const playerArrays = team === 'A' ? 
+                [...activePlayers.A, ...benchPlayers.A] : 
+                [...activePlayers.B, ...benchPlayers.B];
+            
+            const player = playerArrays.find(p => (p.number || '00').toString() === playerNumber.toString());
+            
+            if (player) {
+                // Check if it's a technical foul
+                if (event.action.includes('Tech')) {
+                    player.techFouls = (player.techFouls || 0) + 1;
+                } else {
+                    player.fouls = (player.fouls || 0) + 1;
+                }
+            }
+        }
+    });
+    
+    console.log('🔄 Player fouls updated from events');
+}
 
             // Push game state to server (for scorer)
             function pushGameState() {
@@ -7230,28 +7314,29 @@ window.addEventListener('beforeunload', function() {
 // Start polling based on role
 if (userRole === 'scorer') {
     console.log('📊 Running as SCORER - will push updates every 500ms');
-    setInterval(pushGameState, 500); // ✅ Changed from 1000 to 500ms
-    setInterval(fetchGameState, 500); // ✅ Fetch updates too
+    setInterval(pushGameState, 500); // ✅ Only push, don't fetch
+    // ❌ REMOVED: setInterval(fetchGameState, 500);
 } else if (userRole === 'stat_keeper') {
     console.log('📈 Running as STAT-KEEPER - will push AND fetch updates every 500ms');
-    setInterval(pushGameState, 500); // ✅ Changed from 1000 to 500ms
-    setInterval(fetchGameState, 500); // ✅ Changed from 1000 to 500ms
-} else if (userRole === 'all_in_one') {
-    console.log('⚡ Running as ALL-IN-ONE - will push AND fetch updates every 500ms');
     setInterval(pushGameState, 500);
-    setInterval(fetchGameState, 500);
+    setInterval(fetchGameState, 500); // ✅ Stat-keeper needs to sync
+} else if (userRole === 'all_in_one') {
+    console.log('⚡ Running as ALL-IN-ONE - will only push updates every 500ms');
+    setInterval(pushGameState, 500); // ✅ Only push, don't fetch
+    // ❌ REMOVED: setInterval(fetchGameState, 500);
 } else {
     console.log('👁 Running as VIEWER - will fetch updates every 1 second');
-    setInterval(fetchGameState, 1000); // ✅ Changed from 2000 to 1000
+    setInterval(fetchGameState, 1000); // ✅ Viewers only fetch
 }
 
             // Update connected users every 30 seconds
             updateConnectedUsers();
             setInterval(updateConnectedUsers, 30000);
 
-            // Show role indicator
-            const roleIndicator = document.createElement('div');
-            roleIndicator.style.cssText = `
+            // Show role indicator (hide for all-in-one mode)
+if (userRole !== 'all_in_one') {
+    const roleIndicator = document.createElement('div');
+    roleIndicator.style.cssText = `
         position: fixed;
         top: 80px;
         left: 20px;
@@ -7263,8 +7348,9 @@ if (userRole === 'scorer') {
         font-weight: bold;
         z-index: 9999;
     `;
-            roleIndicator.textContent = userRole === 'scorer' ? '📊 SCORER MODE' : '📈 STAT-KEEPER MODE';
-            document.body.appendChild(roleIndicator);
+    roleIndicator.textContent = userRole === 'scorer' ? '📊 SCORER MODE' : '📈 STAT-KEEPER MODE';
+    document.body.appendChild(roleIndicator);
+}
 
         })();
 
