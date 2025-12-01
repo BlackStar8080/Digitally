@@ -4647,6 +4647,12 @@ function createSubPlayerCard(player, team, isActive) {
     // Only make draggable if not ejected/fouled out
     if (!isEjected) {
         card.draggable = true;
+        
+        // ✅ ADD TOUCH EVENT LISTENERS FOR TABLETS
+        card.addEventListener('touchstart', handleTouchStart, {passive: false});
+        card.addEventListener('touchmove', handleTouchMove, {passive: false});
+        card.addEventListener('touchend', handleTouchEnd, {passive: false});
+        card.addEventListener('touchcancel', handleTouchCancel, {passive: false});
     } else {
         card.style.opacity = '0.4';
         card.style.cursor = 'not-allowed';
@@ -4676,7 +4682,7 @@ function createSubPlayerCard(player, team, isActive) {
         <div class="sub-player-status ${statusClass}">${statusText}</div>
     `;
 
-    // Only add drag event listeners if not ejected
+    // Only add drag event listeners if not ejected (for mouse/desktop)
     if (!isEjected) {
         card.addEventListener('dragstart', handleDragStart);
         card.addEventListener('dragend', handleDragEnd);
@@ -4727,6 +4733,108 @@ function createSubPlayerCard(player, team, isActive) {
                 e.target.classList.remove('drag-over');
             }
         }
+
+        // ============= TOUCH DRAG AND DROP FOR TABLETS =============
+let touchDraggedElement = null;
+let touchStartX = 0;
+let touchStartY = 0;
+
+function handleTouchStart(e) {
+    // Don't allow dragging ejected/fouled out players
+    if (e.currentTarget.dataset.ejected === 'true') {
+        return;
+    }
+    
+    touchDraggedElement = e.currentTarget;
+    touchDraggedElement.classList.add('dragging');
+    
+    const touch = e.touches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+    
+    // Prevent scrolling while dragging
+    e.preventDefault();
+}
+
+function handleTouchMove(e) {
+    if (!touchDraggedElement) return;
+    
+    e.preventDefault();
+    const touch = e.touches[0];
+    
+    // Move the card visually (optional - for better feedback)
+    touchDraggedElement.style.position = 'fixed';
+    touchDraggedElement.style.zIndex = '10000';
+    touchDraggedElement.style.left = touch.clientX - 50 + 'px';
+    touchDraggedElement.style.top = touch.clientY - 50 + 'px';
+    touchDraggedElement.style.width = '100px';
+    touchDraggedElement.style.pointerEvents = 'none';
+    
+    // Find element under touch point
+    const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+    const dropTarget = elementBelow?.closest('.sub-player-card');
+    
+    // Remove drag-over from all cards
+    document.querySelectorAll('.sub-player-card').forEach(card => {
+        card.classList.remove('drag-over');
+    });
+    
+    // Add drag-over to valid drop target
+    if (dropTarget && dropTarget !== touchDraggedElement && canDropOn(touchDraggedElement, dropTarget)) {
+        dropTarget.classList.add('drag-over');
+    }
+}
+
+function handleTouchEnd(e) {
+    if (!touchDraggedElement) return;
+    
+    e.preventDefault();
+    const touch = e.changedTouches[0];
+    
+    // Reset visual styling
+    touchDraggedElement.style.position = '';
+    touchDraggedElement.style.zIndex = '';
+    touchDraggedElement.style.left = '';
+    touchDraggedElement.style.top = '';
+    touchDraggedElement.style.width = '';
+    touchDraggedElement.style.pointerEvents = '';
+    touchDraggedElement.classList.remove('dragging');
+    
+    // Find drop target
+    const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+    const dropTarget = elementBelow?.closest('.sub-player-card');
+    
+    // Remove all drag-over classes
+    document.querySelectorAll('.sub-player-card').forEach(card => {
+        card.classList.remove('drag-over');
+    });
+    
+    // Perform substitution if valid
+    if (dropTarget && dropTarget !== touchDraggedElement && canDropOn(touchDraggedElement, dropTarget)) {
+        makeSubstitution(touchDraggedElement, dropTarget);
+    }
+    
+    touchDraggedElement = null;
+}
+
+function handleTouchCancel(e) {
+    if (!touchDraggedElement) return;
+    
+    // Reset everything
+    touchDraggedElement.style.position = '';
+    touchDraggedElement.style.zIndex = '';
+    touchDraggedElement.style.left = '';
+    touchDraggedElement.style.top = '';
+    touchDraggedElement.style.width = '';
+    touchDraggedElement.style.pointerEvents = '';
+    touchDraggedElement.classList.remove('dragging');
+    
+    document.querySelectorAll('.sub-player-card').forEach(card => {
+        card.classList.remove('drag-over');
+    });
+    
+    touchDraggedElement = null;
+}
 
 
 // ✅ ADD THIS FUNCTION
